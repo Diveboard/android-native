@@ -1,0 +1,82 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".LoginActivity" >
+
+    <!-- Login progress -->
+
+    <LinearLayout
+        android:id="@+id/load_data_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:gravity="center_horizontal"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/load_data_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/login_progress_signing_in"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <!-- Login form -->
+
+    <ScrollView
+        android:id="@+id/load_data_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" >
+
+       <LinearLayout
+            style="@style/LoginFormContainer"
+            android:orientation="vertical" >
+
+            <TextView
+                android:id="@+id/user_id"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:id="@+id/nickname"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            
+            <TextView
+                android:id="@+id/location"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            
+            <TextView
+                android:id="@+id/public_nb_dives"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+            
+            <TextView
+                android:id="@+id/total_nb_dives"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"/>
+
+            <Button
+                android:id="@+id/load_data_button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="right"
+                android:layout_marginTop="16dp"
+                android:paddingLeft="32dp"
+                android:paddingRight="32dp"
+                android:text="@string/action_load_data"
+                android:onClick="loadData" />
+        </LinearLayout>
+    </ScrollView>
+
+</merge>
