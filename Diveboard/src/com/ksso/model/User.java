@@ -1,5 +1,8 @@
 package com.ksso.model;
 
+import java.util.ArrayList;
+
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class					User
@@ -9,7 +12,8 @@ public class					User
 	private int					_public_nb_dives;
 	private String				_location;
 	private String				_nickname;
-	
+	private ArrayList<Dive>		_dives = new ArrayList<Dive>();
+
 	public						User(final JSONObject json)
 	{
 		try
@@ -64,5 +68,13 @@ public class					User
 
 	public void setNickname(String _nickname) {
 		this._nickname = _nickname;
+	}
+	
+	public ArrayList<Dive> getDives() {
+		return _dives;
+	}
+
+	public void setDives(ArrayList<Dive> _dives) {
+		this._dives = _dives;
 	}
 }
