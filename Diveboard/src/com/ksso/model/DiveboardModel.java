@@ -19,7 +19,7 @@ public class					DiveboardModel
 {
 	private int					_userId;
 	private Context				_context;
-	private	User				_user;
+	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
 	protected AndroidHttpClient	_client;
 
@@ -33,12 +33,15 @@ public class					DiveboardModel
 	{
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		
+		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			// Online Mode
 			_client = AndroidHttpClient.newInstance("Android");
 			try
 			{
+				// Load data online
 				_loadOnlineData();
 				return ;
 			}
@@ -48,6 +51,28 @@ public class					DiveboardModel
 			}
 		}
 		// Offline Mode
+		_loadOfflineData();
+	}
+	
+	private void				_loadUser(String json_str) throws JSONException
+	{
+		JSONObject json = new JSONObject(json_str);
+		json = json.getJSONObject("result");
+		_user = new User(json);
+	}
+	
+	private void				_loadDives(String json_str) throws JSONException
+	{
+		JSONObject json = new JSONObject(json_str);
+		JSONArray jarray = json.getJSONArray("result");
+		ArrayList<Dive> dives = new ArrayList<Dive>();
+		for (int i = 0, length = jarray.length(); i < length; i++)
+		{
+			Dive dive = new Dive(jarray.getJSONObject(i));
+			dives.add(dive);
+		}
+		if (_user != null)
+			_user.setDives(dives);
 	}
 	
 	private void				_loadOnlineData() throws IOException, JSONException
@@ -57,11 +82,11 @@ public class					DiveboardModel
 		HttpResponse response = _client.execute(getRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
-		JSONObject json = new JSONObject(result);
-		json = json.getJSONObject("result");
-		_user = new User(json);
+		_loadUser(result);
 		
 		// Load dive information
+		JSONObject json = new JSONObject(result);
+		json = json.getJSONObject("result");
 		String dive_str = "%5B";
 		JSONArray jarray = json.getJSONArray("public_dive_ids");
 		for (int i = 0, length = jarray.length(); i < length; i++)
@@ -75,17 +100,17 @@ public class					DiveboardModel
 		response = _client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
-		json = new JSONObject(result);
-		System.out.println(result);
-		jarray = json.getJSONArray("result");
-		ArrayList<Dive> dives = new ArrayList<Dive>();
-		for (int i = 0, length = jarray.length(); i < length; i++)
-		{
-			Dive dive = new Dive(jarray.getJSONObject(i));
-			System.out.println("Adding object :".concat(Integer.toString(dive.getId())));
-			dives.add(dive);
-		}
-		_user.setDives(dives);
+		_loadDives(result);
+	}
+	
+	private void				_loadOfflineData()
+	{
+		
+	}
+	
+	private void				_saveJSON()
+	{
+		
 	}
 	
 	public User					getUser()
@@ -93,7 +118,17 @@ public class					DiveboardModel
 		return _user;
 	}
 	
+	public User					getUser(int userId)
+	{
+		return _user;
+	}
+	
 	public ArrayList<Dive>		getDives()
+	{
+		return _user.getDives();
+	}
+	
+	public ArrayList<Dive>		getDives(int userId)
 	{
 		return _user.getDives();
 	}
