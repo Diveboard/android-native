@@ -57,7 +57,7 @@ public class					DataManager
 			{
 				String key = keyset.next();
 				//Open file /[userid]_[category]
-				File file = new File(_context.getFilesDir() + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
+				File file = new File(_context.getFilesDir() + "_" + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(elem.get(key).getBytes());
@@ -75,17 +75,16 @@ public class					DataManager
 		
 		for (int i = 0, length = file_list.length; i < length; i++)
 		{
-			// If file name starts with [userId]_
-			if (file_list[i].indexOf(Integer.toString(userId) + "_") == 0)
+			// If file name starts with files_[userId]_
+			if (file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0)
 			{
 				String[] name_split = file_list[i].split("_");
-				System.out.println("length: " + Integer.toString(name_split.length));
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
 				byte[] buffer = new byte[1024];
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
-				elem.put(name_split[1], fileContent.toString());
+				elem.put(name_split[2], fileContent.toString());
 				fileInputStream.close();
 			}
 		}
@@ -95,6 +94,8 @@ public class					DataManager
 	
 	public String				get(final int userId, final String category)
 	{
-		return (_cacheData.get(userId).get(category));
+		if (_cacheData.get(userId) != null)
+			return (_cacheData.get(userId).get(category));
+		return (null);
 	}
 }

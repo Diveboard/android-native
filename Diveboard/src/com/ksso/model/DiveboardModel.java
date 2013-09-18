@@ -133,6 +133,7 @@ public class					DiveboardModel
 	
 	public ArrayList<Dive>		getDives()
 	{
+		// Check Null return
 		return _user.getDives();
 	}
 	
