@@ -18,6 +18,11 @@ public class ScreenSlidePageFragment extends Fragment {
 	TextView duration;
 	Dive mDive;
 	
+	public ScreenSlidePageFragment()
+	{
+		System.out.println("Entre");
+	}
+	
 	public ScreenSlidePageFragment(Dive dive)
 	{
 		mDive = dive;
@@ -33,10 +38,13 @@ public class ScreenSlidePageFragment extends Fragment {
 		date = (TextView)rootView.findViewById(R.id.dive_date);
 		time = (TextView)rootView.findViewById(R.id.dive_time);
 		duration = (TextView)rootView.findViewById(R.id.dive_duration);
-		date.setText(mDive.getDate());
-		time.setText(mDive.getTime());
-		id.setText(Integer.toString(mDive.getId()));
-		duration.setText(Integer.toString(mDive.getDuration()));
+		if (mDive != null)
+		{
+			date.setText(mDive.getDate());
+			time.setText(mDive.getTime());
+			id.setText(Integer.toString(mDive.getId()));
+			duration.setText(Integer.toString(mDive.getDuration()));
+		}
         return rootView;
     }
 }
