@@ -1,0 +1,91 @@
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/content"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+	<RelativeLayout
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:gravity="center"
+	    android:orientation="horizontal" >
+
+	    <TextView
+	        android:id="@+id/TextView01"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/dive_duration"
+	        android:layout_toLeftOf="@+id/dive_duration"
+	        android:text="Dive date: " />
+
+	    <TextView
+	        android:id="@+id/dive_duration"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/TextView02"
+	        android:layout_toRightOf="@+id/textView1"
+	        android:text="test" />
+
+	    <TextView
+	        android:id="@+id/dive_date"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/TextView01"
+	        android:layout_alignBottom="@+id/TextView01"
+	        android:layout_toRightOf="@+id/TextView01"
+	        android:text="test" />
+
+	    <TextView
+	        android:id="@+id/TextView05"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignLeft="@+id/TextView01"
+	        android:layout_below="@+id/TextView01"
+	        android:text="Dive time: " />
+
+	    <TextView
+	        android:id="@+id/TextView02"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignParentTop="true"
+	        android:layout_alignRight="@+id/textView1"
+	        android:layout_marginTop="190dp"
+	        android:text="Dive id: " />
+
+	    <TextView
+	        android:id="@+id/dive_id"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_alignBaseline="@+id/TextView02"
+	        android:layout_alignBottom="@+id/TextView02"
+	        android:layout_toRightOf="@+id/TextView02"
+	        android:text="test" />
+
+	    <TextView
+	        android:id="@+id/textView1"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/TextView02"
+	        android:layout_centerHorizontal="true"
+	        android:text="Dive duration: " />
+
+	    <TextView
+	        android:id="@+id/dive_time"
+	        style="?android:textAppearanceMedium"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_below="@+id/TextView01"
+	        android:layout_toRightOf="@+id/TextView01"
+	        android:text="test" />
+
+	</RelativeLayout>
+
+</LinearLayout>
