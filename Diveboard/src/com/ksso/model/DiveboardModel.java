@@ -62,25 +62,27 @@ public class					DiveboardModel
 		_user = new User(json);
 		
 		// Load dive information
-		String dive_str = "[";
+		String dive_str = "%5B";
 		JSONArray jarray = json.getJSONArray("public_dive_ids");
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
 			if (i != 0)
-				dive_str.concat(",");
-			dive_str.concat("{\"id\":").concat(Integer.toString(jarray.getInt(i))).concat("}");
+				dive_str = dive_str.concat("%2C%20");
+			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
-		dive_str.concat("]");
+		dive_str = dive_str.concat("%5D");
 		getRequest = new HttpGet("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str));
 		response = _client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
 		json = new JSONObject(result);
+		System.out.println(result);
 		jarray = json.getJSONArray("result");
 		ArrayList<Dive> dives = new ArrayList<Dive>();
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
 			Dive dive = new Dive(jarray.getJSONObject(i));
+			System.out.println("Adding object :".concat(Integer.toString(dive.getId())));
 			dives.add(dive);
 		}
 		_user.setDives(dives);

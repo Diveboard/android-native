@@ -2,12 +2,14 @@ package com.ksso.model;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 public class					User
 {
 	private int					_id;
+	private String				_shaken_id;
+	private String				_vanity_url;
+	private String				_fullpermalink;
 	private int					_total_nb_dives;
 	private int					_public_nb_dives;
 	private String				_location;
@@ -19,6 +21,9 @@ public class					User
 		try
 		{
 			_id = json.getInt("id");
+			_shaken_id = json.getString("shaken_id");
+			_vanity_url = json.getString("vanity_url");
+			_vanity_url = json.getString("fullpermalink");
 			_total_nb_dives = json.getInt("total_nb_dives");
 			_public_nb_dives = json.getInt("public_nb_dives");
 			_location = json.getString("location");
@@ -36,6 +41,30 @@ public class					User
 
 	public void setId(int _id) {
 		this._id = _id;
+	}
+	
+	public String getShakenId() {
+		return _shaken_id;
+	}
+
+	public void setShakenId(String _shaken_id) {
+		this._shaken_id = _shaken_id;
+	}
+
+	public String getVanityUrl() {
+		return _vanity_url;
+	}
+
+	public void setVanityUrl(String _vanity_url) {
+		this._vanity_url = _vanity_url;
+	}
+
+	public String getFullpermalink() {
+		return _fullpermalink;
+	}
+
+	public void setFullpermalink(String _fullpermalink) {
+		this._fullpermalink = _fullpermalink;
 	}
 
 	public int getTotalNbDives() {

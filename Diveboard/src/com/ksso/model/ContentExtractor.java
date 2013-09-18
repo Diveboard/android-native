@@ -20,6 +20,6 @@ public class					ContentExtractor
     		if (n > 0)
 	    		out.append(new String(b, 0, n));
     	}
-    	return (out.toString());
+		return (out.toString());
 	}
 }
