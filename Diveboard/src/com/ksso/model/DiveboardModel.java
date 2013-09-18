@@ -32,28 +32,28 @@ public class					DiveboardModel
 		_cache = new DataManager(context);
 	}
 	
-	public void					loadData() throws IOException
+	public void					loadData()
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		
 		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
+		try
 		{
-			// Online Mode
-			_client = AndroidHttpClient.newInstance("Android");
-			try
+			if (networkInfo != null && networkInfo.isConnected())
 			{
+				// Online Mode
+				_client = AndroidHttpClient.newInstance("Android");
 				// Load data online
 				_loadOnlineData();
 				return ;
 			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
+			// Offline Mode
+			_loadOfflineData();
 		}
-		// Offline Mode
-		_loadOfflineData();
+		catch (Exception e)
+		{
+			e.printStackTrace();
+		}
 	}
 	
 	private void				_loadUser(final String json_str) throws JSONException
@@ -108,11 +108,17 @@ public class					DiveboardModel
 		_cache.commitCache();
 	}
 	
-	private void				_loadOfflineData() throws IOException
+	private void				_loadOfflineData() throws IOException, JSONException
 	{
+		String					tmp;
+		
 		_cache.loadCache(_userId);
-		_cache.get(_userId, "user");
-		_cache.get(_userId, "dives");
+		tmp = _cache.get(_userId, "user");
+		if (tmp != null)
+			_loadUser(tmp);
+		tmp = _cache.get(_userId, "dives");
+		if (tmp != null)
+			_loadDives(tmp);
 	}
 	
 	public User					getUser()
