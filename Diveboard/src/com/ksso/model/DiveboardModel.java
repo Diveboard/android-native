@@ -21,17 +21,19 @@ public class					DiveboardModel
 	private Context				_context;
 	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
-	protected AndroidHttpClient	_client;
+	private AndroidHttpClient	_client;
+	private DataManager			_cache;
 
-	public						DiveboardModel(final int userId, Context context)
+	public						DiveboardModel(final int userId, final Context context)
 	{
 		_userId = userId;
 		_context = context;
+		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		_cache = new DataManager(context);
 	}
 	
-	public void					loadData()
+	public void					loadData() throws IOException
 	{
-		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		
 		// Test connectivity
@@ -54,14 +56,14 @@ public class					DiveboardModel
 		_loadOfflineData();
 	}
 	
-	private void				_loadUser(String json_str) throws JSONException
+	private void				_loadUser(final String json_str) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
 		_user = new User(json);
 	}
 	
-	private void				_loadDives(String json_str) throws JSONException
+	private void				_loadDives(final String json_str) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
 		JSONArray jarray = json.getJSONArray("result");
@@ -82,6 +84,7 @@ public class					DiveboardModel
 		HttpResponse response = _client.execute(getRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
+		_cache.saveCache(_userId, "user", result);
 		_loadUser(result);
 		
 		// Load dive information
@@ -100,17 +103,16 @@ public class					DiveboardModel
 		response = _client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
+		_cache.saveCache(_userId, "dives", result);
 		_loadDives(result);
+		_cache.commitCache();
 	}
 	
-	private void				_loadOfflineData()
+	private void				_loadOfflineData() throws IOException
 	{
-		
-	}
-	
-	private void				_saveJSON()
-	{
-		
+		_cache.loadCache(_userId);
+		_cache.get(_userId, "user");
+		_cache.get(_userId, "dives");
 	}
 	
 	public User					getUser()
