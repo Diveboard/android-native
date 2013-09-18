@@ -15,5 +15,9 @@
     <string name="title_activity_user">UserActivity</string>
     <string name="action_load_data">Load Data</string>
     <string name="progress_load_data">Loading data</string>
+    <string name="title_fixe_fragment">Fixe Fragment</string>
+    <string name="title_activity_fixe_fragment">Fixe Fragment Activity</string>
+    <string name="title_activity_carousel_view">CarouselView</string>
+    <string name="title_activity_carousel">CarouselActivity</string>
 
 </resources>
