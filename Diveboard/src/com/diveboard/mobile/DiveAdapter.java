@@ -1,8 +1,8 @@
-package com.ksso.diveboard;
+package com.diveboard.mobile;
 
 import java.util.ArrayList;
 
-import com.ksso.model.Dive;
+import com.diveboard.model.Dive;
 
 import android.content.Context;
 import android.view.LayoutInflater;

@@ -1,11 +1,12 @@
-package com.ksso.diveboard;
+package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-import com.ksso.model.Dive;
-import com.ksso.model.DiveboardModel;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.ksso.diveboard.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,7 +33,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class UserActivity extends FragmentActivity {
+public class DivesActivity extends FragmentActivity {
 	private int NUM_PAGES = 1;
 	
 	private ViewPager mPager;
@@ -59,35 +60,17 @@ public class UserActivity extends FragmentActivity {
 
 		setContentView(R.layout.activity_user);
 		
-		mModel = new DiveboardModel(48, this);
-/*		mNickname = (TextView)findViewById(R.id.nickname);
-		mId = (TextView)findViewById(R.id.user_id);
-		mLocation = (TextView)findViewById(R.id.location);
-		mPublicNbDives = (TextView)findViewById(R.id.public_nb_dives);
-		mTotalNbDives = (TextView)findViewById(R.id.total_nb_dives);*/
-		
+		mModel = new DiveboardModel(48, this);		
 		mLoadDataFormView = findViewById(R.id.load_data_form);
 		mLoadDataStatusView = findViewById(R.id.load_data_status);
 		mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
 		attemptLogin();
-//		findViewById(R.id.load_data_button).setOnClickListener(
-//				new View.OnClickListener() {
-//					@Override
-//					public void onClick(View view) {
-//						attemptLogin();
-//					}
-//				});
 	}
 
 	public void loadData(View view) {
 		 attemptLogin();
 	}
 	
-	/**
-	 * Attempts to sign in or register the account specified by the login form.
-	 * If there are form errors (invalid email, missing fields, etc.), the
-	 * errors are presented and no actual login attempt is made.
-	 */
 	public void attemptLogin() {
 		if (mAuthTask != null) {
 			return;
@@ -146,7 +129,7 @@ public class UserActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
+	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
@@ -174,55 +157,10 @@ public class UserActivity extends FragmentActivity {
 				
 				NUM_PAGES = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new ScreenSlidePagerAdapter(getSupportFragmentManager(), mModel.getDives());
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives());
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-				
-				/*mNickname.setText(mModel.getUser().getNickname());
-				mId.setText(Integer.toString(mModel.getUser().getId()));
-				mLocation.setText(mModel.getUser().getLocation());
-				mPublicNbDives.setText(Integer.toString(mModel.getUser().getPublicNbDives()));
-				mTotalNbDives.setText(Integer.toString(mModel.getUser().getTotalNbDives()));*/
 			}
-		}
-		
-		public class ZoomOutPageTransformer implements ViewPager.PageTransformer {
-		    private static final float MIN_SCALE = 0.85f;
-		    private static final float MIN_ALPHA = 0.5f;
-
-		    public void transformPage(View view, float position) {
-		        int pageWidth = view.getWidth();
-		        int pageHeight = view.getHeight();
-
-		        if (position < -1) { // [-Infinity,-1)
-		            // This page is way off-screen to the left.
-		            view.setAlpha(0);
-
-		        } else if (position <= 1) { // [-1,1]
-		            // Modify the default slide transition to shrink the page as well
-		            float scaleFactor = Math.max(MIN_SCALE, 1 - Math.abs(position));
-		            float vertMargin = pageHeight * (1 - scaleFactor) / 2;
-		            float horzMargin = pageWidth * (1 - scaleFactor) / 2;
-		            if (position < 0) {
-		                view.setTranslationX(horzMargin - vertMargin / 2);
-		            } else {
-		                view.setTranslationX(-horzMargin + vertMargin / 2);
-		            }
-
-		            // Scale the page down (between MIN_SCALE and 1)
-		            view.setScaleX(scaleFactor);
-		            view.setScaleY(scaleFactor);
-
-		            // Fade the page relative to its size.
-		            view.setAlpha(MIN_ALPHA +
-		                    (scaleFactor - MIN_SCALE) /
-		                    (1 - MIN_SCALE) * (1 - MIN_ALPHA));
-
-		        } else { // (1,+Infinity]
-		            // This page is way off-screen to the right.
-		            view.setAlpha(0);
-		        }
-		    }
 		}
 		
 		@Override
@@ -232,18 +170,18 @@ public class UserActivity extends FragmentActivity {
 		}
 	}
 	
-	private class ScreenSlidePagerAdapter extends FragmentStatePagerAdapter
+	private class DivesPagerAdapter extends FragmentStatePagerAdapter
 	{
 		private ArrayList<Dive> mDives;
 		
-		public ScreenSlidePagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives) {
+		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives) {
             super(fragmentManager);
 			mDives = dives;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new ScreenSlidePageFragment(mDives.get(position));
+            return new DivesFragment(mDives.get(position));
         }
 
         @Override

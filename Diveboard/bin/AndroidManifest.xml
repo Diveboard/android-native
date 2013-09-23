@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:theme="@style/AppBaseTheme" >
         <activity
-            android:name="com.ksso.diveboard.UserActivity"
+            android:name="com.diveboard.mobile.UserActivity"
             android:label="@string/title_activity_user" >
 <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -27,11 +27,11 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.ksso.diveboard.FixeFragmentActivity"
+            android:name="com.diveboard.mobile.FixeFragmentActivity"
             android:label="@string/title_activity_fixe_fragment" >
         </activity>
         <activity
-            android:name="com.ksso.diveboard.CarouselActivity"
+            android:name="com.diveboard.mobile.CarouselActivity"
             android:label="@string/title_activity_carousel" >
                         
         </activity>

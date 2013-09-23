@@ -1,4 +1,4 @@
-package com.ksso.model;
+package com.diveboard.model;
 
 import java.io.File;
 import java.io.FileInputStream;

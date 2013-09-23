@@ -1,6 +1,7 @@
-package com.ksso.diveboard;
+package com.diveboard.mobile;
 
-import com.ksso.model.Dive;
+import com.diveboard.model.Dive;
+import com.ksso.diveboard.R;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -11,19 +12,19 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-public class ScreenSlidePageFragment extends Fragment {
+public class DivesFragment extends Fragment {
 	TextView date;
 	TextView time;
 	TextView id;
 	TextView duration;
 	Dive mDive;
 	
-	public ScreenSlidePageFragment()
+	public DivesFragment()
 	{
 		System.out.println("Entre");
 	}
 	
-	public ScreenSlidePageFragment(Dive dive)
+	public DivesFragment(Dive dive)
 	{
 		mDive = dive;
 	}
