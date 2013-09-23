@@ -1,7 +1,6 @@
 package com.diveboard.mobile;
 
 import com.diveboard.model.Dive;
-import com.ksso.diveboard.R;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,8 +32,7 @@ public class DivesFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-		ViewGroup rootView = (ViewGroup) inflater.inflate(
-                R.layout.fragment_screen_slide_page, container, false);
+		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 		id = (TextView)rootView.findViewById(R.id.dive_id);
 		date = (TextView)rootView.findViewById(R.id.dive_date);
 		time = (TextView)rootView.findViewById(R.id.dive_time);

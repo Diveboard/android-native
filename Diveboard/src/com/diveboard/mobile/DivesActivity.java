@@ -6,7 +6,6 @@ import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.ksso.diveboard.R;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -58,7 +57,7 @@ public class DivesActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		setContentView(R.layout.activity_user);
+		setContentView(R.layout.activity_dives);
 		
 		mModel = new DiveboardModel(48, this);		
 		mLoadDataFormView = findViewById(R.id.load_data_form);

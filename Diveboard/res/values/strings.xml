@@ -3,5 +3,6 @@
 
     <string name="app_name">Diveboard</string>
 	<string name="title_activity_dives">List of dives</string>
+	<string name="progress_load_data">Loading data</string>
 
 </resources>
