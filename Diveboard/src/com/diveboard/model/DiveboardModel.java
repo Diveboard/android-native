@@ -15,6 +15,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 
+/*
+ * Class DiveboardModel
+ * Main class for model, manage all intern components
+ */
 public class					DiveboardModel
 {
 	private int					_userId;
@@ -24,6 +28,10 @@ public class					DiveboardModel
 	private AndroidHttpClient	_client;
 	private DataManager			_cache;
 
+	/*
+	 * Method DiveboardModel
+	 * Constructor, initialize the object
+	 */
 	public						DiveboardModel(final int userId, final Context context)
 	{
 		_userId = userId;
@@ -32,6 +40,10 @@ public class					DiveboardModel
 		_cache = new DataManager(context);
 	}
 	
+	/*
+	 * Method loadData
+	 * Automatically load data from offline files or online source if available
+	 */
 	public void					loadData()
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
@@ -56,6 +68,10 @@ public class					DiveboardModel
 		}
 	}
 	
+	/*
+	 * Method _loadUser
+	 * Takes a JSON and load user data to model
+	 */
 	private void				_loadUser(final String json_str) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
@@ -63,6 +79,10 @@ public class					DiveboardModel
 		_user = new User(json);
 	}
 	
+	/*
+	 * Method _loadDives
+	 * Takes a JSON and load dives data to model
+	 */
 	private void				_loadDives(final String json_str) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
@@ -77,6 +97,10 @@ public class					DiveboardModel
 			_user.setDives(dives);
 	}
 	
+	/*
+	 * Method _loadOnlineData
+	 * Sends requests to Diveboard server and retrieves data from online source
+	 */
 	private void				_loadOnlineData() throws IOException, JSONException
 	{
 		// Load user information
@@ -108,6 +132,10 @@ public class					DiveboardModel
 		_cache.commitCache();
 	}
 	
+	/*
+	 * Method _loadOfflineData
+	 * Get previously saved offline data and loads it into model
+	 */
 	private void				_loadOfflineData() throws IOException, JSONException
 	{
 		String					tmp;
@@ -121,24 +149,42 @@ public class					DiveboardModel
 			_loadDives(tmp);
 	}
 	
+	/*
+	 * Method getUser : void
+	 * Returns default user data (default user ID from constructor)
+	 */
 	public User					getUser()
 	{
 		return _user;
 	}
 	
+	/*
+	 * Method getUser : int userId
+	 * Returns user data for a specific user ID passed through argument
+	 */
 	public User					getUser(int userId)
 	{
+		// Not implemented
 		return _user;
 	}
 	
+	/*
+	 * Method getDives : void
+	 * Returns default user's dives data (default user ID from constructor)
+	 */
 	public ArrayList<Dive>		getDives()
 	{
 		// Check Null return
 		return _user.getDives();
 	}
 	
+	/*
+	 * Method getDives : int userId
+	 * Returns user's dives data for a specific user ID passed through argument
+	 */
 	public ArrayList<Dive>		getDives(int userId)
 	{
+		// Not implemented
 		return _user.getDives();
 	}
 }

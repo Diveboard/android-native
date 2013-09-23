@@ -11,12 +11,20 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.util.SparseArray;
 
+/*
+ * Class DataManager
+ * Manages online and offline data transactions such as changes stacking and commit changes.
+ */
 public class					DataManager
 {
 	private Context									_context;
 	private ConnectivityManager						_connMgr;
 	private SparseArray<HashMap<String, String>>	_cacheData; // <UserId, <Category, JSON>>
 	
+	/*
+	 * Method DataManager
+	 * Constructor, initialize the object
+	 */
 	public						DataManager(final Context context)
 	{
 		_context = context;
@@ -24,6 +32,13 @@ public class					DataManager
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
+	/*
+	 * Method saveCache
+	 * Saves data into internal memory (without committing changes)
+	 * Arguments :	userId : for which user ID the data belongs to
+	 * 				category : in which category the data belongs to ("user"/"dive"/etc.)
+	 * 				json : the data in JSON format
+	 */
 	public void					saveCache(final int userId, final String category, final String json)
 	{
 		HashMap<String, String>	userElem;
@@ -45,6 +60,10 @@ public class					DataManager
 		}
 	}
 	
+	/*
+	 * Method commitCache
+	 * Persists data contained in the internal memory (to offline files and online server)
+	 */
 	public void					commitCache() throws IOException
 	{
 		FileOutputStream		outputStream;
@@ -66,6 +85,10 @@ public class					DataManager
 		}
 	}
 	
+	/*
+	 * Method loadCache
+	 * Loads data from offline files into internal memory for a specific user ID passed through argument
+	 */
 	public void					loadCache(final int userId) throws IOException
 	{
 		FileInputStream			fileInputStream;
@@ -92,6 +115,12 @@ public class					DataManager
 			_cacheData.put(userId, elem);
 	}
 	
+	/*
+	 * Method get
+	 * Returns data contained on internal memory
+	 * Arguments :	userId : which user id we want to retrieve
+	 * 				category : what category of data we want to retrieve ("user"/"dive"/etc.)
+	 */
 	public String				get(final int userId, final String category)
 	{
 		if (_cacheData.get(userId) != null)

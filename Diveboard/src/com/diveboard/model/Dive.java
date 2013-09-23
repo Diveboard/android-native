@@ -3,6 +3,10 @@ package com.diveboard.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+/*
+ * Class Dive
+ * Model for Dives
+ */
 public class					Dive
 {
 	private int					_id;

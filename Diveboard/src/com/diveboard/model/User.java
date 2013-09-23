@@ -4,6 +4,10 @@ import java.util.ArrayList;
 
 import org.json.JSONObject;
 
+/*
+ * Class User
+ * Model for User
+ */
 public class					User
 {
 	private int					_id;
