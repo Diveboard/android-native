@@ -6,10 +6,10 @@
 
     <LinearLayout
         android:id="@+id/load_data_status"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:gravity="center_horizontal"
+        android:gravity="center"
         android:orientation="vertical"
         android:visibility="gone" >
 
@@ -35,24 +35,41 @@
 <!--         android:id="@+id/load_data_form" -->
 <!--         android:layout_width="match_parent" -->
 <!--         android:layout_height="match_parent" > -->
-<LinearLayout
-    android:orientation="vertical"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#FFFFFF"
-    tools:context=".MainActivity" 
-    android:id="@+id/load_data_form">
-           <RelativeLayout 
-    android:id="@+id/screen"
-           style="@style/LoginFormContainer"
-           android:orientation="vertical"
-           android:padding="0dp"
-           android:background="#666666">
-		   <android.support.v4.view.ViewPager
-		       xmlns:android="http://schemas.android.com/apk/res/android"
-		       android:id="@+id/pager"
-		       android:layout_width="match_parent"
-		       android:layout_height="match_parent" />
+	<LinearLayout
+	    android:visibility="gone"
+        android:id="@+id/load_data_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        tools:context=".MainActivity" >
+
+           <RelativeLayout
+               android:id="@+id/screen"
+               style="@style/LoginFormContainer"
+               android:layout_height="match_parent"
+               android:layout_weight="10"
+               android:background="#666666"
+               android:padding="0dp" >
+
+			    <android.support.v4.view.ViewPager
+			       xmlns:android="http://schemas.android.com/apk/res/android"
+			       android:id="@+id/pager"
+			       android:layout_width="match_parent"
+			       android:layout_height="match_parent" />	    
+			</RelativeLayout>
+			<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
+			    android:layout_weight="95"
+			    android:background="#333FFF" ></RelativeLayout>
+			<RelativeLayout
+			    android:layout_width="match_parent"
+			    android:layout_height="match_parent"
+			    android:layout_weight="90"
+			    android:background="#FFFFFF" >
+
+			</RelativeLayout>
 <!-- 			<ListView
 			    android:id="@+id/list_dives"
 			    android:layout_width="match_parent"
@@ -95,7 +112,7 @@
                 android:paddingRight="32dp"
                 android:text="@string/action_load_data"
                 android:onClick="loadData" /> -->
-        </RelativeLayout>
+
         </LinearLayout>
 <!--     </ScrollView> -->
 

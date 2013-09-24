@@ -28,6 +28,8 @@ import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
+import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -43,6 +45,7 @@ public class DivesActivity extends FragmentActivity {
 	// All you need to make the carousel
 	private ViewPager mPager;
 	private PagerAdapter mPagerAdapter;
+	ViewGroup mLayout;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -62,8 +65,6 @@ public class DivesActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (savedInstanceState != null)
-			System.out.println("ENTRE");
 		// Set the view layout
 		setContentView(R.layout.activity_dives);
 		
@@ -146,20 +147,35 @@ public class DivesActivity extends FragmentActivity {
 	
 	private void createPages()
 	{
-		int screenheight = ((getWindowManager().getDefaultDisplay().getHeight() - 100) * 90 / 100);
-		int fragmentheight = screenheight * 71 / 100;
-		int fragmentwidth = (fragmentheight * 10) / 13;
-		int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
-		int margin = (screenwidth - fragmentwidth) * (-1);
-		//View rootView = (View) getLayoutInflater().inflate(R.id.screen, null);
-		View rootView = (View)findViewById(R.id.screen);
-		rootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
-		mNbPages = mModel.getDives().size();
-		mPager = (ViewPager) findViewById(R.id.pager);
-        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight);
-        mPager.setAdapter(mPagerAdapter);
-        mPager.setPageMargin(margin + 30);
-        mPager.setOffscreenPageLimit(10);
+		//ViewPager creation with all the fragments associated, resized according the screen size
+		//int screenheight = ((getWindowManager().getDefaultDisplay().getHeight() - 100) * 90 / 100);
+		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
+		mLayout = (ViewGroup)findViewById(R.id.pager);
+		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
+		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() { 
+		    @Override 
+		    public void onGlobalLayout() { 
+		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this); 
+		        int width  = mLayout.getMeasuredWidth();
+		        int screenheight = mLayout.getMeasuredHeight(); 
+				int fragmentheight = screenheight * 71 / 100;
+				int fragmentwidth = (fragmentheight * 10) / 13;
+				int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
+				int margin = (screenwidth - fragmentwidth) * (-1);
+				int offset = (fragmentwidth / 2);
+				View rootView = (View)findViewById(R.id.screen);
+				//System.out.println("TEST: "+((View)findViewById(R.id.pager)).getHeight());
+				rootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
+				mNbPages = mModel.getDives().size();
+				mPager = (ViewPager) findViewById(R.id.pager);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight);
+		        mPager.setAdapter(mPagerAdapter);
+		        mPager.setPageMargin(margin + offset);
+		        //System.out.println("SCREENWIDTH : " + screenwidth + ", FRAGMENT WIDTH : " + fragmentwidth + " OFFSET : " + ((screenwidth / fragmentwidth) + 1));
+		        mPager.setOffscreenPageLimit(((screenwidth / fragmentwidth) + 1));
+		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+		    } 
+		});
 	}
 	
 	/**
@@ -180,7 +196,6 @@ public class DivesActivity extends FragmentActivity {
 
 			if (success) {
 				createPages();
-		        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 			}
 		}
 		

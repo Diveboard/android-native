@@ -52,7 +52,7 @@ public class DivesFragment extends Fragment {
 		}
 		RelativeLayout content = (RelativeLayout)rootView.findViewById(R.id.content);
 		int contentheight = mScreenheight * 71 / 100;
-		System.out.println(mScreenheight);
+		//System.out.println(mScreenheight);
 		content.setLayoutParams(new LinearLayout.LayoutParams((int)((contentheight * 10) / 13), contentheight));
         return rootView;
     }
