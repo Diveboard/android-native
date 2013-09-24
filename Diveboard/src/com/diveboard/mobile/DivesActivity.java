@@ -26,21 +26,31 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class DivesActivity extends FragmentActivity {
-	private int NUM_PAGES = 1;
+
+	// Number of pages in Dives
+	private int mNbPages = 1;
 	
+	// All you need to make the carousel
 	private ViewPager mPager;
 	private PagerAdapter mPagerAdapter;
 	
-	
+	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
-
+	private View mLoadDataFormView;
+	private View mLoadDataStatusView;
+	private TextView mLoadDataStatusMessageView;
+	
+	// Model to display
 	private DiveboardModel mModel;
 	private TextView mNickname;
 	private TextView mId;
@@ -49,28 +59,31 @@ public class DivesActivity extends FragmentActivity {
 	private TextView mTotalNbDives;
 	
 
-	private View mLoadDataFormView;
-	private View mLoadDataStatusView;
-	private TextView mLoadDataStatusMessageView;
-
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		if (savedInstanceState != null)
+			System.out.println("ENTRE");
+		// Set the view layout
 		setContentView(R.layout.activity_dives);
 		
-		mModel = new DiveboardModel(48, this);		
-		mLoadDataFormView = findViewById(R.id.load_data_form);
-		mLoadDataStatusView = findViewById(R.id.load_data_status);
-		mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
-		attemptLogin();
-	}
-
-	public void loadData(View view) {
-		 attemptLogin();
+		// Initialize data
+		if (savedInstanceState == null)
+		{
+			mModel = new DiveboardModel(48, this);		
+			mLoadDataFormView = findViewById(R.id.load_data_form);
+			mLoadDataStatusView = findViewById(R.id.load_data_status);
+			mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
+			loadData();
+		}
+		else
+		{
+			mModel = savedInstanceState.getParcelable("model");
+			createPages();
+		}
 	}
 	
-	public void attemptLogin() {
+	public void loadData() {
 		if (mAuthTask != null) {
 			return;
 		}
@@ -82,7 +95,7 @@ public class DivesActivity extends FragmentActivity {
 		mAuthTask = new LoadDataTask();
 		mAuthTask.execute((Void) null);
 	}
-
+	
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -124,16 +137,39 @@ public class DivesActivity extends FragmentActivity {
 		}
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		// TODO Auto-generated method stub
+		//super.onSaveInstanceState(outState);
+		outState.putParcelable("model", mModel);
+	}
+	
+	private void createPages()
+	{
+		int screenheight = ((getWindowManager().getDefaultDisplay().getHeight() - 100) * 90 / 100);
+		int fragmentheight = screenheight * 71 / 100;
+		int fragmentwidth = (fragmentheight * 10) / 13;
+		int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
+		int margin = (screenwidth - fragmentwidth) * (-1);
+		//View rootView = (View) getLayoutInflater().inflate(R.id.screen, null);
+		View rootView = (View)findViewById(R.id.screen);
+		rootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
+		mNbPages = mModel.getDives().size();
+		mPager = (ViewPager) findViewById(R.id.pager);
+        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight);
+        mPager.setAdapter(mPagerAdapter);
+        mPager.setPageMargin(margin + 30);
+        mPager.setOffscreenPageLimit(10);
+	}
+	
 	/**
-	 * Represents an asynchronous login/registration task used to authenticate
-	 * the user.
+	 * Represents an asynchronous task used to load data
 	 */
 	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
 		
 		@Override
 		protected Boolean doInBackground(Void... params) {
 			mModel.loadData();
-
 			return true;
 		}
 
@@ -143,22 +179,8 @@ public class DivesActivity extends FragmentActivity {
 			showProgress(false);
 
 			if (success) {
-				/*ArrayList<Dive> dives = mModel.getDives();
-				ArrayList<String> myStringArray = new ArrayList<String>();
-				for (int i = 0; i < mModel.getDives().size(); i++)
-				{
-					myStringArray.add(mModel.getDives().get(i).getDate());
-				}
-				//String[] myStringArray = {"Cheese", "Pepperoni", "Black Olives"};
-				ListView listView = (ListView) findViewById(R.id.list_dives);
-				DiveAdapter adapter = new DiveAdapter(UserActivity.this, dives);
-				listView.setAdapter(adapter);*/
-				
-				NUM_PAGES = mModel.getDives().size();
-				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives());
-		        mPager.setAdapter(mPagerAdapter);
-		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+				createPages();
+		        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 			}
 		}
 		
@@ -169,23 +191,28 @@ public class DivesActivity extends FragmentActivity {
 		}
 	}
 	
+	/**
+	 * Generate the dives pages
+	 */
 	private class DivesPagerAdapter extends FragmentStatePagerAdapter
 	{
 		private ArrayList<Dive> mDives;
+		private int mScreenheight;
 		
-		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives) {
+		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, int screenheight) {
             super(fragmentManager);
 			mDives = dives;
+			mScreenheight = screenheight;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position));
+            return new DivesFragment(mDives.get(position), mScreenheight);
         }
 
         @Override
         public int getCount() {
-            return NUM_PAGES;
+            return mNbPages;
         }
 	}
 }
