@@ -174,7 +174,8 @@ public class					DiveboardModel
 	 */
 	public ArrayList<Dive>		getDives()
 	{
-		// Check Null return
+		if (_user == null)
+			return null;
 		return _user.getDives();
 	}
 	
@@ -186,5 +187,14 @@ public class					DiveboardModel
 	{
 		// Not implemented
 		return _user.getDives();
+	}
+	
+	/*
+	 * Method commit
+	 * Commit all changes of the model
+	 */
+	public void					commit()
+	{
+		// Not implemented
 	}
 }

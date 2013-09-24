@@ -7,7 +7,7 @@ import org.json.JSONObject;
  * Class Dive
  * Model for Dives
  */
-public class					Dive
+public class					Dive implements IModel
 {
 	private int					_id;
 	private String				_date;
@@ -26,6 +26,16 @@ public class					Dive
 		_lng = json.getDouble("lng");
 		_maxdepth = json.getDouble("maxdepth");
 		_time = json.getString("time");
+	}
+	
+	public void					save()
+	{
+		
+	}
+	
+	public void					delete()
+	{
+		
 	}
 
 	public int getId() {

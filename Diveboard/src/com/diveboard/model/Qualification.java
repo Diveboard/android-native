@@ -3,7 +3,7 @@ package com.diveboard.model;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class					Qualification
+public class					Qualification implements IModel
 {
 	private String				_org;
 	private String				_title;
@@ -14,6 +14,16 @@ public class					Qualification
 		_org = json.getString("org");
 		_title = json.getString("title");
 		_date = json.getString("date");
+	}
+	
+	public void					save()
+	{
+		
+	}
+	
+	public void					delete()
+	{
+		
 	}
 	
 	public String getOrg() {

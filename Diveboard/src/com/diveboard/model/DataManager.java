@@ -36,7 +36,7 @@ public class					DataManager
 	 * Method saveCache
 	 * Saves data into internal memory (without committing changes)
 	 * Arguments :	userId : for which user ID the data belongs to
-	 * 				category : in which category the data belongs to ("user"/"dive"/etc.)
+	 * 				category : in which category the data belongs to ("user"/"dives"/etc.)
 	 * 				json : the data in JSON format
 	 */
 	public void					saveCache(final int userId, final String category, final String json)
@@ -119,7 +119,7 @@ public class					DataManager
 	 * Method get
 	 * Returns data contained on internal memory
 	 * Arguments :	userId : which user id we want to retrieve
-	 * 				category : what category of data we want to retrieve ("user"/"dive"/etc.)
+	 * 				category : what category of data we want to retrieve ("user"/"dives"/etc.)
 	 */
 	public String				get(final int userId, final String category)
 	{
