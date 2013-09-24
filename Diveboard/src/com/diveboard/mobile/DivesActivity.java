@@ -33,6 +33,7 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -76,9 +77,14 @@ public class DivesActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set the view layout
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			getActionBar().hide();
+		}
+		else
+		{
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
 		setContentView(R.layout.activity_dives);
-		getActionBar().hide();
-		
 		// Initialize data
 		if (savedInstanceState == null)
 		{
