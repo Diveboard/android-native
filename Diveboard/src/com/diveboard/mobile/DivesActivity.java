@@ -2,6 +2,7 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.reflect.Array;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
@@ -12,6 +13,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ListActivity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,6 +23,7 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -30,11 +33,17 @@ import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
+import android.view.animation.AccelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.Scroller;
+import android.widget.SeekBar;
+import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
 public class DivesActivity extends FragmentActivity {
@@ -46,6 +55,7 @@ public class DivesActivity extends FragmentActivity {
 	private ViewPager mPager;
 	private PagerAdapter mPagerAdapter;
 	ViewGroup mLayout;
+	SeekBar mSeekBar;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -67,6 +77,7 @@ public class DivesActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 		// Set the view layout
 		setContentView(R.layout.activity_dives);
+		getActionBar().hide();
 		
 		// Initialize data
 		if (savedInstanceState == null)
@@ -84,11 +95,12 @@ public class DivesActivity extends FragmentActivity {
 		}
 	}
 	
-	public void loadData() {
-		if (mAuthTask != null) {
+	public void loadData()
+	{
+		if (mAuthTask != null)
+		{
 			return;
 		}
-
 		// Show a progress spinner, and kick off a background task to
 		// perform the user login attempt.
 		mLoadDataStatusMessageView.setText(R.string.progress_load_data);
@@ -140,7 +152,6 @@ public class DivesActivity extends FragmentActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		// TODO Auto-generated method stub
 		//super.onSaveInstanceState(outState);
 		outState.putParcelable("model", mModel);
 	}
@@ -148,7 +159,6 @@ public class DivesActivity extends FragmentActivity {
 	private void createPages()
 	{
 		//ViewPager creation with all the fragments associated, resized according the screen size
-		//int screenheight = ((getWindowManager().getDefaultDisplay().getHeight() - 100) * 90 / 100);
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
 		mLayout = (ViewGroup)findViewById(R.id.pager);
 		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
@@ -174,6 +184,52 @@ public class DivesActivity extends FragmentActivity {
 		        //System.out.println("SCREENWIDTH : " + screenwidth + ", FRAGMENT WIDTH : " + fragmentwidth + " OFFSET : " + ((screenwidth / fragmentwidth) + 1));
 		        mPager.setOffscreenPageLimit(((screenwidth / fragmentwidth) + 1));
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
+		        mSeekBar.setMax(mModel.getDives().size() - 1);
+		        mPager.setOnPageChangeListener(new OnPageChangeListener()
+		        {
+
+					@Override
+					public void onPageScrollStateChanged(int arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onPageScrolled(int arg0, float arg1, int arg2) {
+						mSeekBar.setProgress(arg0);
+					}
+
+					@Override
+					public void onPageSelected(int arg0) {
+						// TODO Auto-generated method stub
+						
+					}
+		        	
+		        });     
+		        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+		        {
+		        	@Override
+		        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+		        	{
+		        		if (fromUser == true)
+		        		{
+		        			mPager.setCurrentItem(progress, true);
+		        		}
+		        	}
+
+					@Override
+					public void onStartTrackingTouch(SeekBar seekBar) {
+						// TODO Auto-generated method stub
+						
+					}
+
+					@Override
+					public void onStopTrackingTouch(SeekBar seekBar) {
+						// TODO Auto-generated method stub
+						
+					}
+		        });
 		    } 
 		});
 	}
