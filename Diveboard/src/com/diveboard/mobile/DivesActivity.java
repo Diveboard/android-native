@@ -174,7 +174,7 @@ public class DivesActivity extends FragmentActivity {
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this); 
 		        int width  = mLayout.getMeasuredWidth();
 		        int screenheight = mLayout.getMeasuredHeight(); 
-				int fragmentheight = screenheight * 71 / 100;
+				int fragmentheight = screenheight * 74 / 100;
 				int fragmentwidth = (fragmentheight * 10) / 13;
 				int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
 				int margin = (screenwidth - fragmentwidth) * (-1);

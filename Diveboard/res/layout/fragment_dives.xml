@@ -1,51 +1,77 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    android:orientation="horizontal" >
-		    <RelativeLayout
-		        android:id="@+id/content"
-		        android:layout_width="match_parent"
-		        android:layout_height="match_parent"
-		        android:layout_gravity="center"
-		        android:background="#FFFF99"
-		        android:gravity="center"
-		        android:orientation="vertical" >
-		        <TextView
-		            android:id="@+id/dive_id"
-		            style="?android:textAppearanceMedium"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerVertical="true"
-		            android:text="test" />
-		        <TextView
-		            android:id="@+id/dive_time"
-		            style="?android:textAppearanceMedium"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerVertical="true"
-		            android:layout_below="@+id/dive_id"
-		            android:text="test" />
-		        <TextView
-		            android:id="@+id/dive_date"
-		            style="?android:textAppearanceMedium"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerVertical="true"
-		            android:layout_below="@+id/dive_time"
-		            android:text="test" />
-		        <TextView
-		            android:id="@+id/dive_duration"
-		            style="?android:textAppearanceMedium"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerVertical="true"
-		            android:layout_below="@+id/dive_date"
-		            android:text="test" />
-		        </RelativeLayout>
-</LinearLayout>
+    android:gravity="center">
+
+   <RelativeLayout
+        android:id="@+id/content"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerHorizontal="false"
+        android:layout_centerVertical="false"
+        android:background="#FFFFFF"
+        android:gravity="center_horizontal">
+        <ImageView
+            android:id="@+id/rounded_image"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="0dp"
+            android:src="@drawable/test"
+            android:scaleType="centerCrop">
+        </ImageView>
+        <ImageView
+            android:id="@+id/rounded_layer"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="0dp">
+        </ImageView>
+<!--         <ImageView -->
+<!--             android:id="@+id/ring" -->
+<!--             android:layout_width="0dp" -->
+<!--             android:layout_height="0dp" -->
+<!--             android:layout_marginTop="0dp" -->
+<!--             android:background="@drawable/shape_ring"> -->
+<!--         </ImageView> -->
+<!-- 		<RelativeLayout -->
+<!-- 	        android:background="#EEEEEE" -->
+<!-- 	        android:layout_width="match_parent" -->
+<!-- 			android:layout_height="240dp" -->
+<!-- 			android:layout_marginTop="20dp"> -->
+<!-- 		</RelativeLayout> -->
+
+<!--        <RelativeLayout -->
+<!-- 	        android:background="@drawable/shape_ring" -->
+<!-- 	        android:layout_width="match_parent" -->
+<!-- 			android:layout_height="240dp" -->
+<!-- 			android:layout_marginTop="20dp"> -->
+<!--     	</RelativeLayout> -->
+<!--         <TextView -->
+<!--             android:id="@+id/dive_id" -->
+<!--             style="?android:textAppearanceMedium" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:text="test" /> -->
+<!--         <TextView -->
+<!--             android:id="@+id/dive_time" -->
+<!--             style="?android:textAppearanceMedium" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_below="@+id/dive_id" -->
+<!--             android:text="test" /> -->
+<!--         <TextView -->
+<!--             android:id="@+id/dive_date" -->
+<!--             style="?android:textAppearanceMedium" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_below="@+id/dive_time" -->
+<!--             android:text="test" /> -->
+<!--         <TextView -->
+<!--             android:id="@+id/dive_duration" -->
+<!--             style="?android:textAppearanceMedium" -->
+<!--             android:layout_width="wrap_content" -->
+<!--             android:layout_height="wrap_content" -->
+<!--             android:layout_below="@+id/dive_date" -->
+<!--             android:text="test" /> -->
+    </RelativeLayout>
+</RelativeLayout>
