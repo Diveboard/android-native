@@ -15,6 +15,7 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -58,8 +59,11 @@ public class DivesActivity extends FragmentActivity {
 	// All you need to make the carousel
 	private ViewPager mPager;
 	private PagerAdapter mPagerAdapter;
-	ViewGroup mLayout;
-	SeekBar mSeekBar;
+	private ViewGroup mLayout;
+	private SeekBar mSeekBar;
+	private View mRootView;
+	private int mFragmentHeight;
+	private int mFragmentWidth;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -161,7 +165,7 @@ public class DivesActivity extends FragmentActivity {
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		//super.onSaveInstanceState(outState);
+		//super.onSaveInstanceState(outState);mModel
 		outState.putParcelable("model", mModel);
 	}
 	
@@ -181,26 +185,28 @@ public class DivesActivity extends FragmentActivity {
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        int width  = mLayout.getMeasuredWidth();
 		        int screenheight = mLayout.getMeasuredHeight(); 
-				int fragmentheight = screenheight * 74 / 100;
-				int fragmentwidth = (fragmentheight * 10) / 13;
+				mFragmentHeight = screenheight * 74 / 100;
+				mFragmentWidth = (mFragmentHeight * 10) / 13;
 				int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
-				int margin = (screenwidth - fragmentwidth) * (-1);
-				int offset = (fragmentwidth / 2);
+				int margin = (screenwidth - mFragmentHeight) * (-1);
+				int offset = (mFragmentHeight / 2);
 				//We set dynamically the size of each page
-				View rootView = (View)findViewById(R.id.screen);
-				rootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
+				mRootView = (View)findViewById(R.id.screen);
+				mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				int contentheight = screenheight * 74 / 100;
 				int size = contentheight * 60 / 100;
-				Bitmap bitmap = ImageHelper.getRoundedCornerBitmap(size, contentheight, 0);
+				Bitmap bitmap = ImageHelper.getRoundedLayer(size, contentheight, 0);
+				//We load the first background of the activity
+				new DownloadImageTask().execute(0);
 				//We create the pager with the associated pages
 				mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight, bitmap);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        mPager.setOffscreenPageLimit(((screenwidth / fragmentwidth) + 1));
+		        mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
@@ -216,13 +222,12 @@ public class DivesActivity extends FragmentActivity {
 
 					@Override
 					public void onPageScrolled(int arg0, float arg1, int arg2) {
-						mSeekBar.setProgress(arg0);
+						mSeekBar.setProgress(arg0);		
 					}
 
 					@Override
 					public void onPageSelected(int arg0) {
-						// TODO Auto-generated method stub
-						
+						new DownloadImageTask().execute(arg0);
 					}
 		        	
 		        });     
@@ -251,6 +256,26 @@ public class DivesActivity extends FragmentActivity {
 		        });
 		    } 
 		});
+	}
+	
+	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
+	{
+		protected Bitmap doInBackground(Integer... args)
+		{
+			try {
+				return mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(Bitmap result)
+		{
+			Bitmap dest = Bitmap.createScaledBitmap(result, 10, 10, true);
+			mRootView.setBackgroundDrawable(new BitmapDrawable(getResources(), dest));
+		}
 	}
 	
 	/**

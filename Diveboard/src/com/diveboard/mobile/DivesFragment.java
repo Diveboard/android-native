@@ -1,7 +1,10 @@
 package com.diveboard.mobile;
 
+import java.io.IOException;
+
 import com.diveboard.model.Dive;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.graphics.Bitmap;
@@ -28,6 +31,7 @@ public class DivesFragment extends Fragment {
 	Dive mDive;
 	int mScreenheight;
 	Bitmap mRoundedLayer;
+	ImageView mRoundedImage;
 	
 	public DivesFragment()
 	{
@@ -49,10 +53,11 @@ public class DivesFragment extends Fragment {
 		int contentheight = mScreenheight * 74 / 100;
 		int size = contentheight * 60 / 100;
 		content.setLayoutParams(new RelativeLayout.LayoutParams((int)((contentheight * 10) / 13), contentheight));
-		ImageView rounded_image = (ImageView)content.findViewById(R.id.rounded_image);
+		mRoundedImage = (ImageView)content.findViewById(R.id.rounded_image);
+		new DownloadImageTask().execute();
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(size, size);
 		params1.setMargins(0, contentheight * 154 / 1000, 0, 0);
-		rounded_image.setLayoutParams(params1);
+		mRoundedImage.setLayoutParams(params1);
 		ImageView rounded_layer = (ImageView)content.findViewById(R.id.rounded_layer);		
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(size, size);
 		params2.setMargins(0, contentheight * 154 / 1000, 0, 0);		
@@ -60,4 +65,23 @@ public class DivesFragment extends Fragment {
 		rounded_layer.setImageBitmap(mRoundedLayer);
         return rootView;
     }
+	
+	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
+	{
+		protected Bitmap doInBackground(Void... voids)
+		{
+			try {
+				return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(Bitmap result)
+		{
+			mRoundedImage.setImageBitmap(result);
+		}
+	}
 }
