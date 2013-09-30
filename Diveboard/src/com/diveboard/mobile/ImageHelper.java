@@ -31,13 +31,14 @@ public class ImageHelper {
         //canvas.drawOval(rectF, paint);
         //paint.setColor(color_circle);
         //paint.setAlpha(125);
-        //Xfermode fermode = paint.getXfermode();
+        Xfermode fermode = paint.getXfermode();
+        //PorterDuffXfermode fermode = new PorterDuffXfermode(paint.getXfermode());
         paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
         //paint.setARGB(125, 255, 255, 255);
         canvas.drawCircle(size / 2, size / 2, size / 2, paint);
         paint.setColor(0xff1C1C1C);
         paint.setAlpha(30);
-        paint.setXfermode(new PorterDuffXfermode(Mode.ADD));
+        paint.setXfermode(fermode);
         paint.setStyle(Paint.Style.STROKE);
         int strokeWidth = contentheight * 32 / 1000;
         paint.setStrokeWidth(strokeWidth);

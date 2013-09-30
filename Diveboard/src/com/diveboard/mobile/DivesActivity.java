@@ -14,6 +14,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -40,8 +41,10 @@ import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
@@ -162,16 +165,20 @@ public class DivesActivity extends FragmentActivity {
 		outState.putParcelable("model", mModel);
 	}
 	
+	/**
+	 * ViewPager creation with all the fragments associated, resized according the screen size
+	 */
 	private void createPages()
 	{
-		//ViewPager creation with all the fragments associated, resized according the screen size
+		//ViewTreeObserver allows to load all the layouts of the page before applying calculation
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
 		mLayout = (ViewGroup)findViewById(R.id.pager);
 		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() { 
 		    @Override 
 		    public void onGlobalLayout() { 
-		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this); 
+		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        int width  = mLayout.getMeasuredWidth();
 		        int screenheight = mLayout.getMeasuredHeight(); 
 				int fragmentheight = screenheight * 74 / 100;
@@ -179,17 +186,23 @@ public class DivesActivity extends FragmentActivity {
 				int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
 				int margin = (screenwidth - fragmentwidth) * (-1);
 				int offset = (fragmentwidth / 2);
+				//We set dynamically the size of each page
 				View rootView = (View)findViewById(R.id.screen);
-				//System.out.println("TEST: "+((View)findViewById(R.id.pager)).getHeight());
 				rootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
+				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
+				//Each circle must be white with a transparent circle in the center
+				int contentheight = screenheight * 74 / 100;
+				int size = contentheight * 60 / 100;
+				Bitmap bitmap = ImageHelper.getRoundedCornerBitmap(size, contentheight, 0);
+				//We create the pager with the associated pages
 				mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight, bitmap);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        //System.out.println("SCREENWIDTH : " + screenwidth + ", FRAGMENT WIDTH : " + fragmentwidth + " OFFSET : " + ((screenwidth / fragmentwidth) + 1));
 		        mPager.setOffscreenPageLimit(((screenwidth / fragmentwidth) + 1));
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 		        mSeekBar.setMax(mModel.getDives().size() - 1);
 		        mPager.setOnPageChangeListener(new OnPageChangeListener()
@@ -275,16 +288,18 @@ public class DivesActivity extends FragmentActivity {
 	{
 		private ArrayList<Dive> mDives;
 		private int mScreenheight;
+		private Bitmap mRoundedLayer;
 		
-		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, int screenheight) {
+		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, int screenheight, Bitmap rounded_layer) {
             super(fragmentManager);
 			mDives = dives;
 			mScreenheight = screenheight;
+			mRoundedLayer = rounded_layer;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position), mScreenheight);
+            return new DivesFragment(mDives.get(position), mScreenheight, mRoundedLayer);
         }
 
         @Override

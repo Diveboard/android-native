@@ -27,55 +27,37 @@ public class DivesFragment extends Fragment {
 	TextView duration;
 	Dive mDive;
 	int mScreenheight;
+	Bitmap mRoundedLayer;
 	
 	public DivesFragment()
 	{
 		System.out.println("Entre");
 	}
 	
-	public DivesFragment(Dive dive, int screenheight)
+	public DivesFragment(Dive dive, int screenheight, Bitmap rounded_layer)
 	{
 		mDive = dive;
 		mScreenheight = screenheight;
+		mRoundedLayer = rounded_layer;
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
-//		id = (TextView)rootView.findViewById(R.id.dive_id);
-//		date = (TextView)rootView.findViewById(R.id.dive_date);
-//		time = (TextView)rootView.findViewById(R.id.dive_time);
-//		duration = (TextView)rootView.findViewById(R.id.dive_duration);
-//		if (mDive != null)
-//		{
-//			date.setText(mDive.getDate());
-//			time.setText(mDive.getTime());
-//			id.setText(Integer.toString(mDive.getId()));
-//			duration.setText(Integer.toString(mDive.getDuration()));
-//		}
 		RelativeLayout content = (RelativeLayout)rootView.findViewById(R.id.content);
 		int contentheight = mScreenheight * 74 / 100;
-		//System.out.println(mScreenheight);
 		int size = contentheight * 60 / 100;
 		content.setLayoutParams(new RelativeLayout.LayoutParams((int)((contentheight * 10) / 13), contentheight));
 		ImageView rounded_image = (ImageView)content.findViewById(R.id.rounded_image);
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(size, size);
 		params1.setMargins(0, contentheight * 154 / 1000, 0, 0);
 		rounded_image.setLayoutParams(params1);
-		ImageView rounded_layer = (ImageView)content.findViewById(R.id.rounded_layer);
-		
+		ImageView rounded_layer = (ImageView)content.findViewById(R.id.rounded_layer);		
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(size, size);
-		params2.setMargins(0, contentheight * 154 / 1000, 0, 0);
-		
+		params2.setMargins(0, contentheight * 154 / 1000, 0, 0);		
 		rounded_layer.setLayoutParams(params2);
-		//((ImageView)content.findViewById(R.id.rounded_layer)).setLayoutParams(params);
-		//ImageView ring = (ImageView)content.findViewById(R.id.ring);
-		//ring.setLayoutParams(new RelativeLayout.LayoutParams(size, size));
-		//ShapeDrawable ringRadius = (ShapeDrawable)ring.getBackground();
-		//ringRadius.
-		Bitmap bitmap = ImageHelper.getRoundedCornerBitmap(size, contentheight, 0);
-		rounded_layer.setImageBitmap(bitmap);
+		rounded_layer.setImageBitmap(mRoundedLayer);
         return rootView;
     }
 }
