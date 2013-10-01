@@ -87,6 +87,8 @@ public class					Picture
 		{
 			FileInputStream inputStream = context.openFileInput(file.getName());
 			_bitmap = BitmapFactory.decodeStream(inputStream);
+			if (_bitmap == null)
+				return false;
 			_loaded = true;
 			return true;
 		}
