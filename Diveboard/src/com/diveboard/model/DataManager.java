@@ -69,7 +69,7 @@ public class					DataManager
 		FileOutputStream		outputStream;
 		
 		for (int i = 0, length = _cacheData.size(); i < length; i++)
-		{			
+		{
 			HashMap<String, String> elem = _cacheData.valueAt(i);
 			Iterator<String> keyset = elem.keySet().iterator();
 			while (keyset.hasNext())
@@ -98,8 +98,8 @@ public class					DataManager
 		
 		for (int i = 0, length = file_list.length; i < length; i++)
 		{
-			// If file name starts with files_[userId]_
-			if (file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0)
+			// If file name starts with files_[userId]_ and is not a picture
+			if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0))
 			{
 				String[] name_split = file_list[i].split("_");
 				fileInputStream = _context.openFileInput(file_list[i]);

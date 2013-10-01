@@ -64,7 +64,6 @@ public class					ScreenSetup
 		_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
 		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - _diveListFragmentCircleBorderWidth);
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
-		
 	}
 	
 	public int					getScreenHeight() {
