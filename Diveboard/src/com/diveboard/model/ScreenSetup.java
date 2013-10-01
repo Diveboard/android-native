@@ -11,16 +11,16 @@ public class					ScreenSetup
 	}
 	
 	// Defines in Percent
-	static final double[]		_wsp1 = {0, 0, 4, 3.25};				// Whitespace 1
-	static final double[]		_wsp2 = {0, 0, 2, 2};					// Whitespace 2
-	static final double[]		_wsp3 = {0, 0, 3, 3};					// Whitespace 3
-	static final double[]		_wsp4 = {0, 0, 2, 3};					// Whitespace 4
+	static final double[]		_wsp1 = {0, 0, 4, 3.25};				// Fragment Whitespace 1
+	static final double[]		_wsp2 = {0, 0, 2, 2};					// Fragment Whitespace 2
+	static final double[]		_wsp3 = {0, 0, 3, 3};					// Fragment Whitespace 3
+	static final double[]		_wsp4 = {0, 0, 2, 3};					// Fragment Whitespace 4
 	static final double[]		_frg_bann_h = {0, 0, 7, 7};				// Fragment Banner Height
 	static final double[]		_frg_body_h = {0, 0, 67, 64};			// Fragment Body Height
 	static final double[]		_frg_w = {0, 0, 75, 75};				// Fragment Width
 	static final double[]		_frag_out_circ_rad = {0, 0, 60, 60};	// Fragment Outer Circle Radius
 	static final double[]		_frag_circ_brdr_w = {0, 0, 3.2, 3.2};	// Fragment Circle Border Width
-	static final double[]		_footer = {0, 0, 7.5, 10};				// Footer
+	static final double[]		_footer = {0, 0, 7.5, 10};				// Fragment Footer
 	
 	
 	private int					_screenW;
@@ -63,6 +63,14 @@ public class					ScreenSetup
 		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - (_diveListFragmentBorderWidth / 2));
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
 		
+	}
+	
+	public int					getScreenHeight() {
+		return _screenH;
+	}
+	
+	public int					getScreenWidth() {
+		return _screenW;
 	}
 	
 	public int					getDiveListWhiteSpace1() {
