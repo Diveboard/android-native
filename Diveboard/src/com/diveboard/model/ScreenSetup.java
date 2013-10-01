@@ -34,7 +34,7 @@ public class					ScreenSetup
 	private int					_diveListFragmentBodyHeight;
 	private int					_diveListFragmentHeight;
 	private int					_diveListFragmentOutCircleRadius;
-	private int					_diveListFragmentBorderWidth;
+	private int					_diveListFragmentCircleBorderWidth;
 	private int					_diveListFragmentInCircleRadius;
 	private int					_diveListFooterHeight;
 	
@@ -61,8 +61,8 @@ public class					ScreenSetup
 		_diveListFragmentHeight = (int) (_diveListFragmentBannerHeight + _diveListFragmentBodyHeight);
 		_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
 		_diveListFragmentOutCircleRadius = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_out_circ_rad[mode] / 100));
-		_diveListFragmentBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
-		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - (_diveListFragmentBorderWidth / 2));
+		_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
+		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - (_diveListFragmentCircleBorderWidth / 2));
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
 		
 	}
@@ -99,8 +99,8 @@ public class					ScreenSetup
 		return _diveListFragmentOutCircleRadius;
 	}
 	
-	public int					getDiveListFragmetBorderWidth() {
-		return _diveListFragmentBorderWidth;
+	public int					getDiveListFragmentCircleBorderWidth() {
+		return _diveListFragmentCircleBorderWidth;
 	}
 	
 	public int					getDiveListFragmentInCircleRadius() {
