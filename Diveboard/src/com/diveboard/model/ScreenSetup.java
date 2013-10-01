@@ -62,7 +62,7 @@ public class					ScreenSetup
 		_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
 		_diveListFragmentOutCircleRadius = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_out_circ_rad[mode] / 100));
 		_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
-		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - (_diveListFragmentCircleBorderWidth / 2));
+		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - _diveListFragmentCircleBorderWidth);
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
 		
 	}
