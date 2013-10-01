@@ -68,8 +68,8 @@ public class					Picture
 		// Compress the image and put into file
 		if (outputStream != null)
 		{
-			_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
-			file.delete();
+			if (!_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
+				file.delete();
 		}
 	}
 	
