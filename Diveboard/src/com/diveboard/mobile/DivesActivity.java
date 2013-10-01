@@ -1,12 +1,14 @@
 package com.diveboard.mobile;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.ScreenSetup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -38,6 +40,8 @@ import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.Animation;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
@@ -63,8 +67,6 @@ public class DivesActivity extends FragmentActivity {
 	private ViewGroup mLayout;
 	private SeekBar mSeekBar;
 	private View mRootView;
-	private int mFragmentHeight;
-	private int mFragmentWidth;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -108,6 +110,8 @@ public class DivesActivity extends FragmentActivity {
 			createPages();
 		}
 	}
+	
+	
 	
 	public void loadData()
 	{
@@ -184,41 +188,43 @@ public class DivesActivity extends FragmentActivity {
 		    public void onGlobalLayout() { 
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
-		        int width  = mLayout.getMeasuredWidth();
-		        int screenheight = mLayout.getMeasuredHeight(); 
-				mFragmentHeight = screenheight * 74 / 100;
-				mFragmentWidth = (mFragmentHeight * 10) / 13;
-				int screenwidth = getWindowManager().getDefaultDisplay().getWidth();
-				int margin = (screenwidth - mFragmentHeight) * (-1);
-				int offset = (mFragmentHeight / 2);
+		        ScreenSetup screenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
+				int margin = (screenSetup.getScreenWidth() - screenSetup.getDiveListFragmentHeight()) * (-1);
+				int offset = ((screenSetup.getDiveListFragmentBannerHeight() + screenSetup.getDiveListFragmentBodyHeight()) / 2);
 				//We set dynamically the size of each page
 				mRootView = (View)findViewById(R.id.screen);
-				mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenheight));
+				mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getScreenHeight()));
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
-				int contentheight = screenheight * 74 / 100;
-				int size = contentheight * 60 / 100;
-				Bitmap bitmap = ImageHelper.getRoundedLayer(size, contentheight, 0);
+				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
 				//We load the first background of the activity
-				new DownloadImageTask().execute(0);
+				DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
+				task.execute(0);
 				//We create the pager with the associated pages
-				mNbPages = mModel.getDives().size();
+				if (mModel.getDives() == null)
+					System.out.println("null"); // a gérer
+				else
+					mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenheight, bitmap);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup.getScreenHeight(), bitmap);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
+		        //mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
+		        mPager.setOffscreenPageLimit(3);
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 		        mSeekBar.setMax(mModel.getDives().size() - 1);
 		        mPager.setOnPageChangeListener(new OnPageChangeListener()
 		        {
-
 					@Override
 					public void onPageScrollStateChanged(int arg0) {
 						// TODO Auto-generated method stub
-						
+						if (arg0 == 0)
+						{
+							DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
+							task.execute(mPager.getCurrentItem());
+						}
 					}
 
 					@Override
@@ -228,15 +234,18 @@ public class DivesActivity extends FragmentActivity {
 
 					@Override
 					public void onPageSelected(int arg0) {
-						new DownloadImageTask().execute(arg0);
+
 					}
 		        	
 		        });     
 		        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
 		        {
+		        	private int mProgress;
+		        	
 		        	@Override
 		        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 		        	{
+		        		mProgress = progress;
 		        		if (fromUser == true)
 		        		{
 		        			mPager.setCurrentItem(progress, true);
@@ -252,7 +261,8 @@ public class DivesActivity extends FragmentActivity {
 					@Override
 					public void onStopTrackingTouch(SeekBar seekBar) {
 						// TODO Auto-generated method stub
-						
+//						DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
+//						task.execute(mProgress);
 					}
 		        });
 		    } 
@@ -261,28 +271,42 @@ public class DivesActivity extends FragmentActivity {
 	
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
 	{
+		private final WeakReference<RelativeLayout> rootViewReference;
+		
+		public DownloadImageTask(RelativeLayout rootView)
+		{
+			rootViewReference = new WeakReference<RelativeLayout>(rootView);
+		}
+		
 		protected Bitmap doInBackground(Integer... args)
 		{
+			Bitmap result = null;
 			try {
-				return mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
+				result = mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+			if (result != null)
+				return fastblur(result, 30);
 			return null;
 		}
 		
 		protected void onPostExecute(Bitmap result)
 		{
-			//Bitmap dest = Bitmap.createScaledBitmap(result, 10, 10, true);
-			if (result != null)
-				mRootView.setBackgroundDrawable(new BitmapDrawable(getResources(), fastblur(result, 30)));
+			if (rootViewReference != null && result != null)
+			{
+				final RelativeLayout rootView = rootViewReference.get();
+				if (rootView != null)
+				{
+					rootView.setBackgroundDrawable(new BitmapDrawable(getResources(), result));	
+				}
+			}
 		}
 		
 		public Bitmap fastblur(Bitmap sentBitmap, int radius) {
-
+			
 	        Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-
 	        if (radius < 1) {
 	            return (null);
 	        }

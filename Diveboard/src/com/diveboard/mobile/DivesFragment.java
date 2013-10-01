@@ -1,6 +1,7 @@
 package com.diveboard.mobile;
 
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 
 import com.diveboard.model.Dive;
 
@@ -54,7 +55,8 @@ public class DivesFragment extends Fragment {
 		int size = contentheight * 60 / 100;
 		content.setLayoutParams(new RelativeLayout.LayoutParams((int)((contentheight * 10) / 13), contentheight));
 		mRoundedImage = (ImageView)content.findViewById(R.id.rounded_image);
-		new DownloadImageTask().execute();
+		DownloadImageTask task = new DownloadImageTask((ImageView)content.findViewById(R.id.rounded_image));
+		task.execute();
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(size, size);
 		params1.setMargins(0, contentheight * 154 / 1000, 0, 0);
 		mRoundedImage.setLayoutParams(params1);
@@ -68,10 +70,18 @@ public class DivesFragment extends Fragment {
 	
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
+		private final WeakReference<ImageView> imageViewReference;
+		
+		public DownloadImageTask(ImageView imageView)
+		{
+			imageViewReference = new WeakReference<ImageView>(imageView);
+		}
+		
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
+				if (getActivity() != null)
+					return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -81,7 +91,12 @@ public class DivesFragment extends Fragment {
 		
 		protected void onPostExecute(Bitmap result)
 		{
-			mRoundedImage.setImageBitmap(result);
+			if (imageViewReference != null && result != null)
+			{
+				final ImageView imageView = imageViewReference.get();
+				if (imageView != null)
+					imageView.setImageBitmap(result);
+			}
 		}
 	}
 }

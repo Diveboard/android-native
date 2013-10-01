@@ -40,7 +40,7 @@ public class					Picture
 		return false;
 	}
 	
-	public Bitmap				getPicture(final Context context) throws IOException
+	public synchronized Bitmap				getPicture(final Context context) throws IOException
 	{
 		if (!_loaded && !_loadCachePicture(context))
 		{
@@ -56,7 +56,7 @@ public class					Picture
 	 * Save the picture into local cache
 	 * Argument:	picture : Picture to save
 	 */
-	private void			_savePicture(final Context context) throws IOException
+	private synchronized void			_savePicture(final Context context) throws IOException
 	{
 		String[] picture_name = _url.split("/");
 		
@@ -68,7 +68,7 @@ public class					Picture
 		// Compress the image and put into file
 		if (outputStream != null)
 		{
-			if (!_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
+			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
 				file.delete();
 		}
 	}
@@ -78,7 +78,7 @@ public class					Picture
 	 * Load picture from cache, returns false if picture not found
 	 * Argument :	pictureName : name of the picture to retrieve
 	 */
-	private boolean			_loadCachePicture(final Context context) throws FileNotFoundException
+	private synchronized boolean			_loadCachePicture(final Context context) throws FileNotFoundException
 	{
 		String[] picture_name = _url.split("/");
 		
