@@ -157,7 +157,6 @@ public class					Dive implements IModel
 		else
 			_species = null;
 		_shop = (json.isNull("shop")) ? null : new Shop(json.getJSONObject("shop"));
-		System.out.println(_shop);
 	}
 
 	public void					save()

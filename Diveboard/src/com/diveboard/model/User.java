@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 /*
@@ -24,45 +25,53 @@ public class					User implements IModel
 	private int											_public_nb_dives;
 	private String										_location;
 	private String										_nickname;
+	private ArrayList<UserGear>							_userGears;
+	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 
-	public						User(final JSONObject json)
+	public						User(final JSONObject json) throws JSONException
 	{
-		try
+		_id = json.getInt("id");
+		_shaken_id = json.getString("shaken_id");
+		_vanity_url = json.getString("vanity_url");
+		JSONObject root_qual = json.getJSONObject("qualifications");
+		JSONArray featured_qual = root_qual.getJSONArray("featured");
+		JSONArray other_qual = root_qual.getJSONArray("other");
+		ArrayList<Qualification> temp_arraylist = new ArrayList<Qualification>();
+		for (int i = 0, length = featured_qual.length(); i < length; i++)
 		{
-			_id = json.getInt("id");
-			_shaken_id = json.getString("shaken_id");
-			_vanity_url = json.getString("vanity_url");
-			JSONObject root_qual = json.getJSONObject("qualifications");
-			JSONArray featured_qual = root_qual.getJSONArray("featured");
-			JSONArray other_qual = root_qual.getJSONArray("other");
-			ArrayList<Qualification> temp_arraylist = new ArrayList<Qualification>();
-			for (int i = 0, length = featured_qual.length(); i < length; i++)
-			{
-				Qualification new_elem = new Qualification(featured_qual.getJSONObject(i));
-				temp_arraylist.add(new_elem);
-			}
-			_qualifications.put("featured", temp_arraylist);
-			temp_arraylist = new ArrayList<Qualification>();
-			for (int i = 0, length = other_qual.length(); i < length; i++)
-			{
-				Qualification new_elem = new Qualification(other_qual.getJSONObject(i));
-				temp_arraylist.add(new_elem);
-			}
-			_qualifications.put("other", temp_arraylist);
-			_picture = new Picture(json.getString("picture"));
-			_picture_small = new Picture(json.getString("picture_small"));
-			_picture_large = new Picture(json.getString("picture_large"));
-			_vanity_url = json.getString("fullpermalink");
-			_total_nb_dives = json.getInt("total_nb_dives");
-			_public_nb_dives = json.getInt("public_nb_dives");
-			_location = json.getString("location");
-			_nickname = json.getString("nickname");
+			Qualification new_elem = new Qualification(featured_qual.getJSONObject(i));
+			temp_arraylist.add(new_elem);
 		}
-		catch (Exception e)
+		_qualifications.put("featured", temp_arraylist);
+		temp_arraylist = new ArrayList<Qualification>();
+		for (int i = 0, length = other_qual.length(); i < length; i++)
 		{
-			e.printStackTrace();
+			Qualification new_elem = new Qualification(other_qual.getJSONObject(i));
+			temp_arraylist.add(new_elem);
 		}
+		_qualifications.put("other", temp_arraylist);
+		_picture = new Picture(json.getString("picture"));
+		_picture_small = new Picture(json.getString("picture_small"));
+		_picture_large = new Picture(json.getString("picture_large"));
+		_vanity_url = json.getString("fullpermalink");
+		_total_nb_dives = json.getInt("total_nb_dives");
+		_public_nb_dives = json.getInt("public_nb_dives");
+		_location = json.getString("location");
+		_nickname = json.getString("nickname");
+		if (!json.isNull("user_gears"))
+		{
+			_userGears = new ArrayList<UserGear>();
+			JSONArray jarray = json.getJSONArray("user_gears");
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				UserGear new_elem = new UserGear(jarray.getJSONObject(i));
+				_userGears.add(new_elem);
+			}
+		}
+		else
+			_userGears = null;
+		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 	}
 	
 	public void					save()
@@ -178,5 +187,21 @@ public class					User implements IModel
 
 	public void setDives(ArrayList<Dive> _dives) {
 		this._dives = _dives;
+	}
+
+	public ArrayList<UserGear> getUserGears() {
+		return _userGears;
+	}
+
+	public void setUserGears(ArrayList<UserGear> _userGears) {
+		this._userGears = _userGears;
+	}
+
+	public Integer getTotalExtDives() {
+		return _totalExtDives;
+	}
+
+	public void setTotalExtDives(Integer _totalExtDives) {
+		this._totalExtDives = _totalExtDives;
 	}
 }
