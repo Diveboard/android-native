@@ -25,7 +25,7 @@ public class					Picture
 		_loaded = false;
 	}
 	
-	public void					loadPicture(final Context context) throws IOException
+	public boolean					loadPicture(final Context context) throws IOException
 	{
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
@@ -35,14 +35,17 @@ public class					Picture
 			URL url = new URL(_url);
 			_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 			_loaded = true;
+			return true;
 		}
+		return false;
 	}
 	
 	public Bitmap				getPicture(final Context context) throws IOException
 	{
 		if (!_loaded && !_loadCachePicture(context))
 		{
-			loadPicture(context);
+			if (!loadPicture(context))
+				return null;
 			_savePicture(context);
 		}
 		return _bitmap;
