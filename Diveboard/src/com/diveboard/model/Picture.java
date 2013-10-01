@@ -67,7 +67,10 @@ public class					Picture
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file
 		if (outputStream != null)
+		{
 			_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream);
+			file.delete();
+		}
 	}
 	
 	/*
