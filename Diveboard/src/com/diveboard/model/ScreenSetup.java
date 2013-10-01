@@ -32,6 +32,7 @@ public class					ScreenSetup
 	private int					_diveListFragmentBannerHeight;
 	private int					_diveListFragmentWidth;
 	private int					_diveListFragmentBodyHeight;
+	private int					_diveListFragmentHeight;
 	private int					_diveListFragmentOutCircleRadius;
 	private int					_diveListFragmentBorderWidth;
 	private int					_diveListFragmentInCircleRadius;
@@ -57,6 +58,7 @@ public class					ScreenSetup
 		_diveListWhiteSpace1 = (int) (_screenH * (_wsp1[mode] / 100));
 		_diveListFragmentBannerHeight = (int) (_screenH * (_frg_bann_h[mode] / 100));
 		_diveListFragmentBodyHeight = (int) (_screenH * (_frg_body_h[mode] / 100));
+		_diveListFragmentHeight = (int) (_diveListFragmentBannerHeight + _diveListFragmentBodyHeight);
 		_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
 		_diveListFragmentOutCircleRadius = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_out_circ_rad[mode] / 100));
 		_diveListFragmentBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
@@ -87,6 +89,10 @@ public class					ScreenSetup
 	
 	public int					getDiveListFragmentWidth() {
 		return _diveListFragmentWidth;
+	}
+	
+	public int					getDiveListFragmentHeight() {
+		return _diveListFragmentHeight;
 	}
 	
 	public int					getDiveListFragmentOutCircleRadius() {
