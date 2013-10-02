@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import com.diveboard.model.Dive;
+import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
 
 import android.os.AsyncTask;
@@ -15,6 +16,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.graphics.drawable.ShapeDrawable;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -63,7 +65,6 @@ public class DivesFragment extends Fragment {
 		// Resize the dimensions of each fragment
 		mFragmentBannerHeight = (RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
 		mFragmentBannerHeight.setLayoutParams(new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight()));
-
 		RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentHeight());
 		fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
 		mFragment.setLayoutParams(fragment_params);
@@ -71,12 +72,24 @@ public class DivesFragment extends Fragment {
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 		params1.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 		mMainImage.setLayoutParams(params1);
-		
 		mMainImageCache = (ImageView)mFragment.findViewById(R.id.main_image_cache);		
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 		params2.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 		mMainImageCache.setLayoutParams(params2);
 		mMainImageCache.setImageBitmap(mRoundedLayer);
+		//Set the content of the fragments
+		TextView dive_spot = (TextView) mFragment.findViewById(R.id.dive_spot);
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(),
+		            "fonts/Quicksand-Regular.otf");
+		dive_spot.setText("DIVE SPOT");
+		dive_spot.setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		dive_spot.setTypeface(faceR);
+		TextView name_spot = (TextView) mFragment.findViewById(R.id.name_spot);
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(),
+		            "fonts/Quicksand-Bold.otf");
+		name_spot.setText("RED CORAL BAY");
+		name_spot.setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		name_spot.setTypeface(faceB);
 		// Downloading the main picture in a new thread
 		//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
 		//showProgress(true);
@@ -138,8 +151,8 @@ public class DivesFragment extends Fragment {
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				if (getActivity() != null)
-					return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
+				if (getActivity() != null && mDive.getFeaturedPicture() != null)
+					return mDive.getFeaturedPicture().getPicture(getActivity().getApplicationContext(), Picture.Size.MEDIUM);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

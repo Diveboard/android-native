@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
 
 import android.animation.Animator;
@@ -18,6 +19,8 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,6 +45,7 @@ import android.view.Window;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
@@ -66,8 +70,10 @@ public class DivesActivity extends FragmentActivity {
 	private PagerAdapter mPagerAdapter;
 	private ViewGroup mLayout;
 	private SeekBar mSeekBar;
-	private View mRootView;
-	private RelativeLayout mDiveFooter;
+	private RelativeLayout mScreen;
+	private ImageView mBackground1;
+	private ImageView mBackground2;
+	private	 int mBackground = 1;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -77,11 +83,6 @@ public class DivesActivity extends FragmentActivity {
 	
 	// Model to display
 	private DiveboardModel mModel;
-	private TextView mNickname;
-	private TextView mId;
-	private TextView mLocation;
-	private TextView mPublicNbDives;
-	private TextView mTotalNbDives;
 	
 
 	@Override
@@ -193,21 +194,17 @@ public class DivesActivity extends FragmentActivity {
 				int margin = (screenSetup.getScreenWidth() - screenSetup.getDiveListFragmentHeight()) * (-1);
 				int offset = ((screenSetup.getDiveListFragmentBannerHeight() + screenSetup.getDiveListFragmentBodyHeight()) / 2);
 				//We set dynamically the size of each page
-				mRootView = (View)findViewById(R.id.screen);
-				//mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getScreenHeight()));
-				
 				RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
 				diveFooter.setLayoutParams(diveFooterParams);
-				
-//				mDiveFooter = (RelativeLayout)findViewById(R.id.dive_footer);
-//				LinearLayout.LayoutParams dive_footer_params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
-//				mDiveFooter.setLayoutParams(dive_footer_params);
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
 				//We load the first background of the activity
-				DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
+				mScreen = (RelativeLayout)findViewById(R.id.screen);
+				mBackground1 = (ImageView)findViewById(R.id.background1);
+				mBackground2 = (ImageView)findViewById(R.id.background2);
+				DownloadImageTask task = new DownloadImageTask();
 				task.execute(0);
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null)
@@ -236,7 +233,7 @@ public class DivesActivity extends FragmentActivity {
 						// TODO Auto-generated method stub
 						if (arg0 == 0)
 						{
-							DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
+							DownloadImageTask task = new DownloadImageTask();
 							task.execute(mPager.getCurrentItem());
 						}
 					}
@@ -281,18 +278,21 @@ public class DivesActivity extends FragmentActivity {
 	
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
 	{
-		private final WeakReference<RelativeLayout> rootViewReference;
+		private final WeakReference<RelativeLayout> screenReference;
+		private Integer mItemNb;
 		
-		public DownloadImageTask(RelativeLayout rootView)
+		public DownloadImageTask()
 		{
-			rootViewReference = new WeakReference<RelativeLayout>(rootView);
+			screenReference = new WeakReference<RelativeLayout>(mScreen);
 		}
 		
 		protected Bitmap doInBackground(Integer... args)
 		{
+			mItemNb = args[0];
 			Bitmap result = null;
 			try {
-				result = mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
+				if (mModel.getDives().get(args[0]).getFeaturedPicture() != null)
+					result = mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -304,12 +304,75 @@ public class DivesActivity extends FragmentActivity {
 		
 		protected void onPostExecute(Bitmap result)
 		{
-			if (rootViewReference != null && result != null)
+			if (screenReference != null && result != null)
 			{
-				final RelativeLayout rootView = rootViewReference.get();
-				if (rootView != null)
+				final RelativeLayout screenView = screenReference.get();
+				if (screenView != null)
 				{
-					rootView.setBackgroundDrawable(new BitmapDrawable(getResources(), result));	
+					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
+					{
+						if (mBackground == 1)
+						{
+							mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+							AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+							anim.setAnimationListener(new AnimationListener()
+							{
+								@Override
+								public void onAnimationEnd(Animation arg0)
+								{
+									mBackground2.setAlpha(1.0f);
+								}
+	
+								@Override
+								public void onAnimationRepeat(Animation animation) {
+									// TODO Auto-generated method stub
+									
+								}
+	
+								@Override
+								public void onAnimationStart(Animation animation) {
+									// TODO Auto-generated method stub
+									ImageView back2 = (ImageView) findViewById(R.id.background2);
+									back2.setAlpha(1.0f);
+								}
+							});
+							anim.setDuration(500);
+							mBackground2.startAnimation(anim);
+							mBackground = 2;
+						}
+						else
+						{
+							mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+							AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+							anim.setDuration(500);
+							mBackground2.startAnimation(anim);
+							anim.setAnimationListener(new AnimationListener()
+							{
+								@Override
+								public void onAnimationEnd(Animation arg0)
+								{
+									mBackground2.setAlpha(0.0f);
+								}
+	
+								@Override
+								public void onAnimationRepeat(Animation animation) {
+									// TODO Auto-generated method stub
+									
+								}
+	
+								@Override
+								public void onAnimationStart(Animation animation) {
+									// TODO Auto-generated method stub
+									
+								}
+							});
+							mBackground = 1;
+						}
+					}
+					else
+					{
+						mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+					}
 				}
 			}
 		}

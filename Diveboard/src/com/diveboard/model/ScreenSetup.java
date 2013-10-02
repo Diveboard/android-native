@@ -21,7 +21,7 @@ public class					ScreenSetup
 	static final double[]		_frag_out_circ_rad = {41, 0, 60, 60};	// Fragment Outer Circle Radius
 	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
 	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
-	static final double[]		_frg_body_wsp1 = {5, 10, 0, 0};			// Fragment Body Whitespace 1
+	static final double[]		_frg_body_wsp1 = {5, 10, 0, 0};		// Fragment Body Whitespace 1
 	static final double[]		_dl_seekbar_h = {2, 4, 0 , 0};			// Dive List Seek Bar Height
 	
 	
