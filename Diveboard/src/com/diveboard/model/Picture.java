@@ -38,6 +38,10 @@ public class					Picture
 	public							Picture(final String url)
 	{
 		_urlDefault = url;
+		_urlLarge = url;
+		_urlMedium = url;
+		_urlSmall = url;
+		_urlThumbnail = url;
 		_loaded = false;
 	}
 	
