@@ -67,6 +67,7 @@ public class DivesActivity extends FragmentActivity {
 	private ViewGroup mLayout;
 	private SeekBar mSeekBar;
 	private View mRootView;
+	private RelativeLayout mDiveFooter;
 	
 	// Thread for the data loading & the views associated
 	private LoadDataTask mAuthTask = null;
@@ -194,6 +195,9 @@ public class DivesActivity extends FragmentActivity {
 				//We set dynamically the size of each page
 				mRootView = (View)findViewById(R.id.screen);
 				mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getScreenHeight()));
+//				mDiveFooter = (RelativeLayout)findViewById(R.id.dive_footer);
+//				LinearLayout.LayoutParams dive_footer_params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
+//				mDiveFooter.setLayoutParams(dive_footer_params);
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
@@ -206,7 +210,7 @@ public class DivesActivity extends FragmentActivity {
 				else
 					mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup.getScreenHeight(), bitmap);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
 		        //mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
@@ -215,6 +219,7 @@ public class DivesActivity extends FragmentActivity {
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 		        mSeekBar.setMax(mModel.getDives().size() - 1);
+		        //Events when the user changes a page
 		        mPager.setOnPageChangeListener(new OnPageChangeListener()
 		        {
 					@Override
@@ -237,15 +242,13 @@ public class DivesActivity extends FragmentActivity {
 
 					}
 		        	
-		        });     
+		        });
+		      //Events when the user changes the seek bar
 		        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
-		        {
-		        	private int mProgress;
-		        	
+		        {		        	
 		        	@Override
 		        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
 		        	{
-		        		mProgress = progress;
 		        		if (fromUser == true)
 		        		{
 		        			mPager.setCurrentItem(progress, true);
@@ -261,8 +264,6 @@ public class DivesActivity extends FragmentActivity {
 					@Override
 					public void onStopTrackingTouch(SeekBar seekBar) {
 						// TODO Auto-generated method stub
-//						DownloadImageTask task = new DownloadImageTask((RelativeLayout)findViewById(R.id.screen));
-//						task.execute(mProgress);
 					}
 		        });
 		    } 
@@ -288,7 +289,7 @@ public class DivesActivity extends FragmentActivity {
 				e.printStackTrace();
 			}
 			if (result != null)
-				return fastblur(result, 30);
+				return ImageHelper.fastblur(result, 30);
 			return null;
 		}
 		
@@ -303,209 +304,6 @@ public class DivesActivity extends FragmentActivity {
 				}
 			}
 		}
-		
-		public Bitmap fastblur(Bitmap sentBitmap, int radius) {
-			
-	        Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
-	        if (radius < 1) {
-	            return (null);
-	        }
-
-	        int w = bitmap.getWidth();
-	        int h = bitmap.getHeight();
-
-	        int[] pix = new int[w * h];
-	        Log.e("pix", w + " " + h + " " + pix.length);
-	        bitmap.getPixels(pix, 0, w, 0, 0, w, h);
-
-	        int wm = w - 1;
-	        int hm = h - 1;
-	        int wh = w * h;
-	        int div = radius + radius + 1;
-
-	        int r[] = new int[wh];
-	        int g[] = new int[wh];
-	        int b[] = new int[wh];
-	        int rsum, gsum, bsum, x, y, i, p, yp, yi, yw;
-	        int vmin[] = new int[Math.max(w, h)];
-
-	        int divsum = (div + 1) >> 1;
-	        divsum *= divsum;
-	        int dv[] = new int[256 * divsum];
-	        for (i = 0; i < 256 * divsum; i++) {
-	            dv[i] = (i / divsum);
-	        }
-
-	        yw = yi = 0;
-
-	        int[][] stack = new int[div][3];
-	        int stackpointer;
-	        int stackstart;
-	        int[] sir;
-	        int rbs;
-	        int r1 = radius + 1;
-	        int routsum, goutsum, boutsum;
-	        int rinsum, ginsum, binsum;
-
-	        for (y = 0; y < h; y++) {
-	            rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum = bsum = 0;
-	            for (i = -radius; i <= radius; i++) {
-	                p = pix[yi + Math.min(wm, Math.max(i, 0))];
-	                sir = stack[i + radius];
-	                sir[0] = (p & 0xff0000) >> 16;
-	                sir[1] = (p & 0x00ff00) >> 8;
-	                sir[2] = (p & 0x0000ff);
-	                rbs = r1 - Math.abs(i);
-	                rsum += sir[0] * rbs;
-	                gsum += sir[1] * rbs;
-	                bsum += sir[2] * rbs;
-	                if (i > 0) {
-	                    rinsum += sir[0];
-	                    ginsum += sir[1];
-	                    binsum += sir[2];
-	                } else {
-	                    routsum += sir[0];
-	                    goutsum += sir[1];
-	                    boutsum += sir[2];
-	                }
-	            }
-	            stackpointer = radius;
-
-	            for (x = 0; x < w; x++) {
-
-	                r[yi] = dv[rsum];
-	                g[yi] = dv[gsum];
-	                b[yi] = dv[bsum];
-
-	                rsum -= routsum;
-	                gsum -= goutsum;
-	                bsum -= boutsum;
-
-	                stackstart = stackpointer - radius + div;
-	                sir = stack[stackstart % div];
-
-	                routsum -= sir[0];
-	                goutsum -= sir[1];
-	                boutsum -= sir[2];
-
-	                if (y == 0) {
-	                    vmin[x] = Math.min(x + radius + 1, wm);
-	                }
-	                p = pix[yw + vmin[x]];
-
-	                sir[0] = (p & 0xff0000) >> 16;
-	                sir[1] = (p & 0x00ff00) >> 8;
-	                sir[2] = (p & 0x0000ff);
-
-	                rinsum += sir[0];
-	                ginsum += sir[1];
-	                binsum += sir[2];
-
-	                rsum += rinsum;
-	                gsum += ginsum;
-	                bsum += binsum;
-
-	                stackpointer = (stackpointer + 1) % div;
-	                sir = stack[(stackpointer) % div];
-
-	                routsum += sir[0];
-	                goutsum += sir[1];
-	                boutsum += sir[2];
-
-	                rinsum -= sir[0];
-	                ginsum -= sir[1];
-	                binsum -= sir[2];
-
-	                yi++;
-	            }
-	            yw += w;
-	        }
-	        for (x = 0; x < w; x++) {
-	            rinsum = ginsum = binsum = routsum = goutsum = boutsum = rsum = gsum = bsum = 0;
-	            yp = -radius * w;
-	            for (i = -radius; i <= radius; i++) {
-	                yi = Math.max(0, yp) + x;
-
-	                sir = stack[i + radius];
-
-	                sir[0] = r[yi];
-	                sir[1] = g[yi];
-	                sir[2] = b[yi];
-
-	                rbs = r1 - Math.abs(i);
-
-	                rsum += r[yi] * rbs;
-	                gsum += g[yi] * rbs;
-	                bsum += b[yi] * rbs;
-
-	                if (i > 0) {
-	                    rinsum += sir[0];
-	                    ginsum += sir[1];
-	                    binsum += sir[2];
-	                } else {
-	                    routsum += sir[0];
-	                    goutsum += sir[1];
-	                    boutsum += sir[2];
-	                }
-
-	                if (i < hm) {
-	                    yp += w;
-	                }
-	            }
-	            yi = x;
-	            stackpointer = radius;
-	            for (y = 0; y < h; y++) {
-	                // Preserve alpha channel: ( 0xff000000 & pix[yi] )
-	                pix[yi] = ( 0xff000000 & pix[yi] ) | ( dv[rsum] << 16 ) | ( dv[gsum] << 8 ) | dv[bsum];
-
-	                rsum -= routsum;
-	                gsum -= goutsum;
-	                bsum -= boutsum;
-
-	                stackstart = stackpointer - radius + div;
-	                sir = stack[stackstart % div];
-
-	                routsum -= sir[0];
-	                goutsum -= sir[1];
-	                boutsum -= sir[2];
-
-	                if (x == 0) {
-	                    vmin[y] = Math.min(y + r1, hm) * w;
-	                }
-	                p = x + vmin[y];
-
-	                sir[0] = r[p];
-	                sir[1] = g[p];
-	                sir[2] = b[p];
-
-	                rinsum += sir[0];
-	                ginsum += sir[1];
-	                binsum += sir[2];
-
-	                rsum += rinsum;
-	                gsum += ginsum;
-	                bsum += binsum;
-
-	                stackpointer = (stackpointer + 1) % div;
-	                sir = stack[stackpointer];
-
-	                routsum += sir[0];
-	                goutsum += sir[1];
-	                boutsum += sir[2];
-
-	                rinsum -= sir[0];
-	                ginsum -= sir[1];
-	                binsum -= sir[2];
-
-	                yi += w;
-	            }
-	        }
-
-	        Log.e("pix", w + " " + h + " " + pix.length);
-	        bitmap.setPixels(pix, 0, w, 0, 0, w, h);
-
-	        return (bitmap);
-	    }
 	}
 	
 	/**
@@ -542,19 +340,19 @@ public class DivesActivity extends FragmentActivity {
 	private class DivesPagerAdapter extends FragmentStatePagerAdapter
 	{
 		private ArrayList<Dive> mDives;
-		private int mScreenheight;
+		private ScreenSetup mScreenSetup;
 		private Bitmap mRoundedLayer;
 		
-		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, int screenheight, Bitmap rounded_layer) {
+		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, ScreenSetup screenSetup, Bitmap rounded_layer) {
             super(fragmentManager);
 			mDives = dives;
-			mScreenheight = screenheight;
+			mScreenSetup = screenSetup;
 			mRoundedLayer = rounded_layer;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position), mScreenheight, mRoundedLayer);
+            return new DivesFragment(mDives.get(position), mScreenSetup, mRoundedLayer);
         }
 
         @Override

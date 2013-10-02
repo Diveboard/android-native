@@ -11,21 +11,22 @@ public class					ScreenSetup
 	}
 	
 	// Defines in Percent
-	static final double[]		_wsp1 = {0, 0, 4, 3.25};				// Fragment Whitespace 1
-	static final double[]		_wsp2 = {0, 0, 2, 2};					// Fragment Whitespace 2
-	static final double[]		_wsp3 = {0, 0, 3, 3};					// Fragment Whitespace 3
-	static final double[]		_wsp4 = {0, 0, 2, 3};					// Fragment Whitespace 4
-	static final double[]		_frg_bann_h = {0, 0, 7, 7};				// Fragment Banner Height
-	static final double[]		_frg_body_h = {0, 0, 67, 64};			// Fragment Body Height
-	static final double[]		_frg_w = {0, 0, 75, 75};				// Fragment Width
-	static final double[]		_frag_out_circ_rad = {0, 0, 60, 60};	// Fragment Outer Circle Radius
-	static final double[]		_frag_circ_brdr_w = {0, 0, 3.2, 3.2};	// Fragment Circle Border Width
-	static final double[]		_footer = {0, 0, 7.5, 10};				// Fragment Footer
+	static final double[]		_wsp1 = {5.5, 7, 4, 3.25};				// Fragment Whitespace 1
+	static final double[]		_wsp2 = {1.5, 0, 2, 2};					// Fragment Whitespace 2
+	static final double[]		_wsp3 = {1.5, 0, 3, 3};					// Fragment Whitespace 3
+	static final double[]		_wsp4 = {1.5, 0, 2, 3};					// Fragment Whitespace 4
+	static final double[]		_frg_bann_h = {7, 0, 7, 7};				// Fragment Banner Height
+	static final double[]		_frg_body_h = {68, 0, 67, 64};			// Fragment Body Height
+	static final double[]		_frg_w = {51.5, 0, 75, 75};				// Fragment Width
+	static final double[]		_frag_out_circ_rad = {41, 0, 60, 60};	// Fragment Outer Circle Radius
+	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
+	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
+	static final double[]		_frg_body_wsp1 = {5, 10, 0, 0};			// Fragment Body Whitespace 1
 	
 	
 	private int					_screenW;
 	private int					_screenH;
-	private Mode				_screenMode;
+	private Mode					_screenMode;
 	
 	// Pad Dive List
 	private int					_diveListWhiteSpace1;
@@ -37,6 +38,7 @@ public class					ScreenSetup
 	private int					_diveListFragmentCircleBorderWidth;
 	private int					_diveListFragmentInCircleRadius;
 	private int					_diveListFooterHeight;
+	private int					_diveListFragmentWhitespace1;
 	
 	public						ScreenSetup(int w, int h)
 	{
@@ -47,7 +49,7 @@ public class					ScreenSetup
 	{
 		_screenW = w;
 		_screenH = h;
-		_screenMode = (w < h) ? Mode.PAD_PORTRAIT : Mode.PAD_LANDSCAPE;
+		_screenMode = (w < h) ? Mode.MOBILE_PORTRAIT : Mode.PAD_LANDSCAPE;
 		_calculate();
 	}
 	
@@ -59,11 +61,23 @@ public class					ScreenSetup
 		_diveListFragmentBannerHeight = (int) (_screenH * (_frg_bann_h[mode] / 100));
 		_diveListFragmentBodyHeight = (int) (_screenH * (_frg_body_h[mode] / 100));
 		_diveListFragmentHeight = (int) (_diveListFragmentBannerHeight + _diveListFragmentBodyHeight);
-		_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
-		_diveListFragmentOutCircleRadius = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_out_circ_rad[mode] / 100));
-		_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
+		if (_screenMode == Mode.MOBILE_PORTRAIT)
+			_diveListFragmentWidth = (int) (_screenH / (100 / _frg_w[mode]));
+		else
+			_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
+		if (_screenMode == Mode.MOBILE_PORTRAIT)
+		{
+			_diveListFragmentOutCircleRadius = (int) (_screenH * (_frag_out_circ_rad[mode] / 100));
+			_diveListFragmentCircleBorderWidth = (int) (_screenH * (_frag_circ_brdr_w[mode] / 100));
+		}
+		else
+		{
+			_diveListFragmentOutCircleRadius = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_out_circ_rad[mode] / 100));
+			_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
+		}
 		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - _diveListFragmentCircleBorderWidth);
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
+		_diveListFragmentWhitespace1 = (int) (_screenH * (_frg_body_wsp1[mode] / 100));
 	}
 	
 	public int					getScreenHeight() {
@@ -108,5 +122,9 @@ public class					ScreenSetup
 	
 	public int					getDiveListFooterHeight() {
 		return _diveListFooterHeight;
+	}
+	
+	public int					getDiveListFragmentWhitespace1() {
+		return _diveListFragmentWhitespace1;
 	}
 }
