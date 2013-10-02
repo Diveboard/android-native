@@ -58,6 +58,8 @@ public class					Dive implements IModel
 	private Integer				_number;
 	private ArrayList<Tank>		_tanks;
 	private ArrayList<Species>	_species;
+	private Picture				_featuredPicture;
+	private ArrayList<Picture>	_pictures;
 
 	public						Dive(JSONObject json) throws JSONException
 	{
@@ -157,6 +159,19 @@ public class					Dive implements IModel
 		else
 			_species = null;
 		_shop = (json.isNull("shop")) ? null : new Shop(json.getJSONObject("shop"));
+		_featuredPicture = (json.isNull("featured_picture") ? null : new Picture(json.getJSONObject("featured_picture")));
+		if (!json.isNull("picutres"))
+		{
+			_pictures = new ArrayList<Picture>();
+			jarray = json.getJSONArray("pictures");
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				Picture new_elem = new Picture(jarray.getJSONObject(i));
+				_pictures.add(new_elem);
+			}
+		}
+		else
+			_pictures = null;
 	}
 
 	public void					save()
@@ -463,5 +478,21 @@ public class					Dive implements IModel
 
 	public void setShop(Shop _shop) {
 		this._shop = _shop;
+	}
+
+	public Picture getFeaturedPicture() {
+		return _featuredPicture;
+	}
+
+	public void setFeaturedPicture(Picture _featuredPicture) {
+		this._featuredPicture = _featuredPicture;
+	}
+
+	public ArrayList<Picture> getPictures() {
+		return _pictures;
+	}
+
+	public void setPictures(ArrayList<Picture> _pictures) {
+		this._pictures = _pictures;
 	}
 }

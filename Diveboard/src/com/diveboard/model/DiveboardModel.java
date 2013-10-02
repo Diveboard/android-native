@@ -126,7 +126,7 @@ public class					DiveboardModel implements Parcelable
 			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
 		dive_str = dive_str.concat("%5D");
-		getRequest = new HttpGet("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str));
+		getRequest = new HttpGet("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str) + "&flavour=mobile");
 		response = _client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
