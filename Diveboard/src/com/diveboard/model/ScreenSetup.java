@@ -22,14 +22,16 @@ public class					ScreenSetup
 	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
 	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
 	static final double[]		_frg_body_wsp1 = {5, 10, 0, 0};			// Fragment Body Whitespace 1
+	static final double[]		_dl_seekbar_h = {2, 4, 0 , 0};			// Dive List Seek Bar Height
 	
 	
 	private int					_screenW;
 	private int					_screenH;
-	private Mode					_screenMode;
+	private Mode				_screenMode;
 	
 	// Pad Dive List
 	private int					_diveListWhiteSpace1;
+	private int					_diveListWhiteSpace4;
 	private int					_diveListFragmentBannerHeight;
 	private int					_diveListFragmentWidth;
 	private int					_diveListFragmentBodyHeight;
@@ -39,6 +41,7 @@ public class					ScreenSetup
 	private int					_diveListFragmentInCircleRadius;
 	private int					_diveListFooterHeight;
 	private int					_diveListFragmentWhitespace1;
+	private int					_diveListSeekBarHeight;
 	
 	public						ScreenSetup(int w, int h)
 	{
@@ -58,6 +61,7 @@ public class					ScreenSetup
 		int mode = _screenMode.ordinal();
 		
 		_diveListWhiteSpace1 = (int) (_screenH * (_wsp1[mode] / 100));
+		_diveListWhiteSpace4 = (int) (_screenH * (_wsp4[mode] / 100));
 		_diveListFragmentBannerHeight = (int) (_screenH * (_frg_bann_h[mode] / 100));
 		_diveListFragmentBodyHeight = (int) (_screenH * (_frg_body_h[mode] / 100));
 		_diveListFragmentHeight = (int) (_diveListFragmentBannerHeight + _diveListFragmentBodyHeight);
@@ -78,6 +82,7 @@ public class					ScreenSetup
 		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - _diveListFragmentCircleBorderWidth);
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
 		_diveListFragmentWhitespace1 = (int) (_screenH * (_frg_body_wsp1[mode] / 100));
+		_diveListSeekBarHeight = (int) (_screenH * (_dl_seekbar_h[mode] / 100));
 	}
 	
 	public int					getScreenHeight() {
@@ -126,5 +131,13 @@ public class					ScreenSetup
 	
 	public int					getDiveListFragmentWhitespace1() {
 		return _diveListFragmentWhitespace1;
+	}
+	
+	public int					getDiveListWhiteSpace4() {
+		return _diveListWhiteSpace4;
+	}
+	
+	public int					getDiveListSeekBarHeight() {
+		return _diveListSeekBarHeight;
 	}
 }

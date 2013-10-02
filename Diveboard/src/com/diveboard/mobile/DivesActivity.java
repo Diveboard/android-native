@@ -194,7 +194,12 @@ public class DivesActivity extends FragmentActivity {
 				int offset = ((screenSetup.getDiveListFragmentBannerHeight() + screenSetup.getDiveListFragmentBodyHeight()) / 2);
 				//We set dynamically the size of each page
 				mRootView = (View)findViewById(R.id.screen);
-				mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getScreenHeight()));
+				//mRootView.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getScreenHeight()));
+				
+				RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
+				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
+				diveFooter.setLayoutParams(diveFooterParams);
+				
 //				mDiveFooter = (RelativeLayout)findViewById(R.id.dive_footer);
 //				LinearLayout.LayoutParams dive_footer_params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
 //				mDiveFooter.setLayoutParams(dive_footer_params);
@@ -218,6 +223,10 @@ public class DivesActivity extends FragmentActivity {
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
+		        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 30);
+		        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		        seekBarParams.setMargins(0, 0, 0, screenSetup.getDiveListWhiteSpace4());
+		        mSeekBar.setLayoutParams(seekBarParams);
 		        mSeekBar.setMax(mModel.getDives().size() - 1);
 		        //Events when the user changes a page
 		        mPager.setOnPageChangeListener(new OnPageChangeListener()
