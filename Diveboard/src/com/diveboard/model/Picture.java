@@ -24,7 +24,6 @@ public class					Picture
 	private String				_urlSmall;
 	private String				_urlThumbnail;
 	private Bitmap				_bitmap;
-	private boolean				_loaded;
 	
 	public enum					Size
 	{
@@ -42,7 +41,6 @@ public class					Picture
 		_urlMedium = url;
 		_urlSmall = url;
 		_urlThumbnail = url;
-		_loaded = false;
 	}
 	
 	public 							Picture(final JSONObject json) throws JSONException
@@ -52,7 +50,6 @@ public class					Picture
 		_urlMedium = json.getString("medium");
 		_urlSmall = json.getString("small");
 		_urlThumbnail = json.getString("thumbnail");
-		_loaded = false;
 	}
 	
 	public synchronized boolean		loadPicture(final Context context) throws IOException
@@ -87,7 +84,6 @@ public class					Picture
 					break ;
 			}
 			_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
-			_loaded = true;
 			return true;
 		}
 		return false;
@@ -100,7 +96,7 @@ public class					Picture
 	
 	public synchronized Bitmap				getPicture(final Context context, final Size size) throws IOException
 	{
-		if (!_loaded && !_loadCachePicture(context, size))
+		if (!_loadCachePicture(context, size))
 		{
 			if (!loadPicture(context, size))
 				return null;
@@ -186,7 +182,6 @@ public class					Picture
 			_bitmap = BitmapFactory.decodeStream(inputStream);
 			if (_bitmap == null)
 				return false;
-			_loaded = true;
 			return true;
 		}
 		return false;
