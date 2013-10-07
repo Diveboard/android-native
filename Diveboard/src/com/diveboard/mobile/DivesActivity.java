@@ -87,6 +87,7 @@ public class DivesActivity extends FragmentActivity {
 	
 
 	@Override
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set the view layout
@@ -295,8 +296,8 @@ public class DivesActivity extends FragmentActivity {
 			mItemNb = args[0];
 			Bitmap result = null;
 			try {
-				if (mModel.getDives().get(args[0]).getFeaturedPicture() != null)
-					result = mModel.getDives().get(args[0]).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
+				if (mModel.getDives().get(mItemNb).getFeaturedPicture() != null)
+					result = mModel.getDives().get(mItemNb).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -363,13 +364,14 @@ public class DivesActivity extends FragmentActivity {
 								{
 									mBackground2.setAlpha(0.0f);
 								}
-	
+
 								@Override
-								public void onAnimationRepeat(Animation animation) {
+								public void onAnimationRepeat(
+										Animation animation) {
 									// TODO Auto-generated method stub
 									
 								}
-	
+
 								@Override
 								public void onAnimationStart(Animation animation) {
 									// TODO Auto-generated method stub
