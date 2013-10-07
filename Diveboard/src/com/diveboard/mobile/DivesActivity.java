@@ -249,7 +249,7 @@ public class DivesActivity extends FragmentActivity {
 					}
 		        	
 		        });
-		      //Events when the user changes the seek bar
+		        //Events when the user changes the seek bar
 		        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
 		        {		        	
 		        	@Override
@@ -302,6 +302,9 @@ public class DivesActivity extends FragmentActivity {
 			return null;
 		}
 		
+		/**
+		 * We do here the fade in/out animation for the background
+		 */
 		protected void onPostExecute(Bitmap result)
 		{
 			if (screenReference != null && result != null)
@@ -371,7 +374,7 @@ public class DivesActivity extends FragmentActivity {
 					}
 					else
 					{
-						mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+						mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
 					}
 				}
 			}
