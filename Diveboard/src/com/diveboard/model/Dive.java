@@ -41,6 +41,7 @@ public class					Dive implements IModel
 	private Shop				_shop;
 	private Integer				_shopId;
 	private int					_spotId;
+	private Spot				_spot;
 	private Double				_tempBottom;
 	private Double				_tempSurface;
 	private Picture				_thumbnailImageUrl;
@@ -108,6 +109,7 @@ public class					Dive implements IModel
 		_shopId = (json.isNull("shop_id")) ? null : json.getInt("shop_id");
 		// species
 		_spotId = json.getInt("spot_id");
+		_spot = (json.isNull("spot")) ? null : new Spot(json.getJSONObject("spot"));
 		_tempBottom = (json.isNull("temp_bottom")) ? null : json.getDouble("temp_bottom");
 		_tempSurface = (json.isNull("temp_surface")) ? null : json.getDouble("temp_surface");
 		_thumbnailImageUrl = new Picture(json.getString("thumbnail_image_url"));
@@ -342,6 +344,14 @@ public class					Dive implements IModel
 
 	public void setSpotId(int _spotId) {
 		this._spotId = _spotId;
+	}
+
+	public Spot getSpot() {
+		return _spot;
+	}
+
+	public void setSpot(Spot _spot) {
+		this._spot = _spot;
 	}
 
 	public Double getTempBottom() {
