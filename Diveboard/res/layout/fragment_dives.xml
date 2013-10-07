@@ -46,7 +46,8 @@
 	            android:id="@+id/main_image"
 	            android:layout_width="0dp"
 	            android:layout_height="0dp"
-	            android:scaleType="centerCrop">
+	            android:scaleType="centerCrop"
+	            android:onClick="goToEditDive">
 	        </ImageView>
 	        <ImageView
 	            android:id="@+id/main_image_cache"

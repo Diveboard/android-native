@@ -2,7 +2,10 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
-	<string name="title_activity_dives">List of dives</string>
-	<string name="progress_load_data">Loading data</string>
+    <string name="title_activity_dives">List of dives</string>
+    <string name="progress_load_data">Loading data</string>
+    <string name="title_activity_edit_dive">EditDiveActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="hello_world">Hello world!</string>
 
 </resources>

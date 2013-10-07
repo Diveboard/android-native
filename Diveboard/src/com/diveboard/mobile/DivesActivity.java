@@ -17,6 +17,7 @@ import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -113,7 +114,11 @@ public class DivesActivity extends FragmentActivity {
 		}
 	}
 	
-	
+	public void goToEditDive(View view)
+	{
+		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
+	    startActivity(editDiveActivity);
+	}
 	
 	public void loadData()
 	{
@@ -230,7 +235,6 @@ public class DivesActivity extends FragmentActivity {
 		        {
 					@Override
 					public void onPageScrollStateChanged(int arg0) {
-						// TODO Auto-generated method stub
 						if (arg0 == 0)
 						{
 							DownloadImageTask task = new DownloadImageTask();
@@ -292,7 +296,7 @@ public class DivesActivity extends FragmentActivity {
 			Bitmap result = null;
 			try {
 				if (mModel.getDives().get(args[0]).getFeaturedPicture() != null)
-					result = mModel.getDives().get(args[0]).getThumbnailImageUrl().getPicture(getApplicationContext());
+					result = mModel.getDives().get(args[0]).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -305,15 +309,18 @@ public class DivesActivity extends FragmentActivity {
 		/**
 		 * We do here the fade in/out animation for the background
 		 */
+		@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 		protected void onPostExecute(Bitmap result)
 		{
 			if (screenReference != null && result != null)
 			{
 				final RelativeLayout screenView = screenReference.get();
 				if (screenView != null)
+				if (true)
 				{
 					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
 					{
+						
 						if (mBackground == 1)
 						{
 							mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
@@ -374,7 +381,7 @@ public class DivesActivity extends FragmentActivity {
 					}
 					else
 					{
-						mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+						mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
 					}
 				}
 			}
