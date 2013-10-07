@@ -21,6 +21,8 @@ public class					ScreenSetup
 	static final double[]		_frg_w = {51.5, 0, 75, 75};				// Fragment Width
 	static final double[]		_frag_out_circ_rad = {41, 0, 60, 60};	// Fragment Outer Circle Radius
 	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
+	static final double[]		_frag_body_title = {5, 0, 0, 0};		// Fragment Body Title
+	static final double[]		_frag_pict_circ_rad = {6, 0, 0, 0};		// Fragment Picture Circle Radius
 	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
 	static final double[]		_frg_body_wsp1 = {5, 10, 0, 0};			// Fragment Body Whitespace 1
 	static final double[]		_frg_body_wsp2 = {1.3, 10, 0, 0};		// Fragment Body Whitespace 2
@@ -44,6 +46,8 @@ public class					ScreenSetup
 	private int					_diveListFragmentOutCircleRadius;
 	private int					_diveListFragmentCircleBorderWidth;
 	private int					_diveListFragmentInCircleRadius;
+	private int					_diveListFragmentBodyTitle;
+	private int					_diveListFragmentPictureCircleRadius;
 	private int					_diveListFooterHeight;
 	private int					_diveListFragmentWhitespace1;
 	private int					_diveListFragmentWhitespace2;
@@ -89,6 +93,8 @@ public class					ScreenSetup
 			_diveListFragmentCircleBorderWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) * (_frag_circ_brdr_w[mode] / 100));
 		}
 		_diveListFragmentInCircleRadius = (int) (_diveListFragmentOutCircleRadius - _diveListFragmentCircleBorderWidth);
+		_diveListFragmentBodyTitle = (int) (_screenH * (_frag_body_title[mode] / 100));
+		_diveListFragmentPictureCircleRadius = (int) (_screenH * (_frag_pict_circ_rad[mode] / 100));
 		_diveListFooterHeight = (int) (_screenH * (_footer[mode] / 100));
 		_diveListFragmentWhitespace1 = (int) (_screenH * (_frg_body_wsp1[mode] / 100));
 		_diveListFragmentWhitespace2 = (int) (_screenH * (_frg_body_wsp2[mode] / 100));
@@ -139,6 +145,14 @@ public class					ScreenSetup
 	
 	public int					getDiveListFragmentInCircleRadius() {
 		return _diveListFragmentInCircleRadius;
+	}
+	
+	public int					getDiveListFragmentBodyTitle() {
+		return _diveListFragmentBodyTitle;
+	}
+	
+	public int					getDiveListFragmentPictureCircleRadius() {
+		return _diveListFragmentPictureCircleRadius;
 	}
 	
 	public int					getDiveListFooterHeight() {
