@@ -35,7 +35,7 @@ public class					Spot implements IModel
 		_countryCode = json.getString("country_code");
 		_countryName = json.getString("country_name");
 		_countryFlagBig = new Picture(json.getString("country_flag_big"));
-		_countryFlagSmall = new Picture(json.getString("countr_flag_small"));
+		_countryFlagSmall = new Picture(json.getString("country_flag_small"));
 	}
 	
 	public void					save()
