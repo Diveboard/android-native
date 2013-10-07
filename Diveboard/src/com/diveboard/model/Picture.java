@@ -84,7 +84,7 @@ public class					Picture
 					break ;
 				default:
 					url = new URL(_urlDefault);
-					return false;
+					break ;
 			}
 			_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 			_loaded = true;
