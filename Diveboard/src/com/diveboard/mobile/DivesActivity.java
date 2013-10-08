@@ -100,9 +100,11 @@ public class DivesActivity extends FragmentActivity {
 		}
 		setContentView(R.layout.activity_dives);
 		// Initialize data
-		if (savedInstanceState == null)
+		if (((ApplicationController)getApplicationContext()).getModel() == null)
 		{
-			mModel = new DiveboardModel(48, this);		
+			mModel = new DiveboardModel(48, this);
+			ApplicationController AC = (ApplicationController)getApplicationContext();			
+			AC.setModel(mModel);
 			mLoadDataFormView = findViewById(R.id.load_data_form);
 			mLoadDataStatusView = findViewById(R.id.load_data_status);
 			mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
@@ -110,7 +112,9 @@ public class DivesActivity extends FragmentActivity {
 		}
 		else
 		{
-			mModel = savedInstanceState.getParcelable("model");
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			mModel = AC.getModel();
+			//mModel = savedInstanceState.getParcelable("model");
 			createPages();
 		}
 	}
@@ -179,7 +183,7 @@ public class DivesActivity extends FragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		//super.onSaveInstanceState(outState);mModel
-		outState.putParcelable("model", mModel);
+		//outState.putParcelable("model", mModel);
 	}
 	
 	/**
@@ -206,6 +210,7 @@ public class DivesActivity extends FragmentActivity {
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
+				//Bitmap bitmap_small = ImageHelper.getRoundedLayerSmall(screenSetup);
 				//We load the first background of the activity
 				mScreen = (RelativeLayout)findViewById(R.id.screen);
 				mBackground1 = (ImageView)findViewById(R.id.background1);
@@ -218,7 +223,7 @@ public class DivesActivity extends FragmentActivity {
 				else
 					mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap, null);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
 		        //mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
@@ -426,17 +431,19 @@ public class DivesActivity extends FragmentActivity {
 		private ArrayList<Dive> mDives;
 		private ScreenSetup mScreenSetup;
 		private Bitmap mRoundedLayer;
+		private Bitmap mRoundedLayerSmall;
 		
-		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, ScreenSetup screenSetup, Bitmap rounded_layer) {
+		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, ScreenSetup screenSetup, Bitmap rounded_layer, Bitmap rounded_layer_small) {
             super(fragmentManager);
 			mDives = dives;
 			mScreenSetup = screenSetup;
 			mRoundedLayer = rounded_layer;
+			mRoundedLayerSmall = rounded_layer_small;
         }
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position), mScreenSetup, mRoundedLayer);
+            return new DivesFragment(mDives.get(position), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
         }
 
         @Override

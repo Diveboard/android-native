@@ -12,6 +12,7 @@
         android:targetSdkVersion="16" />
 
     <application
+        android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
