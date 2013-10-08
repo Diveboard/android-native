@@ -162,7 +162,7 @@ public class					Dive implements IModel
 			_species = null;
 		_shop = (json.isNull("shop")) ? null : new Shop(json.getJSONObject("shop"));
 		_featuredPicture = (json.isNull("featured_picture") ? null : new Picture(json.getJSONObject("featured_picture")));
-		if (!json.isNull("picutres"))
+		if (!json.isNull("pictures"))
 		{
 			_pictures = new ArrayList<Picture>();
 			jarray = json.getJSONArray("pictures");
