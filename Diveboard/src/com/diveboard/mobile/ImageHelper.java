@@ -34,7 +34,7 @@ public class ImageHelper {
         paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
         canvas.drawCircle(screenSetup.getDiveListFragmentOutCircleRadius() / 2, screenSetup.getDiveListFragmentOutCircleRadius() / 2, screenSetup.getDiveListFragmentOutCircleRadius() / 2, paint);
         paint.setColor(0xff1C1C1C);
-        paint.setAlpha(125);
+        paint.setAlpha(72);
         paint.setXfermode(fermode);
         paint.setStyle(Paint.Style.STROKE);
         int strokeWidth = screenSetup.getDiveListFragmentCircleBorderWidth();

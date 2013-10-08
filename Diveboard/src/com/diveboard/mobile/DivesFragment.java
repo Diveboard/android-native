@@ -36,15 +36,15 @@ import android.widget.TextView;
  */
 public class DivesFragment extends Fragment {
 	private Dive mDive;
-	private int mScreenheight;
 	private Bitmap mRoundedLayer;
 	private ImageView mMainImage;
 	private ProgressBar mProgressBarMain;
 	private DownloadImageTask mDownloadImageTask;
-	private RelativeLayout mFragment;
+	private LinearLayout mFragment;
 	private RelativeLayout mFragmentBannerHeight;
 	private ScreenSetup mScreenSetup;
 	private ImageView mMainImageCache;
+	private RelativeLayout mFragmentBodyTitle;
 	
 	public DivesFragment()
 	{
@@ -62,35 +62,50 @@ public class DivesFragment extends Fragment {
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
-		mFragment = (RelativeLayout)rootView.findViewById(R.id.fragment);
-		// Resize the dimensions of each fragment
-		mFragmentBannerHeight = (RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
-		mFragmentBannerHeight.setLayoutParams(new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight()));
+		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
 		RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentHeight());
 		fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
 		mFragment.setLayoutParams(fragment_params);
+		// Resize the dimensions of each fragment
+		mFragmentBannerHeight = (RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
+		mFragmentBannerHeight.setLayoutParams(new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight()));
+		
 		mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 		params1.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 		mMainImage.setLayoutParams(params1);
+		
 		mMainImageCache = (ImageView)mFragment.findViewById(R.id.main_image_cache);		
 		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 		params2.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 		mMainImageCache.setLayoutParams(params2);
 		mMainImageCache.setImageBitmap(mRoundedLayer);
+		
+		LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth() - 120, mScreenSetup.getDiveListFragmentBodyTitle());
+		fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
+		mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
+		mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
 		//Set the content of the fragments
-		TextView dive_spot = (TextView) mFragment.findViewById(R.id.dive_spot);
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(),
-		            "fonts/Quicksand-Regular.otf");
-		dive_spot.setText("DIVE SPOT");
-		dive_spot.setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
-		dive_spot.setTypeface(faceR);
-		TextView name_spot = (TextView) mFragment.findViewById(R.id.name_spot);
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(),
-		            "fonts/Quicksand-Bold.otf");
-		name_spot.setText("RED CORAL BAY");
-		name_spot.setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
-		name_spot.setTypeface(faceB);
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+		((TextView) mFragment.findViewById(R.id.dive_spot)).setText("DIVE SPOT");
+		((TextView) mFragment.findViewById(R.id.dive_spot)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.dive_spot)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.name_spot)).setText(mDive.getSpot().getName().toUpperCase());
+		((TextView) mFragment.findViewById(R.id.name_spot)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.name_spot)).setTypeface(faceB);
+		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
+		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
+		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
+		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth()) + " METERS");
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
 		// Downloading the main picture in a new thread
 		//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
 		//showProgress(true);
