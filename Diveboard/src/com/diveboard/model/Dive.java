@@ -31,7 +31,7 @@ public class					Dive implements IModel
 	private double				_lat;
 	// legacy_buddies_hash
 	private double				_lng;
-	private double				_maxdepth;
+	private Distance			_maxdepth;
 	//notes
 	private String				_permalink;
 	private int					_privacy;
@@ -99,7 +99,7 @@ public class					Dive implements IModel
 		_lat = json.getDouble("lat");
 		// legacy_buddies_hash
 		_lng = json.getDouble("lng");
-		_maxdepth = json.getDouble("maxdepth");
+		_maxdepth = new Distance(json.getDouble("maxdepth"));
 		// notes
 		_permalink = json.getString("permalink");
 		_privacy = json.getInt("privacy");
@@ -250,11 +250,11 @@ public class					Dive implements IModel
 		this._lng = _lng;
 	}
 
-	public double getMaxdepth() {
+	public Distance getMaxdepth() {
 		return _maxdepth;
 	}
 
-	public void setMaxdepth(double _maxdepth) {
+	public void setMaxdepth(Distance _maxdepth) {
 		this._maxdepth = _maxdepth;
 	}
 

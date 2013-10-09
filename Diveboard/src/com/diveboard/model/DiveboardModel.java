@@ -21,7 +21,7 @@ import android.os.Parcelable;
  * Class DiveboardModel
  * Main class for model, manage all intern components
  */
-public class					DiveboardModel implements Parcelable
+public class					DiveboardModel
 {
 	private int					_userId;
 	private Context				_context;
@@ -29,7 +29,6 @@ public class					DiveboardModel implements Parcelable
 	private ConnectivityManager	_connMgr;
 	private AndroidHttpClient	_client;
 	private DataManager			_cache;
-	private int					_parcelData;
 
 	/*
 	 * Method DiveboardModel
@@ -200,36 +199,4 @@ public class					DiveboardModel implements Parcelable
 	{
 		// Not implemented
 	}
-	
-    public int					describeContents()
-    {
-        return 0;
-    }
-
-    /*
-     * Save object in parcel
-     */
-    public void					writeToParcel(Parcel out, int flags)
-    {
-        out.writeInt(_parcelData);
-    }
-
-    public static final Parcelable.Creator<DiveboardModel> CREATOR
-            = new Parcelable.Creator<DiveboardModel>() {
-        public DiveboardModel createFromParcel(Parcel in) {
-            return new DiveboardModel(in);
-        }
-
-        public DiveboardModel[] newArray(int size) {
-            return new DiveboardModel[size];
-        }
-    };
-
-    /*
-     * Recreate object from parcel
-     */
-    private DiveboardModel(Parcel in)
-    {
-        _parcelData = in.readInt();
-    }
 }
