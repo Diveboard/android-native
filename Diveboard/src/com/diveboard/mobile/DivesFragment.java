@@ -2,6 +2,7 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.Picture;
@@ -43,6 +44,7 @@ public class DivesFragment extends Fragment {
 	private ImageView mMainImage;
 	private ProgressBar mProgressBarMain;
 	private DownloadImageTask mDownloadImageTask;
+	private DownloadSmallImageTask mDownloadSmallImageTask;
 	private LinearLayout mFragment;
 	private RelativeLayout mFragmentBannerHeight;
 	private ScreenSetup mScreenSetup;
@@ -60,6 +62,7 @@ public class DivesFragment extends Fragment {
 		mDive = dive;
 		mScreenSetup = screenSetup;
 		mRoundedLayer = rounded_layer;
+		mRoundedLayerSmall = rounded_layer_small;
 	}
 	
 	@Override
@@ -105,7 +108,7 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.name_spot)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
 		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
-		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
+		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 130));
 		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
@@ -114,45 +117,14 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth()) + " METERS");
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));
-		//Adding small pictures
-		if (mDive.getPictures() != null)
-		{
-//			for (int i = 1; i < mDive.getPictures().size() && i < 6; i++)
-//			{
-////				try {
-////					((ImageView) mFragmentPictureCircleRadius.findViewById(R.id.image1)).setLayoutParams(new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentPictureCircleRadius(), mScreenSetup.getDiveListFragmentPictureCircleRadius()));
-////					((ImageView) mFragmentPictureCircleRadius.findViewById(R.id.image1)).setImageBitmap(mDive.getPictures().get(i).getPicture(getActivity().getApplicationContext(), Picture.Size.SMALL));
-////				} catch (IOException e) {
-////					// TODO Auto-generated catch block
-////					e.printStackTrace();
-////				}
-//				System.out.println("picture " + i);
-//				ImageView pic = new ImageView(getActivity().getApplicationContext());
-//				try {
-//					//pic.setId(getResources().getIdentifier("image1" , "id", getActivity().getApplicationContext().getPackageName()));
-//					pic.setId(i);
-//					pic.setImageBitmap(mDive.getPictures().get(i).getPicture(getActivity().getApplicationContext(), Picture.Size.SMALL));
-//					pic.setScaleType(ScaleType.CENTER_CROP);
-//					RelativeLayout.LayoutParams image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentPictureCircleRadius(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
-//					if (i > 1)
-//						image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);//getResources().getIdentifier("image1", "id", getActivity().getApplicationContext().getPackageName()));
-//					image_params.setMargins(10, 0, 10, 0);
-//					pic.setLayoutParams(image_params);
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				mFragmentPictureCircleRadius.addView(pic);
-//			}
-		}
-		else
-			System.out.println("NULL");
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize((mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 150));	
 		// Downloading the main picture in a new thread
 		//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
 		//showProgress(true);
 		mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
 		mDownloadImageTask.execute();
+		mDownloadSmallImageTask = new DownloadSmallImageTask();
+		mDownloadSmallImageTask.execute();
         return rootView;
     }
 	
@@ -226,7 +198,72 @@ public class DivesFragment extends Fragment {
 			{
 				final ImageView imageView = imageViewReference.get();
 				if (imageView != null)
+				{
 					imageView.setImageBitmap(result);
+				}
+			}
+		}
+		
+		@Override
+		protected void onCancelled() {
+			mDownloadImageTask = null;
+			showProgress(false);
+		}
+	}
+	
+	private class DownloadSmallImageTask extends AsyncTask<Void, Void, ArrayList<ImageView>>
+	{
+		private ArrayList<ImageView> mSmallImage = new ArrayList<ImageView>();
+		
+		protected ArrayList<ImageView> doInBackground(Void... voids)
+		{
+			//Adding small pictures
+			if (mDive.getPictures() != null)
+			{
+				for (int i = 1; getActivity() != null && i < mDive.getPictures().size() && i < 6; i++)
+				{
+					//System.out.println("picture " + i);
+					ImageView pic = new ImageView(getActivity().getApplicationContext());
+					ImageView round_pic = new ImageView(getActivity().getApplicationContext());
+					try {
+						pic.setId(i);
+						pic.setImageBitmap(mDive.getPictures().get(i).getPicture(getActivity().getApplicationContext(), Picture.Size.SMALL));
+						round_pic.setImageBitmap(mRoundedLayerSmall);
+						pic.setScaleType(ScaleType.CENTER_CROP);
+						RelativeLayout.LayoutParams image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentPictureCircleRadius(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
+						RelativeLayout.LayoutParams rounded_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentPictureCircleRadius(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
+						if (i > 1)
+						{
+							image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
+							rounded_image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
+						}
+						image_params.setMargins(10, 0, 10, 0);
+						rounded_image_params.setMargins(10, 0, 10, 0);
+						pic.setLayoutParams(image_params);
+						round_pic.setLayoutParams(rounded_image_params);
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mSmallImage.add(pic);
+					mSmallImage.add(round_pic);
+					//mFragmentPictureCircleRadius.addView(pic);
+					//mFragmentPictureCircleRadius.addView(round_pic);
+				}
+			}
+			else
+				System.out.println("DownloadSmallImageTask is NULL");
+			return mSmallImage;
+		}
+		
+		protected void onPostExecute(ArrayList<ImageView> result)
+		{
+			if (result != null)
+			{
+				for (int i = 0; i < result.size(); i++)
+				{
+					((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).addView(result.get(i));
+				}
 			}
 		}
 		
