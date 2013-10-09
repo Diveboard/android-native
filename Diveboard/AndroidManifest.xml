@@ -31,6 +31,18 @@
             android:name="com.diveboard.mobile.EditDiveActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
+		<activity
+            android:name="com.diveboard.mobile.TabEditDetailsActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.TabEditNotesActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.TabEditGearActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
     </application>
 
 </manifest>
