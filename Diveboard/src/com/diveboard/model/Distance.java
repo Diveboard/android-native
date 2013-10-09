@@ -13,7 +13,13 @@ public class					Distance
 	
 	public Double				getDistance()
 	{
-		return _value;
+		switch (_unit)
+		{
+			case KM:
+				return _value;
+			case FT:
+				return Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+		}
 	}
 	
 	public Double				getDistance(Units.Distance unit)
