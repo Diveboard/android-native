@@ -71,12 +71,14 @@ public class DivesFragment extends Fragment {
         // Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
-		RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentHeight());
-		fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
+		RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBodyHeight());
+		fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1() + mScreenSetup.getDiveListFragmentBannerHeight(), 0, 0);
 		mFragment.setLayoutParams(fragment_params);
 		// Resize the dimensions of each fragment
-		mFragmentBannerHeight = (RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
-		mFragmentBannerHeight.setLayoutParams(new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight()));
+		RelativeLayout.LayoutParams banner_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight());
+		mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);//(RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
+		banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
+		mFragmentBannerHeight.setLayoutParams(banner_params);
 		
 		mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
 		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
@@ -89,7 +91,7 @@ public class DivesFragment extends Fragment {
 		mMainImageCache.setLayoutParams(params2);
 		mMainImageCache.setImageBitmap(mRoundedLayer);
 		
-		LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth() - 0, mScreenSetup.getDiveListFragmentBodyTitle());
+		LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentBodyTitle());
 		fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
 		mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
 		mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
@@ -101,12 +103,17 @@ public class DivesFragment extends Fragment {
 		//Set the content of the fragments
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-		((TextView) mFragment.findViewById(R.id.dive_spot)).setText("DIVE SPOT");
-		((TextView) mFragment.findViewById(R.id.dive_spot)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_spot)).setTypeface(faceR);
-		((TextView) mFragment.findViewById(R.id.name_spot)).setText(mDive.getSpot().getName().toUpperCase());
-		((TextView) mFragment.findViewById(R.id.name_spot)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.name_spot)).setTypeface(faceB);
+		if (mDive.getTripName() != null)
+		{
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
+		}
+		else
+			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
 		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
 		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
@@ -116,7 +123,7 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth()) + " METERS");
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));	
 		// Downloading the main picture in a new thread
@@ -223,10 +230,10 @@ public class DivesFragment extends Fragment {
 			{
 				for (int i = 1; getActivity() != null && i < mDive.getPictures().size() && i < 6; i++)
 				{
-					//System.out.println("picture " + i);
-					ImageView pic = new ImageView(getActivity().getApplicationContext());
-					ImageView round_pic = new ImageView(getActivity().getApplicationContext());
 					try {
+						//System.out.println("picture " + i);
+						ImageView pic = new ImageView(getActivity().getApplicationContext());
+						ImageView round_pic = new ImageView(getActivity().getApplicationContext());
 						pic.setId(i);
 						pic.setImageBitmap(mDive.getPictures().get(i).getPicture(getActivity().getApplicationContext(), Picture.Size.SMALL));
 						round_pic.setImageBitmap(mRoundedLayerSmall);
@@ -242,12 +249,13 @@ public class DivesFragment extends Fragment {
 						rounded_image_params.setMargins(10, 0, 10, 0);
 						pic.setLayoutParams(image_params);
 						round_pic.setLayoutParams(rounded_image_params);
-					} catch (IOException e) {
+						mSmallImage.add(pic);
+						mSmallImage.add(round_pic);
+					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					mSmallImage.add(pic);
-					mSmallImage.add(round_pic);
+					
 					//mFragmentPictureCircleRadius.addView(pic);
 					//mFragmentPictureCircleRadius.addView(round_pic);
 				}

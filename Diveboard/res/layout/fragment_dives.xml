@@ -3,7 +3,25 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:gravity="center_horizontal">
-
+	<RelativeLayout
+        android:id="@+id/fragment_banner_height"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/yellow"
+        android:gravity="center_vertical">
+        <TextView
+            android:id="@+id/trip_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_marginLeft="10dp"/>
+        <TextView
+            android:id="@+id/trip_name2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/trip_name"
+            android:layout_alignLeft="@id/trip_name"/>
+   </RelativeLayout>
    <LinearLayout
        	android:orientation="vertical"
         android:id="@+id/fragment"
@@ -13,25 +31,7 @@
         android:layout_centerVertical="false"
         android:background="#FFFFFF"
         android:gravity="center_horizontal">
-        <RelativeLayout
-            android:id="@+id/fragment_banner_height"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/yellow"
-            android:gravity="center_vertical">
-            <TextView
-                android:id="@+id/dive_spot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:layout_marginLeft="10dp"/>
-            <TextView
-                android:id="@+id/name_spot"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/dive_spot"
-                android:layout_alignLeft="@id/dive_spot"/>
-        </RelativeLayout>
+        
 		<RelativeLayout
             android:id="@+id/fragment_body"
             android:layout_width="match_parent"
@@ -62,7 +62,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
-                android:layout_alignParentTop="true"/>
+                android:layout_alignParentTop="true"
+                android:singleLine="true"
+                android:ellipsize="end"/>
             <TextView
                 android:id="@+id/dive_date"
                 android:layout_marginTop="5dp"
@@ -91,72 +93,6 @@
 	    	    android:layout_width="match_parent"
 	    	    android:layout_height="0dp"
 	    	    android:gravity="center">
-<!--             	<ImageView -->
-<!--             	    android:id="@+id/image1" -->
-<!--             	    android:layout_width="0dp" -->
-<!--             	    android:layout_height="0dp" -->
-<!--             	    android:layout_centerInParent="true"/> -->
-<!--             	<ImageView -->
-<!--             	    android:id="@+id/image2" -->
-<!--             	    android:layout_width="0dp" -->
-<!--             	    android:layout_height="0dp" -->
-<!--             	    android:layout_centerInParent="true"/> -->
-	    	</RelativeLayout>
-<!-- 	    <RelativeLayout -->
-<!--             android:id="@+id/fragment_body_title" -->
-<!--             android:layout_width="match_parent" -->
-<!--             android:layout_height="0dp" -->
-<!--             android:background="#000000" -->
-<!--             android:layout_below="@id/fragment_body" -->
-<!--             android:gravity="center_horizontal"> -->
-
-<!-- 	    </RelativeLayout> -->
-<!--         <ImageView -->
-<!--             android:id="@+id/ring" -->
-<!--             android:layout_width="0dp" -->
-<!--             android:layout_height="0dp" -->
-<!--             android:layout_marginTop="0dp" -->
-<!--             android:background="@drawable/shape_ring"> -->
-<!--         </ImageView> -->
-<!-- 		<RelativeLayout -->
-<!-- 	        android:background="#EEEEEE" -->
-<!-- 	        android:layout_width="match_parent" -->
-<!-- 			android:layout_height="240dp" -->
-<!-- 			android:layout_marginTop="20dp"> -->
-<!-- 		</RelativeLayout> -->
-
-<!--        <RelativeLayout -->
-<!-- 	        android:background="@drawable/shape_ring" -->
-<!-- 	        android:layout_width="match_parent" -->
-<!-- 			android:layout_height="240dp" -->
-<!-- 			android:layout_marginTop="20dp"> -->
-<!--     	</RelativeLayout> -->
-<!--         <TextView -->
-<!--             android:id="@+id/dive_id" -->
-<!--             style="?android:textAppearanceMedium" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:text="test" /> -->
-<!--         <TextView -->
-<!--             android:id="@+id/dive_time" -->
-<!--             style="?android:textAppearanceMedium" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_below="@+id/dive_id" -->
-<!--             android:text="test" /> -->
-<!--         <TextView -->
-<!--             android:id="@+id/dive_date" -->
-<!--             style="?android:textAppearanceMedium" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_below="@+id/dive_time" -->
-<!--             android:text="test" /> -->
-<!--         <TextView -->
-<!--             android:id="@+id/dive_duration" -->
-<!--             style="?android:textAppearanceMedium" -->
-<!--             android:layout_width="wrap_content" -->
-<!--             android:layout_height="wrap_content" -->
-<!--             android:layout_below="@+id/dive_date" -->
-<!--             android:text="test" /> -->
+            </RelativeLayout>
     </LinearLayout>
 </RelativeLayout>

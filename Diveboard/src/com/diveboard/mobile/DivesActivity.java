@@ -19,6 +19,7 @@ import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.TransitionDrawable;
@@ -187,6 +188,33 @@ public class DivesActivity extends FragmentActivity {
 		//outState.putParcelable("model", mModel);
 	}
 	
+	public static String getPositon(int i, DiveboardModel model)
+	{
+		String pos = "";
+		if (model.getDives().get(i).getLat() > 0)
+		{
+			pos += String.valueOf(model.getDives().get(i).getLat()) + "° ";
+			pos += "N";
+		}
+		else
+		{
+			pos += String.valueOf(model.getDives().get(i).getLat() * (-1)) + "° ";
+			pos += "S";
+		}
+		pos += ", ";
+		if (model.getDives().get(i).getLng() > 0)
+		{
+			pos += String.valueOf(model.getDives().get(i).getLng()) + "° ";
+			pos += "E";
+		}
+		else
+		{
+			pos += String.valueOf(model.getDives().get(i).getLng() * (-1)) + "° ";
+			pos += "W";
+		}
+		return (pos);
+	}
+	
 	/**
 	 * ViewPager creation with all the fragments associated, resized according the screen size
 	 */
@@ -196,7 +224,7 @@ public class DivesActivity extends FragmentActivity {
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
 		mLayout = (ViewGroup)findViewById(R.id.pager);
 		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
-		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() { 
+		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 		    @Override 
 		    public void onGlobalLayout() { 
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
@@ -204,10 +232,33 @@ public class DivesActivity extends FragmentActivity {
 		        ScreenSetup screenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (screenSetup.getScreenWidth() - screenSetup.getDiveListFragmentHeight()) * (-1);
 				int offset = ((screenSetup.getDiveListFragmentBannerHeight() + screenSetup.getDiveListFragmentBodyHeight()) / 2);
-				//We set dynamically the size of each page
+				//We set the parameters and content of the footer
 				RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, screenSetup.getDiveListFooterHeight());
 				diveFooter.setLayoutParams(diveFooterParams);
+				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				
+				
+				((TextView)diveFooter.findViewById(R.id.title_footer1)).setText("CURRENTLY VIEWING ");
+				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTextSize(8);
+				((TextView)diveFooter.findViewById(R.id.title_footer2)).setText("DIVES, SHOPS ");
+				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTypeface(faceB);
+				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTextSize(8);
+				((TextView)diveFooter.findViewById(R.id.title_footer3)).setText("AND ");
+				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTextSize(8);
+				((TextView)diveFooter.findViewById(R.id.title_footer4)).setText("SPOTS ");
+				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTypeface(faceB);
+				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTextSize(8);
+				((TextView)diveFooter.findViewById(R.id.title_footer5)).setText("NEAR");
+				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTextSize(8);
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(16);
+				//We write the text for the footer
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
@@ -220,14 +271,16 @@ public class DivesActivity extends FragmentActivity {
 				task.execute(0);
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null)
-					System.out.println("offline"); // a gérer
+				{
+					System.out.println("offline"); // to do
+					finish();
+				}
 				else
 					mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        //mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));
 		        mPager.setOffscreenPageLimit(3);
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
@@ -244,6 +297,11 @@ public class DivesActivity extends FragmentActivity {
 					public void onPageScrollStateChanged(int arg0) {
 						if (arg0 == 0)
 						{
+							RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
+							Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+							((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
+							((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+							((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(16);
 							DownloadImageTask task = new DownloadImageTask();
 							task.execute(mPager.getCurrentItem());
 						}
