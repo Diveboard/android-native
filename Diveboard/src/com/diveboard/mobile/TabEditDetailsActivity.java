@@ -33,7 +33,7 @@ public class					TabEditDetailsActivity extends Activity
 		elem.add(new EditOption("Dive number : ", Integer.toString(dive.getId())));
 		elem.add(new EditOption("Date : ", dive.getDate()));
 		elem.add(new EditOption("Time in : ", dive.getTimeIn()));
-		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth())));
+		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance())));
 		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration())));
 		elem.add(new EditOption("Safety stops : ", "not implemented"));
 		elem.add(new EditOption("Other divers : ", "not implemented"));
