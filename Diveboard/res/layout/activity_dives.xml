@@ -69,7 +69,7 @@
 			       android:layout_width="match_parent"
 			       android:layout_centerHorizontal="true"
 			       android:layout_alignParentBottom="true"
-			       android:layout_height="30dp"/>
+			       android:layout_height="0dp"/>
 		    </RelativeLayout>
 			<RelativeLayout
 			    android:id="@+id/dive_footer"

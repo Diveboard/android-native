@@ -117,6 +117,9 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
 		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
+		((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
+		((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
+		((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
@@ -189,8 +192,13 @@ public class DivesFragment extends Fragment {
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				if (getActivity() != null && mDive.getFeaturedPicture() != null)
-					return mDive.getFeaturedPicture().getPicture(getActivity().getApplicationContext(), Picture.Size.MEDIUM);
+				if (getActivity() != null)
+				{
+					if (mDive.getFeaturedPicture() != null)
+						return mDive.getFeaturedPicture().getPicture(getActivity().getApplicationContext(), Picture.Size.MEDIUM);
+					return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
+				}
+					
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -252,7 +260,6 @@ public class DivesFragment extends Fragment {
 						mSmallImage.add(pic);
 						mSmallImage.add(round_pic);
 					} catch (Exception e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 					

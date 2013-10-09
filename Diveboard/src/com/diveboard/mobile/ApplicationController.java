@@ -8,6 +8,7 @@ import android.content.res.Configuration;
 public class ApplicationController extends Application {
 	private static ApplicationController singleton;
 	private DiveboardModel mModel = null;
+	private boolean mDataReady = false;
 	
 	public ApplicationController getInstance(){
 		return singleton;
