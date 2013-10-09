@@ -29,7 +29,7 @@ public class					Units
 		PSI
 	}
 	
-	private	static Distance		_distanceUnit = Distance.FT;
+	private	static Distance		_distanceUnit = Distance.KM;
 	private static Weight		_weightUnit = Weight.KG;
 	private static Temperature	_temperatureUnit = Temperature.C;
 	private static Pressure		_pressureUnit = Pressure.BAR;
