@@ -18,12 +18,10 @@ public class					Distance
 	
 	public Double				getDistance(Units.Distance unit)
 	{
-		if (unit == _unit)
-			return _value;
 		switch (unit)
 		{
 			case KM:
-				return Converter.convert(_value, Units.Distance.FT, Units.Distance.KM);
+				return _value;
 			case FT:
 				return Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
