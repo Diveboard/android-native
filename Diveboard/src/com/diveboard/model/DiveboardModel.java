@@ -57,7 +57,7 @@ public class					DiveboardModel implements Parcelable
 			if (networkInfo != null && networkInfo.isConnected())
 			{
 				// Online Mode
-				_client = AndroidHttpClient.newInstance("Android");
+				_client = AndroidHttpClient.newInstance("Android");			
 				// Load data online
 				_loadOnlineData();
 				return ;

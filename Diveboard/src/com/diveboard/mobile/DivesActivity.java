@@ -210,7 +210,7 @@ public class DivesActivity extends FragmentActivity {
 				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 				//Each circle must be white with a transparent circle in the center
 				Bitmap bitmap = ImageHelper.getRoundedLayer(screenSetup);
-				//Bitmap bitmap_small = ImageHelper.getRoundedLayerSmall(screenSetup);
+				Bitmap bitmap_small = ImageHelper.getRoundedLayerSmall(screenSetup);
 				//We load the first background of the activity
 				mScreen = (RelativeLayout)findViewById(R.id.screen);
 				mBackground1 = (ImageView)findViewById(R.id.background1);
@@ -219,11 +219,11 @@ public class DivesActivity extends FragmentActivity {
 				task.execute(0);
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null)
-					System.out.println("null"); // a gérer
+					System.out.println("offline"); // a gérer
 				else
 					mNbPages = mModel.getDives().size();
 				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap, null);
+		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), screenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
 		        //mPager.setOffscreenPageLimit(((screenwidth / mFragmentWidth) + 1));

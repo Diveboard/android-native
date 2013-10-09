@@ -68,7 +68,7 @@ public class ImageHelper {
 //        paint.setStyle(Paint.Style.STROKE);
 //        int strokeWidth = screenSetup.getDiveListFragmentCircleBorderWidth();
 //        paint.setStrokeWidth(strokeWidth);
-//        canvas.drawCircle(screenSetup.getDiveListFragmentOutCircleRadius() / 2, screenSetup.getDiveListFragmentOutCircleRadius() / 2, screenSetup.getDiveListFragmentInCircleRadius() / 2, paint);
+//        canvas.drawCircle(screenSetup.getDiveListFragmentPictureCircleRadius() / 2, screenSetup.getDiveListFragmentPictureCircleRadius() / 2, screenSetup.getDiveListFragmentPictureCircleRadius() / 2, paint);
         return output;
     }
     
