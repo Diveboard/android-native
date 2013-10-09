@@ -22,7 +22,7 @@ public class					ScreenSetup
 	static final double[]		_frag_out_circ_rad = {41, 0, 60, 60};	// Fragment Outer Circle Radius
 	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
 	static final double[]		_frag_body_title = {7.5, 0, 0, 0};		// Fragment Body Title*
-	static final double[]		_frag_pict_circ_rad = {8, 0, 0, 0};		// Fragment Picture Circle Radius*
+	static final double[]		_frag_pict_circ_rad = {8, 0, 0, 4};		// Fragment Picture Circle Radius*
 	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
 	static final double[]		_frg_body_wsp1 = {2.5, 10, 0, 0};			// Fragment Body Whitespace 1*
 	static final double[]		_frg_body_wsp2 = {1.3, 10, 0, 0};		// Fragment Body Whitespace 2
