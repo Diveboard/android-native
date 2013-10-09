@@ -18,11 +18,11 @@ public class					Distance
 		switch (_unit)
 		{
 			case KM:
-				result =  _value;
+				result = _value;
 			case FT:
-				result =  Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+				result = Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
-		return (double) (Math.round(result * 100) / 100);
+		return (double) (Math.round(result * 100.0) / 100.0);
 	}
 	
 	public Double				getDistance(Units.Distance unit)
@@ -36,7 +36,7 @@ public class					Distance
 			case FT:
 				result = Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
-		return (double) (Math.round(result * 100) / 100);
+		return (double) (Math.round(result * 100.0) / 100.0);
 	}
 	
 	public String				getSmallName()

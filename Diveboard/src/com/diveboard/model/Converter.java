@@ -27,13 +27,12 @@ public class				Converter
 		switch (from)
 		{
 			case KM:
-				if (to == Units.Distance.FT)
+				if (to == Units.Distance.FT);
 					return (Double) (value * _KmFt);
-				break ;
 			case FT:
 				if (to == Units.Distance.KM)
 					return (Double) (value / _KmFt);
-				break ;
+
 		}
 		return 1.0;
 	}
