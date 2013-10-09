@@ -18,6 +18,8 @@ import android.app.Activity;
 import android.app.ListActivity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
@@ -82,6 +84,7 @@ public class DivesActivity extends FragmentActivity {
 	private View mLoadDataFormView;
 	private View mLoadDataStatusView;
 	private TextView mLoadDataStatusMessageView;
+	private int mOrientation;
 	
 	// Model to display
 	private DiveboardModel mModel;
@@ -103,6 +106,8 @@ public class DivesActivity extends FragmentActivity {
 		// Initialize data
 		if (((ApplicationController)getApplicationContext()).getModel() == null)
 		{
+			//mOrientation = getRequestedOrientation();
+			//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 			mModel = new DiveboardModel(48, this);
 			ApplicationController AC = (ApplicationController)getApplicationContext();			
 			AC.setModel(mModel);
@@ -118,6 +123,15 @@ public class DivesActivity extends FragmentActivity {
 			//mModel = savedInstanceState.getParcelable("model");
 			createPages();
 		}
+	}
+	
+	@Override
+	public void onConfigurationChanged(Configuration newConfig) {    
+//	    if (mDataLoaded == false)
+//	    {
+//	    	super.onConfigurationChanged(newConfig);
+//	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+//	    }
 	}
 	
 	public void goToEditDive(View view)
@@ -220,6 +234,7 @@ public class DivesActivity extends FragmentActivity {
 	 */
 	private void createPages()
 	{
+		//setRequestedOrientation(mOrientation);
 		//ViewTreeObserver allows to load all the layouts of the page before applying calculation
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
 		mLayout = (ViewGroup)findViewById(R.id.pager);
@@ -285,7 +300,7 @@ public class DivesActivity extends FragmentActivity {
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
-		        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 30);
+		        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, screenSetup.getDiveListSeekBarHeight());
 		        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 		        seekBarParams.setMargins(0, 0, 0, screenSetup.getDiveListWhiteSpace4());
 		        mSeekBar.setLayoutParams(seekBarParams);
