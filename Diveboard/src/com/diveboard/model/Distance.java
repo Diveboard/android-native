@@ -20,6 +20,7 @@ public class					Distance
 			case FT:
 				return Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
+		return 0.0;
 	}
 	
 	public Double				getDistance(Units.Distance unit)
