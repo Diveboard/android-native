@@ -38,8 +38,14 @@ public class					TabEditDetailsActivity extends Activity
 		elem.add(new EditOption("Safety stops : ", "not implemented"));
 		elem.add(new EditOption("Other divers : ", "not implemented"));
 		elem.add(new EditOption("Diving type & activities : ", "not implemented"));
-		elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface())));
-		elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom())));
+		if (dive.getTempSurface() != null)
+			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface())));
+		else
+			elem.add(new EditOption("Surface temperature : ", "Not defined"));
+		if (dive.getTempBottom() != null)
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom())));
+		else
+			elem.add(new EditOption("Bottom temperature : ", "Not defined"));
 		if (dive.getWeights() != null)
 			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights())));
 		else
