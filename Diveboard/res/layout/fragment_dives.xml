@@ -17,7 +17,7 @@
             android:id="@+id/fragment_banner_height"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fbb836"
+            android:background="@color/yellow"
             android:gravity="center_vertical">
             <TextView
                 android:id="@+id/dive_spot"
