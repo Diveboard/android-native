@@ -122,6 +122,7 @@ public class DivesActivity extends FragmentActivity {
 	public void goToEditDive(View view)
 	{
 		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
+		editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    startActivity(editDiveActivity);
 	}
 	
