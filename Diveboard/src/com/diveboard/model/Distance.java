@@ -13,26 +13,30 @@ public class					Distance
 	
 	public Double				getDistance()
 	{
+		Double					result = 0.0;
+		
 		switch (_unit)
 		{
 			case KM:
-				return _value;
+				result =  _value;
 			case FT:
-				return Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+				result =  Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
-		return 0.0;
+		return (double) (Math.round(result * 100) / 100);
 	}
 	
 	public Double				getDistance(Units.Distance unit)
 	{
+		Double					result = 0.0;
+		
 		switch (unit)
 		{
 			case KM:
-				return _value;
+				result = _value;
 			case FT:
-				return Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+				result = Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
 		}
-		return 0.0;
+		return (double) (Math.round(result * 100) / 100);
 	}
 	
 	public String				getSmallName()
