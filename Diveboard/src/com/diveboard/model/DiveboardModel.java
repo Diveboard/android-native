@@ -30,6 +30,10 @@ public class					DiveboardModel
 	private AndroidHttpClient	_client;
 	private DataManager			_cache;
 	private ArrayList<DataRefreshListener>	_listeners = new ArrayList<DataRefreshListener>();
+	
+	private String				_temp_user_json;
+	private String				_temp_dives_json;
+	private User				_temp_user = null;
 
 	/*
 	 * Method DiveboardModel
@@ -80,7 +84,10 @@ public class					DiveboardModel
 			// Load data online
 			try
 			{
-				_loadOnlineData();
+				if (_user == null)
+					_loadOnlineData(false);
+				else
+					_loadOnlineData(true);
 			}
 			catch (IOException e)
 			{
@@ -100,18 +107,21 @@ public class					DiveboardModel
 	 * Method _loadUser
 	 * Takes a JSON and load user data to model
 	 */
-	private void				_loadUser(final String json_str) throws JSONException
+	private void				_loadUser(final String json_str, final boolean temp_mode) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
-		_user = new User(json);
+		if (!temp_mode)
+			_user = new User(json);
+		else
+			_temp_user = new User(json);
 	}
 	
 	/*
 	 * Method _loadDives
 	 * Takes a JSON and load dives data to model
 	 */
-	private void				_loadDives(final String json_str) throws JSONException
+	private void				_loadDives(final String json_str, final boolean temp_mode) throws JSONException
 	{
 		JSONObject json = new JSONObject(json_str);
 		JSONArray jarray = json.getJSONArray("result");
@@ -121,23 +131,29 @@ public class					DiveboardModel
 			Dive dive = new Dive(jarray.getJSONObject(i));
 			dives.add(dive);
 		}
-		if (_user != null)
+		if (temp_mode == false && _user != null)
 			_user.setDives(dives);
+		else if (temp_mode == true && _temp_user != null)
+			_temp_user.setDives(dives);
 	}
 	
 	/*
 	 * Method _loadOnlineData
 	 * Sends requests to Diveboard server and retrieves data from online source
+	 * temp_mode : Define if temporary mode is active (true = active, false = disabled)
 	 */
-	private void				_loadOnlineData() throws IOException, JSONException
+	private void				_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
 	{
 		// Load user information
 		HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/".concat(Integer.toString(_userId)));
 		HttpResponse response = _client.execute(getRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
-		_cache.saveCache(_userId, "user", result);
-		_loadUser(result);
+		if (!temp_mode)
+			_cache.saveCache(_userId, "user", result);
+		else
+			_temp_user_json = result;
+		_loadUser(result, temp_mode);
 		
 		// Load dive information
 		JSONObject json = new JSONObject(result);
@@ -155,9 +171,13 @@ public class					DiveboardModel
 		response = _client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
-		_cache.saveCache(_userId, "dives", result);
-		_loadDives(result);
-		_cache.commitCache();
+		if (!temp_mode)
+			_cache.saveCache(_userId, "dives", result);
+		else
+			_temp_dives_json = result;
+		_loadDives(result, temp_mode);
+		if (!temp_mode)
+			_cache.commitCache();
 	}
 	
 	/*
@@ -171,10 +191,10 @@ public class					DiveboardModel
 		_cache.loadCache(_userId);
 		tmp = _cache.get(_userId, "user");
 		if (tmp != null)
-			_loadUser(tmp);
+			_loadUser(tmp, false);
 		tmp = _cache.get(_userId, "dives");
 		if (tmp != null)
-			_loadDives(tmp);
+			_loadDives(tmp, false);
 	}
 	
 	/*
@@ -229,5 +249,14 @@ public class					DiveboardModel
 	public void					setOnDataRefreshComplete(DataRefreshListener listener)
 	{
 		_listeners.add(listener);
+	}
+	
+	public void					overwriteData() throws IOException
+	{
+		_cache.saveCache(_userId, "user", _temp_user_json);
+		_cache.saveCache(_userId, "dives", _temp_dives_json);
+		_cache.commitCache();
+		_user = (User) _temp_user.clone();
+		_temp_user = null;
 	}
 }

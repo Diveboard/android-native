@@ -11,7 +11,7 @@ import org.json.JSONObject;
  * Class User
  * Model for User
  */
-public class					User implements IModel
+public class					User implements IModel, Cloneable
 {
 	private int											_id;
 	private String										_shaken_id;
@@ -203,5 +203,18 @@ public class					User implements IModel
 
 	public void setTotalExtDives(Integer _totalExtDives) {
 		this._totalExtDives = _totalExtDives;
+	}
+	
+	protected Object clone()
+	{
+        try
+        {
+			return super.clone();
+		}
+        catch (CloneNotSupportedException e)
+        {
+			e.printStackTrace();
+		}
+        return null;
 	}
 }
