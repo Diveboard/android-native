@@ -29,6 +29,7 @@ public class					DiveboardModel
 	private ConnectivityManager	_connMgr;
 	private AndroidHttpClient	_client;
 	private DataManager			_cache;
+	private ArrayList<DataRefreshListener>	_listeners = new ArrayList<DataRefreshListener>();
 
 	/*
 	 * Method DiveboardModel
@@ -50,24 +51,49 @@ public class					DiveboardModel
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		
-		// Test connectivity
+		// Offline Mode
 		try
 		{
-			if (networkInfo != null && networkInfo.isConnected())
-			{
-				// Online Mode
-				_client = AndroidHttpClient.newInstance("Android");			
-				// Load data online
-				_loadOnlineData();
-				return ;
-			}
-			// Offline Mode
 			_loadOfflineData();
 		}
-		catch (Exception e)
+		catch (IOException e)
 		{
 			e.printStackTrace();
 		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+		if (_user == null)
+			refreshData();
+	}
+	
+	public void					refreshData()
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Online Mode
+			_client = AndroidHttpClient.newInstance("Android");			
+			// Load data online
+			try
+			{
+				_loadOnlineData();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+		}
+		// Fire refresh complete event
+		for (DataRefreshListener listener : _listeners)
+			listener.onDataRefreshComplete();
 	}
 	
 	/*
@@ -198,5 +224,10 @@ public class					DiveboardModel
 	public void					commit()
 	{
 		// Not implemented
+	}
+	
+	public void					setOnDataRefreshComplete(DataRefreshListener listener)
+	{
+		_listeners.add(listener);
 	}
 }
