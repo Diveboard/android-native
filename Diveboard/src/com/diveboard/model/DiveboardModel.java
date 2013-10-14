@@ -34,6 +34,7 @@ public class					DiveboardModel
 	private String				_temp_user_json;
 	private String				_temp_dives_json;
 	private User				_temp_user = null;
+	private boolean				_enable_overwrite = false;
 
 	/*
 	 * Method DiveboardModel
@@ -178,6 +179,8 @@ public class					DiveboardModel
 		_loadDives(result, temp_mode);
 		if (!temp_mode)
 			_cache.commitCache();
+		else
+			_enable_overwrite = true;
 	}
 	
 	/*
@@ -253,10 +256,14 @@ public class					DiveboardModel
 	
 	public void					overwriteData() throws IOException
 	{
-		_cache.saveCache(_userId, "user", _temp_user_json);
-		_cache.saveCache(_userId, "dives", _temp_dives_json);
-		_cache.commitCache();
-		_user = (User) _temp_user.clone();
-		_temp_user = null;
+		if (_enable_overwrite)
+		{
+			_cache.saveCache(_userId, "user", _temp_user_json);
+			_cache.saveCache(_userId, "dives", _temp_dives_json);
+			_cache.commitCache();
+			_user = (User) _temp_user.clone();
+			_temp_user = null;
+		}
+		_enable_overwrite = false;
 	}
 }
