@@ -102,7 +102,9 @@ public class					Picture
 				return null;
 			_savePicture(context, size);
 		}
-		return _bitmap;
+		Bitmap bitmap = _bitmap;
+		_bitmap = null;
+		return bitmap;
 	}
 	
 	/*
