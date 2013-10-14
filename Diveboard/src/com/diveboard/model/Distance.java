@@ -19,8 +19,10 @@ public class					Distance
 		{
 			case KM:
 				result = _value;
+				break ;
 			case FT:
 				result = Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+				break ;
 		}
 		return (double) (Math.round(result * 100.0) / 100.0);
 	}
@@ -33,8 +35,10 @@ public class					Distance
 		{
 			case KM:
 				result = _value;
+				break ;
 			case FT:
 				result = Converter.convert(_value, Units.Distance.KM, Units.Distance.FT);
+				break ;
 		}
 		return (double) (Math.round(result * 100.0) / 100.0);
 	}
