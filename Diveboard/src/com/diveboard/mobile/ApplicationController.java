@@ -9,7 +9,18 @@ public class ApplicationController extends Application {
 	private static ApplicationController singleton;
 	private DiveboardModel mModel = null;
 	private boolean mDataReady = false;
-	
+	private boolean mDataRefreshed = false;
+	private int mPageIndex = 0;
+
+
+	public boolean isDataRefreshed() {
+		return mDataRefreshed;
+	}
+
+	public void setDataRefreshed(boolean mDataRefreshed) {
+		this.mDataRefreshed = mDataRefreshed;
+	}
+
 	public ApplicationController getInstance(){
 		return singleton;
 	}
@@ -41,5 +52,13 @@ public class ApplicationController extends Application {
 	@Override
 	public void onTerminate() {
 		super.onTerminate();
+	}
+
+	public int getPageIndex() {
+		return mPageIndex;
+	}
+
+	public void setPageIndex(int mPageIndex) {
+		this.mPageIndex = mPageIndex;
 	}
 }

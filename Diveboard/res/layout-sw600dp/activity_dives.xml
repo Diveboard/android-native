@@ -1,0 +1,119 @@
+<merge xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DivesActivity" >
+
+    <!-- Loading data progress -->
+
+    <LinearLayout
+        android:id="@+id/load_data_status"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone" >
+
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="8dp" />
+
+        <TextView
+            android:id="@+id/load_data_status_message"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:fontFamily="sans-serif-light"
+            android:text="@string/progress_load_data"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </LinearLayout>
+
+    <!-- Login form -->
+
+<!--     <ScrollView -->
+<!--         android:id="@+id/load_data_form" -->
+<!--         android:layout_width="match_parent" -->
+<!--         android:layout_height="match_parent" > -->
+	<LinearLayout
+        android:id="@+id/load_data_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:orientation="vertical"
+        tools:context=".MainActivity" >
+           <RelativeLayout
+               android:id="@+id/screen"
+               style="@style/LoginFormContainer"
+               android:layout_height="0dp"
+               android:layout_weight="1"
+               android:padding="0dp" >
+               <ImageView
+                   android:id="@+id/background1"
+                   android:layout_height="match_parent"
+                   android:layout_width="match_parent"
+                   android:background="#4d4d4d"/>
+               <ImageView
+                   android:id="@+id/background2"
+                   android:layout_width="match_parent"
+                   android:layout_height="match_parent"
+                   android:alpha="0"/>
+		   	   <android.support.v4.view.ViewPager
+		           xmlns:android="http://schemas.android.com/apk/res/android"
+		           android:id="@+id/pager"
+		           android:layout_width="match_parent"
+		           android:layout_height="match_parent" />	
+		       
+		       <SeekBar
+			       android:id="@+id/seekBar"
+			       android:layout_width="match_parent"
+			       android:layout_centerHorizontal="true"
+			       android:layout_alignParentBottom="true"
+			       android:layout_height="0dp"/>
+		    </RelativeLayout>
+			<RelativeLayout
+			    android:id="@+id/dive_footer"
+			    android:layout_width="match_parent"
+			    android:layout_height="10dp"
+			    android:background="#FFFFFF" >
+				<TextView
+				    android:id="@+id/title_footer1"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_marginLeft="10dp"
+				    android:layout_marginTop="5dp"/>
+				<TextView
+				    android:id="@+id/title_footer2"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_toRightOf="@id/title_footer1"
+				    android:layout_marginTop="5dp"/>
+				<TextView
+				    android:id="@+id/title_footer3"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_toRightOf="@id/title_footer2"
+				    android:layout_marginTop="5dp"/>
+				<TextView
+				    android:id="@+id/title_footer4"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_toRightOf="@id/title_footer3"
+				    android:layout_marginTop="5dp"/>
+				<TextView
+				    android:id="@+id/title_footer5"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_toRightOf="@id/title_footer4"
+				    android:layout_marginTop="5dp"/>
+				<TextView
+				    android:id="@+id/content_footer"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_below="@id/title_footer1"
+				    android:layout_marginLeft="10dp"/>
+			</RelativeLayout>
+        </LinearLayout>
+<!--     </ScrollView> -->
+
+</merge>

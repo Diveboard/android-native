@@ -16,6 +16,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
@@ -68,75 +69,80 @@ public class DivesFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
-		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
-		RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBodyHeight());
-		fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1() + mScreenSetup.getDiveListFragmentBannerHeight(), 0, 0);
-		mFragment.setLayoutParams(fragment_params);
-		// Resize the dimensions of each fragment
-		RelativeLayout.LayoutParams banner_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight());
-		mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);//(RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
-		banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
-		mFragmentBannerHeight.setLayoutParams(banner_params);
-		
-		mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
-		RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
-		params1.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
-		mMainImage.setLayoutParams(params1);
-		
-		mMainImageCache = (ImageView)mFragment.findViewById(R.id.main_image_cache);		
-		RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
-		params2.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
-		mMainImageCache.setLayoutParams(params2);
-		mMainImageCache.setImageBitmap(mRoundedLayer);
-		
-		LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentBodyTitle());
-		fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
-		mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
-		mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
-		
-		LinearLayout.LayoutParams fragment_picture_circle_radius_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
-		fragment_picture_circle_radius_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace3(), 0, 0);
-		mFragmentPictureCircleRadius = (RelativeLayout)rootView.findViewById(R.id.fragment_picture_circle_radius);
-		mFragmentPictureCircleRadius.setLayoutParams(fragment_picture_circle_radius_params);
-		//Set the content of the fragments
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-		if (mDive.getTripName() != null)
+		if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 		{
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
+			System.out.println("CREATION FRAGMENT");
+	        // Inflate the layout for this fragment
+			ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
+			mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
+			RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBodyHeight());
+			fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1() + mScreenSetup.getDiveListFragmentBannerHeight(), 0, 0);
+			mFragment.setLayoutParams(fragment_params);
+			// Resize the dimensions of each fragment
+			RelativeLayout.LayoutParams banner_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight());
+			mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);//(RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
+			banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
+			mFragmentBannerHeight.setLayoutParams(banner_params);
+			
+			mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
+			RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
+			params1.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
+			mMainImage.setLayoutParams(params1);
+			
+			mMainImageCache = (ImageView)mFragment.findViewById(R.id.main_image_cache);		
+			RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
+			params2.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
+			mMainImageCache.setLayoutParams(params2);
+			mMainImageCache.setImageBitmap(mRoundedLayer);
+			
+			LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentBodyTitle());
+			fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
+			mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
+			mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
+			
+			LinearLayout.LayoutParams fragment_picture_circle_radius_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
+			fragment_picture_circle_radius_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace3(), 0, 0);
+			mFragmentPictureCircleRadius = (RelativeLayout)rootView.findViewById(R.id.fragment_picture_circle_radius);
+			mFragmentPictureCircleRadius.setLayoutParams(fragment_picture_circle_radius_params);
+			//Set the content of the fragments
+			Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+			if (mDive.getTripName() != null)
+			{
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
+			}
+			else
+				mFragmentBannerHeight.setVisibility(View.INVISIBLE);
+			((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
+			((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
+			((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
+			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
+			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
+			((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
+			((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
+			((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
+			((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
+			((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
+			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));	
+			// Downloading the main picture in a new thread
+			//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
+			//showProgress(true);
+			mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
+			mDownloadImageTask.execute();
+			mDownloadSmallImageTask = new DownloadSmallImageTask();
+			mDownloadSmallImageTask.execute();
+			return rootView;
 		}
-		else
-			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
-		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
-		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
-		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
-		((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
-		((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
-		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
-		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
-		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
-		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));	
-		// Downloading the main picture in a new thread
-		//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
-		//showProgress(true);
-		mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
-		mDownloadImageTask.execute();
-		mDownloadSmallImageTask = new DownloadSmallImageTask();
-		mDownloadSmallImageTask.execute();
-        return rootView;
+		return (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
     }
 	
 	/**

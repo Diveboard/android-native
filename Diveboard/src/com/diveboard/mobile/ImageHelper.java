@@ -76,8 +76,7 @@ public class ImageHelper {
 	 * Returns a blurred bitmap
 	 */
 	public static Bitmap fastblur(Bitmap sentBitmap, int radius) {
-		
-        Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
+		Bitmap bitmap = sentBitmap.copy(sentBitmap.getConfig(), true);
         if (radius < 1) {
             return (null);
         }

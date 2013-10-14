@@ -12,22 +12,22 @@ public class					ScreenSetup
 	
 	// Defines in Percent
 	static final double[]		_wsp1 = {5.5, 7, 4, 3.25};				// Fragment Whitespace 1
-	static final double[]		_wsp2 = {1.5, 0, 2, 2};					// Fragment Whitespace 2
-	static final double[]		_wsp3 = {1.5, 0, 3, 3};					// Fragment Whitespace 3
-	static final double[]		_wsp4 = {1.5, 0, 2, 3};					// Fragment Whitespace 4
-	static final double[]		_frg_bann_h = {7, 0, 7, 7};				// Fragment Banner Height
-	static final double[]		_frg_body_h = {68, 0, 67, 64};			// Fragment Body Height
-	static final double[]		_frg_foot_h = {5.7, 0, 0, 0};			// Fragment Footer Height
-	static final double[]		_frg_w = {51.5, 0, 75, 75};				// Fragment Width
-	static final double[]		_frag_out_circ_rad = {41, 0, 60, 60};	// Fragment Outer Circle Radius
-	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};	// Fragment Circle Border Width
-	static final double[]		_frag_body_title = {10, 0, 0, 0};		// Fragment Body Title*
-	static final double[]		_frag_pict_circ_rad = {8, 0, 0, 4};		// Fragment Picture Circle Radius*
-	static final double[]		_footer = {8, 0, 7.5, 10};				// Fragment Footer
-	static final double[]		_frg_body_wsp1 = {2.5, 10, 0, 0};			// Fragment Body Whitespace 1*
-	static final double[]		_frg_body_wsp2 = {1.3, 10, 0, 0};		// Fragment Body Whitespace 2
-	static final double[]		_frg_body_wsp3 = {2, 10, 0, 0};			// Fragment Body Whitespace 3
-	static final double[]		_frg_body_wsp4 = {2, 10, 0, 0};			// Fragment Body Whitespace 4
+	static final double[]		_wsp2 = {1.5, 1.5, 2, 2};					// Fragment Whitespace 2
+	static final double[]		_wsp3 = {1.5, 1.5, 3, 3};					// Fragment Whitespace 3
+	static final double[]		_wsp4 = {1.5, 3, 2, 3};					// Fragment Whitespace 4
+	static final double[]		_frg_bann_h = {7, 18, 7, 7};				// Fragment Banner Height
+	static final double[]		_frg_body_h = {68, 52, 67, 64};			// Fragment Body Height
+	static final double[]		_frg_foot_h = {5.7, 13, 0, 0};			// Fragment Footer Height
+	static final double[]		_frg_w = {51.5, 210, 75, 75};				// Fragment Width
+	static final double[]		_frag_out_circ_rad = {41, 41, 60, 60};	// Fragment Outer Circle Radius
+	static final double[]		_frag_circ_brdr_w = {1.5, 1.5, 3.2, 3.2};	// Fragment Circle Border Width
+	static final double[]		_frag_body_title = {10, 12, 0, 0};		// Fragment Body Title*
+	static final double[]		_frag_pict_circ_rad = {8, 15, 0, 4};		// Fragment Picture Circle Radius*
+	static final double[]		_footer = {8, 13, 7.5, 10};				// Fragment Footer
+	static final double[]		_frg_body_wsp1 = {2.5, 5, 0, 0};			// Fragment Body Whitespace 1*
+	static final double[]		_frg_body_wsp2 = {1.3, 5, 0, 0};		// Fragment Body Whitespace 2
+	static final double[]		_frg_body_wsp3 = {2, 9, 0, 0};			// Fragment Body Whitespace 3
+	static final double[]		_frg_body_wsp4 = {2, 22, 0, 0};			// Fragment Body Whitespace 4
 	static final double[]		_dl_seekbar_h = {5, 4, 0 , 0};			// Dive List Seek Bar Height*
 	
 	
@@ -64,7 +64,7 @@ public class					ScreenSetup
 	{
 		_screenW = w;
 		_screenH = h;
-		_screenMode = (w < h) ? Mode.MOBILE_PORTRAIT : Mode.PAD_LANDSCAPE;
+		_screenMode = (w < h) ? Mode.MOBILE_PORTRAIT : Mode.MOBILE_LANDSCAPE;
 		_calculate();
 	}
 	
@@ -78,7 +78,7 @@ public class					ScreenSetup
 		_diveListFragmentBodyHeight = (int) (_screenH * (_frg_body_h[mode] / 100));
 		_diveListFragmentFooterHeight = (int) (_screenH * (_frg_foot_h[mode] / 100));
 		_diveListFragmentHeight = (int) (_diveListFragmentBannerHeight + _diveListFragmentBodyHeight);
-		if (_screenMode == Mode.MOBILE_PORTRAIT)
+		if (_screenMode == Mode.MOBILE_PORTRAIT || _screenMode == Mode.MOBILE_LANDSCAPE)
 			_diveListFragmentWidth = (int) (_screenH / (100 / _frg_w[mode]));
 		else
 			_diveListFragmentWidth = (int) ((_diveListFragmentBodyHeight + _diveListFragmentBannerHeight) / (100 / _frg_w[mode]));
