@@ -1,8 +1,10 @@
 package com.diveboard.mobile;
 
 import android.app.Activity;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
+import android.view.Window;
 import android.widget.TextView;
 
 public class TabEditNotesActivity extends Activity
@@ -11,12 +13,7 @@ public class TabEditNotesActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-       
-        TextView tv = new TextView(this);
-        tv.setTextSize(25);
-        tv.setGravity(Gravity.CENTER_VERTICAL);
-        tv.setText("This Is TabEditNotes Activity");
-       
-        setContentView(tv);
+	    
+	    setContentView(R.layout.tab_edit_notes);
     }
 }

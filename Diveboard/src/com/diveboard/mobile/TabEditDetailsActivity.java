@@ -6,8 +6,14 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 
 public class					TabEditDetailsActivity extends Activity
 {
@@ -19,15 +25,42 @@ public class					TabEditDetailsActivity extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
 		super.onCreate(savedInstanceState);
-		setContentView(R.layout.tab_edit_details);
 
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 		mIndex = getIntent().getIntExtra("index", -1);
 		
-		Dive dive = mModel.getDives().get(mIndex);
+		_displayEditList();
 		
-		optionList = (ListView)findViewById(R.id.optionList);
+		optionList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				test();
+			}
+		});
+    }
+    
+    private void				test()
+    {
+    	setContentView(R.layout.edit_title);
+    	Typeface FaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+    	Button saveButton = (Button) findViewById(R.id.save_button);
+    	saveButton.setTypeface(FaceB);
+    	saveButton.setText(getResources().getString(R.string.save_button));
+    	TextView title = (TextView) findViewById(R.id.title);
+    	title.setTypeface(FaceB);
+    	title.setText(getResources().getString(R.string.edit_title_title));
+    }
+    
+    private void				_displayEditList()
+    {
+    	setContentView(R.layout.tab_edit_details);
+    	Dive dive = mModel.getDives().get(mIndex);
+    	
+    	optionList = (ListView)findViewById(R.id.optionList);
 
+    	System.out.println(dive);
+    	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
 		elem.add(new EditOption("Title : ", dive.getSpot().getName()));
 		elem.add(new EditOption("Dive number : ", Integer.toString(dive.getId())));
