@@ -59,6 +59,7 @@
 	   	       android:textSize="30sp"
 	   	       android:maxLength="50"
 	   	       android:gravity="center"
+	   	       android:imeOptions="actionDone"
 	   	       android:background="@drawable/tab_title_background" >
 	
 	            <requestFocus />
