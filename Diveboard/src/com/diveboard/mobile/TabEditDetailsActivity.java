@@ -6,9 +6,14 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -20,6 +25,8 @@ public class					TabEditDetailsActivity extends Activity
 	private ListView			optionList;
 	private DiveboardModel		mModel;
 	private int					mIndex;
+	private int					mPage = 0;
+	private TextView			mLengthCount;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -30,26 +37,85 @@ public class					TabEditDetailsActivity extends Activity
 		mIndex = getIntent().getIntExtra("index", -1);
 		
 		_displayEditList();
-		
-		optionList.setOnItemClickListener(new OnItemClickListener() {
-			@Override
-			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-			{
-				test();
-			}
-		});
     }
     
-    private void				test()
+    @Override
+    public void onBackPressed()
+    {
+    	if (mPage > 0)
+    	{
+    		_displayEditList();
+    		mPage--;
+    	}
+    	else
+    	{
+    		Intent divesActivity = new Intent(TabEditDetailsActivity.this, DivesActivity.class);
+    	    startActivity(divesActivity);
+    	}
+    }
+    
+    private void				editTitle()
     {
     	setContentView(R.layout.edit_title);
     	Typeface FaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-    	Button saveButton = (Button) findViewById(R.id.save_button);
-    	saveButton.setTypeface(FaceB);
-    	saveButton.setText(getResources().getString(R.string.save_button));
+    	Typeface FaceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+
+    	Button backButton = (Button) findViewById(R.id.back_button);
+    	backButton.setTypeface(FaceR);
+    	backButton.setText("<");
+    	backButton.setOnClickListener(new OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+		    	InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+		    	if (inputMethodManager != null)
+		    		inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
+				_displayEditList();
+				mPage--;
+			}
+		});
+
     	TextView title = (TextView) findViewById(R.id.title);
     	title.setTypeface(FaceB);
     	title.setText(getResources().getString(R.string.edit_title_title));
+    	
+    	Button saveButton = (Button) findViewById(R.id.save_button);
+    	saveButton.setTypeface(FaceB);
+    	saveButton.setText(getResources().getString(R.string.save_button));
+    	    	
+    	TextView edit_title = (TextView) findViewById(R.id.edit_title);
+    	edit_title.setTypeface(FaceR);
+    	edit_title.setText(mModel.getDives().get(mIndex).getSpot().getName());
+    	edit_title.setOnClickListener(new OnClickListener()
+    	{
+			@Override
+			public void onClick(View v)
+			{
+				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+		    	if (inputMethodManager != null)
+		    		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+			}
+		});
+    	mLengthCount = (TextView) findViewById(R.id.length_count);
+    	mLengthCount.setTypeface(FaceR);
+    	mLengthCount.setText(50 - edit_title.length() + " " + getResources().getString(R.string.characters_left));
+    	edit_title.addTextChangedListener(new TextWatcher()
+    	{
+			@Override
+			public void onTextChanged(CharSequence s, int start, int arg2, int arg3) {
+				mLengthCount.setText(50 - s.length() + " " + getResources().getString(R.string.characters_left));
+			}
+
+			@Override
+			public void afterTextChanged(Editable s) {
+			}
+
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+			}
+		});
     }
     
     private void				_displayEditList()
@@ -58,8 +124,6 @@ public class					TabEditDetailsActivity extends Activity
     	Dive dive = mModel.getDives().get(mIndex);
     	
     	optionList = (ListView)findViewById(R.id.optionList);
-
-    	System.out.println(dive);
     	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
 		elem.add(new EditOption("Title : ", dive.getSpot().getName()));
@@ -90,5 +154,14 @@ public class					TabEditDetailsActivity extends Activity
 		
 		OptionAdapter adapter = new OptionAdapter(this, elem);
 		optionList.setAdapter(adapter);
+		
+		optionList.setOnItemClickListener(new OnItemClickListener() {
+			@Override
+			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+			{
+				editTitle();
+				mPage++;
+			}
+		});
     }
 }

@@ -15,5 +15,6 @@
     <string name="tab_species_label">SPECIES</string>
     <string name="tab_photos_label">PHOTOS</string>
     <string name="edit_title_title">TITLE</string>
+    <string name="characters_left">Characters Left</string>
 
 </resources>
