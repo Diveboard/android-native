@@ -42,6 +42,7 @@ public class					TabEditDetailsActivity extends Activity
     @Override
     public void onBackPressed()
     {
+    	System.out.println("Back");
     	if (mPage > 0)
     	{
     		_displayEditList();
@@ -97,6 +98,7 @@ public class					TabEditDetailsActivity extends Activity
 		    		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
 			}
 		});
+    	
     	mLengthCount = (TextView) findViewById(R.id.length_count);
     	mLengthCount.setTypeface(FaceR);
     	mLengthCount.setText(50 - edit_title.length() + " " + getResources().getString(R.string.characters_left));
@@ -116,6 +118,10 @@ public class					TabEditDetailsActivity extends Activity
 
 			}
 		});
+    	InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
+    	if (inputMethodManager != null)
+    		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
+
     }
     
     private void				_displayEditList()
