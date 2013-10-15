@@ -16,10 +16,10 @@ public class					ScreenSetup
 	static final double[]		_wsp3 = {1.5, 1.5, 3, 3};					// Fragment Whitespace 3
 	static final double[]		_wsp4 = {1.5, 3, 2, 3};					// Fragment Whitespace 4
 	static final double[]		_frg_bann_h = {7, 18, 7, 7};				// Fragment Banner Height
-	static final double[]		_frg_body_h = {68, 52, 67, 64};			// Fragment Body Height
+	static final double[]		_frg_body_h = {65, 52, 67, 64};			// Fragment Body Height*
 	static final double[]		_frg_foot_h = {5.7, 13, 0, 0};			// Fragment Footer Height
 	static final double[]		_frg_w = {51.5, 210, 75, 75};				// Fragment Width
-	static final double[]		_frag_out_circ_rad = {41, 41, 60, 60};	// Fragment Outer Circle Radius
+	static final double[]		_frag_out_circ_rad = {38, 41, 60, 60};	// Fragment Outer Circle Radius*
 	static final double[]		_frag_circ_brdr_w = {1.5, 1.5, 3.2, 3.2};	// Fragment Circle Border Width
 	static final double[]		_frag_body_title = {10, 12, 0, 0};		// Fragment Body Title*
 	static final double[]		_frag_pict_circ_rad = {8, 15, 0, 4};		// Fragment Picture Circle Radius*
@@ -31,6 +31,7 @@ public class					ScreenSetup
 	static final double[]		_dl_seekbar_h = {5, 4, 0 , 0};			// Dive List Seek Bar Height*
 	static final double[]		_dl_profile_h = {5, 4, 0 , 0};			// Dive List Profile Box Height
 	static final double[]		_dl_profile_w = {51.5, 4, 0 , 0};			// Dive List Profile Box Width
+	static final double[]		_frag_spict_brdr_margin = {5, 5, 5, 5};	// Dive List Small Pictures border margin
 	
 	
 	private int					_screenW;
@@ -58,6 +59,7 @@ public class					ScreenSetup
 	private int					_diveListSeekBarHeight;
 	private int					_diveListProfileBoxHeight;
 	private int					_diveListProfileBoxWidth;
+	private int					_diveListSmallPictureMargin;
 	
 	public						ScreenSetup(int w, int h)
 	{
@@ -107,6 +109,7 @@ public class					ScreenSetup
 		_diveListSeekBarHeight = (int) (_screenH * (_dl_seekbar_h[mode] / 100));
 		_diveListProfileBoxHeight = (int) (_screenH * (_dl_profile_h[mode] / 100));
 		_diveListProfileBoxWidth = (int) (_screenH * (_dl_profile_w[mode] / 100));
+		_diveListSmallPictureMargin = (int) (((_screenW - (_screenW * (_frag_spict_brdr_margin[mode] / 50)) / 5) - _diveListFragmentPictureCircleRadius) / 2);
 	}
 	
 	public int					getScreenHeight() {
@@ -203,5 +206,13 @@ public class					ScreenSetup
 
 	public void					setDiveListProfileBoxWidth(int _diveListProfileBoxWidth) {
 		this._diveListProfileBoxWidth = _diveListProfileBoxWidth;
+	}
+
+	public int					getDiveListSmallPictureMargin() {
+		return _diveListSmallPictureMargin;
+	}
+
+	public void					setDiveListSmallPictureMargin(int _diveListSmallPictureMargin) {
+		this._diveListSmallPictureMargin = _diveListSmallPictureMargin;
 	}
 }
