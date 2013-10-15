@@ -29,6 +29,8 @@ public class					ScreenSetup
 	static final double[]		_frg_body_wsp3 = {2, 9, 0, 0};			// Fragment Body Whitespace 3
 	static final double[]		_frg_body_wsp4 = {2, 22, 0, 0};			// Fragment Body Whitespace 4
 	static final double[]		_dl_seekbar_h = {5, 4, 0 , 0};			// Dive List Seek Bar Height*
+	static final double[]		_dl_profile_h = {5, 4, 0 , 0};			// Dive List Profile Box Height
+	static final double[]		_dl_profile_w = {51.5, 4, 0 , 0};			// Dive List Profile Box Width
 	
 	
 	private int					_screenW;
@@ -54,6 +56,8 @@ public class					ScreenSetup
 	private int					_diveListFragmentWhitespace3;
 	private int					_diveListFragmentWhitespace4;
 	private int					_diveListSeekBarHeight;
+	private int					_diveListProfileBoxHeight;
+	private int					_diveListProfileBoxWidth;
 	
 	public						ScreenSetup(int w, int h)
 	{
@@ -101,6 +105,8 @@ public class					ScreenSetup
 		_diveListFragmentWhitespace3 = (int) (_screenH * (_frg_body_wsp3[mode] / 100));
 		_diveListFragmentWhitespace4 = (int) (_screenH * (_frg_body_wsp4[mode] / 100));
 		_diveListSeekBarHeight = (int) (_screenH * (_dl_seekbar_h[mode] / 100));
+		_diveListProfileBoxHeight = (int) (_screenH * (_dl_profile_h[mode] / 100));
+		_diveListProfileBoxWidth = (int) (_screenH * (_dl_profile_w[mode] / 100));
 	}
 	
 	public int					getScreenHeight() {
@@ -181,5 +187,21 @@ public class					ScreenSetup
 	
 	public int					getDiveListSeekBarHeight() {
 		return _diveListSeekBarHeight;
+	}
+	
+	public int					getDiveListProfileBoxHeight() {
+		return _diveListProfileBoxHeight;
+	}
+
+	public void					setDiveListProfileBoxHeight(int _diveListProfileBoxHeight) {
+		this._diveListProfileBoxHeight = _diveListProfileBoxHeight;
+	}
+
+	public int					getDiveListProfileBoxWidth() {
+		return _diveListProfileBoxWidth;
+	}
+
+	public void					setDiveListProfileBoxWidth(int _diveListProfileBoxWidth) {
+		this._diveListProfileBoxWidth = _diveListProfileBoxWidth;
 	}
 }
