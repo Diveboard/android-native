@@ -40,6 +40,8 @@ public class					ScreenSetup
 	
 	// Pad Dive List
 	private int					_diveListWhiteSpace1;
+	private int					_diveListWhiteSpace2;
+	private int					_diveListWhiteSpace3;
 	private int					_diveListWhiteSpace4;
 	private int					_diveListFragmentBannerHeight;
 	private int					_diveListFragmentWidth;
@@ -79,6 +81,8 @@ public class					ScreenSetup
 		int mode = _screenMode.ordinal();
 		
 		_diveListWhiteSpace1 = (int) (_screenH * (_wsp1[mode] / 100));
+		_diveListWhiteSpace2 = (int) (_screenH * (_wsp2[mode] / 100));
+		_diveListWhiteSpace3 = (int) (_screenH * (_wsp3[mode] / 100));
 		_diveListWhiteSpace4 = (int) (_screenH * (_wsp4[mode] / 100));
 		_diveListFragmentBannerHeight = (int) (_screenH * (_frg_bann_h[mode] / 100));
 		_diveListFragmentBodyHeight = (int) (_screenH * (_frg_body_h[mode] / 100));
@@ -214,5 +218,21 @@ public class					ScreenSetup
 
 	public void					setDiveListSmallPictureMargin(int _diveListSmallPictureMargin) {
 		this._diveListSmallPictureMargin = _diveListSmallPictureMargin;
+	}
+
+	public int					getDiveListWhiteSpace2() {
+		return _diveListWhiteSpace2;
+	}
+
+	public void					setDiveListWhiteSpace2(int _diveListWhiteSpace2) {
+		this._diveListWhiteSpace2 = _diveListWhiteSpace2;
+	}
+
+	public int					getDiveListWhiteSpace3() {
+		return _diveListWhiteSpace3;
+	}
+
+	public void					setDiveListWhiteSpace3(int _diveListWhiteSpace3) {
+		this._diveListWhiteSpace3 = _diveListWhiteSpace3;
 	}
 }
