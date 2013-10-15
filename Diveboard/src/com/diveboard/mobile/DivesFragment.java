@@ -136,6 +136,8 @@ public class DivesFragment extends Fragment {
 			// Downloading the main picture in a new thread
 			//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
 			//showProgress(true);
+			
+			
 			mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
 			mDownloadImageTask.execute();
 			mDownloadSmallImageTask = new DownloadSmallImageTask();

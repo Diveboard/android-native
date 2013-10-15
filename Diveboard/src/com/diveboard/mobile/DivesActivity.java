@@ -299,7 +299,7 @@ public class DivesActivity extends FragmentActivity {
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        mPager.setOffscreenPageLimit(1);
+		        mPager.setOffscreenPageLimit(3);
 		        mPager.setCurrentItem(AC.getPageIndex());
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
@@ -376,8 +376,15 @@ public class DivesActivity extends FragmentActivity {
 						}
 			        	
 			        });
-			        RefreshTask refresh_task = new RefreshTask();
-			        refresh_task.execute();
+			        new Thread(new Runnable()
+					{
+						public void run()
+						{
+							mModel.refreshData();
+						}
+					}).start();
+//			        RefreshTask refresh_task = new RefreshTask();
+//			        refresh_task.execute();
 		        }
 		    } 
 		});
