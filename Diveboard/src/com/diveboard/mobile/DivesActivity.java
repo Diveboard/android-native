@@ -200,7 +200,10 @@ public class DivesActivity extends FragmentActivity {
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
-		AC.setPageIndex(mPager.getCurrentItem());
+		if (mPager != null)
+			AC.setPageIndex(mPager.getCurrentItem());
+		else
+			AC.setPageIndex(0);
 	}
 	
 	public static String getPositon(int i, DiveboardModel model)
@@ -381,12 +384,12 @@ public class DivesActivity extends FragmentActivity {
 							mModel.refreshData();
 						}
 					}).start();
-//			        RefreshTask refresh_task = new RefreshTask();
-//			        refresh_task.execute();
 		        }
+		        
 		    } 
 		});
 	}
+
 	
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
 	{

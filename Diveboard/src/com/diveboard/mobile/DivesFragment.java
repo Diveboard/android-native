@@ -53,10 +53,12 @@ public class DivesFragment extends Fragment {
 	private ImageView mMainImageCache;
 	private RelativeLayout mFragmentBodyTitle;
 	private RelativeLayout mFragmentPictureCircleRadius;
+	private ImageView mUserImage;
+	private RelativeLayout mFragmentProfile;
+	private LinearLayout mFragmentProfileInfo;
 	
 	public DivesFragment()
 	{
-		//System.out.println("Entre");
 	}
 	
 	public DivesFragment(Dive dive, ScreenSetup screenSetup, Bitmap rounded_layer, Bitmap rounded_layer_small)
@@ -75,12 +77,13 @@ public class DivesFragment extends Fragment {
 	        // Inflate the layout for this fragment
 			ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 			mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
+			mFragmentProfile = (RelativeLayout)rootView.findViewById(R.id.fragment_profile);
 			RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBodyHeight());
 			fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1() + mScreenSetup.getDiveListFragmentBannerHeight(), 0, 0);
 			mFragment.setLayoutParams(fragment_params);
 			// Resize the dimensions of each fragment
 			RelativeLayout.LayoutParams banner_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBannerHeight());
-			mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);//(RelativeLayout)mFragment.findViewById(R.id.fragment_banner_height);
+			mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);
 			banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
 			mFragmentBannerHeight.setLayoutParams(banner_params);
 			
@@ -133,11 +136,34 @@ public class DivesFragment extends Fragment {
 			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
 			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));	
+			//Set the logged profile
+			ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
+			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceR);
+			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
+			mFragmentProfile = (RelativeLayout)rootView.findViewById(R.id.fragment_profile);
+	        mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
+	        mFragmentProfileInfo = (LinearLayout)rootView.findViewById(R.id.profile_info);
+	        RelativeLayout.LayoutParams fragment_profile_info_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	        fragment_profile_info_params.setMargins(mScreenSetup.getDiveListWhiteSpace2(), 0, 0, 0);
+	        fragment_profile_info_params.addRule(RelativeLayout.RIGHT_OF, R.id.profile_image);
+	        fragment_profile_info_params.addRule(RelativeLayout.CENTER_VERTICAL);
+	        mFragmentProfileInfo.setLayoutParams(fragment_profile_info_params);
+	        RelativeLayout.LayoutParams fragment_profile_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxWidth(), mScreenSetup.getDiveListProfileBoxHeight());
+	        RelativeLayout.LayoutParams user_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxHeight(), mScreenSetup.getDiveListProfileBoxHeight());
+	        fragment_profile_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	        //fragment_profile_params.addRule(RelativeLayout.BELOW, R.id.fragment);
+	        fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
+	        mFragmentProfile.setLayoutParams(fragment_profile_params);
+	        mUserImage.setLayoutParams(user_image_params);
+	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
+	        profile_task.execute(AC.getPageIndex());
 			// Downloading the main picture in a new thread
 			//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
 			//showProgress(true);
-			
-			
 			mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
 			mDownloadImageTask.execute();
 			mDownloadSmallImageTask = new DownloadSmallImageTask();
@@ -146,6 +172,38 @@ public class DivesFragment extends Fragment {
 		}
 		return (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
     }
+	
+	/**
+	 * Represents an asynchronous task used to load user profile image
+	 */
+	private class DownloadProfileImageTask extends AsyncTask<Integer, Void, Bitmap> {
+		private Integer mItemNb;
+		@Override
+		protected Bitmap doInBackground(Integer... params) {
+			mItemNb = params[0];
+			Bitmap result = null;
+			try {
+				if (getActivity() != null)
+				{
+					ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+					result = AC.getModel().getUser().getPictureSmall().getPicture(getActivity().getApplicationContext());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			if (result != null)
+			{
+				return result;
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(final Bitmap result) {
+			mUserImage.setImageBitmap(result);
+		}
+	}
 	
 	/**
 	 * Shows the progress UI and hides the login form.
@@ -247,7 +305,6 @@ public class DivesFragment extends Fragment {
 				for (int i = 1; getActivity() != null && i < mDive.getPictures().size() && i < 6; i++)
 				{
 					try {
-						//System.out.println("picture " + i);
 						ImageView pic = new ImageView(getActivity().getApplicationContext());
 						ImageView round_pic = new ImageView(getActivity().getApplicationContext());
 						pic.setId(i);
@@ -261,7 +318,6 @@ public class DivesFragment extends Fragment {
 							image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
 							rounded_image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
 						}
-						System.out.println(mScreenSetup.getDiveListSmallPictureMargin());
 						image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
 						rounded_image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
 						pic.setLayoutParams(image_params);
@@ -271,9 +327,6 @@ public class DivesFragment extends Fragment {
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
-					
-					//mFragmentPictureCircleRadius.addView(pic);
-					//mFragmentPictureCircleRadius.addView(round_pic);
 				}
 			}
 			else

@@ -13,7 +13,7 @@ public class					ScreenSetup
 	// Defines in Percent
 	static final double[]		_wsp1 = {5.5, 7, 4, 3.25};				// Fragment Whitespace 1
 	static final double[]		_wsp2 = {1.5, 1.5, 2, 2};					// Fragment Whitespace 2
-	static final double[]		_wsp3 = {1.5, 1.5, 3, 3};					// Fragment Whitespace 3
+	static final double[]		_wsp3 = {2.5, 1.5, 3, 3};					// Fragment Whitespace 3*
 	static final double[]		_wsp4 = {1.5, 3, 2, 3};					// Fragment Whitespace 4
 	static final double[]		_frg_bann_h = {7, 18, 7, 7};				// Fragment Banner Height
 	static final double[]		_frg_body_h = {65, 52, 67, 64};			// Fragment Body Height*
@@ -29,7 +29,7 @@ public class					ScreenSetup
 	static final double[]		_frg_body_wsp3 = {2, 9, 0, 0};			// Fragment Body Whitespace 3
 	static final double[]		_frg_body_wsp4 = {2, 22, 0, 0};			// Fragment Body Whitespace 4
 	static final double[]		_dl_seekbar_h = {5, 4, 0 , 0};			// Dive List Seek Bar Height*
-	static final double[]		_dl_profile_h = {5, 4, 0 , 0};			// Dive List Profile Box Height
+	static final double[]		_dl_profile_h = {6, 4, 0 , 0};			// Dive List Profile Box Height*
 	static final double[]		_dl_profile_w = {51.5, 4, 0 , 0};			// Dive List Profile Box Width
 	static final double[]		_frag_spict_brdr_margin = {5, 5, 5, 5};	// Dive List Small Pictures border margin
 	

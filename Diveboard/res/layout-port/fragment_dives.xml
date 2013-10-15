@@ -107,4 +107,36 @@
 	    	    android:gravity="center">
             </RelativeLayout>
     </LinearLayout>
+    <RelativeLayout
+        android:id="@+id/fragment_profile"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+	    <RelativeLayout
+	        android:id="@+id/fragment_profile_bar"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content">
+	        <ImageView
+	            android:id="@+id/profile_image"
+	            android:layout_height="wrap_content"
+	            android:layout_width="wrap_content"/>
+	        <LinearLayout
+	            android:id="@+id/profile_info"
+	            android:orientation="vertical"
+	            android:layout_width="wrap_content"
+	            android:layout_height="wrap_content"
+	            android:layout_toRightOf="@id/profile_image"
+	            android:layout_centerVertical="true">
+		        <TextView
+		                android:id="@+id/logged_by"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:textColor="#ffffff"/>
+		        <TextView
+		                android:id="@+id/user_name"
+		                android:layout_width="wrap_content"
+		                android:layout_height="wrap_content"
+		                android:textColor="#ffffff"/>
+		    </LinearLayout>
+	   	</RelativeLayout>
+   	</RelativeLayout>
 </RelativeLayout>
