@@ -87,8 +87,6 @@ public class DivesActivity extends FragmentActivity {
 	private View mLoadDataFormView;
 	private View mLoadDataStatusView;
 	private TextView mLoadDataStatusMessageView;
-	private int mOrientation;
-	
 	// Model to display
 	private DiveboardModel mModel;
 	
@@ -286,7 +284,7 @@ public class DivesActivity extends FragmentActivity {
 				mBackground1 = (ImageView)findViewById(R.id.background1);
 				mBackground2 = (ImageView)findViewById(R.id.background2);
 				DownloadImageTask task = new DownloadImageTask();
-				task.execute(0);
+				task.execute(AC.getPageIndex());
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null)
 				{
@@ -407,6 +405,8 @@ public class DivesActivity extends FragmentActivity {
 			try {
 				if (mModel.getDives().get(mItemNb).getFeaturedPicture() != null)
 					result = mModel.getDives().get(mItemNb).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
+				else
+					result = mModel.getDives().get(mItemNb).getThumbnailImageUrl().getPicture(getApplicationContext());
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -506,24 +506,6 @@ public class DivesActivity extends FragmentActivity {
 					}
 				}
 			}
-		}
-	}
-	
-	private class RefreshTask extends AsyncTask<Void, Void, Boolean> {
-		
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			mModel.refreshData();
-			
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean success) {
-		}
-		
-		@Override
-		protected void onCancelled() {
 		}
 	}
 	

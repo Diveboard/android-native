@@ -261,8 +261,9 @@ public class DivesFragment extends Fragment {
 							image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
 							rounded_image_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
 						}
-						image_params.setMargins(10, 0, 10, 0);
-						rounded_image_params.setMargins(10, 0, 10, 0);
+						System.out.println(mScreenSetup.getDiveListSmallPictureMargin());
+						image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
+						rounded_image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
 						pic.setLayoutParams(image_params);
 						round_pic.setLayoutParams(rounded_image_params);
 						mSmallImage.add(pic);

@@ -109,7 +109,7 @@ public class					ScreenSetup
 		_diveListSeekBarHeight = (int) (_screenH * (_dl_seekbar_h[mode] / 100));
 		_diveListProfileBoxHeight = (int) (_screenH * (_dl_profile_h[mode] / 100));
 		_diveListProfileBoxWidth = (int) (_screenH * (_dl_profile_w[mode] / 100));
-		_diveListSmallPictureMargin = (int) (((_screenW - (_screenW * (_frag_spict_brdr_margin[mode] / 50)) / 5) - _diveListFragmentPictureCircleRadius) / 2);
+		_diveListSmallPictureMargin = (int) ((((_diveListFragmentWidth - (_diveListFragmentWidth * (_frag_spict_brdr_margin[mode] / 50))) / 5) - _diveListFragmentPictureCircleRadius) / 2);
 	}
 	
 	public int					getScreenHeight() {
