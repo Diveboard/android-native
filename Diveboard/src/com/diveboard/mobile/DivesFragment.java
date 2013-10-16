@@ -56,6 +56,8 @@ public class DivesFragment extends Fragment {
 	private ImageView mUserImage;
 	private RelativeLayout mFragmentProfile;
 	private LinearLayout mFragmentProfileInfo;
+	private LinearLayout mImageLayout;
+	private LinearLayout mContentLayout;
 	
 	public DivesFragment()
 	{
@@ -71,13 +73,37 @@ public class DivesFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+		// Inflate the layout for this fragment
+		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
+		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
+		mFragmentProfile = (RelativeLayout)rootView.findViewById(R.id.fragment_profile);
+		//Fragment title creation
+		LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentBodyTitle());
+		fragment_body_title_params.gravity = Gravity.CENTER_HORIZONTAL;
+		fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
+		mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
+		mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
+		//Fragment user profile data creation
+		ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
+		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceB);
+		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
+		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
+		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
+		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
+        mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
+        mFragmentProfileInfo = (LinearLayout)rootView.findViewById(R.id.profile_info);
+        RelativeLayout.LayoutParams fragment_profile_info_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+        fragment_profile_info_params.setMargins(mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0, 0);
+        fragment_profile_info_params.addRule(RelativeLayout.RIGHT_OF, R.id.profile_image);
+        fragment_profile_info_params.addRule(RelativeLayout.CENTER_VERTICAL);
+        mFragmentProfileInfo.setLayoutParams(fragment_profile_info_params);
+		//if we are in portrait mode - We create this condition because some content of the portrait and landscape modes cannot be factorized
 		if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 		{
-			System.out.println("CREATION FRAGMENT");
-	        // Inflate the layout for this fragment
-			ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
-			mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
-			mFragmentProfile = (RelativeLayout)rootView.findViewById(R.id.fragment_profile);
+			//Setting the fragment parameters
 			RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentBodyHeight());
 			fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1() + mScreenSetup.getDiveListFragmentBannerHeight(), 0, 0);
 			mFragment.setLayoutParams(fragment_params);
@@ -86,91 +112,104 @@ public class DivesFragment extends Fragment {
 			mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);
 			banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
 			mFragmentBannerHeight.setLayoutParams(banner_params);
-			
+			//Fragment big picture creation
 			mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
 			RelativeLayout.LayoutParams params1 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 			params1.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 			mMainImage.setLayoutParams(params1);
-			
+			//Fragment big picture with rounded layer creation
 			mMainImageCache = (ImageView)mFragment.findViewById(R.id.main_image_cache);		
 			RelativeLayout.LayoutParams params2 = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentOutCircleRadius());
 			params2.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace1(), 0, 0);
 			mMainImageCache.setLayoutParams(params2);
 			mMainImageCache.setImageBitmap(mRoundedLayer);
-			
-			LinearLayout.LayoutParams fragment_body_title_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentOutCircleRadius(), mScreenSetup.getDiveListFragmentBodyTitle());
-			fragment_body_title_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0);
-			mFragmentBodyTitle = (RelativeLayout)rootView.findViewById(R.id.fragment_body_title);
-			mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
-			
+			//Fragment small pictures creation
 			LinearLayout.LayoutParams fragment_picture_circle_radius_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
 			fragment_picture_circle_radius_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace3(), 0, 0);
 			mFragmentPictureCircleRadius = (RelativeLayout)rootView.findViewById(R.id.fragment_picture_circle_radius);
 			mFragmentPictureCircleRadius.setLayoutParams(fragment_picture_circle_radius_params);
-			//Set the content of the fragments
-			Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-			if (mDive.getTripName() != null)
-			{
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-				((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
-			}
-			else
-				mFragmentBannerHeight.setVisibility(View.INVISIBLE);
-			((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
-			((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
-			((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
-			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
-			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
-			((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
-			((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
-			((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
-			((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
-			((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
-			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
-			((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));	
 			//Set the logged profile
-			ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
-			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceR);
-			((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
-			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
-			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
-			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
-			mFragmentProfile = (RelativeLayout)rootView.findViewById(R.id.fragment_profile);
-	        mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
-	        mFragmentProfileInfo = (LinearLayout)rootView.findViewById(R.id.profile_info);
-	        RelativeLayout.LayoutParams fragment_profile_info_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	        fragment_profile_info_params.setMargins(mScreenSetup.getDiveListWhiteSpace2(), 0, 0, 0);
-	        fragment_profile_info_params.addRule(RelativeLayout.RIGHT_OF, R.id.profile_image);
-	        fragment_profile_info_params.addRule(RelativeLayout.CENTER_VERTICAL);
-	        mFragmentProfileInfo.setLayoutParams(fragment_profile_info_params);
 	        RelativeLayout.LayoutParams fragment_profile_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxWidth(), mScreenSetup.getDiveListProfileBoxHeight());
 	        RelativeLayout.LayoutParams user_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxHeight(), mScreenSetup.getDiveListProfileBoxHeight());
 	        fragment_profile_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-	        //fragment_profile_params.addRule(RelativeLayout.BELOW, R.id.fragment);
 	        fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
-	        profile_task.execute(AC.getPageIndex());
-			// Downloading the main picture in a new thread
-			//mProgressBarMain = (ProgressBar)mContent.findViewById(R.id.progress_bar_main);
-			//showProgress(true);
-			mDownloadImageTask = new DownloadImageTask((ImageView)mFragment.findViewById(R.id.main_image));
-			mDownloadImageTask.execute();
-			mDownloadSmallImageTask = new DownloadSmallImageTask();
-			mDownloadSmallImageTask.execute();
-			return rootView;
+	        profile_task.execute(AC.getPageIndex());	
 		}
-		return (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
+		else // Landscape mode
+		{
+			//Setting the fragment parameters
+			RelativeLayout.LayoutParams fragment_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth(), mScreenSetup.getDiveListFragmentHeight());
+			fragment_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);//			
+			mFragment.setLayoutParams(fragment_params);
+			// Resize the banner
+			RelativeLayout.LayoutParams banner_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth() - mScreenSetup.getDiveListFragmentHeight(), mScreenSetup.getDiveListFragmentBannerHeight());
+			mFragmentBannerHeight = (RelativeLayout)rootView.findViewById(R.id.fragment_banner_height);
+			banner_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace1(), 0, 0);
+			banner_params.leftMargin = mScreenSetup.getDiveListFragmentHeight();
+			mFragmentBannerHeight.setLayoutParams(banner_params);
+			// Set the main picture (left part)
+			mMainImage = (ImageView)mFragment.findViewById(R.id.main_image);	
+			LinearLayout.LayoutParams params1 = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentHeight(), mScreenSetup.getDiveListFragmentHeight());//
+			mMainImage.setLayoutParams(params1);
+			// Set the info fragment (right part)
+			mImageLayout = (LinearLayout)mFragment.findViewById(R.id.image_layout);
+			mImageLayout.setLayoutParams(new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentHeight(), mScreenSetup.getDiveListFragmentHeight()));
+			mContentLayout = (LinearLayout)mFragment.findViewById(R.id.content_layout);
+			LinearLayout.LayoutParams params2 = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth() - mScreenSetup.getDiveListFragmentHeight(), mScreenSetup.getDiveListFragmentHeight() - mScreenSetup.getDiveListFragmentBannerHeight());
+			params2.gravity = Gravity.BOTTOM;
+			mContentLayout.setLayoutParams(params2);
+			//Fragment small pictures creation
+			LinearLayout.LayoutParams fragment_picture_circle_radius_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListFragmentWidth() - mScreenSetup.getDiveListFragmentHeight(), mScreenSetup.getDiveListFragmentPictureCircleRadius());
+			fragment_picture_circle_radius_params.setMargins(0, mScreenSetup.getDiveListFragmentWhitespace3(), 0, mScreenSetup.getDiveListWhiteSpace2());
+			mFragmentPictureCircleRadius = (RelativeLayout)rootView.findViewById(R.id.fragment_picture_circle_radius);
+			mFragmentPictureCircleRadius.setLayoutParams(fragment_picture_circle_radius_params);
+			//Set the logged profile
+	        LinearLayout.LayoutParams fragment_profile_params = new LinearLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxWidth(), mScreenSetup.getDiveListProfileBoxHeight());
+	        RelativeLayout.LayoutParams user_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxHeight(), mScreenSetup.getDiveListProfileBoxHeight());
+	        fragment_profile_params.gravity = Gravity.BOTTOM;
+	        fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListFragmentWhitespace4());
+	        mFragmentProfile.setLayoutParams(fragment_profile_params);
+	        mUserImage.setLayoutParams(user_image_params);
+	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
+	        profile_task.execute(AC.getPageIndex());
+		}
+		//Set the banner content
+		if (mDive.getTripName() != null)
+		{
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
+		}
+		else
+			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
+		//Set the title details content
+		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
+		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
+		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
+		((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
+		((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
+		((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
+		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+		//Threads for the pictures
+		mDownloadImageTask = new DownloadImageTask(mMainImage);
+		mDownloadImageTask.execute();
+		mDownloadSmallImageTask = new DownloadSmallImageTask();
+		mDownloadSmallImageTask.execute();
+		return rootView;
     }
 	
 	/**

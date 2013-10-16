@@ -31,7 +31,8 @@
         android:layout_centerHorizontal="false"
         android:layout_centerVertical="false"
         android:background="#FFFFFF"
-        android:gravity="center_horizontal">
+        android:gravity="center_horizontal"
+		android:onClick="goToEditDive">
         
 		<RelativeLayout
             android:id="@+id/fragment_body"

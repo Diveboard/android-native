@@ -206,6 +206,15 @@ public class DivesActivity extends FragmentActivity {
 			AC.setPageIndex(0);
 	}
 	
+	@Override
+	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
+		// TODO Auto-generated method stub
+		super.onActivityResult(arg0, arg1, arg2);
+	}
+
+	/**
+	 * Footer text
+	 */
 	public static String getPositon(int i, DiveboardModel model)
 	{
 		String pos = "";
@@ -250,15 +259,19 @@ public class DivesActivity extends FragmentActivity {
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
-				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentHeight()) * (-1);
-				int offset = ((mScreenSetup.getDiveListFragmentBannerHeight() + mScreenSetup.getDiveListFragmentBodyHeight()) / 2);
+				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
+				int offset = 0;
+				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
+					offset = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth());
+				else
+					offset = ((mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) / 2) * 70 / 100;
 				//We set the parameters and content of the footer
 				RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListFooterHeight());
 				diveFooter.setLayoutParams(diveFooterParams);
 				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-				
+				// Footer static text
 				((TextView)diveFooter.findViewById(R.id.title_footer1)).setText("CURRENTLY VIEWING ");
 				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
@@ -300,14 +313,14 @@ public class DivesActivity extends FragmentActivity {
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);
 		        mPager.setPageMargin(margin + offset);
-		        mPager.setOffscreenPageLimit(3);
+		        mPager.setOffscreenPageLimit(2);
 		        mPager.setCurrentItem(AC.getPageIndex());
 		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 		        //The tracking bar is set
 		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 		        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
 		        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		        seekBarParams.setMargins(0, 0, 0, mScreenSetup.getDiveListWhiteSpace4());
+		        seekBarParams.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
 		        mSeekBar.setLayoutParams(seekBarParams);
 		        mSeekBar.setMax(mModel.getDives().size() - 1);
 		        mSeekBar.setProgress(AC.getPageIndex());
