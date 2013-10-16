@@ -23,4 +23,9 @@ public class					EditOption
 	{
 		return mValue;
 	}
+	
+	public void					setValue(String value)
+	{
+		mValue = value;
+	}
 }

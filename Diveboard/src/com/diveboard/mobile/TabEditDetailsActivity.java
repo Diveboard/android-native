@@ -2,31 +2,28 @@ package com.diveboard.mobile;
 
 import java.util.ArrayList;
 
+import com.diveboard.mobile.EditDateDialogFragment.EditDateDialogListener;
+import com.diveboard.mobile.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
-import android.app.Activity;
-import android.content.Intent;
-import android.graphics.Typeface;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 
-public class					TabEditDetailsActivity extends Activity
+public class					TabEditDetailsActivity extends FragmentActivity implements EditTripNameDialogListener,
+																						   EditDiveNumberDialogListener,
+																						   EditDateDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
 	private int					mIndex;
-	private int					mPage = 0;
-	private TextView			mLengthCount;
+	private OptionAdapter		mOptionAdapter;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -38,90 +35,32 @@ public class					TabEditDetailsActivity extends Activity
 		
 		_displayEditList();
     }
-    
-    @Override
-    public void onBackPressed()
+
+    private void				_editTripNameDialog()
     {
-    	System.out.println("Back");
-    	if (mPage > 0)
-    	{
-    		_displayEditList();
-    		mPage--;
-    	}
-    	else
-    	{
-    		Intent divesActivity = new Intent(TabEditDetailsActivity.this, DivesActivity.class);
-    	    startActivity(divesActivity);
-    	}
+    	EditTripNameDialogFragment dialog = new EditTripNameDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditTripNameDialogFragment");
     }
     
-    private void				editTitle()
+    private void				_editDiveNumberDialog()
     {
-    	setContentView(R.layout.edit_title);
-    	Typeface FaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-    	Typeface FaceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-
-    	Button backButton = (Button) findViewById(R.id.back_button);
-    	backButton.setTypeface(FaceR);
-    	backButton.setText("<");
-    	backButton.setOnClickListener(new OnClickListener()
-    	{
-			@Override
-			public void onClick(View v)
-			{
-		    	InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-		    	if (inputMethodManager != null)
-		    		inputMethodManager.hideSoftInputFromWindow(v.getWindowToken(), 0);
-				_displayEditList();
-				mPage--;
-			}
-		});
-
-    	TextView title = (TextView) findViewById(R.id.title);
-    	title.setTypeface(FaceB);
-    	title.setText(getResources().getString(R.string.edit_title_title));
-    	
-    	Button saveButton = (Button) findViewById(R.id.save_button);
-    	saveButton.setTypeface(FaceB);
-    	saveButton.setText(getResources().getString(R.string.save_button));
-    	    	
-    	TextView edit_title = (TextView) findViewById(R.id.edit_title);
-    	edit_title.setTypeface(FaceR);
-    	edit_title.setText(mModel.getDives().get(mIndex).getSpot().getName());
-    	edit_title.setOnClickListener(new OnClickListener()
-    	{
-			@Override
-			public void onClick(View v)
-			{
-				InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-		    	if (inputMethodManager != null)
-		    		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-			}
-		});
-    	
-    	mLengthCount = (TextView) findViewById(R.id.length_count);
-    	mLengthCount.setTypeface(FaceR);
-    	mLengthCount.setText(50 - edit_title.length() + " " + getResources().getString(R.string.characters_left));
-    	edit_title.addTextChangedListener(new TextWatcher()
-    	{
-			@Override
-			public void onTextChanged(CharSequence s, int start, int arg2, int arg3) {
-				mLengthCount.setText(50 - s.length() + " " + getResources().getString(R.string.characters_left));
-			}
-
-			@Override
-			public void afterTextChanged(Editable s) {
-			}
-
-			@Override
-			public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-			}
-		});
-    	InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(getApplicationContext().INPUT_METHOD_SERVICE);
-    	if (inputMethodManager != null)
-    		inputMethodManager.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY);
-
+    	EditDiveNumberDialogFragment dialog = new EditDiveNumberDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditDiveNumberDialogFragment");
+    }
+    
+    private void				_editDateDialog()
+    {
+    	EditDateDialogFragment dialog = new EditDateDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditDateDialogFragment");
     }
     
     private void				_displayEditList()
@@ -132,8 +71,11 @@ public class					TabEditDetailsActivity extends Activity
     	optionList = (ListView)findViewById(R.id.optionList);
     	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
-		elem.add(new EditOption("Title : ", dive.getSpot().getName()));
-		elem.add(new EditOption("Dive number : ", Integer.toString(dive.getId())));
+		elem.add(new EditOption("Trip name : ", dive.getTripName()));
+		if (dive.getNumber() != null)
+			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
+		else
+			elem.add(new EditOption("Dive number : ", Integer.toString(0)));
 		elem.add(new EditOption("Date : ", dive.getDate()));
 		elem.add(new EditOption("Time in : ", dive.getTimeIn()));
 		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance())));
@@ -158,16 +100,51 @@ public class					TabEditDetailsActivity extends Activity
 		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude())));
 		elem.add(new EditOption("Water type : ", dive.getWater()));
 		
-		OptionAdapter adapter = new OptionAdapter(this, elem);
-		optionList.setAdapter(adapter);
+		mOptionAdapter = new OptionAdapter(this, elem);
+		optionList.setAdapter(mOptionAdapter);
 		
 		optionList.setOnItemClickListener(new OnItemClickListener() {
 			@Override
 			public void onItemClick(AdapterView<?> parent, View view, int position, long id)
 			{
-				editTitle();
-				mPage++;
+				switch (position)
+				{
+					case 0:
+						_editTripNameDialog();
+						break ;
+					case 1:
+						_editDiveNumberDialog();
+						break ;
+					case 2:
+						_editDateDialog();
+						break ;
+				}
 			}
 		});
     }
+    
+	@Override
+	public void onTripNameEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(0)).setValue(dive.getTripName());
+		mOptionAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
+	public void onDiveNumberEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		if (dive.getNumber() != null)
+			((EditOption)mOptionAdapter.getItem(1)).setValue(dive.getNumber().toString());
+		else
+			((EditOption)mOptionAdapter.getItem(1)).setValue("0");
+		mOptionAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onDateEditComplete(DialogFragment dialog)
+	{
+		
+	}
 }

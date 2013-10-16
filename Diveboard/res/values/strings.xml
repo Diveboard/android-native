@@ -14,7 +14,13 @@
     <string name="tab_gear_label">GEAR</string>
     <string name="tab_species_label">SPECIES</string>
     <string name="tab_photos_label">PHOTOS</string>
-    <string name="edit_title_title">TITLE</string>
+    <string name="edit_tripname_title">Trip Name</string>
     <string name="characters_left">Characters Left</string>
+    <string name="tripname_hint">Trip name</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="divenumber_hint">Dive Number</string>
+    <string name="edit_divenumber_title">Dive Number</string>
+    <string name="edit_date_title">Date</string>
 
 </resources>
