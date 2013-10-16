@@ -40,7 +40,7 @@
             android:layout_height="wrap_content"
             android:background="#ffffff"
             android:gravity="center_horizontal"
-            android:onClick="goToEditDive">
+            android:onClick="goToGalleryCarousel">
 	        <ImageView
 	            android:id="@+id/main_image"
 	            android:layout_width="0dp"

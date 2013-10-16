@@ -142,6 +142,12 @@ public class DivesActivity extends FragmentActivity {
 	    startActivity(editDiveActivity);
 	}
 	
+	public void goToGalleryCarousel(View view)
+	{
+		Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
+		startActivity(galleryCarousel);
+	}
+	
 	public void loadData()
 	{
 		if (mAuthTask != null)
@@ -331,6 +337,8 @@ public class DivesActivity extends FragmentActivity {
 					public void onPageScrollStateChanged(int arg0) {
 						if (arg0 == 0)
 						{
+							ApplicationController AC = ((ApplicationController)getApplicationContext());
+							AC.setPageIndex(mPager.getCurrentItem());
 							mSeekBar.setProgress(mPager.getCurrentItem());
 							RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 							Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");

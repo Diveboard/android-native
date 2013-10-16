@@ -27,6 +27,7 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
@@ -288,6 +289,7 @@ public class DivesFragment extends Fragment {
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
 		private final WeakReference<ImageView> imageViewReference;
+		private boolean isPicture = false;
 		
 		public DownloadImageTask(ImageView imageView)
 		{
@@ -300,7 +302,11 @@ public class DivesFragment extends Fragment {
 				if (getActivity() != null)
 				{
 					if (mDive.getFeaturedPicture() != null)
+					{
+						isPicture = true;
 						return mDive.getFeaturedPicture().getPicture(getActivity().getApplicationContext(), Picture.Size.MEDIUM);
+					}
+					isPicture = false;
 					return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
 				}
 					
@@ -313,14 +319,42 @@ public class DivesFragment extends Fragment {
 		
 		protected void onPostExecute(Bitmap result)
 		{
-			//showProgress(false);
-			//mFragment.setAlpha(1);
-			if (imageViewReference != null && result != null)
+			if (imageViewReference != null)
 			{
 				final ImageView imageView = imageViewReference.get();
-				if (imageView != null)
-				{
+				if (result != null && imageView != null)
+				{	
 					imageView.setImageBitmap(result);
+					if (isPicture == true)
+					{
+						imageView.setOnClickListener(new OnClickListener()
+						{
+							@Override
+							public void onClick(View v) {
+//								Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								galleryCarousel.putExtra("index", AC.getPageIndex());
+//							    startActivity(galleryCarousel);
+								Intent editDiveActivity = new Intent(getActivity().getApplicationContext(), EditDiveActivity.class);
+								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+								editDiveActivity.putExtra("index", AC.getPageIndex());
+							    startActivity(editDiveActivity);
+							}
+						});
+					}
+					else
+					{
+						imageView.setOnClickListener(new OnClickListener()
+						{
+							@Override
+							public void onClick(View v) {
+								Intent editDiveActivity = new Intent(getActivity().getApplicationContext(), EditDiveActivity.class);
+								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+								editDiveActivity.putExtra("index", AC.getPageIndex());
+							    startActivity(editDiveActivity);
+							}
+						});
+					}
 				}
 			}
 		}
@@ -361,6 +395,16 @@ public class DivesFragment extends Fragment {
 						rounded_image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
 						pic.setLayoutParams(image_params);
 						round_pic.setLayoutParams(rounded_image_params);
+//						pic.setOnClickListener(new OnClickListener()
+//						{
+//
+//							@Override
+//							public void onClick(View v) {
+//								Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
+//							    startActivity(galleryCarousel);
+//							}
+//							
+//						});
 						mSmallImage.add(pic);
 						mSmallImage.add(round_pic);
 					} catch (Exception e) {
