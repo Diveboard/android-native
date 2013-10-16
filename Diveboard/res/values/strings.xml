@@ -22,5 +22,6 @@
     <string name="divenumber_hint">Dive Number</string>
     <string name="edit_divenumber_title">Dive Number</string>
     <string name="edit_date_title">Date</string>
+    <string name="edit_time_in_title">Time In</string>
 
 </resources>
