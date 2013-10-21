@@ -157,6 +157,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(0)).setValue(dive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(mModel.getDives().get(mIndex));
 	}
 	
 	@Override
@@ -168,6 +169,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			((EditOption)mOptionAdapter.getItem(1)).setValue("0");
 		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(mModel.getDives().get(mIndex));
 	}
 
 	@Override
@@ -178,13 +180,18 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		String[] time_in = dive.getTimeIn().split("T");
 		String new_time_in = dive.getDate() + "T" + time_in[1];
 		dive.setTimeIn(new_time_in);
-		((EditOption)mOptionAdapter.getItem(3)).setValue(dive.getTimeIn());
+		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
 		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(mModel.getDives().get(mIndex));
 	}
 
 	@Override
 	public void onTimeInEditComplete(DialogFragment dialog)
 	{
-		
+		Dive dive = mModel.getDives().get(mIndex);
+		String[] time_in = dive.getTimeIn().split("T");
+		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(mModel.getDives().get(mIndex));
 	}
 }
