@@ -11,6 +11,7 @@ public class ApplicationController extends Application {
 	private boolean mDataReady = false;
 	private boolean mDataRefreshed = false;
 	private int mPageIndex = 0;
+	private int mCarouselIndex = 0;
 
 
 	public boolean isDataRefreshed() {
@@ -60,5 +61,13 @@ public class ApplicationController extends Application {
 
 	public void setPageIndex(int mPageIndex) {
 		this.mPageIndex = mPageIndex;
+	}
+
+	public int getCarouselIndex() {
+		return mCarouselIndex;
+	}
+
+	public void setCarouselIndex(int mCarouselIndex) {
+		this.mCarouselIndex = mCarouselIndex;
 	}
 }

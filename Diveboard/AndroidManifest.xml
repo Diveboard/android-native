@@ -17,12 +17,14 @@
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:theme="@style/AppBaseTheme" >
         <activity
             android:name="com.diveboard.mobile.DivesActivity"
             android:label="@string/app_name" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -34,7 +36,7 @@
             android:name="com.diveboard.mobile.EditDiveActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
-		<activity
+        <activity
             android:name="com.diveboard.mobile.TabEditDetailsActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
@@ -45,6 +47,10 @@
         <activity
             android:name="com.diveboard.mobile.TabEditGearActivity"
             android:label="@string/title_activity_edit_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.DiveDetailsActivity"
+            android:label="@string/title_activity_dive_details" >
         </activity>
     </application>
 

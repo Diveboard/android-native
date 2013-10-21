@@ -95,7 +95,7 @@ public class DivesActivity extends FragmentActivity {
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// Set the view layout
+		// Set the action bar
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			getActionBar().hide();
 		}
@@ -139,12 +139,23 @@ public class DivesActivity extends FragmentActivity {
 	{
 		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
 		editDiveActivity.putExtra("index", mPager.getCurrentItem());
+		System.out.println("editdive");
 	    startActivity(editDiveActivity);
+	}
+	
+	public void goToDiveDetails(View view)
+	{
+		Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
+		diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+		System.out.println("divedetails");
+		startActivity(diveDetailsActivity);
 	}
 	
 	public void goToGalleryCarousel(View view)
 	{
 		Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
+		galleryCarousel.putExtra("index", mPager.getCurrentItem());
+		System.out.println("gallery");
 		startActivity(galleryCarousel);
 	}
 	
@@ -562,7 +573,7 @@ public class DivesActivity extends FragmentActivity {
 	}
 	
 	/**
-	 * Generate the dives pages
+	 * Generate the dives pagesDive dive
 	 */
 	private class DivesPagerAdapter extends FragmentStatePagerAdapter
 	{

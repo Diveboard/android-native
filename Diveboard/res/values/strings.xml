@@ -14,6 +14,7 @@
     <string name="tab_gear_label">GEAR</string>
     <string name="tab_species_label">SPECIES</string>
     <string name="tab_photos_label">PHOTOS</string>
+    <string name="tab_map_label">MAP</string>
     <string name="edit_tripname_title">Trip Name</string>
     <string name="characters_left">Characters Left</string>
     <string name="tripname_hint">Trip name</string>
@@ -23,5 +24,6 @@
     <string name="edit_divenumber_title">Dive Number</string>
     <string name="edit_date_title">Date</string>
     <string name="edit_time_in_title">Time In</string>
+    <string name="title_activity_dive_details">DiveDetailsActivity</string>
 
 </resources>
