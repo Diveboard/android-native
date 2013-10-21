@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Pair;
+
 /*
  * Class User
  * Model for User
@@ -73,17 +75,7 @@ public class					User implements IModel, Cloneable
 			_userGears = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
-	}
-	
+
 	public int getId() {
 		return _id;
 	}
@@ -216,5 +208,23 @@ public class					User implements IModel, Cloneable
 			e.printStackTrace();
 		}
         return null;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }

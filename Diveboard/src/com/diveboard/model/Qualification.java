@@ -1,29 +1,24 @@
 package com.diveboard.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Pair;
 
 public class					Qualification implements IModel
 {
 	private String				_org;
 	private String				_title;
 	private String				_date;
+	private ArrayList<Pair<String, String>> _editList = new ArrayList<Pair<String, String>>(); 
 	
 	public						Qualification(JSONObject json) throws JSONException
 	{
 		_org = json.getString("org");
 		_title = json.getString("title");
 		_date = json.getString("date");
-	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
 	}
 	
 	public String getOrg() {
@@ -44,6 +39,21 @@ public class					Qualification implements IModel
 	public void setDate(String _date) {
 		this._date = _date;
 	}
-	
-	
+
+	public ArrayList<Pair<String, String>> getEditList()
+	{
+		
+		return null;
+	}
+
+	public void clearEditList()
+	{
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
+	}
 }

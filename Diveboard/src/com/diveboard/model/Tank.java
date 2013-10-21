@@ -1,7 +1,11 @@
 package com.diveboard.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Pair;
 
 public class					Tank implements IModel
 {
@@ -30,16 +34,6 @@ public class					Tank implements IModel
 		_timeStart = (json.isNull("time_start")) ? null : json.getInt("time_start");
 		_pStart = (json.isNull("p_start")) ? null : json.getDouble("p_start");
 		_pEnd = (json.isNull("p_end")) ? null : json.getDouble("p_end");
-	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
 	}
 
 	public Integer getId() {
@@ -128,5 +122,23 @@ public class					Tank implements IModel
 
 	public void setPEnd(Double _pEnd) {
 		this._pEnd = _pEnd;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }
