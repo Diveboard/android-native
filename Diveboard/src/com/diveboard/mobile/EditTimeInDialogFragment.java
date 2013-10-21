@@ -89,7 +89,9 @@ public class					EditTimeInDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-				//mModel.getDives().get(getArguments().getInt("index")).setDate(date);
+				String[] time_in = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
+				String new_timein = time_in[0] + "T" + mTimeIn.getCurrentHour() + ":" + mTimeIn.getCurrentMinute() + ":00Z";
+				mModel.getDives().get(getArguments().getInt("index")).setTimeIn(new_timein);
 				mListener.onTimeInEditComplete(EditTimeInDialogFragment.this);
 				dismiss();
 			}
