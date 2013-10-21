@@ -1,23 +1,17 @@
 package com.diveboard.mobile;
 
-import com.diveboard.mobile.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.DatePicker;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
 
@@ -89,6 +83,7 @@ public class					EditTimeInDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				mTimeIn.clearFocus();
 				String[] time_in = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
 				String new_timein = time_in[0] + "T";
 				if (mTimeIn.getCurrentHour() < 10)
