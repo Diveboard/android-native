@@ -16,6 +16,7 @@ import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Pair;
 
 /*
  * Class DiveboardModel
@@ -45,7 +46,7 @@ public class					DiveboardModel
 		_userId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		_cache = new DataManager(context);
+		_cache = new DataManager(context, userId);
 	}
 	
 	/*
@@ -71,6 +72,8 @@ public class					DiveboardModel
 		}
 		if (_user == null)
 			refreshData();
+		else
+			_applyEdit();
 	}
 	
 	public void					refreshData()
@@ -88,7 +91,10 @@ public class					DiveboardModel
 				if (_user == null)
 					_loadOnlineData(false);
 				else
+				{
 					_loadOnlineData(true);
+					_applyEdit();
+				}
 			}
 			catch (IOException e)
 			{
@@ -265,5 +271,47 @@ public class					DiveboardModel
 			_temp_user = null;
 		}
 		_enable_overwrite = false;
+		_applyEdit();
+	}
+	
+	public DataManager			getDataManager()
+	{
+		return _cache;
+	}
+	
+	private void				_applyEdit()
+	{
+		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+		try
+		{
+			for (int i = 0, length = edit_list.size(); i < length; i++)
+			{
+				String[] info = edit_list.get(i).first.split(":");
+				if (info[0].compareTo("Dive") == 0)
+					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
+			}
+		}
+		catch (NumberFormatException e)
+		{
+			e.printStackTrace();
+		}
+		catch (JSONException e)
+		{
+			e.printStackTrace();
+		}
+	}
+	
+	private void				_applyEditDive(final int id, final String json) throws JSONException
+	{
+		ArrayList<Dive> dives = getDives();
+		
+		for (int i = 0, length = dives.size(); i < length; i++)
+		{
+			if (dives.get(i).getId() == id)
+			{
+				dives.get(i).applyEdit(new JSONObject(json));
+				break ;
+			}
+		}
 	}
 }

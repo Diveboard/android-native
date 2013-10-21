@@ -1,7 +1,11 @@
 package com.diveboard.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Pair;
 
 public class					DiveGear implements IModel
 {
@@ -18,16 +22,6 @@ public class					DiveGear implements IModel
 		_manufacturer = (json.isNull("manufacturer")) ? null : json.getString("manufacturer");
 		_model = (json.isNull("model")) ? null : json.getString("model");
 		_featured = (json.isNull("featured")) ? null : json.getBoolean("featured");
-	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
 	}
 
 	public Integer getId() {
@@ -68,5 +62,23 @@ public class					DiveGear implements IModel
 
 	public void setFeatured(Boolean _featured) {
 		this._featured = _featured;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }

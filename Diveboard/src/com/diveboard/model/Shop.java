@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Pair;
+
 public class					Shop implements IModel
 {
 	private Integer				_id;
@@ -44,16 +46,6 @@ public class					Shop implements IModel
 		else
 			_diveIds = null;
 		_diveCount = (json.isNull("dive_count")) ? null : json.getInt("dive_count");
-	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
 	}
 
 	public Integer getId() {
@@ -142,5 +134,23 @@ public class					Shop implements IModel
 
 	public void setDiveCount(Integer _diveCount) {
 		this._diveCount = _diveCount;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }

@@ -6,6 +6,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.util.Pair;
+
 /*
  * Class Dive
  * Model for Dives
@@ -61,7 +63,8 @@ public class					Dive implements IModel
 	private ArrayList<Species>	_species;
 	private Picture				_featuredPicture;
 	private ArrayList<Picture>	_pictures;
-
+	private ArrayList<Pair<String, String>>	_editList = new ArrayList<Pair<String, String>>();
+	
 	public						Dive(JSONObject json) throws JSONException
 	{
 		_altitude = (json.isNull("altitude")) ? null : json.getDouble("altitude");
@@ -176,16 +179,29 @@ public class					Dive implements IModel
 			_pictures = null;
 	}
 
-	public void					save()
+	public ArrayList<Pair<String, String>> getEditList()
 	{
-		
+		return _editList;
 	}
 	
-	public void					delete()
+	public void					clearEditList()
 	{
-		
+		_editList = null;
+		_editList = new ArrayList<Pair<String, String>>();
 	}
-
+	
+	public void					applyEdit(JSONObject json) throws JSONException
+	{
+		if (!json.isNull("trip_name"))
+			_tripName = json.getString("trip_name");
+		if (!json.isNull("number"))
+			_number = json.getInt("number");
+		if (!json.isNull("date"))
+			_date = json.getString("date");
+		if (!json.isNull("time_in"))
+			_timeIn = json.getString("time_in");
+	}
+	
 	public Double getAltitude() {
 		return _altitude;
 	}
@@ -224,6 +240,8 @@ public class					Dive implements IModel
 
 	public void setDate(String _date) {
 		this._date = _date;
+		Pair<String, String> new_elem = new Pair<String, String>("date", _date);
+		_editList.add(new_elem);
 	}
 
 	public int getDuration() {
@@ -392,6 +410,8 @@ public class					Dive implements IModel
 
 	public void setTimeIn(String _timeIn) {
 		this._timeIn = _timeIn;
+		Pair<String, String> new_elem = new Pair<String, String>("time_in", _timeIn);
+		_editList.add(new_elem);
 	}
 
 	public String getTripName() {
@@ -400,6 +420,8 @@ public class					Dive implements IModel
 
 	public void setTripName(String _tripName) {
 		this._tripName = _tripName;
+		Pair<String, String> new_elem = new Pair<String, String>("trip_name", _tripName);
+		_editList.add(new_elem);
 	}
 
 	public ArrayList<UserGear> getUserGears() {
@@ -464,6 +486,8 @@ public class					Dive implements IModel
 
 	public void setNumber(Integer _number) {
 		this._number = _number;
+		Pair<String, String> new_elem = new Pair<String, String>("number", Integer.toString(_number));
+		_editList.add(new_elem);
 	}
 
 	public ArrayList<DiveGear> getDiveGears() {

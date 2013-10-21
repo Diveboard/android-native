@@ -1,7 +1,11 @@
 package com.diveboard.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Pair;
 
 public class					Species implements IModel
 {
@@ -20,16 +24,6 @@ public class					Species implements IModel
 		_link = (json.isNull("link")) ? null : json.getString("link");
 		_thumbnailHref = (json.isNull("thumbnail_href")) ? null : new Picture(json.getString("thumbnail_href"));
 		_picture = (json.isNull("picture")) ? null : new Picture(json.getString("picture"));
-	}
-	
-	public void					save()
-	{
-		
-	}
-	
-	public void					delete()
-	{
-		
 	}
 
 	public String getId() {
@@ -78,5 +72,23 @@ public class					Species implements IModel
 
 	public void setPicture(Picture _picture) {
 		this._picture = _picture;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }

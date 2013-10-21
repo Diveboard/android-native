@@ -1,7 +1,11 @@
 package com.diveboard.model;
 
+import java.util.ArrayList;
+
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.util.Pair;
 
 public class					Spot implements IModel
 {
@@ -38,16 +42,6 @@ public class					Spot implements IModel
 		_countryName = json.getString("country_name");
 		_countryFlagBig = new Picture(json.getString("country_flag_big"));
 		_countryFlagSmall = new Picture(json.getString("country_flag_small"));
-	}
-	
-	public void					save()
-	{
-		
-	}
-
-	public void					delete()
-	{
-		
 	}
 
 	public Integer getId() {
@@ -168,5 +162,23 @@ public class					Spot implements IModel
 
 	public void setCountryFlagSmall(Picture _countryFlagSmall) {
 		this._countryFlagSmall = _countryFlagSmall;
+	}
+
+	@Override
+	public ArrayList<Pair<String, String>> getEditList() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void clearEditList() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void applyEdit(JSONObject json) throws JSONException {
+		// TODO Auto-generated method stub
+		
 	}
 }
