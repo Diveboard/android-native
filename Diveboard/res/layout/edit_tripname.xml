@@ -9,7 +9,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:background="@drawable/tab_title_background" >
+            android:background="@drawable/tab_title_background_dive_details" >
 
             <Button
 	            android:id="@+id/back_button"
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:background="@drawable/tab_title_background" >
+            android:background="@drawable/tab_title_background_dive_details" >
             
             <EditText
 	   	       android:id="@+id/edit_title"
@@ -60,7 +60,7 @@
 	   	       android:maxLength="50"
 	   	       android:gravity="center"
 	   	       android:imeOptions="actionDone"
-	   	       android:background="@drawable/tab_title_background" >
+	   	       android:background="@drawable/tab_title_background_dive_details" >
 	
 	            <requestFocus />
 	        </EditText>
