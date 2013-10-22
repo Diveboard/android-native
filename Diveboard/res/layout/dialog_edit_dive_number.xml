@@ -47,5 +47,5 @@
 	        android:layout_height="match_parent"
 	        android:textColor="@color/white"
 	        android:background="@drawable/edit_save_button_selector" />
-    </LinearLayout>    
+    </LinearLayout>
 </LinearLayout>

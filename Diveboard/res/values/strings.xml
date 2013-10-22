@@ -25,5 +25,10 @@
     <string name="edit_date_title">Date</string>
     <string name="edit_time_in_title">Time In</string>
     <string name="title_activity_dive_details">DiveDetailsActivity</string>
+    <string name="edit_max_depth_title">Max Depth</string>
+    <string name="maxdepth_hint">Max Depth</string>
+    <string name="edit_duration_title">Duration</string>
+    <string name="duration_hint">Duration</string>
+    <string name="duration_label">min</string>
 
 </resources>

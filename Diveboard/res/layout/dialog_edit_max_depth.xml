@@ -14,18 +14,35 @@
         android:textSize="30sp"
         android:background="@drawable/tab_title_background" />
 
-    <RelativeLayout
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/tab_body_background"
+        android:orientation="horizontal"
         android:gravity="center" >
         
-        <TimePicker
-	        android:id="@+id/time_in"
+        <EditText
+	        android:id="@+id/max_depth"
 	        android:layout_width="wrap_content"
-	        android:layout_height="wrap_content" />
+	        android:layout_height="wrap_content"
+	        android:inputType="numberDecimal"
+	        android:gravity="center"
+	        android:textSize="30sp"
+	        android:paddingTop="10dp"
+	        android:paddingBottom="10dp"
+	        android:hint="@string/maxdepth_hint"
+	        android:background="@drawable/tab_body_background" >
+	
+	        <requestFocus />
+	    </EditText>
+	    <TextView 
+	        android:id="@+id/max_depth_label"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:textColor="@color/dark_grey"
+	        android:textSize="20sp" />
         
-    </RelativeLayout>
+    </LinearLayout>
     
     <LinearLayout
         android:layout_height="wrap_content"

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import com.diveboard.mobile.EditDateDialogFragment.EditDateDialogListener;
 import com.diveboard.mobile.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.EditDurationDialogFragment.EditDurationDialogListener;
+import com.diveboard.mobile.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
 import com.diveboard.mobile.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.model.Dive;
@@ -21,7 +23,9 @@ import android.widget.ListView;
 public class					TabEditDetailsActivity extends FragmentActivity implements EditTripNameDialogListener,
 																						   EditDiveNumberDialogListener,
 																						   EditDateDialogListener,
-																						   EditTimeInDialogListener
+																						   EditTimeInDialogListener,
+																						   EditMaxDepthDialogListener,
+																						   EditDurationDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -87,6 +91,24 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	dialog.show(getSupportFragmentManager(), "EditTimeInDialogFragment");
     }
     
+    private void				_editMaxDepth()
+    {
+    	EditMaxDepthDialogFragment dialog = new EditMaxDepthDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditMaxDepthDialogFragment");
+    }
+    
+    private void				_editDuration()
+    {
+    	EditDurationDialogFragment dialog = new EditDurationDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditDurationDialogFragment");
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -146,6 +168,12 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 					case 3:
 						_editTimeInDialog();
 						break ;
+					case 4:
+						_editMaxDepth();
+						break ;
+					case 5:
+						_editDuration();
+						break ;
 				}
 			}
 		});
@@ -157,7 +185,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(0)).setValue(dive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(mModel.getDives().get(mIndex));
+		mModel.getDataManager().save(dive);
 	}
 	
 	@Override
@@ -169,7 +197,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			((EditOption)mOptionAdapter.getItem(1)).setValue("0");
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(mModel.getDives().get(mIndex));
+		mModel.getDataManager().save(dive);
 	}
 
 	@Override
@@ -182,7 +210,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		dive.setTimeIn(new_time_in);
 		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(mModel.getDives().get(mIndex));
+		mModel.getDataManager().save(dive);
 	}
 
 	@Override
@@ -192,6 +220,24 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		String[] time_in = dive.getTimeIn().split("T");
 		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(mModel.getDives().get(mIndex));
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onMaxDepthEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(4)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onDurationEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(5)).setValue(Integer.toString(dive.getDuration()) + " min");
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
 	}
 }

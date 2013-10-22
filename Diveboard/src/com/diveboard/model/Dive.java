@@ -200,6 +200,10 @@ public class					Dive implements IModel
 			_date = json.getString("date");
 		if (!json.isNull("time_in"))
 			_timeIn = json.getString("time_in");
+		if (!json.isNull("maxdepth"))
+			_maxdepth = new Distance(json.getDouble("maxdepth"));
+		if (!json.isNull("duration"))
+			_duration = json.getInt("duration");
 	}
 	
 	public Double getAltitude() {
@@ -250,6 +254,8 @@ public class					Dive implements IModel
 
 	public void setDuration(int _duration) {
 		this._duration = _duration;
+		Pair<String, String> new_elem = new Pair<String, String>("duration", Integer.toString(_duration));
+		_editList.add(new_elem);
 	}
 
 	public double getLat() {
@@ -274,6 +280,8 @@ public class					Dive implements IModel
 
 	public void setMaxdepth(Distance _maxdepth) {
 		this._maxdepth = _maxdepth;
+		Pair<String, String> new_elem = new Pair<String, String>("maxdepth", Double.toString(_maxdepth.getDistance()));
+		_editList.add(new_elem);
 	}
 
 	public String getTime() {
