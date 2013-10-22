@@ -28,26 +28,34 @@
 	    android:layout_marginBottom="10dp"
 	    android:layout_marginTop="60dp">
 	    <TabHost
-        	android:layout_width="fill_parent"
-        	android:layout_height="fill_parent"
+        	android:layout_width="match_parent"
+        	android:layout_height="match_parent"
         	android:id="@android:id/tabhost"
-        	android:background="#ffffff">
+        	android:background="@android:color/transparent">
         	<LinearLayout
+        	    android:orientation="vertical"
                 android:id="@+id/LinearLayout01"
-                android:orientation="vertical"
-                android:layout_height="fill_parent"
-                android:layout_width="fill_parent">
-              	<TabWidget
+                android:layout_height="match_parent"
+                android:layout_width="match_parent">
+                <TabWidget
                     android:id="@android:id/tabs"
                     android:layout_height="wrap_content"
-                    android:layout_width="fill_parent">
+                    android:layout_width="match_parent">
                 </TabWidget>
                 <FrameLayout
                     android:id="@android:id/tabcontent"
-                    android:layout_height="0dp"
-                    android:layout_width="fill_parent"
-                    android:layout_weight="1">
-                </FrameLayout> 
+                    android:layout_height="match_parent"
+                    android:layout_width="match_parent"
+                    android:layout_weight="1"
+                    android:background="@color/white">
+                </FrameLayout>
+                <LinearLayout
+                    android:id="@+id/white_banner"
+                    android:orientation="vertical"
+                    android:background="@color/white"
+                    android:layout_width="match_parent"
+                    android:layout_height="10dp">
+                </LinearLayout>
        		</LinearLayout>
 		</TabHost>
 <!-- 	    <fragment -->

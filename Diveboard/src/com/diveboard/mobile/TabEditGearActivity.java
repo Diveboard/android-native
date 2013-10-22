@@ -16,7 +16,6 @@ public class					TabEditGearActivity extends Activity
         tv.setTextSize(25);
         tv.setGravity(Gravity.CENTER_VERTICAL);
         tv.setText("This Is TabEditGear Activity");
-       
         setContentView(tv);
     }
 }

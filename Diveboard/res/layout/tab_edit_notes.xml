@@ -8,7 +8,7 @@
         android:id="@+id/tableRow1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/tab_title_background" >
+        android:background="@drawable/tab_title_background_dive_details" >
 
         <TextView
             android:id="@+id/title"

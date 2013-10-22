@@ -22,20 +22,28 @@ import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.View;
+import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
+import android.widget.TabWidget;
 import android.widget.TextView;
 import android.widget.TabHost.TabSpec;
 
 public class DiveDetailsActivity extends TabActivity {
 	private DiveboardModel mModel;
 	private TabHost	 mTabHost;
+	private Typeface mFaceB;
+	private Typeface mFaceR;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -49,31 +57,61 @@ public class DiveDetailsActivity extends TabActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 		setContentView(R.layout.activity_dive_details);
-		ApplicationController AC = ((ApplicationController)getApplicationContext());
-		mModel = AC.getModel();
-		mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-		Intent intent = new Intent(this, TabEditGearActivity.class);
-	    //intent.putExtra("index", mIndex);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_details_label), intent);
-	    	    
-	    intent = new Intent(this, TabEditGearActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
-	
-	    intent = new Intent(this, TabEditGearActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_species_label), intent);
-	    
-	    intent = new Intent(this, TabEditGearActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_map_label), intent);
-		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getTripName());
-		((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
-		((TextView)findViewById(R.id.trip_name)).setTypeface(faceB);
-		((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getCountryName());
-		((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
-		((TextView)findViewById(R.id.place_name)).setTypeface(faceR);
-		DownloadImageTask task = new DownloadImageTask();
-		task.execute(AC.getPageIndex());
+		ViewTreeObserver vto = ((ViewGroup)findViewById(R.id.root)).getViewTreeObserver(); 
+		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
+		    @Override 
+		    public void onGlobalLayout() {
+		    	((ViewGroup)findViewById(R.id.root)).getViewTreeObserver().removeGlobalOnLayoutListener(this);
+		    	
+				
+				ApplicationController AC = ((ApplicationController)getApplicationContext());
+				mModel = AC.getModel();
+				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);
+				intent.putExtra("index", AC.getPageIndex());
+				setupTab(new TextView(DiveDetailsActivity.this), getResources().getString(R.string.tab_details_label), intent);
+
+				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				setupTab(new TextView(DiveDetailsActivity.this), getResources().getString(R.string.tab_photos_label), intent);
+
+				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				setupTab(new TextView(DiveDetailsActivity.this), getResources().getString(R.string.tab_species_label), intent);
+
+				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				setupTab(new TextView(DiveDetailsActivity.this), getResources().getString(R.string.tab_map_label), intent);
+				((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
+				mTabHost.setOnTabChangedListener(new OnTabChangeListener(){
+					@Override
+					public void onTabChanged(String tabId) {
+						TabWidget tab_widget = mTabHost.getTabWidget();
+						for (int i = 0; i < tab_widget.getTabCount(); i++)
+						{
+							((TextView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsText)).setTypeface(mFaceR);
+						}
+						((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
+					}
+					
+				});
+		    	FrameLayout tab = ((FrameLayout)mTabHost.getTabContentView());
+				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(tab.getWidth(), tab.getHeight());
+				tab.setLayoutParams(param);
+				LinearLayout.LayoutParams param2 = new LinearLayout.LayoutParams(((LinearLayout)findViewById(R.id.white_banner)).getWidth(), ((LinearLayout)findViewById(R.id.white_banner)).getHeight());
+				param2.setMargins(0, tab.getHeight() * (-1), 0, 0);
+				((LinearLayout)findViewById(R.id.white_banner)).setLayoutParams(param2);
+				System.out.println(tab.getWidth() + " " + tab.getHeight());
+				((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getTripName());
+				((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
+				((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
+				((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getCountryName());
+				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
+				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);
+				DownloadImageTask task = new DownloadImageTask();
+				task.execute(AC.getPageIndex());
+		    }
+		});
+		
 		//mModel.getDives().get(getIntent().getIntExtra("index", -1));
 	}
 	
@@ -86,12 +124,11 @@ public class DiveDetailsActivity extends TabActivity {
 	
 	private View				createTabView(final Context context, final String text)
 	{
-		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg_dive_details, null);
 		TextView tv = (TextView) view.findViewById(R.id.tabsText);
-		Typeface mFaceB = Typeface.createFromAsset(context.getAssets(), "fonts/Quicksand-Bold.otf");
-		tv.setTypeface(mFaceB);
 		tv.setTextSize(12);
 		tv.setText(text);
+		tv.setTypeface(mFaceR);
 		return view;
 	}
 	

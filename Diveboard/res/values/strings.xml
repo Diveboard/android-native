@@ -25,5 +25,6 @@
     <string name="edit_date_title">Date</string>
     <string name="edit_time_in_title">Time In</string>
     <string name="title_activity_dive_details">DiveDetailsActivity</string>
+    <string name="title_activity_dive_details_main">DiveDetailsMainActivity</string>
 
 </resources>
