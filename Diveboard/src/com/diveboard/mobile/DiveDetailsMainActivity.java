@@ -24,7 +24,7 @@ import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
 public class DiveDetailsMainActivity extends Activity {
-	public final static int FONT_SIZE = 10;
+	public final static int FONT_SIZE = 13;
 	private Dive mDive;
 	private DownloadImageTask mDownloadImageTask;
 	private DownloadShopLogoTask mDownloadShopLogoTask;
@@ -125,7 +125,7 @@ public class DiveDetailsMainActivity extends Activity {
 			temp = "null";
 		temp += " | ";
 		if (mDive.getTempBottom() != null)
-			temp += mDive.getTempBottom()+ "°" + mDive.getTempSurface().getSmallName();
+			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
 		else
 			temp += "null";
 		((TextView)findViewById(R.id.temp_content)).setText(temp);
@@ -135,8 +135,9 @@ public class DiveDetailsMainActivity extends Activity {
 		for (int i = 0; i < mDive.getDivetype().size(); i++)
 		{	
 			if (mDive.getDivetype().get(i) != null)
-				type += mDive.getDivetype().get(i) + " | ";
+				type += mDive.getDivetype().get(i) + ", ";
 		}
+		type = (String) type.subSequence(0, type.length() - 2);
 		((TextView)findViewById(R.id.dive_type_content)).setText(type);
 		mPic = ((ImageView)findViewById(R.id.profile_image));
 		mRoundedPic = ((ImageView)findViewById(R.id.main_image_cache));
@@ -209,13 +210,15 @@ public class DiveDetailsMainActivity extends Activity {
 			try {
 				if (DiveDetailsMainActivity.this != null)
 				{
-					if (mDive.getFeaturedPicture() != null)
-					{
-						isPicture = true;
-						return (mDive.getFeaturedPicture().getPicture(DiveDetailsMainActivity.this, Picture.Size.MEDIUM));
-					}
-					isPicture = false;
-					return (mDive.getThumbnailImageUrl().getPicture(DiveDetailsMainActivity.this));
+					ApplicationController AC = ((ApplicationController)getApplicationContext());
+					return AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext());
+//					if (mDive.getFeaturedPicture() != null)
+//					{
+//						isPicture = true;
+//						return (mDive.getFeaturedPicture().getPicture(DiveDetailsMainActivity.this, Picture.Size.MEDIUM));
+//					}
+//					isPicture = false;
+//					return (mDive.getThumbnailImageUrl().getPicture(DiveDetailsMainActivity.this));
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
