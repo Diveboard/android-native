@@ -31,5 +31,16 @@
     <string name="edit_duration_title">Duration</string>
     <string name="duration_hint">Duration</string>
     <string name="duration_label">min</string>
+    <string name="surface_temp_hint">Surface Temp.</string>
+    <string name="edit_surface_temp_title">Surface Temp.</string>
+    <string name="edit_bottom_temp_title">Bottom Temp.</string>
+    <string name="bottom_temp_hint">Bottom Temp.</string>
+    <string name="weights_hint">Weights</string>
+    <string name="edit_weights_title">Weights</string>
+    <string name="bad_visibility">Bad (under 5m / 15ft)</string>
+    <string name="average_visibility">Average (5-10m / 15-30ft)</string>
+    <string name="good_visibility">Good (10-25m / 40-75ft)</string>
+    <string name="excellent_visibility">Excellent (over 25m / 75ft)</string>
+    <string name="edit_visibility_title">Visibility</string>
 
 </resources>

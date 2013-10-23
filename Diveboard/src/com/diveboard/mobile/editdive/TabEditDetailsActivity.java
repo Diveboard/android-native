@@ -2,12 +2,16 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
 import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListener;
 import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
 import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
 import com.diveboard.mobile.editdive.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.editdive.EditSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
 import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
+import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibilityDialogListener;
+import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
 
 import java.util.ArrayList;
 
@@ -28,7 +32,11 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 																						   EditDateDialogListener,
 																						   EditTimeInDialogListener,
 																						   EditMaxDepthDialogListener,
-																						   EditDurationDialogListener
+																						   EditDurationDialogListener,
+																						   EditSurfaceTempDialogListener,
+																						   EditBottomTempDialogListener,
+																						   EditWeightsDialogListener,
+																						   EditVisibilityDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -114,11 +122,47 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     
     private void				_editSurfaceTemp()
     {
-    	/*EditSurfaceTempDialogFragment dialog = new EditSurfaceDialogFragment();
+    	EditSurfaceTempDialogFragment dialog = new EditSurfaceTempDialogFragment();
     	Bundle args = new Bundle();
     	args.putInt("index", mIndex);
     	dialog.setArguments(args);
-    	dialog.show(getSupportFragmentManager(), "EditSurfaceTempDialogFragment");*/
+    	dialog.show(getSupportFragmentManager(), "EditSurfaceTempDialogFragment");
+    }
+    
+    private void				_editBottomTemp()
+    {
+    	EditBottomTempDialogFragment dialog = new EditBottomTempDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditBottomTempDialogFragment");
+    }
+    
+    private void				_editWeights()
+    {
+    	EditWeightsDialogFragment dialog = new EditWeightsDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditWeightsDialogFragment");
+    }
+    
+    private void				_editVisibility()
+    {
+    	EditVisibilityDialogFragment dialog = new EditVisibilityDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditVisibilityDialogFragment");
+    }
+    
+    private void				_editCurrent()
+    {
+    	EditCurrentDialogFragment dialog = new EditCurrentDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditCurrentDialogFragment");
     }
     
     private void				_displayEditList()
@@ -147,14 +191,14 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			elem.add(new EditOption("Surface temperature : ", "Not defined"));
 		if (dive.getTempBottom() != null)
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom())));
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
 		else
 			elem.add(new EditOption("Bottom temperature : ", "Not defined"));
 		if (dive.getWeights() != null)
-			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights())));
+			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
 		else
 			elem.add(new EditOption("Weights : ", "Not defined"));
-		elem.add(new EditOption("Visibility : ", dive.getVisibility()));
+		elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
 		elem.add(new EditOption("Current : ", dive.getCurrent()));
 		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude())));
 		elem.add(new EditOption("Water type : ", dive.getWater()));
@@ -186,8 +230,21 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 					case 5:
 						_editDuration();
 						break ;
-					case 6:
+					case 9:
 						_editSurfaceTemp();
+						break ;
+					case 10:
+						_editBottomTemp();
+						break ;
+					case 11:
+						_editWeights();
+						break ;
+					case 12:
+						_editVisibility();
+						break ;
+					case 13:
+						_editCurrent();
+						break ;
 				}
 			}
 		});
@@ -251,6 +308,42 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(5)).setValue(Integer.toString(dive.getDuration()) + " min");
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onSurfaceTempEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(9)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onBottomTempEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(10)).setValue(Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName());
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onWeightsEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onVisibilityEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(12)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		mModel.getDataManager().save(dive);
 	}
