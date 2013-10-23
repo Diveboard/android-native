@@ -2,7 +2,9 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
+import com.diveboard.mobile.editdive.EditCurrentDialogFragment.EditCurrentDialogListener;
 import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListener;
 import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
 import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
@@ -36,7 +38,9 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 																						   EditSurfaceTempDialogListener,
 																						   EditBottomTempDialogListener,
 																						   EditWeightsDialogListener,
-																						   EditVisibilityDialogListener
+																						   EditVisibilityDialogListener,
+																						   EditCurrentDialogListener,
+																						   EditAltitudeDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -165,6 +169,15 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	dialog.show(getSupportFragmentManager(), "EditCurrentDialogFragment");
     }
     
+    private void				_editAltitude()
+    {
+    	EditAltitudeDialogFragment dialog = new EditAltitudeDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditAltitudeDialogFragment");
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -199,8 +212,11 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			elem.add(new EditOption("Weights : ", "Not defined"));
 		elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
-		elem.add(new EditOption("Current : ", dive.getCurrent()));
-		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude())));
+		if (dive.getCurrent() != null)
+			elem.add(new EditOption("Current : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
+		else
+			elem.add(new EditOption("Current : ", "Not defined"));
+		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
 		elem.add(new EditOption("Water type : ", dive.getWater()));
 		
 		mOptionAdapter = new OptionAdapter(this, elem);
@@ -244,6 +260,9 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 						break ;
 					case 13:
 						_editCurrent();
+						break ;
+					case 14:
+						_editAltitude();
 						break ;
 				}
 			}
@@ -344,6 +363,24 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(12)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onCurrentEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(13)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onAltitudeEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		mModel.getDataManager().save(dive);
 	}

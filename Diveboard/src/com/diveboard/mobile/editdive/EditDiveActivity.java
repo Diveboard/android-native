@@ -37,7 +37,8 @@ public class					EditDiveActivity extends TabActivity
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
 	    
 	    mIndex = getIntent().getIntExtra("index", -1);
-	    
+	
+	    System.out.println("index " + Integer.toString(mIndex));
 	    // create the TabHost that will contain the Tabs
 	    mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 	

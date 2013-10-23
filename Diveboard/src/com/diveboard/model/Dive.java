@@ -14,7 +14,7 @@ import android.util.Pair;
  */
 public class					Dive implements IModel
 {
-	private Double				_altitude;
+	private Distance			_altitude;
 	// buddies
 	private String				_class;
 	private boolean				_complete;
@@ -67,7 +67,7 @@ public class					Dive implements IModel
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
-		_altitude = (json.isNull("altitude")) ? null : json.getDouble("altitude");
+		_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"));
 		// buddies
 		_class = json.getString("class");
 		_complete = json.getBoolean("complete");
@@ -212,14 +212,20 @@ public class					Dive implements IModel
 			_weights = new Weight(json.getDouble("weights"));
 		if (!json.isNull("visibility"))
 			_visibility = json.getString("visibility");
+		if (!json.isNull("current"))
+			_current = json.getString("current");
+		if (!json.isNull("altitude"))
+			_altitude = new Distance(json.getDouble("altitude"));
 	}
 	
-	public Double getAltitude() {
+	public Distance getAltitude() {
 		return _altitude;
 	}
 
-	public void setAltitude(Double _altitude) {
+	public void setAltitude(Distance _altitude) {
 		this._altitude = _altitude;
+		Pair<String, String> new_elem = new Pair<String, String>("altitude", Double.toString(_altitude.getDistance()));
+		_editList.add(new_elem);
 	}
 
 	public String getDiveClass() {
@@ -306,6 +312,8 @@ public class					Dive implements IModel
 
 	public void setCurrent(String _current) {
 		this._current = _current;
+		Pair<String, String> new_elem = new Pair<String, String>("current", _current);
+		_editList.add(new_elem);
 	}
 
 	public Boolean isFavorite() {

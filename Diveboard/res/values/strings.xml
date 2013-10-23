@@ -42,5 +42,13 @@
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>
     <string name="excellent_visibility">Excellent (over 25m / 75ft)</string>
     <string name="edit_visibility_title">Visibility</string>
+    <string name="edit_current_title">Current</string>
+    <string name="none_current">None</string>
+    <string name="light_current">Light (up to 1 knot)</string>
+    <string name="medium_current">Medium (up to 2 knots)</string>
+    <string name="strong_current">Strong (upt to 3 knots)</string>
+    <string name="extreme_current">Extreme (over 3 knots)</string>
+    <string name="edit_altitude_title">Altitude</string>
+    <string name="altitude_hint">Altitude</string>
 
 </resources>

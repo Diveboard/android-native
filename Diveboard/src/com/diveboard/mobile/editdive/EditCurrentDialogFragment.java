@@ -59,31 +59,34 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_visibility, container);
+		View view = inflater.inflate(R.layout.dialog_edit_current, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_bottom_temp_title));
+		title.setText(getResources().getString(R.string.edit_current_title));
 		
 		mCurrent = (Spinner) view.findViewById(R.id.current);
 		List<String> list = new ArrayList<String>();
-		list.add(getResources().getString(R.string.bad_visibility));
-		list.add(getResources().getString(R.string.average_visibility));
-		list.add(getResources().getString(R.string.good_visibility));
-		list.add(getResources().getString(R.string.excellent_visibility));
+		list.add(getResources().getString(R.string.none_current));
+		list.add(getResources().getString(R.string.light_current));
+		list.add(getResources().getString(R.string.medium_current));
+		list.add(getResources().getString(R.string.strong_current));
+		list.add(getResources().getString(R.string.extreme_current));
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
 		mCurrent.setAdapter(dataAdapter);
-		if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("average") == 0)
+		if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("light") == 0)
 			mCurrent.setSelection(1);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("good") == 0)
+		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("medium") == 0)
 			mCurrent.setSelection(2);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("excellent") == 0)
+		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("strong") == 0)
 			mCurrent.setSelection(3);
+		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("extreme") == 0)
+			mCurrent.setSelection(4);
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -105,8 +108,8 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 			@Override
 			public void onClick(View v)
 			{
-				String[] visibility = ((String)mCurrent.getSelectedItem()).split(" ");
-				mModel.getDives().get(getArguments().getInt("index")).setVisibility(visibility[0].toLowerCase());
+				String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+				mModel.getDives().get(getArguments().getInt("index")).setCurrent(current[0].toLowerCase());
 				mListener.onCurrentEditComplete(EditCurrentDialogFragment.this);
 				dismiss();
 			}
@@ -119,8 +122,8 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 	@Override
 	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
 	{
-		String[] visibility = ((String)mCurrent.getSelectedItem()).split(" ");
-		mModel.getDives().get(getArguments().getInt("index")).setVisibility(visibility[0].toLowerCase());
+		String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+		mModel.getDives().get(getArguments().getInt("index")).setCurrent(current[0].toLowerCase());
 		mListener.onCurrentEditComplete(EditCurrentDialogFragment.this);
 		dismiss();
 		return false;
