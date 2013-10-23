@@ -44,7 +44,7 @@ public class					Dive implements IModel
 	private Integer				_shopId;
 	private int					_spotId;
 	private Spot				_spot;
-	private Double				_tempBottom;
+	private Temperature			_tempBottom;
 	private Temperature			_tempSurface;
 	private Picture				_thumbnailImageUrl;
 	private Picture				_thumbnailProfileUrl;
@@ -55,7 +55,7 @@ public class					Dive implements IModel
 	private int					_userId;
 	private String				_visibility;
 	private String				_water;
-	private Double				_weights;
+	private Weight				_weights;
 	private String				_notes;
 	private String				_publicNotes;
 	private Integer				_number;
@@ -113,7 +113,7 @@ public class					Dive implements IModel
 		// species
 		_spotId = json.getInt("spot_id");
 		_spot = (json.isNull("spot")) ? null : new Spot(json.getJSONObject("spot"));
-		_tempBottom = (json.isNull("temp_bottom")) ? null : json.getDouble("temp_bottom");
+		_tempBottom = (json.isNull("temp_bottom")) ? null : new Temperature(json.getDouble("temp_bottom"));
 		_tempSurface = (json.isNull("temp_surface")) ? null : new Temperature(json.getDouble("temp_surface"));
 		_thumbnailImageUrl = new Picture(json.getString("thumbnail_image_url"));
 		_thumbnailProfileUrl = (json.isNull("thumbnail_profile_url")) ? null : new Picture(json.getString("thumbnail_profile_url"));
@@ -135,7 +135,7 @@ public class					Dive implements IModel
 		_userId = json.getInt("user_id");
 		_visibility = (json.isNull("visibility")) ? null : json.getString("visibility");
 		_water = (json.isNull("water")) ? null : json.getString("water");
-		_weights = (json.isNull("weights")) ? null : json.getDouble("weights");
+		_weights = (json.isNull("weights")) ? null : new Weight(json.getDouble("weights"));
 		_notes = (json.isNull("notes")) ? null : json.getString("notes");
 		_publicNotes = (json.isNull("public_notes")) ? null : json.getString("public_notes");
 		_number = (json.isNull("number")) ? null : json.getInt("number");
@@ -204,6 +204,14 @@ public class					Dive implements IModel
 			_maxdepth = new Distance(json.getDouble("maxdepth"));
 		if (!json.isNull("duration"))
 			_duration = json.getInt("duration");
+		if (!json.isNull("temp_surface"))
+			_tempSurface = new Temperature(json.getDouble("temp_surface"));
+		if (!json.isNull("temp_bottom"))
+			_tempBottom = new Temperature(json.getDouble("temp_bottom"));
+		if (!json.isNull("weights"))
+			_weights = new Weight(json.getDouble("weights"));
+		if (!json.isNull("visibility"))
+			_visibility = json.getString("visibility");
 	}
 	
 	public Double getAltitude() {
@@ -380,12 +388,14 @@ public class					Dive implements IModel
 		this._spot = _spot;
 	}
 
-	public Double getTempBottom() {
+	public Temperature getTempBottom() {
 		return _tempBottom;
 	}
 
-	public void setTempBottom(Double _tempBottom) {
+	public void setTempBottom(Temperature _tempBottom) {
 		this._tempBottom = _tempBottom;
+		Pair<String, String> new_elem = new Pair<String, String>("temp_bottom", Double.toString(_tempBottom.getTemperature()));
+		_editList.add(new_elem);
 	}
 
 	public Temperature getTempSurface() {
@@ -394,6 +404,8 @@ public class					Dive implements IModel
 
 	public void setTempSurface(Temperature _tempSurface) {
 		this._tempSurface = _tempSurface;
+		Pair<String, String> new_elem = new Pair<String, String>("temp_surface", Double.toString(_tempSurface.getTemperature()));
+		_editList.add(new_elem);
 	}
 
 	public Picture getThumbnailImageUrl() {
@@ -454,6 +466,8 @@ public class					Dive implements IModel
 
 	public void setVisibility(String _visibility) {
 		this._visibility = _visibility;
+		Pair<String, String> new_elem = new Pair<String, String>("visibility", _visibility);
+		_editList.add(new_elem);
 	}
 
 	public String getWater() {
@@ -464,12 +478,14 @@ public class					Dive implements IModel
 		this._water = _water;
 	}
 
-	public Double getWeights() {
+	public Weight getWeights() {
 		return _weights;
 	}
 
-	public void setWeights(Double _weights) {
+	public void setWeights(Weight _weights) {
 		this._weights = _weights;
+		Pair<String, String> new_elem = new Pair<String, String>("weights", Double.toString(_weights.getWeight()));
+		_editList.add(new_elem);
 	}
 
 	public String getNotes() {
@@ -536,5 +552,13 @@ public class					Dive implements IModel
 
 	public void setPictures(ArrayList<Picture> _pictures) {
 		this._pictures = _pictures;
+	}
+
+	public ArrayList<String> getDivetype() {
+		return _divetype;
+	}
+
+	public void setDivetype(ArrayList<String> _divetype) {
+		this._divetype = _divetype;
 	}
 }
