@@ -3,6 +3,7 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import com.diveboard.mobile.editdive.TabEditGearActivity;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 

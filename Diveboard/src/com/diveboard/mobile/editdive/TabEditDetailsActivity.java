@@ -1,13 +1,16 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
+
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListener;
+import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
+import com.diveboard.mobile.editdive.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
+import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
 
 import java.util.ArrayList;
 
-import com.diveboard.mobile.EditDateDialogFragment.EditDateDialogListener;
-import com.diveboard.mobile.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
-import com.diveboard.mobile.EditDurationDialogFragment.EditDurationDialogListener;
-import com.diveboard.mobile.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
-import com.diveboard.mobile.EditTimeInDialogFragment.EditTimeInDialogListener;
-import com.diveboard.mobile.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
@@ -109,6 +112,15 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	dialog.show(getSupportFragmentManager(), "EditDurationDialogFragment");
     }
     
+    private void				_editSurfaceTemp()
+    {
+    	/*EditSurfaceTempDialogFragment dialog = new EditSurfaceDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditSurfaceTempDialogFragment");*/
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -131,7 +143,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		elem.add(new EditOption("Other divers : ", "not implemented"));
 		elem.add(new EditOption("Diving type & activities : ", "not implemented"));
 		if (dive.getTempSurface() != null)
-			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface())));
+			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
 		else
 			elem.add(new EditOption("Surface temperature : ", "Not defined"));
 		if (dive.getTempBottom() != null)
@@ -174,6 +186,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 					case 5:
 						_editDuration();
 						break ;
+					case 6:
+						_editSurfaceTemp();
 				}
 			}
 		});

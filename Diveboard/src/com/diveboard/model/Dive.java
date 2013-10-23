@@ -45,7 +45,7 @@ public class					Dive implements IModel
 	private int					_spotId;
 	private Spot				_spot;
 	private Double				_tempBottom;
-	private Double				_tempSurface;
+	private Temperature			_tempSurface;
 	private Picture				_thumbnailImageUrl;
 	private Picture				_thumbnailProfileUrl;
 	private String				_time;
@@ -114,7 +114,7 @@ public class					Dive implements IModel
 		_spotId = json.getInt("spot_id");
 		_spot = (json.isNull("spot")) ? null : new Spot(json.getJSONObject("spot"));
 		_tempBottom = (json.isNull("temp_bottom")) ? null : json.getDouble("temp_bottom");
-		_tempSurface = (json.isNull("temp_surface")) ? null : json.getDouble("temp_surface");
+		_tempSurface = (json.isNull("temp_surface")) ? null : new Temperature(json.getDouble("temp_surface"));
 		_thumbnailImageUrl = new Picture(json.getString("thumbnail_image_url"));
 		_thumbnailProfileUrl = (json.isNull("thumbnail_profile_url")) ? null : new Picture(json.getString("thumbnail_profile_url"));
 		_time = (json.isNull("time")) ? null : json.getString("time");
@@ -388,11 +388,11 @@ public class					Dive implements IModel
 		this._tempBottom = _tempBottom;
 	}
 
-	public Double getTempSurface() {
+	public Temperature getTempSurface() {
 		return _tempSurface;
 	}
 
-	public void setTempSurface(Double _tempSurface) {
+	public void setTempSurface(Temperature _tempSurface) {
 		this._tempSurface = _tempSurface;
 	}
 

@@ -1,5 +1,7 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -12,19 +14,19 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.TextView;
-import android.widget.TimePicker;
 
-public class					EditTimeInDialogFragment extends DialogFragment
+public class					EditDateDialogFragment extends DialogFragment
 {
-	public interface			EditTimeInDialogListener
+	public interface			EditDateDialogListener
 	{
-        void					onTimeInEditComplete(DialogFragment dialog);
+        void					onDateEditComplete(DialogFragment dialog);
     }
 	
 	private DiveboardModel		mModel;
-	private TimePicker			mTimeIn;
-	private EditTimeInDialogListener	mListener;
+	private DatePicker			mDate;
+	private EditDateDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -34,12 +36,12 @@ public class					EditTimeInDialogFragment extends DialogFragment
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditTimeInDialogListener) activity;
+			 mListener = (EditDateDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onTimeInEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onDateEditComplete");
 		 }
 	 }
 	
@@ -47,21 +49,19 @@ public class					EditTimeInDialogFragment extends DialogFragment
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_time_in, container);
+		View view = inflater.inflate(R.layout.dialog_edit_date, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_time_in_title));
+		title.setText(getResources().getString(R.string.edit_date_title));
 		
-		mTimeIn = (TimePicker) view.findViewById(R.id.time_in);
-		mTimeIn.setIs24HourView(true);
-		String time_in[] = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
-		String[] time_array = time_in[1].split(":");
-		mTimeIn.setCurrentHour(Integer.parseInt(time_array[0]));
-		mTimeIn.setCurrentMinute(Integer.parseInt(time_array[1]));
+		mDate = (DatePicker) view.findViewById(R.id.date);
+		String[] date_array = mModel.getDives().get(getArguments().getInt("index")).getDate().split("-");
+		
+		mDate.updateDate(Integer.parseInt(date_array[0]), Integer.parseInt(date_array[1]), Integer.parseInt(date_array[2]));
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -83,21 +83,15 @@ public class					EditTimeInDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-				mTimeIn.clearFocus();
-				String[] time_in = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
-				String new_timein = time_in[0] + "T";
-				if (mTimeIn.getCurrentHour() < 10)
-					new_timein += "0" + mTimeIn.getCurrentHour();
-				else
-					new_timein += mTimeIn.getCurrentHour();
-				new_timein += ":";
-				if (mTimeIn.getCurrentMinute() < 10)
-					new_timein += "0" + mTimeIn.getCurrentMinute();
-				else
-					new_timein += mTimeIn.getCurrentMinute();
-				new_timein += ":00Z";
-				mModel.getDives().get(getArguments().getInt("index")).setTimeIn(new_timein);
-				mListener.onTimeInEditComplete(EditTimeInDialogFragment.this);
+				String date = Integer.toString(mDate.getYear()) + "-";
+				if (mDate.getMonth() < 10)
+					date += "0";
+				date += Integer.toString(mDate.getMonth()) + "-";
+				if (mDate.getDayOfMonth() < 10)
+					date += "0";
+				date += Integer.toString(mDate.getDayOfMonth());
+				mModel.getDives().get(getArguments().getInt("index")).setDate(date);
+				mListener.onDateEditComplete(EditDateDialogFragment.this);
 				dismiss();
 			}
 		});

@@ -1,6 +1,7 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
-import com.diveboard.mobile.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -16,20 +17,20 @@ import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDateDialogFragment extends DialogFragment
+public class					EditDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
 {
-	public interface			EditDateDialogListener
+	public interface			EditDiveNumberDialogListener
 	{
-        void					onDateEditComplete(DialogFragment dialog);
+        void					onDiveNumberEditComplete(DialogFragment dialog);
     }
 	
 	private DiveboardModel		mModel;
-	private DatePicker			mDate;
-	private EditDateDialogListener	mListener;
+	private EditText			mDiveNumber;
+	private EditDiveNumberDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -39,12 +40,12 @@ public class					EditDateDialogFragment extends DialogFragment
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditDateDialogListener) activity;
+			 mListener = (EditDiveNumberDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onDateEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onDiveNumberEditComplete");
 		 }
 	 }
 	
@@ -52,20 +53,23 @@ public class					EditDateDialogFragment extends DialogFragment
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_date, container);
+		View view = inflater.inflate(R.layout.dialog_edit_dive_number, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_date_title));
+		title.setText(getResources().getString(R.string.edit_divenumber_title));
 		
-		mDate = (DatePicker) view.findViewById(R.id.date);
-		String[] date_array = mModel.getDives().get(getArguments().getInt("index")).getDate().split("-");
+		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
+		mDiveNumber.setTypeface(faceR);
+		mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
+		mDiveNumber.requestFocus();
 		
-		mDate.updateDate(Integer.parseInt(date_array[0]), Integer.parseInt(date_array[1]), Integer.parseInt(date_array[2]));
-		
+		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
+		mDiveNumber.setOnEditorActionListener(this);
+        
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -86,20 +90,26 @@ public class					EditDateDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-				String date = Integer.toString(mDate.getYear()) + "-";
-				if (mDate.getMonth() < 10)
-					date += "0";
-				date += Integer.toString(mDate.getMonth()) + "-";
-				if (mDate.getDayOfMonth() < 10)
-					date += "0";
-				date += Integer.toString(mDate.getDayOfMonth());
-				mModel.getDives().get(getArguments().getInt("index")).setDate(date);
-				mListener.onDateEditComplete(EditDateDialogFragment.this);
+				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
 				dismiss();
 			}
 		});
 		
         faceR = null;
 		return view;
+	}
+
+	@Override
+	public boolean					onEditorAction(TextView v, int actionId, KeyEvent event)
+	{
+		if (EditorInfo.IME_ACTION_DONE == actionId)
+		{
+			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+			dismiss();
+			return true;
+		}
+		return false;
 	}
 }

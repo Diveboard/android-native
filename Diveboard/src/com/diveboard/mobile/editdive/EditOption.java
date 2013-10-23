@@ -1,7 +1,4 @@
-package com.diveboard.mobile;
-
-import android.app.Activity;
-import android.os.Bundle;
+package com.diveboard.mobile.editdive;
 
 public class					EditOption
 {

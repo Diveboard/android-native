@@ -1,4 +1,6 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
+
+import com.diveboard.mobile.R;
 
 import android.app.TabActivity;
 import android.content.Context;

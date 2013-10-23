@@ -1,5 +1,7 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
 import com.diveboard.model.DiveboardModel;
 
@@ -18,7 +20,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.TimePicker;
 import android.widget.TextView.OnEditorActionListener;
 
 public class					EditMaxDepthDialogFragment extends DialogFragment implements OnEditorActionListener

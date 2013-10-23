@@ -1,6 +1,8 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
 import java.util.List;
+
+import com.diveboard.mobile.R;
 
 import android.content.Context;
 import android.graphics.Typeface;

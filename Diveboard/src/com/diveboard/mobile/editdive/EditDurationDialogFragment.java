@@ -1,5 +1,7 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -13,22 +15,21 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					EditDurationDialogFragment extends DialogFragment implements OnEditorActionListener
 {
-	public interface			EditDiveNumberDialogListener
+	public interface			EditDurationDialogListener
 	{
-        void					onDiveNumberEditComplete(DialogFragment dialog);
+        void					onDurationEditComplete(DialogFragment dialog);
     }
 	
 	private DiveboardModel		mModel;
-	private EditText			mDiveNumber;
-	private EditDiveNumberDialogListener	mListener;
+	private EditText			mDuration;
+	private EditDurationDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -38,12 +39,12 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditDiveNumberDialogListener) activity;
+			 mListener = (EditDurationDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onDiveNumberEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onTimeInEditComplete");
 		 }
 	 }
 	
@@ -51,23 +52,27 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_dive_number, container);
+		View view = inflater.inflate(R.layout.dialog_edit_duration, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_divenumber_title));
+		title.setText(getResources().getString(R.string.edit_duration_title));
 		
-		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
-		mDiveNumber.setTypeface(faceR);
-		mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
-		mDiveNumber.requestFocus();
+		mDuration = (EditText) view.findViewById(R.id.duration);
+		mDuration.setTypeface(faceR);
+		mDuration.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getDuration()));
+		mDuration.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-		mDiveNumber.setOnEditorActionListener(this);
-        
+		mDuration.setOnEditorActionListener(this);
+		
+		TextView min_label = (TextView) view.findViewById(R.id.min_label);
+		min_label.setTypeface(faceR);
+		min_label.setText(getResources().getString(R.string.duration_label));
+		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -88,8 +93,18 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+				Integer duration;
+				
+				try
+				{
+					duration = Integer.parseInt(mDuration.getText().toString());
+				}
+				catch (NumberFormatException e)
+				{
+					duration = 0;
+				}
+				mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
+				mListener.onDurationEditComplete(EditDurationDialogFragment.this);
 				dismiss();
 			}
 		});
@@ -99,15 +114,21 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	}
 
 	@Override
-	public boolean					onEditorAction(TextView v, int actionId, KeyEvent event)
+	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
 	{
-		if (EditorInfo.IME_ACTION_DONE == actionId)
+		Integer duration;
+		
+		try
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
-			dismiss();
-			return true;
+			duration = Integer.parseInt(mDuration.getText().toString());
 		}
+		catch (NumberFormatException e)
+		{
+			duration = 0;
+		}
+		mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
+		mListener.onDurationEditComplete(EditDurationDialogFragment.this);
+		dismiss();
 		return false;
 	}
 }

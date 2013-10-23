@@ -1,34 +1,32 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDurationDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					EditTimeInDialogFragment extends DialogFragment
 {
-	public interface			EditDurationDialogListener
+	public interface			EditTimeInDialogListener
 	{
-        void					onDurationEditComplete(DialogFragment dialog);
+        void					onTimeInEditComplete(DialogFragment dialog);
     }
 	
 	private DiveboardModel		mModel;
-	private EditText			mDuration;
-	private EditDurationDialogListener	mListener;
+	private TimePicker			mTimeIn;
+	private EditTimeInDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -38,7 +36,7 @@ public class					EditDurationDialogFragment extends DialogFragment implements On
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditDurationDialogListener) activity;
+			 mListener = (EditTimeInDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
@@ -51,26 +49,21 @@ public class					EditDurationDialogFragment extends DialogFragment implements On
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_duration, container);
+		View view = inflater.inflate(R.layout.dialog_edit_time_in, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_duration_title));
+		title.setText(getResources().getString(R.string.edit_time_in_title));
 		
-		mDuration = (EditText) view.findViewById(R.id.duration);
-		mDuration.setTypeface(faceR);
-		mDuration.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getDuration()));
-		mDuration.requestFocus();
-		
-		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-		mDuration.setOnEditorActionListener(this);
-		
-		TextView min_label = (TextView) view.findViewById(R.id.min_label);
-		min_label.setTypeface(faceR);
-		min_label.setText(getResources().getString(R.string.duration_label));
+		mTimeIn = (TimePicker) view.findViewById(R.id.time_in);
+		mTimeIn.setIs24HourView(true);
+		String time_in[] = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
+		String[] time_array = time_in[1].split(":");
+		mTimeIn.setCurrentHour(Integer.parseInt(time_array[0]));
+		mTimeIn.setCurrentMinute(Integer.parseInt(time_array[1]));
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -92,42 +85,26 @@ public class					EditDurationDialogFragment extends DialogFragment implements On
 			@Override
 			public void onClick(View v)
 			{
-				Integer duration;
-				
-				try
-				{
-					duration = Integer.parseInt(mDuration.getText().toString());
-				}
-				catch (NumberFormatException e)
-				{
-					duration = 0;
-				}
-				mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
-				mListener.onDurationEditComplete(EditDurationDialogFragment.this);
+				mTimeIn.clearFocus();
+				String[] time_in = mModel.getDives().get(getArguments().getInt("index")).getTimeIn().split("T");
+				String new_timein = time_in[0] + "T";
+				if (mTimeIn.getCurrentHour() < 10)
+					new_timein += "0" + mTimeIn.getCurrentHour();
+				else
+					new_timein += mTimeIn.getCurrentHour();
+				new_timein += ":";
+				if (mTimeIn.getCurrentMinute() < 10)
+					new_timein += "0" + mTimeIn.getCurrentMinute();
+				else
+					new_timein += mTimeIn.getCurrentMinute();
+				new_timein += ":00Z";
+				mModel.getDives().get(getArguments().getInt("index")).setTimeIn(new_timein);
+				mListener.onTimeInEditComplete(EditTimeInDialogFragment.this);
 				dismiss();
 			}
 		});
 		
         faceR = null;
 		return view;
-	}
-
-	@Override
-	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
-	{
-		Integer duration;
-		
-		try
-		{
-			duration = Integer.parseInt(mDuration.getText().toString());
-		}
-		catch (NumberFormatException e)
-		{
-			duration = 0;
-		}
-		mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
-		mListener.onDurationEditComplete(EditDurationDialogFragment.this);
-		dismiss();
-		return false;
 	}
 }

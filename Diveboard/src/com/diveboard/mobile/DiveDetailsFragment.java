@@ -1,6 +1,8 @@
 package com.diveboard.mobile;
 
 
+import com.diveboard.mobile.editdive.TabEditGearActivity;
+
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;

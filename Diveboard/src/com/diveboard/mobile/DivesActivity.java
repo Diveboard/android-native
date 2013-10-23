@@ -6,6 +6,7 @@ import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 
+import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DataRefreshListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;

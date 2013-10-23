@@ -1,4 +1,4 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
 import android.app.Activity;
 import android.os.Bundle;
