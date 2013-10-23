@@ -73,6 +73,35 @@ public class ImageHelper {
     }
     
     /**
+	 * Returns a rounded shape bitmap for the small pictures
+	 */
+    public static Bitmap getRoundedLayerSmallFix(int x, int y) {
+        Bitmap output = Bitmap.createBitmap(x, y, Config.ARGB_8888);
+        Canvas canvas = new Canvas(output);
+
+        final int color_circle = 0xFFFFFFFF;
+        final int color_rect = 0xffffffff;
+        final Paint paint = new Paint();
+        final Rect rect = new Rect(0, 0, x, y);
+
+        paint.setAntiAlias(true);
+        paint.setColor(color_rect);
+        canvas.drawRect(rect, paint);
+
+        Xfermode fermode = paint.getXfermode();
+        paint.setXfermode(new PorterDuffXfermode(Mode.CLEAR));
+        canvas.drawCircle(x / 2, y / 2, x / 2, paint);
+//        paint.setColor(0xff1C1C1C);
+//        paint.setAlpha(72);
+//        paint.setXfermode(fermode);
+//        paint.setStyle(Paint.Style.STROKE);
+//        int strokeWidth = screenSetup.getDiveListFragmentCircleBorderWidth();
+//        paint.setStrokeWidth(strokeWidth);
+//        canvas.drawCircle(screenSetup.getDiveListFragmentPictureCircleRadius() / 2, screenSetup.getDiveListFragmentPictureCircleRadius() / 2, screenSetup.getDiveListFragmentPictureCircleRadius() / 2, paint);
+        return output;
+    }
+    
+    /**
 	 * Returns a blurred bitmap
 	 */
 	public static Bitmap fastblur(Bitmap sentBitmap, int radius) {

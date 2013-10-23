@@ -321,32 +321,42 @@ public class DivesFragment extends Fragment {
 				if (result != null && imageView != null)
 				{	
 					imageView.setImageBitmap(result);
-					if (isPicture == true)
+					imageView.setOnClickListener(new OnClickListener()
 					{
-						imageView.setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								galleryCarousel.putExtra("index", AC.getPageIndex());
-							    startActivity(galleryCarousel);
-							}
-						});
-					}
-					else
-					{
-						imageView.setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								Intent editDiveActivity = new Intent(getActivity().getApplicationContext(), EditDiveActivity.class);
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								editDiveActivity.putExtra("index", AC.getPageIndex());
-							    startActivity(editDiveActivity);
-							}
-						});
-					}
+						@Override
+						public void onClick(View v) {
+							ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+							Intent diveDetailsActivity = new Intent(getActivity().getApplicationContext(), DiveDetailsActivity.class);
+							diveDetailsActivity.putExtra("index", AC.getPageIndex());
+							startActivity(diveDetailsActivity);
+						}
+					});
+//					if (isPicture == true)
+//					{
+//						imageView.setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								galleryCarousel.putExtra("index", AC.getPageIndex());
+//							    startActivity(galleryCarousel);
+//							}
+//						});
+//					}
+//					else
+//					{
+//						imageView.setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								Intent editDiveActivity = new Intent(getActivity().getApplicationContext(), EditDiveActivity.class);
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								editDiveActivity.putExtra("index", AC.getPageIndex());
+//							    startActivity(editDiveActivity);
+//							}
+//						});
+//					}
 				}
 			}
 		}

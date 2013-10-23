@@ -95,18 +95,18 @@ public class DiveDetailsActivity extends TabActivity {
 					}
 					
 				});
-		    	FrameLayout tab = ((FrameLayout)mTabHost.getTabContentView());
-				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(tab.getWidth(), tab.getHeight());
-				tab.setLayoutParams(param);
-				LinearLayout.LayoutParams param2 = new LinearLayout.LayoutParams(((LinearLayout)findViewById(R.id.white_banner)).getWidth(), ((LinearLayout)findViewById(R.id.white_banner)).getHeight());
-				param2.setMargins(0, tab.getHeight() * (-1), 0, 0);
-				((LinearLayout)findViewById(R.id.white_banner)).setLayoutParams(param2);
-				System.out.println(tab.getWidth() + " " + tab.getHeight());
+//		    	FrameLayout tab = ((FrameLayout)mTabHost.getTabContentView());
+//				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(tab.getWidth(), tab.getHeight());
+//				tab.setLayoutParams(param);
+//				LinearLayout.LayoutParams param2 = new LinearLayout.LayoutParams(((LinearLayout)findViewById(R.id.white_banner)).getWidth(), ((LinearLayout)findViewById(R.id.white_banner)).getHeight());
+//				param2.setMargins(0, tab.getHeight() * (-1), 0, 0);
+//				((LinearLayout)findViewById(R.id.white_banner)).setLayoutParams(param2);
+				//System.out.println(tab.getWidth() + " " + tab.getHeight());
 				((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getTripName());
-				((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
+				((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
 				((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getCountryName());
-				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, 26);
+				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
@@ -177,7 +177,7 @@ public class DiveDetailsActivity extends TabActivity {
 		{
 			if (result != null)
 			{
-				((RelativeLayout)findViewById(R.id.root)).setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+				((LinearLayout)findViewById(R.id.root)).setBackgroundDrawable(new BitmapDrawable(getResources(), result));
 			}
 		}
 	}
