@@ -321,42 +321,6 @@ public class DivesFragment extends Fragment {
 				if (result != null && imageView != null)
 				{	
 					imageView.setImageBitmap(result);
-					imageView.setOnClickListener(new OnClickListener()
-					{
-						@Override
-						public void onClick(View v) {
-							ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-							Intent diveDetailsActivity = new Intent(getActivity().getApplicationContext(), DiveDetailsActivity.class);
-							diveDetailsActivity.putExtra("index", AC.getPageIndex());
-							startActivity(diveDetailsActivity);
-						}
-					});
-//					if (isPicture == true)
-//					{
-//						imageView.setOnClickListener(new OnClickListener()
-//						{
-//							@Override
-//							public void onClick(View v) {
-//								Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
-//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-//								galleryCarousel.putExtra("index", AC.getPageIndex());
-//							    startActivity(galleryCarousel);
-//							}
-//						});
-//					}
-//					else
-//					{
-//						imageView.setOnClickListener(new OnClickListener()
-//						{
-//							@Override
-//							public void onClick(View v) {
-//								Intent editDiveActivity = new Intent(getActivity().getApplicationContext(), EditDiveActivity.class);
-//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-//								editDiveActivity.putExtra("index", AC.getPageIndex());
-//							    startActivity(editDiveActivity);
-//							}
-//						});
-//					}
 				}
 			}
 		}
@@ -397,21 +361,6 @@ public class DivesFragment extends Fragment {
 						rounded_image_params.setMargins(mScreenSetup.getDiveListSmallPictureMargin(), 0, mScreenSetup.getDiveListSmallPictureMargin(), 0);
 						pic.setLayoutParams(image_params);
 						round_pic.setLayoutParams(rounded_image_params);
-						if (getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
-						{
-							pic.setOnClickListener(new OnClickListener()
-							{
-	
-								@Override
-								public void onClick(View v) {
-									Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
-									ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-									galleryCarousel.putExtra("index", AC.getPageIndex());
-								    startActivity(galleryCarousel);
-								}
-								
-							});
-						}
 						mSmallImage.add(pic);
 						mSmallImage.add(round_pic);
 					} catch (Exception e) {
@@ -419,8 +368,6 @@ public class DivesFragment extends Fragment {
 					}
 				}
 			}
-			else
-				System.out.println("DownloadSmallImageTask is NULL");
 			return mSmallImage;
 		}
 		
@@ -431,6 +378,33 @@ public class DivesFragment extends Fragment {
 				for (int i = 0; i < result.size(); i++)
 				{
 					((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).addView(result.get(i));
+					System.out.println(result.size());
+					if (result.size() == 0)
+					{
+						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+						{
+							@Override
+							public void onClick(View v) {
+								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+								diveDetailsActivity.putExtra("index", AC.getPageIndex());
+								startActivity(diveDetailsActivity);
+							}
+						});
+					}
+					else
+					{
+						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+						{
+							@Override
+							public void onClick(View v) {
+								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
+								galleryCarousel.putExtra("index", AC.getPageIndex());
+								startActivity(galleryCarousel);
+							}
+						});
+					}
 				}
 			}
 		}

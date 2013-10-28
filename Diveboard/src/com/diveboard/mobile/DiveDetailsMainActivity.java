@@ -175,16 +175,6 @@ public class DiveDetailsMainActivity extends Activity {
 				{	
 					mShopLogo.setImageBitmap(result);
 					mShopLogo.setScaleType(ScaleType.CENTER_CROP);
-//					imageView.setOnClickListener(new OnClickListener()
-//					{
-//						@Override
-//						public void onClick(View v) {
-//							ApplicationController AC = ((ApplicationController)getApplicationContext());
-//							Intent diveDetailsActivity = new Intent(getApplicationContext(), DiveDetailsActivity.class);
-//							diveDetailsActivity.putExtra("index", AC.getPageIndex());
-//							startActivity(diveDetailsActivity);
-//						}
-//					});
 				}
 			}
 		}
@@ -212,13 +202,6 @@ public class DiveDetailsMainActivity extends Activity {
 				{
 					ApplicationController AC = ((ApplicationController)getApplicationContext());
 					return AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext());
-//					if (mDive.getFeaturedPicture() != null)
-//					{
-//						isPicture = true;
-//						return (mDive.getFeaturedPicture().getPicture(DiveDetailsMainActivity.this, Picture.Size.MEDIUM));
-//					}
-//					isPicture = false;
-//					return (mDive.getThumbnailImageUrl().getPicture(DiveDetailsMainActivity.this));
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -237,16 +220,6 @@ public class DiveDetailsMainActivity extends Activity {
 					mPic.setImageBitmap(result);
 					mRoundedPic.setImageBitmap(mRoundedLayerSmall);
 					mPic.setScaleType(ScaleType.CENTER_CROP);
-//					imageView.setOnClickListener(new OnClickListener()
-//					{
-//						@Override
-//						public void onClick(View v) {
-//							ApplicationController AC = ((ApplicationController)getApplicationContext());
-//							Intent diveDetailsActivity = new Intent(getApplicationContext(), DiveDetailsActivity.class);
-//							diveDetailsActivity.putExtra("index", AC.getPageIndex());
-//							startActivity(diveDetailsActivity);
-//						}
-//					});
 				}
 			}
 		}

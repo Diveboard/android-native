@@ -70,6 +70,7 @@ public class DiveDetailsActivity extends TabActivity {
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				//We built the tabs
 				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);
 				intent.putExtra("index", AC.getPageIndex());
 				setupTab(new TextView(DiveDetailsActivity.this), getResources().getString(R.string.tab_details_label), intent);
@@ -95,13 +96,6 @@ public class DiveDetailsActivity extends TabActivity {
 					}
 					
 				});
-//		    	FrameLayout tab = ((FrameLayout)mTabHost.getTabContentView());
-//				LinearLayout.LayoutParams param = new LinearLayout.LayoutParams(tab.getWidth(), tab.getHeight());
-//				tab.setLayoutParams(param);
-//				LinearLayout.LayoutParams param2 = new LinearLayout.LayoutParams(((LinearLayout)findViewById(R.id.white_banner)).getWidth(), ((LinearLayout)findViewById(R.id.white_banner)).getHeight());
-//				param2.setMargins(0, tab.getHeight() * (-1), 0, 0);
-//				((LinearLayout)findViewById(R.id.white_banner)).setLayoutParams(param2);
-				//System.out.println(tab.getWidth() + " " + tab.getHeight());
 				((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getTripName());
 				((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);

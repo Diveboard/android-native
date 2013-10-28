@@ -67,7 +67,7 @@ import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
-public class DivesActivity extends FragmentActivity {
+public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks {
 
 	// Number of pages in Dives
 	private int mNbPages = 1;
@@ -84,7 +84,8 @@ public class DivesActivity extends FragmentActivity {
 	private	 int mBackground = 1;
 	
 	// Thread for the data loading & the views associated
-	private LoadDataTask mAuthTask = null;
+	private TaskFragment mTaskFragment;
+	//private LoadDataTask mAuthTask = null;
 	private View mLoadDataFormView;
 	private View mLoadDataStatusView;
 	private TextView mLoadDataStatusMessageView;
@@ -105,24 +106,51 @@ public class DivesActivity extends FragmentActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 		}
 		setContentView(R.layout.activity_dives);
+		
 		// Initialize data
 		if (((ApplicationController)getApplicationContext()).getModel() == null)
 		{
-			//mOrientation = getRequestedOrientation();
-			//setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
 			mModel = new DiveboardModel(30, this);
 			ApplicationController AC = (ApplicationController)getApplicationContext();			
 			AC.setModel(mModel);
 			mLoadDataFormView = findViewById(R.id.load_data_form);
 			mLoadDataStatusView = findViewById(R.id.load_data_status);
 			mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
+			System.out.println("loadData");
 			loadData();
 		}
 		else
 		{
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			mModel = AC.getModel();
-			//mModel = savedInstanceState.getParcelable("model");
+			System.out.println("createPages");
+			createPages();
+		}
+	}
+	
+	
+	// The three methods below are called by the TaskFragment when new
+	// progress updates or results are available. The MainActivity 
+	// should respond by updating its UI to indicate the change.
+	@Override
+	public void onPreExecute()
+	{
+	}
+	
+	@Override
+	public void onCancelled()
+	{
+		mTaskFragment = null;
+		showProgress(false);
+	}
+	
+	@Override
+	public void onPostExecute(final Boolean success)
+	{
+		mTaskFragment = null;
+		showProgress(false);
+
+		if (success) {
 			createPages();
 		}
 	}
@@ -140,7 +168,6 @@ public class DivesActivity extends FragmentActivity {
 	{
 		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
 		editDiveActivity.putExtra("index", mPager.getCurrentItem());
-		System.out.println("editdive");
 	    startActivity(editDiveActivity);
 	}
 	
@@ -148,7 +175,6 @@ public class DivesActivity extends FragmentActivity {
 	{
 		Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
 		diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
-		System.out.println("divedetails");
 		startActivity(diveDetailsActivity);
 	}
 	
@@ -156,22 +182,28 @@ public class DivesActivity extends FragmentActivity {
 	{
 		Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
 		galleryCarousel.putExtra("index", mPager.getCurrentItem());
-		System.out.println("gallery");
 		startActivity(galleryCarousel);
 	}
 	
 	public void loadData()
 	{
-		if (mAuthTask != null)
+		if (mTaskFragment != null)
 		{
 			return;
 		}
 		// Show a progress spinner, and kick off a background task to
-		// perform the user login attempt.
+		// perform the data loading
 		mLoadDataStatusMessageView.setText(R.string.progress_load_data);
 		showProgress(true);
-		mAuthTask = new LoadDataTask();
-		mAuthTask.execute((Void) null);
+		FragmentManager fm = getSupportFragmentManager();
+		// If the Fragment is non-null, then it is currently being
+	    // retained across a configuration change.
+		mTaskFragment = (TaskFragment) fm.findFragmentByTag("task");
+		if (mTaskFragment == null)
+		{
+			mTaskFragment = new TaskFragment();
+			fm.beginTransaction().add(mTaskFragment, "task").commit();
+		}
 	}
 	
 	/**
@@ -275,6 +307,15 @@ public class DivesActivity extends FragmentActivity {
 		    public void onGlobalLayout() { 
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+		      //We create the pager with the associated pages
+				if (mModel.getDives() == null)
+				{
+					System.out.println("offline"); // to do
+					finish();
+					return ;
+				}
+				else
+					mNbPages = mModel.getDives().size();
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
@@ -319,14 +360,7 @@ public class DivesActivity extends FragmentActivity {
 				mBackground2 = (ImageView)findViewById(R.id.background2);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
-				//We create the pager with the associated pages
-				if (mModel.getDives() == null)
-				{
-					System.out.println("offline"); // to do
-					finish();
-				}
-				else
-					mNbPages = mModel.getDives().size();
+				
 				mPager = (ViewPager) findViewById(R.id.pager);
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);
@@ -399,7 +433,7 @@ public class DivesActivity extends FragmentActivity {
 	
 						@Override
 						public void onDataRefreshComplete() {
-							System.out.println("Data refresh complete");
+							//System.out.println("Data refresh complete");
 							try {
 								mModel.overwriteData();
 							} catch (IOException e) {
@@ -548,30 +582,30 @@ public class DivesActivity extends FragmentActivity {
 	/**
 	 * Represents an asynchronous task used to load data
 	 */
-	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
-		
-		@Override
-		protected Boolean doInBackground(Void... params) {
-			mModel.loadData();
-			return true;
-		}
-
-		@Override
-		protected void onPostExecute(final Boolean success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success) {
-				createPages();
-			}
-		}
-		
-		@Override
-		protected void onCancelled() {
-			mAuthTask = null;
-			showProgress(false);
-		}
-	}
+//	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
+//		
+//		@Override
+//		protected Boolean doInBackground(Void... params) {
+//			mModel.loadData();
+//			return true;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(final Boolean success) {
+//			mAuthTask = null;
+//			showProgress(false);
+//
+//			if (success) {
+//				createPages();
+//			}
+//		}
+//		
+//		@Override
+//		protected void onCancelled() {
+//			mAuthTask = null;
+//			showProgress(false);
+//		}
+//	}
 	
 	/**
 	 * Generate the dives pagesDive dive
