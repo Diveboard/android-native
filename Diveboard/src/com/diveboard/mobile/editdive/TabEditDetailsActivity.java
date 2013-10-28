@@ -13,6 +13,7 @@ import com.diveboard.mobile.editdive.EditSurfaceTempDialogFragment.EditSurfaceTe
 import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibilityDialogListener;
+import com.diveboard.mobile.editdive.EditWaterDialogFragment.EditWaterDialogListener;
 import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
 
 import java.util.ArrayList;
@@ -40,7 +41,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 																						   EditWeightsDialogListener,
 																						   EditVisibilityDialogListener,
 																						   EditCurrentDialogListener,
-																						   EditAltitudeDialogListener
+																						   EditAltitudeDialogListener,
+																						   EditWaterDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -178,6 +180,15 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	dialog.show(getSupportFragmentManager(), "EditAltitudeDialogFragment");
     }
     
+    private void				_editWater()
+    {
+    	EditWaterDialogFragment dialog = new EditWaterDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditWaterDialogFragment");
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -217,7 +228,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			elem.add(new EditOption("Current : ", "Not defined"));
 		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
-		elem.add(new EditOption("Water type : ", dive.getWater()));
+		elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
 		
 		mOptionAdapter = new OptionAdapter(this, elem);
 		optionList.setAdapter(mOptionAdapter);
@@ -263,6 +274,9 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 						break ;
 					case 14:
 						_editAltitude();
+						break ;
+					case 15:
+						_editWater();
 						break ;
 				}
 			}
@@ -381,6 +395,15 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
+		mOptionAdapter.notifyDataSetChanged();
+		mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onWaterEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(15)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		mModel.getDataManager().save(dive);
 	}

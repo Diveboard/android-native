@@ -216,6 +216,8 @@ public class					Dive implements IModel
 			_current = json.getString("current");
 		if (!json.isNull("altitude"))
 			_altitude = new Distance(json.getDouble("altitude"));
+		if (!json.isNull("water"))
+			_water = json.getString("water");
 	}
 	
 	public Distance getAltitude() {
@@ -484,6 +486,8 @@ public class					Dive implements IModel
 
 	public void setWater(String _water) {
 		this._water = _water;
+		Pair<String, String> new_elem = new Pair<String, String>("water", _water);
+		_editList.add(new_elem);
 	}
 
 	public Weight getWeights() {

@@ -50,5 +50,8 @@
     <string name="extreme_current">Extreme (over 3 knots)</string>
     <string name="edit_altitude_title">Altitude</string>
     <string name="altitude_hint">Altitude</string>
+    <string name="edit_water_title">Water Type</string>
+    <string name="salt_water">Salt</string>
+    <string name="fresh_water">Fresh</string>
 
 </resources>

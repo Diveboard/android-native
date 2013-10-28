@@ -34,6 +34,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabWidget;
@@ -102,6 +103,7 @@ public class DiveDetailsActivity extends TabActivity {
 				((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", -1)).getSpot().getCountryName());
 				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);
+				((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
 		    }

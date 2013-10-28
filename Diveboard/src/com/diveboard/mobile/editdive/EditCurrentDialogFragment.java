@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -120,12 +121,16 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 	}
 
 	@Override
-	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
-		String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
-		mModel.getDives().get(getArguments().getInt("index")).setCurrent(current[0].toLowerCase());
-		mListener.onCurrentEditComplete(EditCurrentDialogFragment.this);
-		dismiss();
+		if (EditorInfo.IME_ACTION_DONE == actionId)
+		{
+			String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+			mModel.getDives().get(getArguments().getInt("index")).setCurrent(current[0].toLowerCase());
+			mListener.onCurrentEditComplete(EditCurrentDialogFragment.this);
+			dismiss();
+			return true;
+		}
 		return false;
 	}
 }

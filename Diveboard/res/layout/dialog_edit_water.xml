@@ -15,20 +15,20 @@
         android:background="@drawable/tab_title_background" />
     
     <RelativeLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:paddingTop="10dp"
-       android:paddingBottom="10dp"
-       android:background="@drawable/tab_body_background"
-       android:gravity="center" >
-      
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/tab_body_background" >
+        
         <Spinner
-	        android:id="@+id/visibility"
+	        android:id="@+id/water"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content" />
         
     </RelativeLayout>
-         
+        
     <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -31,6 +32,7 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 	private DiveboardModel		mModel;
 	private EditText			mSurfaceTemp;
 	private EditSurfaceTempDialogListener	mListener;
+	private Temperature			mTemperature;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -64,7 +66,11 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 		
 		mSurfaceTemp = (EditText) view.findViewById(R.id.temperature);
 		mSurfaceTemp.setTypeface(faceR);
-		mSurfaceTemp.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getTempSurface().getTemperature()));
+		if (mModel.getDives().get(getArguments().getInt("index")).getTempSurface() == null)
+			mTemperature = new Temperature(0.0);
+		else
+			mTemperature = mModel.getDives().get(getArguments().getInt("index")).getTempSurface();
+		mSurfaceTemp.setText(Double.toString(mTemperature.getTemperature()));
 		mSurfaceTemp.setHint(getResources().getString(R.string.surface_temp_hint));
 		mSurfaceTemp.requestFocus();
 		
@@ -73,7 +79,7 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 		
 		TextView temp_label = (TextView) view.findViewById(R.id.temp_label);
 		temp_label.setTypeface(faceR);
-		temp_label.setText("°" + mModel.getDives().get(getArguments().getInt("index")).getTempSurface().getSmallName());
+		temp_label.setText("°" + mTemperature.getSmallName());
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -116,21 +122,25 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
-		Temperature temperature;
-		
-		try
+		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			temperature = new Temperature(Double.parseDouble(mSurfaceTemp.getText().toString()));
+			Temperature temperature;
+			
+			try
+			{
+				temperature = new Temperature(Double.parseDouble(mSurfaceTemp.getText().toString()));
+			}
+			catch (NumberFormatException e)
+			{
+				temperature = new Temperature(0.0);
+			}
+			mModel.getDives().get(getArguments().getInt("index")).setTempSurface(temperature);
+			mListener.onSurfaceTempEditComplete(EditSurfaceTempDialogFragment.this);
+			dismiss();
+			return true;
 		}
-		catch (NumberFormatException e)
-		{
-			temperature = new Temperature(0.0);
-		}
-		mModel.getDives().get(getArguments().getInt("index")).setTempSurface(temperature);
-		mListener.onSurfaceTempEditComplete(EditSurfaceTempDialogFragment.this);
-		dismiss();
 		return false;
 	}
 }

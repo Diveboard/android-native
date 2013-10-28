@@ -62,6 +62,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.Scroller;
 import android.widget.SeekBar;
 import android.widget.SeekBar.OnSeekBarChangeListener;

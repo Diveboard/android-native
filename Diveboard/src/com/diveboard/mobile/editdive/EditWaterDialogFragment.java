@@ -28,16 +28,16 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					EditVisibilityDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					EditWaterDialogFragment extends DialogFragment implements OnEditorActionListener
 {
-	public interface			EditVisibilityDialogListener
+	public interface			EditWaterDialogListener
 	{
-        void					onVisibilityEditComplete(DialogFragment dialog);
+        void					onWaterEditComplete(DialogFragment dialog);
     }
 	
 	private DiveboardModel		mModel;
-	private Spinner				mVisibility;
-	private EditVisibilityDialogListener	mListener;
+	private Spinner				mWater;
+	private EditWaterDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -47,12 +47,12 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditVisibilityDialogListener) activity;
+			 mListener = (EditWaterDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onVisibilityEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onWaterEditComplete");
 		 }
 	 }
 	
@@ -60,32 +60,26 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_visibility, container);
+		View view = inflater.inflate(R.layout.dialog_edit_water, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_visibility_title));
+		title.setText(getResources().getString(R.string.edit_water_title));
 		
-		mVisibility = (Spinner) view.findViewById(R.id.visibility);
+		mWater = (Spinner) view.findViewById(R.id.water);
 		List<String> list = new ArrayList<String>();
-		list.add(getResources().getString(R.string.bad_visibility));
-		list.add(getResources().getString(R.string.average_visibility));
-		list.add(getResources().getString(R.string.good_visibility));
-		list.add(getResources().getString(R.string.excellent_visibility));
+		list.add(getResources().getString(R.string.salt_water));
+		list.add(getResources().getString(R.string.fresh_water));
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, list);
 		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 		
-		mVisibility.setAdapter(dataAdapter);
-		if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("average") == 0)
-			mVisibility.setSelection(1);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("good") == 0)
-			mVisibility.setSelection(2);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("excellent") == 0)
-			mVisibility.setSelection(3);
-		
+		mWater.setAdapter(dataAdapter);
+		if (mModel.getDives().get(getArguments().getInt("index")).getWater().compareTo("fresh") == 0)
+			mWater.setSelection(1);
+
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -106,9 +100,8 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-				mModel.getDives().get(getArguments().getInt("index")).setVisibility(visibility[0].toLowerCase());
-				mListener.onVisibilityEditComplete(EditVisibilityDialogFragment.this);
+				mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
+				mListener.onWaterEditComplete(EditWaterDialogFragment.this);
 				dismiss();
 			}
 		});
@@ -122,9 +115,8 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-			mModel.getDives().get(getArguments().getInt("index")).setVisibility(visibility[0].toLowerCase());
-			mListener.onVisibilityEditComplete(EditVisibilityDialogFragment.this);
+			mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
+			mListener.onWaterEditComplete(EditWaterDialogFragment.this);
 			dismiss();
 			return true;
 		}

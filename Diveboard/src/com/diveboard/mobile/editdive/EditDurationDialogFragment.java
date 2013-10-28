@@ -15,6 +15,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -114,21 +115,24 @@ public class					EditDurationDialogFragment extends DialogFragment implements On
 	}
 
 	@Override
-	public boolean onEditorAction(TextView arg0, int arg1, KeyEvent arg2)
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
-		Integer duration;
-		
-		try
+		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			duration = Integer.parseInt(mDuration.getText().toString());
+			Integer duration;
+			
+			try
+			{
+				duration = Integer.parseInt(mDuration.getText().toString());
+			}
+			catch (NumberFormatException e)
+			{
+				duration = 0;
+			}
+			mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
+			mListener.onDurationEditComplete(EditDurationDialogFragment.this);
+			dismiss();
 		}
-		catch (NumberFormatException e)
-		{
-			duration = 0;
-		}
-		mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
-		mListener.onDurationEditComplete(EditDurationDialogFragment.this);
-		dismiss();
 		return false;
 	}
 }
