@@ -218,6 +218,8 @@ public class					Dive implements IModel
 			_altitude = new Distance(json.getDouble("altitude"));
 		if (!json.isNull("water"))
 			_water = json.getString("water");
+		if (!json.isNull("notes"))
+			_notes = json.getString("notes");
 	}
 	
 	public Distance getAltitude() {
@@ -504,8 +506,10 @@ public class					Dive implements IModel
 		return _notes;
 	}
 
-	public void setNotes(String _notes) {
-		this._notes = _notes;
+	public void setNotes(String notes) {
+		this._notes = notes.replaceAll("\"", "\\\\\"");
+		Pair<String, String> new_elem = new Pair<String, String>("notes", _notes);
+		_editList.add(new_elem);
 	}
 
 	public String getPublicNotes() {

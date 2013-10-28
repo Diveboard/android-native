@@ -47,6 +47,7 @@ public class					EditDiveActivity extends TabActivity
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_details_label), intent);
 	    	    
 	    intent = new Intent(this,TabEditNotesActivity.class);
+	    intent.putExtra("index", mIndex);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_notes_label), intent);
 	
 	    intent = new Intent(this,TabEditGearActivity.class);

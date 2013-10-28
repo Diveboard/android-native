@@ -94,6 +94,8 @@ public class DiveDetailsActivity extends TabActivity {
 							((TextView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsText)).setTypeface(mFaceR);
 						}
 						((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
+						if (mTabHost.getCurrentTab() == 0)
+							((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 					}
 					
 				});
