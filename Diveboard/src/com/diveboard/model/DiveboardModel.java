@@ -102,20 +102,24 @@ public class					DiveboardModel
 				_userId = json.getInt("id");
 				_cache = new DataManager(_context, _userId);
 				_connected = true;
+				client.close();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
 			{
 				e.printStackTrace();
+				client.close();
 				return (-1);
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
+				client.close();
 				return (-1);
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
+				client.close();
 				return (-1);
 			}
 		}
@@ -260,6 +264,7 @@ public class					DiveboardModel
 			_cache.commitCache();
 		else
 			_enable_overwrite = true;
+		client.close();
 	}
 	
 	/*

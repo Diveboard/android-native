@@ -178,7 +178,7 @@ public class					Dive implements IModel
 		}
 		else
 			_pictures = null;
-		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002");
+		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()

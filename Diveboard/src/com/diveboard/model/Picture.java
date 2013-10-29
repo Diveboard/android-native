@@ -24,6 +24,7 @@ public class					Picture
 	private String				_urlSmall;
 	private String				_urlThumbnail;
 	private Bitmap				_bitmap;
+	private String				_uniqId = null;
 	
 	public enum					Size
 	{
@@ -41,6 +42,16 @@ public class					Picture
 		_urlMedium = url;
 		_urlSmall = url;
 		_urlThumbnail = url;
+	}
+	
+	public							Picture(final String url, final String uniqid)
+	{
+		_urlDefault = url;
+		_urlLarge = url;
+		_urlMedium = url;
+		_urlSmall = url;
+		_urlThumbnail = url;
+		_uniqId = uniqid;
 	}
 	
 	public 							Picture(final JSONObject json) throws JSONException
@@ -137,7 +148,11 @@ public class					Picture
 		}
 		
 		// Create a new file on cache_picture_[picture name]
-		File file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
@@ -177,7 +192,11 @@ public class					Picture
 				break ;
 		}
 		
-		File file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
 		{
 			FileInputStream inputStream = context.openFileInput(file.getName());
