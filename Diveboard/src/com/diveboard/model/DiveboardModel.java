@@ -1,11 +1,16 @@
 package com.diveboard.model;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -34,6 +39,8 @@ public class					DiveboardModel
 	private String				_temp_dives_json;
 	private User				_temp_user = null;
 	private boolean				_enable_overwrite = false;
+	private boolean				_connected = false;
+	private String				_token;
 
 	/*
 	 * Method DiveboardModel
@@ -45,6 +52,65 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, userId);
+	}
+	
+	public						DiveboardModel(final Context context)
+	{
+		_context = context;
+		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+	}
+	
+	public int					doLogin(final String login, final String password)
+	{
+		// TODO init cache
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			_client = AndroidHttpClient.newInstance("Android");
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login/");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
+			args.add(new BasicNameValuePair("email", login));
+			args.add(new BasicNameValuePair("password", password));
+			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			try
+			{
+				// Set parameters
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = _client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+				// Analyze data
+				boolean success = json.getBoolean("success");
+				if (success == false)
+					return (-1);
+				// Initialize user account
+				_token = json.getString("token");
+				_userId = json.getInt("id");
+				_cache = new DataManager(_context, _userId);
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace();
+				return (-1);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				return (-1);
+			} catch (JSONException e)
+			{
+				e.printStackTrace();
+				return (-1);
+			}
+		}
+		return (-1);
 	}
 	
 	/*
@@ -321,13 +387,14 @@ public class					DiveboardModel
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		
+		System.out.println("SEND ONLINE ----------------------------------");
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
 			for (int i = 0, length = edit_list.size(); i < length; i++)
 			{
-				//System.out.println(edit_list.get(i).first + " " + edit_list.get(i).second);
+				System.out.println(edit_list.get(i).first + " " + edit_list.get(i).second);
 			}
 		}
 	}

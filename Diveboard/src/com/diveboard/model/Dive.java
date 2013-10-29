@@ -509,8 +509,8 @@ public class					Dive implements IModel
 	}
 
 	public void setNotes(String notes) {
-		this._notes = notes.replaceAll("\"", "\\\\\"");
-		Pair<String, String> new_elem = new Pair<String, String>("notes", _notes);
+		this._notes = notes;
+		Pair<String, String> new_elem = new Pair<String, String>("notes", _notes.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\\n"));
 		_editList.add(new_elem);
 	}
 
