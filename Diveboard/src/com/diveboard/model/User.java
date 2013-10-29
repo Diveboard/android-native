@@ -37,21 +37,23 @@ public class					User implements IModel, Cloneable
 		_shaken_id = json.getString("shaken_id");
 		_vanity_url = json.getString("vanity_url");
 		JSONObject root_qual = json.getJSONObject("qualifications");
-		JSONArray featured_qual = root_qual.getJSONArray("featured");
-		JSONArray other_qual = root_qual.getJSONArray("other");
+		JSONArray featured_qual = (root_qual.isNull("featured")) ? null : root_qual.getJSONArray("featured");
+		JSONArray other_qual = (root_qual.isNull("other")) ? null : root_qual.getJSONArray("other");
 		ArrayList<Qualification> temp_arraylist = new ArrayList<Qualification>();
-		for (int i = 0, length = featured_qual.length(); i < length; i++)
-		{
-			Qualification new_elem = new Qualification(featured_qual.getJSONObject(i));
-			temp_arraylist.add(new_elem);
-		}
+		if (featured_qual != null)
+			for (int i = 0, length = featured_qual.length(); i < length; i++)
+			{
+				Qualification new_elem = new Qualification(featured_qual.getJSONObject(i));
+				temp_arraylist.add(new_elem);
+			}
 		_qualifications.put("featured", temp_arraylist);
 		temp_arraylist = new ArrayList<Qualification>();
-		for (int i = 0, length = other_qual.length(); i < length; i++)
-		{
-			Qualification new_elem = new Qualification(other_qual.getJSONObject(i));
-			temp_arraylist.add(new_elem);
-		}
+		if (other_qual != null)
+			for (int i = 0, length = other_qual.length(); i < length; i++)
+			{
+				Qualification new_elem = new Qualification(other_qual.getJSONObject(i));
+				temp_arraylist.add(new_elem);
+			}
 		_qualifications.put("other", temp_arraylist);
 		_picture = new Picture(json.getString("picture"));
 		_picture_small = new Picture(json.getString("picture_small"));
