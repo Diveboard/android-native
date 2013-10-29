@@ -32,7 +32,6 @@ public class					DiveboardModel
 	private Context				_context;
 	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
-	private AndroidHttpClient	_client;
 	private DataManager			_cache;
 	private ArrayList<DataRefreshListener>	_listeners = new ArrayList<DataRefreshListener>();
 	
@@ -102,6 +101,7 @@ public class					DiveboardModel
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
 				_cache = new DataManager(_context, _userId);
+				_connected = true;
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -157,7 +157,6 @@ public class					DiveboardModel
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			// Online Mode
-			_client = AndroidHttpClient.newInstance("Android");			
 			// Load data online
 			try
 			{
@@ -225,8 +224,9 @@ public class					DiveboardModel
 	private void				_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
 	{
 		// Load user information
+		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
 		HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/".concat(Integer.toString(_userId)));
-		HttpResponse response = _client.execute(getRequest);
+		HttpResponse response = client.execute(getRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
 		if (!temp_mode)
@@ -248,7 +248,7 @@ public class					DiveboardModel
 		}
 		dive_str = dive_str.concat("%5D");
 		getRequest = new HttpGet("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str) + "&flavour=mobile");
-		response = _client.execute(getRequest);
+		response = client.execute(getRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
 		if (!temp_mode)
