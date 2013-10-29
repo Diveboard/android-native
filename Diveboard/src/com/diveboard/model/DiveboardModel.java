@@ -1,5 +1,9 @@
 package com.diveboard.model;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
@@ -60,9 +64,47 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 	}
 	
+	public boolean				isLogged()
+	{
+		File file_id = new File(_context.getFilesDir() + "_logged_id");
+		File file_token = new File(_context.getFilesDir() + "_logged_token");
+		if (file_id.exists() && file_token.exists())
+		{
+			try
+			{
+				FileInputStream fileInputStream = _context.openFileInput(file_id.getAbsolutePath());
+				StringBuffer fileContent = new StringBuffer("");
+				byte[] buffer = new byte[1024];
+				while (fileInputStream.read(buffer) != -1)
+					fileContent.append(new String(buffer));
+				_userId = Integer.parseInt(fileContent.toString());
+				fileInputStream.close();
+				
+				fileInputStream = _context.openFileInput(file_token.getAbsolutePath());
+				fileContent = new StringBuffer("");
+				buffer = new byte[1024];
+				while (fileInputStream.read(buffer) != -1)
+					fileContent.append(new String(buffer));
+				_token = fileContent.toString();
+				fileInputStream.close();
+				_cache = new DataManager(_context, _userId);
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+				return false;
+			} catch (IOException e)
+			{
+				e.printStackTrace();
+				return false;
+			}
+			return true;
+		}
+		return false;
+	}
+	
 	public int					doLogin(final String login, final String password)
 	{
-		// TODO init cache
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
@@ -93,6 +135,7 @@ public class					DiveboardModel
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
+				// Get user ID
 				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
 				entity = response.getEntity();
@@ -100,9 +143,20 @@ public class					DiveboardModel
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
+				// Initialize DataManager
 				_cache = new DataManager(_context, _userId);
 				_connected = true;
 				client.close();
+				
+				File file = new File(_context.getFilesDir() + "_logged_id");
+				file.createNewFile();
+				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(Integer.toString(_userId).getBytes());
+				file = new File(_context.getFilesDir() + "_logged_token");
+				file.createNewFile();
+				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(_token.getBytes());
+				
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
