@@ -284,7 +284,7 @@ public class					DiveboardModel
 	{
 		// Load user information
 		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
-		HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/".concat(Integer.toString(_userId)));
+		HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + Integer.toString(_userId) + "?flavour=mobile");
 		HttpResponse response = client.execute(getRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);

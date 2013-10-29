@@ -30,6 +30,7 @@ public class					User implements IModel, Cloneable
 	private ArrayList<UserGear>							_userGears;
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
+	private String										_countryName;
 
 	public						User(final JSONObject json) throws JSONException
 	{
@@ -76,6 +77,7 @@ public class					User implements IModel, Cloneable
 		else
 			_userGears = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
+		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 	}
 
 	public int getId() {
@@ -228,5 +230,13 @@ public class					User implements IModel, Cloneable
 	public void applyEdit(JSONObject json) throws JSONException {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public String getCountryName() {
+		return _countryName;
+	}
+
+	public void setCountryName(String _countryName) {
+		this._countryName = _countryName;
 	}
 }
