@@ -94,6 +94,7 @@ public class					DiveboardModel
 				_token = json.getString("token");
 				_userId = json.getInt("id");
 				_cache = new DataManager(_context, _userId);
+				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
 			{
