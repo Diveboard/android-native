@@ -28,6 +28,7 @@ import android.util.Pair;
 public class					DiveboardModel
 {
 	private int					_userId;
+	private String				_shakenId;
 	private Context				_context;
 	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
@@ -46,12 +47,12 @@ public class					DiveboardModel
 	 * Method DiveboardModel
 	 * Constructor, initialize the object
 	 */
-	public						DiveboardModel(final int userId, final Context context)
+	public						DiveboardModel(final String userId, final Context context)
 	{
-		_userId = userId;
+		_shakenId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		_cache = new DataManager(context, userId);
+		_cache = new DataManager(context, _shakenId);
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -70,7 +71,7 @@ public class					DiveboardModel
 			// Creating web client
 			_client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login/");
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_email");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("email", login));
@@ -92,8 +93,8 @@ public class					DiveboardModel
 					return (-1);
 				// Initialize user account
 				_token = json.getString("token");
-				_userId = json.getInt("id");
-				_cache = new DataManager(_context, _userId);
+				_shakenId = json.getString("id");
+				_cache = new DataManager(_context, _shakenId);
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
