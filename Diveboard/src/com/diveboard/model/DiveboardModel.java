@@ -14,8 +14,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.os.Parcel;
-import android.os.Parcelable;
 import android.util.Pair;
 
 /*
@@ -55,8 +53,6 @@ public class					DiveboardModel
 	 */
 	public void					loadData()
 	{
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		
 		// Offline Mode
 		try
 		{
@@ -73,9 +69,11 @@ public class					DiveboardModel
 		if (_user == null)
 			refreshData();
 		else
+		{
 			_applyEdit();
+			_sendEditOnline();
+		}
 	}
-	
 	public void					refreshData()
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
@@ -221,7 +219,7 @@ public class					DiveboardModel
 	 */
 	public User					getUser(int userId)
 	{
-		// Not implemented
+		// TODO Not implemented
 		return _user;
 	}
 	
@@ -242,7 +240,7 @@ public class					DiveboardModel
 	 */
 	public ArrayList<Dive>		getDives(int userId)
 	{
-		// Not implemented
+		// TODO Not implemented
 		return _user.getDives();
 	}
 	
@@ -252,7 +250,7 @@ public class					DiveboardModel
 	 */
 	public void					commit()
 	{
-		// Not implemented
+		// TODO Not implemented
 	}
 	
 	public void					setOnDataRefreshComplete(DataRefreshListener listener)
@@ -311,6 +309,25 @@ public class					DiveboardModel
 			{
 				dives.get(i).applyEdit(new JSONObject(json));
 				break ;
+			}
+		}
+	}
+	
+	/*
+	 * Method _sendEditOnline
+	 * Send user modified data to Diveboard online API
+	 */
+	private void				_sendEditOnline()
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+			for (int i = 0, length = edit_list.size(); i < length; i++)
+			{
+				//System.out.println(edit_list.get(i).first + " " + edit_list.get(i).second);
 			}
 		}
 	}
