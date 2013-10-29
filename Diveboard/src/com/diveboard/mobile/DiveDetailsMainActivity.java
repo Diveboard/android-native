@@ -12,7 +12,11 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.graphics.Bitmap.Config;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -28,6 +32,7 @@ public class DiveDetailsMainActivity extends Activity {
 	private Dive mDive;
 	private DownloadImageTask mDownloadImageTask;
 	private DownloadShopLogoTask mDownloadShopLogoTask;
+	private DownloadGraphTask mDownloadGraphTask;
 	private Bitmap mRoundedLayerSmall;
 	private ImageView mPic;
 	private ImageView mRoundedPic;
@@ -56,7 +61,7 @@ public class DiveDetailsMainActivity extends Activity {
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
-		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", -1));
+		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView)findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
@@ -92,6 +97,8 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 		((TextView)findViewById(R.id.depth_graph)).setTypeface(faceB);
 		((TextView)findViewById(R.id.depth_graph)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		mDownloadGraphTask = new DownloadGraphTask(((ImageView)findViewById(R.id.graph)));
+		mDownloadGraphTask.execute();
 		((TextView)findViewById(R.id.date)).setTypeface(faceB);
 		((TextView)findViewById(R.id.date)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView)findViewById(R.id.water)).setTypeface(faceB);
@@ -137,7 +144,10 @@ public class DiveDetailsMainActivity extends Activity {
 			if (mDive.getDivetype().get(i) != null)
 				type += mDive.getDivetype().get(i) + ", ";
 		}
-		type = (String) type.subSequence(0, type.length() - 2);
+		if (type != "")
+			type = (String) type.subSequence(0, type.length() - 2);
+		else
+			type = "Null";
 		((TextView)findViewById(R.id.dive_type_content)).setText(type);
 		mPic = ((ImageView)findViewById(R.id.profile_image));
 		mRoundedPic = ((ImageView)findViewById(R.id.main_image_cache));
@@ -185,6 +195,47 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 	}
 	
+	private class DownloadGraphTask extends AsyncTask<Void, Void, Bitmap>
+	{
+		private final WeakReference<ImageView> imageViewReference;
+		
+		public DownloadGraphTask(ImageView imageView)
+		{
+			imageViewReference = new WeakReference<ImageView>(imageView);
+		}
+		
+		protected Bitmap doInBackground(Void... voids)
+		{
+			try {
+				if (DiveDetailsMainActivity.this != null)
+				{
+					return mDive.getProfile().getPicture(getApplicationContext());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(Bitmap result)
+		{
+			if (imageViewReference != null)
+			{
+				final ImageView imageView = imageViewReference.get();
+				if (result != null && imageView != null)
+				{	
+					imageView.setImageBitmap(result);
+				}
+			}
+		}
+		
+		@Override
+		protected void onCancelled() {
+			mDownloadGraphTask = null;
+		}
+	}
+	
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
 		private final WeakReference<ImageView> imageViewReference;
@@ -217,9 +268,9 @@ public class DiveDetailsMainActivity extends Activity {
 				final ImageView imageView = imageViewReference.get();
 				if (result != null && imageView != null)
 				{	
-					mPic.setImageBitmap(result);
+					imageView.setImageBitmap(result);
 					mRoundedPic.setImageBitmap(mRoundedLayerSmall);
-					mPic.setScaleType(ScaleType.CENTER_CROP);
+					imageView.setScaleType(ScaleType.CENTER_CROP);
 				}
 			}
 		}

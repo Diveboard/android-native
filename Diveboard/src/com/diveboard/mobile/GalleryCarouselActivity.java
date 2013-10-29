@@ -46,7 +46,7 @@ public class GalleryCarouselActivity extends FragmentActivity {
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
 		mPager = (ViewPager) findViewById(R.id.pager);
-		mNbPages = mModel.getDives().get(getIntent().getIntExtra("index", -1)).getPictures().size();
+		mNbPages = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size();
 		mPagerAdapter = new GalleryCarouselPagerAdapter(getSupportFragmentManager(), mModel.getDives());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(AC.getCarouselIndex());
@@ -105,7 +105,7 @@ public class GalleryCarouselActivity extends FragmentActivity {
 
         @Override
         public Fragment getItem(int position) {
-            return new GalleryCarouselFragment(mModel.getDives().get(getIntent().getIntExtra("index", -1)), position);
+            return new GalleryCarouselFragment(mModel.getDives().get(getIntent().getIntExtra("index", 0)), position);
         }
 
         @Override

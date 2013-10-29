@@ -70,4 +70,12 @@ public class ApplicationController extends Application {
 	public void setCarouselIndex(int mCarouselIndex) {
 		this.mCarouselIndex = mCarouselIndex;
 	}
+
+	public boolean isDataReady() {
+		return mDataReady;
+	}
+
+	public void setDataReady(boolean mDataReady) {
+		this.mDataReady = mDataReady;
+	}
 }

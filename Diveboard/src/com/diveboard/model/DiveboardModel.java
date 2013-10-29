@@ -72,17 +72,17 @@ public class					DiveboardModel
 		{
 			try
 			{
-				FileInputStream fileInputStream = _context.openFileInput(file_id.getAbsolutePath());
+				FileInputStream fileInputStream = _context.openFileInput(file_id.getName());
 				StringBuffer fileContent = new StringBuffer("");
-				byte[] buffer = new byte[1024];
+				byte[] buffer = new byte[1];
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
 				_userId = Integer.parseInt(fileContent.toString());
 				fileInputStream.close();
 				
-				fileInputStream = _context.openFileInput(file_token.getAbsolutePath());
+				fileInputStream = _context.openFileInput(file_token.getName());
 				fileContent = new StringBuffer("");
-				buffer = new byte[1024];
+				buffer = new byte[1];
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
 				_token = fileContent.toString();
@@ -152,6 +152,7 @@ public class					DiveboardModel
 				file.createNewFile();
 				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(Integer.toString(_userId).getBytes());
+				
 				file = new File(_context.getFilesDir() + "_logged_token");
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);

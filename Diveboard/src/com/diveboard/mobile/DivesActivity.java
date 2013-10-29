@@ -40,6 +40,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -65,6 +66,7 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Scroller;
 import android.widget.SeekBar;
+import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 
@@ -99,6 +101,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set the action bar
+		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
 			getActionBar().hide();
 		}
@@ -109,11 +112,11 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		setContentView(R.layout.activity_dives);
 		
 		// Initialize data
-		if (((ApplicationController)getApplicationContext()).getModel() == null)
+		mModel = AC.getModel();
+		if (AC.isDataReady() == false)
 		{
-			mModel = new DiveboardModel(30, this);
-			ApplicationController AC = (ApplicationController)getApplicationContext();			
-			AC.setModel(mModel);
+			//mModel = new DiveboardModel(30, this);
+			//AC.setModel(mModel);
 			mLoadDataFormView = findViewById(R.id.load_data_form);
 			mLoadDataStatusView = findViewById(R.id.load_data_status);
 			mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
@@ -122,13 +125,19 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		}
 		else
 		{
-			ApplicationController AC = (ApplicationController)getApplicationContext();
-			mModel = AC.getModel();
 			System.out.println("createPages");
 			createPages();
 		}
 	}
 	
+	@Override
+	public void onBackPressed() {
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.setModel(null);
+		AC.setDataReady(false);
+		finish();
+		//android.os.Process.killProcess(android.os.Process.myPid());
+	}
 	
 	// The three methods below are called by the TaskFragment when new
 	// progress updates or results are available. The MainActivity 
@@ -151,8 +160,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		mTaskFragment = null;
 		showProgress(false);
 
-		if (success) {
+		if (success == true) {
 			createPages();
+		}
+		else
+		{
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			AC.setModel(null);
+			AC.setDataReady(false);
+			finish();
 		}
 	}
 	
@@ -298,6 +314,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	 */
 	private void createPages()
 	{
+		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		AC.setDataReady(true);
 		//setRequestedOrientation(mOrientation);
 		//ViewTreeObserver allows to load all the layouts of the page before applying calculation
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
@@ -311,7 +329,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		      //We create the pager with the associated pages
 				if (mModel.getDives() == null)
 				{
-					System.out.println("offline"); // to do
+					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
 					finish();
 					return ;
 				}
@@ -493,7 +513,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					return null;
 				}
 			}
-				
 			return null;
 		}
 		

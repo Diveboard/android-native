@@ -80,6 +80,8 @@ public class TaskFragment extends Fragment {
 			if (getActivity() != null)
 			{
 				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+				if (AC.getModel() == null)
+					return false;
 				AC.getModel().loadData();
 				return true;
 			}

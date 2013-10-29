@@ -10,19 +10,46 @@
 	android:id="@+id/root"
 	android:background="@color/black"
 	android:orientation="vertical">
-    <TextView
-        android:id="@+id/trip_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="10dp" />
-	<TextView
-        android:id="@+id/place_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textColor="@color/white"
-		android:layout_marginLeft="10dp"/>
+	<RelativeLayout
+	    android:id="@+id/trip_bar"
+	    android:layout_width="match_parent"
+	    android:layout_height="wrap_content">
+	    <LinearLayout
+	        android:id="@+id/trip_image_layout"
+	        android:orientation="vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_centerVertical="true">
+			<ImageView
+		        android:id="@+id/trip_image"
+		        android:layout_height="50dp"
+		        android:layout_width="50dp"
+		        android:src="@drawable/ic_diveboard_white"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginTop="10dp"/>
+		</LinearLayout>
+		<LinearLayout
+	        android:id="@+id/trip_info"
+	        android:orientation="vertical"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"
+	        android:layout_toRightOf="@id/trip_image_layout"
+	        android:layout_centerVertical="true">
+		    <TextView
+		        android:id="@+id/trip_name"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/white"
+		        android:layout_marginLeft="10dp"
+		        android:layout_marginTop="10dp" />
+			<TextView
+		        android:id="@+id/place_name"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:textColor="@color/white"
+				android:layout_marginLeft="10dp"/>
+		</LinearLayout>
+	</RelativeLayout>
 	<RelativeLayout 	    
 	    android:layout_width="match_parent"
 	    android:layout_height="match_parent"
