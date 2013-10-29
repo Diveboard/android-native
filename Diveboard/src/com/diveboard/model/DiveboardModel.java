@@ -46,9 +46,9 @@ public class					DiveboardModel
 	 * Method DiveboardModel
 	 * Constructor, initialize the object
 	 */
-	public						DiveboardModel(final String userId, final Context context)
+	public						DiveboardModel(final int userId, final Context context)
 	{
-		_shakenId = userId;
+		_userId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId);
