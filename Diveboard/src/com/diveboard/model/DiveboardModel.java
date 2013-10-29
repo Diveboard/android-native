@@ -82,7 +82,7 @@ public class					DiveboardModel
 				// Set parameters
 				postRequest.setEntity(new UrlEncodedFormEntity(args));
 				// Execute request
-				HttpResponse response = _client.execute(postRequest);
+				HttpResponse response = client.execute(postRequest);
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
@@ -95,7 +95,7 @@ public class					DiveboardModel
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
 				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
-				response = _client.execute(getRequest);
+				response = client.execute(getRequest);
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
 				json = new JSONObject(result);
