@@ -48,6 +48,7 @@ public class					Dive implements IModel
 	private Temperature			_tempSurface;
 	private Picture				_thumbnailImageUrl;
 	private Picture				_thumbnailProfileUrl;
+	private Picture				_profile;
 	private String				_time;
 	private String				_timeIn;
 	private String				_tripName;
@@ -177,6 +178,7 @@ public class					Dive implements IModel
 		}
 		else
 			_pictures = null;
+		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002");
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
