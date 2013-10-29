@@ -579,4 +579,12 @@ public class					Dive implements IModel
 	public void setDivetype(ArrayList<String> _divetype) {
 		this._divetype = _divetype;
 	}
+
+	public Picture getProfile() {
+		return _profile;
+	}
+
+	public void setProfile(Picture _profile) {
+		this._profile = _profile;
+	}
 }
