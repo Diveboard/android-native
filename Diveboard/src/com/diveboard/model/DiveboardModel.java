@@ -52,7 +52,7 @@ public class					DiveboardModel
 		_shakenId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		_cache = new DataManager(context, _shakenId);
+		_cache = new DataManager(context, _userId);
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -69,7 +69,7 @@ public class					DiveboardModel
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			// Creating web client
-			_client = AndroidHttpClient.newInstance("Android");
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
 			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_email");
 			// Adding parameters
@@ -94,7 +94,13 @@ public class					DiveboardModel
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
-				_cache = new DataManager(_context, _shakenId);
+				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				response = _client.execute(getRequest);
+				entity = response.getEntity();
+				result = ContentExtractor.getASCII(entity);
+				json = new JSONObject(result);
+				_userId = json.getInt("id");
+				_cache = new DataManager(_context, _userId);
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)

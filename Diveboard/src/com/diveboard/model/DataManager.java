@@ -24,13 +24,13 @@ public class					DataManager
 	private SparseArray<HashMap<String, String>>	_cacheData; // <UserId, <Category, JSON>>
 	private ArrayList<Pair<String, String>>			_editList = new ArrayList<Pair<String, String>>();
 	private final Object							_lock = new Object(); // Lock for _editList
-	private String									_userId;
+	private int										_userId;
 	
 	/*
 	 * Method DataManager
 	 * Constructor, initialize the object
 	 */
-	public						DataManager(final Context context, final String userId)
+	public						DataManager(final Context context, final int userId)
 	{
 		_context = context;
 		_userId = userId;
@@ -200,7 +200,7 @@ public class					DataManager
 	{
 		FileOutputStream		outputStream;
 		
-		File file = new File(_context.getFilesDir() + "_" + _userId + "_edit");
+		File file = new File(_context.getFilesDir() + "_" + Integer.toString(_userId) + "_edit");
 		try
 		{
 			file.createNewFile();
