@@ -99,6 +99,7 @@ public class					DiveboardModel
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
 				json = new JSONObject(result);
+				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
 				_cache = new DataManager(_context, _userId);
 				return (_userId);
