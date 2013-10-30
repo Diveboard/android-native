@@ -2,11 +2,12 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
+    <string name="app_id">193803977296892</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="hello_world">Facebook login Activity (test)</string>
     <string name="tab_notes_edit_title">DIVE NOTES</string>
     <string name="save_button">SAVE</string>
     <string name="tab_details_label">DETAILS</string>
@@ -53,5 +54,6 @@
     <string name="edit_water_title">Water Type</string>
     <string name="salt_water">Salt</string>
     <string name="fresh_water">Fresh</string>
+    <string name="title_activity_diveboard_facebook_login">DiveboardFacebookLoginActivity</string>
 
 </resources>

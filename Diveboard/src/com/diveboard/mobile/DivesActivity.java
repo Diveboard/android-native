@@ -327,11 +327,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 		      //We create the pager with the associated pages
-				if (mModel.getDives() == null)
+				if (mModel.getDives() == null || mModel.getDives().size() == 0)
 				{
 					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
+					mModel.doLogout();
+					AC.setDataReady(false);
 					finish();
 					return ;
 				}

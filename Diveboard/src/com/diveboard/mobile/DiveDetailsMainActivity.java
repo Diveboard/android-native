@@ -71,7 +71,10 @@ public class DiveDetailsMainActivity extends Activity {
 		((TextView)findViewById(R.id.logged_by)).setText(AC.getModel().getUser().getNickname());
 		((TextView)findViewById(R.id.logged_by)).setTypeface(faceB);
 		((TextView)findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView)findViewById(R.id.user_country)).setText("Country name");
+		if (AC.getModel().getUser().getCountryName() != null)
+			((TextView)findViewById(R.id.user_country)).setText(AC.getModel().getUser().getCountryName());
+		else
+			((TextView)findViewById(R.id.user_country)).setText("");
 		((TextView)findViewById(R.id.user_country)).setTypeface(faceR);
 		((TextView)findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
