@@ -4,14 +4,33 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.message.BasicNameValuePair;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.diveboard.mobile.ImageHelper;
+
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.http.AndroidHttpClient;
+import android.os.AsyncTask;
 import android.util.Pair;
 import android.util.SparseArray;
+import android.widget.RelativeLayout;
 
 /*
  * Class DataManager
@@ -25,17 +44,19 @@ public class					DataManager
 	private ArrayList<Pair<String, String>>			_editList = new ArrayList<Pair<String, String>>();
 	private final Object							_lock = new Object(); // Lock for _editList
 	private int										_userId;
+	private String									_token;
 	
 	/*
 	 * Method DataManager
 	 * Constructor, initialize the object
 	 */
-	public						DataManager(final Context context, final int userId)
+	public						DataManager(final Context context, final int userId, final String token)
 	{
 		_context = context;
 		_userId = userId;
 		_cacheData = new SparseArray<HashMap<String, String>>();
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		_token = token;
 	}
 	
 	/*
@@ -194,6 +215,7 @@ public class					DataManager
 		{
 			_cacheEditList();
 		}
+		commitEditOnline();
 	}
 	
 	private void				_cacheEditList()
@@ -220,9 +242,125 @@ public class					DataManager
 	
 	public ArrayList<Pair<String, String>>	getEditList()
 	{
-		synchronized (_lock)
+		return _editList;
+	}
+	
+	/*
+	 * Method commitEditOnline
+	 * Send user modified data to Diveboard online API
+	 */
+	public void							commitEditOnline()
+	{
+		Thread commitOnline = new Thread(new CommitOnlineThread());
+		commitOnline.start();
+	}
+	
+	private void						_applyEditCache(String elemtag, JSONObject result_obj)
+	{
+		String[] info = elemtag.split(":");
+		
+		if (info[0].compareTo("Dive") == 0)
 		{
-			return _editList;
+			String result = get(_userId, "dives");
+			try
+			{
+				JSONObject json = new JSONObject(result);
+				JSONArray jarray = json.getJSONArray("result");
+				for (int i = 0, length = jarray.length(); i < length; i++)
+				{
+					JSONObject temp = jarray.getJSONObject(i);
+					if (temp.getInt("id") == Integer.parseInt(info[1]))
+					{
+						jarray.put(i, result_obj);
+						break ;
+					}
+				}
+				saveCache(_userId, "dives", json.toString());
+				commitCache();
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private class CommitOnlineThread implements Runnable
+	{
+		@Override
+		public void run()
+		{
+			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+			HttpPost postRequest;
+			
+			System.out.println("SEND ONLINE ----------------------------------");
+			while (_editList.size() != 0)
+			{
+				// Test connectivity
+				if (networkInfo != null && networkInfo.isConnected())
+				{
+					Pair<String, String> elem;
+					synchronized (_lock)
+					{
+						System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
+						elem = _editList.get(0);
+						// Process
+						AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+						String[] info = elem.first.split(":");
+						if (info[0].compareTo("Dive") == 0)
+							postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
+						else
+							postRequest = null;
+						if (postRequest == null)
+							break ;
+						// Adding parameters
+						ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
+						args.add(new BasicNameValuePair("auth_token", _token));
+						args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+						args.add(new BasicNameValuePair("arg", elem.second));
+						args.add(new BasicNameValuePair("flavour", "mobile"));
+						try
+						{
+							// Set parameters
+							postRequest.setEntity(new UrlEncodedFormEntity(args));
+							// Execute request
+							HttpResponse response = client.execute(postRequest);
+							// Get response
+							HttpEntity entity = response.getEntity();
+							String result = ContentExtractor.getASCII(entity);
+							JSONObject json = new JSONObject(result);
+							if (json.getBoolean("success") == false)
+								break ;
+							_applyEditCache(elem.first, json.getJSONObject("result"));
+						}
+						catch (UnsupportedEncodingException e) 
+						{
+							e.printStackTrace();
+							break ;
+						}
+						catch (IOException e)
+						{
+							e.printStackTrace();
+							break ;
+						} catch (JSONException e)
+						{
+							e.printStackTrace();
+							break ;
+						}
+						client.close();
+						// Remove edit from cache
+						_editList.remove(0);
+						// Save edit in cache
+						_cacheEditList();
+					}
+				}
+				else
+					break ;
+			}
 		}
 	}
 }

@@ -45,6 +45,7 @@ public class					DiveboardModel
 	private boolean				_enable_overwrite = false;
 	private boolean				_connected = false;
 	private String				_token;
+	private String				_unitPreferences;
 
 	/*
 	 * Method DiveboardModel
@@ -55,7 +56,7 @@ public class					DiveboardModel
 		_userId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		_cache = new DataManager(context, _userId);
+		_cache = new DataManager(context, _userId, _token);
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -68,6 +69,7 @@ public class					DiveboardModel
 	{
 		File file_id = new File(_context.getFilesDir() + "_logged_id");
 		File file_token = new File(_context.getFilesDir() + "_logged_token");
+		File unit_preferences = new File(_context.getFilesDir() + "_unit_preferences");
 		if (file_id.exists() && file_token.exists())
 		{
 			try
@@ -87,7 +89,15 @@ public class					DiveboardModel
 					fileContent.append(new String(buffer));
 				_token = fileContent.toString();
 				fileInputStream.close();
-				_cache = new DataManager(_context, _userId);
+				
+				fileInputStream = _context.openFileInput(unit_preferences.getName());
+				fileContent = new StringBuffer("");
+				buffer = new byte[1];
+				while (fileInputStream.read(buffer) != -1)
+					fileContent.append(new String(buffer));
+				_unitPreferences = fileContent.toString();
+				fileInputStream.close();
+				_cache = new DataManager(_context, _userId, _token);
 			}
 			catch (FileNotFoundException e)
 			{
@@ -135,6 +145,7 @@ public class					DiveboardModel
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
+				_unitPreferences = json.getJSONObject("units").toString();
 				// Get user ID
 				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
@@ -144,7 +155,7 @@ public class					DiveboardModel
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
 				// Initialize DataManager
-				_cache = new DataManager(_context, _userId);
+				_cache = new DataManager(_context, _userId, _token);
 				_connected = true;
 				client.close();
 				
@@ -157,6 +168,11 @@ public class					DiveboardModel
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
+				
+				file = new File(_context.getFilesDir() + "_unit_preferences");
+				file.createNewFile();
+				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(_unitPreferences.getBytes());
 				
 				return (_userId);
 			}
@@ -203,10 +219,7 @@ public class					DiveboardModel
 		if (_user == null)
 			refreshData();
 		else
-		{
 			_applyEdit();
-			_sendEditOnline();
-		}
 	}
 	public void					refreshData()
 	{
@@ -239,6 +252,7 @@ public class					DiveboardModel
 		// Fire refresh complete event
 		for (DataRefreshListener listener : _listeners)
 			listener.onDataRefreshComplete();
+		_cache.commitEditOnline();
 	}
 	
 	/*
@@ -250,9 +264,9 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
 		if (!temp_mode)
-			_user = new User(json);
+			_user = new User(json, _unitPreferences);
 		else
-			_temp_user = new User(json);
+			_temp_user = new User(json, _unitPreferences);
 	}
 	
 	/*
@@ -444,26 +458,6 @@ public class					DiveboardModel
 			{
 				dives.get(i).applyEdit(new JSONObject(json));
 				break ;
-			}
-		}
-	}
-	
-	/*
-	 * Method _sendEditOnline
-	 * Send user modified data to Diveboard online API
-	 */
-	private void				_sendEditOnline()
-	{
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		
-		System.out.println("SEND ONLINE ----------------------------------");
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
-		{
-			ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
-			for (int i = 0, length = edit_list.size(); i < length; i++)
-			{
-				System.out.println(edit_list.get(i).first + " " + edit_list.get(i).second);
 			}
 		}
 	}

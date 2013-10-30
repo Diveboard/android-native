@@ -31,8 +31,9 @@ public class					User implements IModel, Cloneable
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private String										_countryName;
+	private Units										_unitPreferences;
 
-	public						User(final JSONObject json) throws JSONException
+	public						User(final JSONObject json, final String unitPreferences) throws JSONException
 	{
 		_id = json.getInt("id");
 		_shaken_id = json.getString("shaken_id");
@@ -78,6 +79,8 @@ public class					User implements IModel, Cloneable
 			_userGears = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
+		JSONObject unit = new JSONObject(unitPreferences);
+		_unitPreferences = new Units(unit);
 	}
 
 	public int getId() {

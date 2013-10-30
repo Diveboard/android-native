@@ -36,10 +36,10 @@ public class					Units
 	
 	public						Units(final JSONObject json) throws JSONException
 	{
-		_distanceUnit = (json.getString("distance") == "Km") ? Distance.KM : Distance.FT;
-		_weightUnit = (json.getString("weight") == "Kg") ? Weight.KG : Weight.LBS;
-		_temperatureUnit = (json.getString("temperature") == "C") ? Temperature.C : Temperature.F;
-		_pressureUnit = (json.getString("pressure") == "bar") ? Pressure.BAR : Pressure.PSI;
+		Units._distanceUnit = (json.getString("distance").compareTo("Km") == 0) ? Distance.KM : Distance.FT;
+		Units._weightUnit = (json.getString("weight").compareTo("Kg") == 0) ? Weight.KG : Weight.LBS;
+		Units._temperatureUnit = (json.getString("temperature").compareTo("C") == 0) ? Temperature.C : Temperature.F;
+		Units._pressureUnit = (json.getString("pressure").compareTo("bar") == 0) ? Pressure.BAR : Pressure.PSI;
 	}
 
 	public final static Distance		getDistanceUnit() {
