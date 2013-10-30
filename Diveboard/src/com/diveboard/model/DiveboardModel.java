@@ -197,6 +197,90 @@ public class					DiveboardModel
 		return (-1);
 	}
 	
+	public int					doFbLogin(final String fb_id, final String fb_token)
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_fb");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
+			args.add(new BasicNameValuePair("fbid", fb_id));
+			args.add(new BasicNameValuePair("fbtoken", fb_token));
+			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			try
+			{
+				// Set parameters
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+				// Analyze data
+				boolean success = json.getBoolean("success");
+				if (success == false)
+					return (-1);
+				// Initialize user account
+				_token = json.getString("token");
+				_shakenId = json.getString("id");
+				_unitPreferences = json.getJSONObject("units").toString();
+				// Get user ID
+				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				response = client.execute(getRequest);
+				entity = response.getEntity();
+				result = ContentExtractor.getASCII(entity);
+				json = new JSONObject(result);
+				json = json.getJSONObject("result");
+				_userId = json.getInt("id");
+				// Initialize DataManager
+				_cache = new DataManager(_context, _userId, _token);
+				_connected = true;
+				client.close();
+				
+				File file = new File(_context.getFilesDir() + "_logged_id");
+				file.createNewFile();
+				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(Integer.toString(_userId).getBytes());
+				
+				file = new File(_context.getFilesDir() + "_logged_token");
+				file.createNewFile();
+				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(_token.getBytes());
+				
+				file = new File(_context.getFilesDir() + "_unit_preferences");
+				file.createNewFile();
+				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(_unitPreferences.getBytes());
+				
+				return (_userId);
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (-1);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (-1);
+			} catch (JSONException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (-1);
+			}
+		}
+		return (-1);
+	}
+	
 	/*
 	 * Method loadData
 	 * Automatically load data from offline files or online source if available
