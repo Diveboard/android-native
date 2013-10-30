@@ -281,6 +281,18 @@ public class					DiveboardModel
 		return (-1);
 	}
 	
+	public void					doLogout()
+	{
+		File file = new File(_context.getFilesDir() + "_logged_id");
+		file.delete();
+		
+		file = new File(_context.getFilesDir() + "_logged_token");
+		file.delete();
+		
+		file = new File(_context.getFilesDir() + "_unit_preferences");
+		file.delete();
+	}
+	
 	/*
 	 * Method loadData
 	 * Automatically load data from offline files or online source if available
