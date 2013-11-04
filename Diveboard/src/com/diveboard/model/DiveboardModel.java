@@ -316,6 +316,7 @@ public class					DiveboardModel
 			refreshData();
 		else
 			_applyEdit();
+		System.out.println("id : " + _user.getId());
 	}
 	public void					refreshData()
 	{

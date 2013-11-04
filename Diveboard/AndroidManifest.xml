@@ -75,6 +75,10 @@
             android:label="@string/title_activity_diveboard_facebook_login" >
             
         </activity>
+        <activity
+            android:name="com.diveboard.mobile.FBLoginFragment"
+            android:label="@string/title_activity_fblogin_fragment" >
+        </activity>
     </application>
 
 </manifest>

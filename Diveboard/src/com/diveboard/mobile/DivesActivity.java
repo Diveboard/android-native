@@ -161,6 +161,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		showProgress(false);
 
 		if (success == true) {
+			mModel.preloadPictures();
 			createPages();
 		}
 		else

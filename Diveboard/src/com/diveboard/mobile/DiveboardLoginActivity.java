@@ -2,6 +2,7 @@ package com.diveboard.mobile;
 
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
+import com.facebook.Session;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -12,6 +13,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -27,11 +29,12 @@ import android.widget.Toast;
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class DiveboardLoginActivity extends Activity {
+public class DiveboardLoginActivity extends FragmentActivity {
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
+	private FBLoginFragment mFBLoginFragment;
 	private static final String[] DUMMY_CREDENTIALS = new String[] {
 			"foo@example.com:hello", "bar@example.com:world" };
 
@@ -62,6 +65,7 @@ public class DiveboardLoginActivity extends Activity {
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		DiveboardModel model = new DiveboardModel(getApplicationContext());
+		//DiveboardModel model = new DiveboardModel(30, getApplicationContext());
 		AC.setModel(model);
 		if (model.isLogged() == true)
 		{
@@ -70,6 +74,12 @@ public class DiveboardLoginActivity extends Activity {
 		    return ;
 		}
 		
+	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+	  super.onActivityResult(requestCode, resultCode, data);
+	  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
 	public void goToFBLogin(View view)
@@ -107,6 +117,21 @@ public class DiveboardLoginActivity extends Activity {
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
+		if (savedInstanceState == null)
+		{
+			// Add the fragment on initial activity setup
+			mFBLoginFragment = new FBLoginFragment();
+			getSupportFragmentManager()
+			.beginTransaction()
+			.add(R.id.layout, mFBLoginFragment)
+			.commit();
+		}
+		else
+		{
+			// Or set the fragment from restored state info
+			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
+					.findFragmentById(R.id.layout);
+		}
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -114,13 +139,6 @@ public class DiveboardLoginActivity extends Activity {
 						attemptLogin();
 					}
 				});
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {
-		super.onCreateOptionsMenu(menu);
-		getMenuInflater().inflate(R.menu.login, menu);
-		return true;
 	}
 
 	/**
@@ -233,7 +251,7 @@ public class DiveboardLoginActivity extends Activity {
 		protected Integer doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 //			DiveboardModel model = new DiveboardModel(getApplicationContext());
-			//DiveboardModel model = new DiveboardModel(30, getApplicationContext());
+			
 //			AC.setModel(model);
 			return AC.getModel().doLogin(mEmail, mPassword);
 			//return 30;
