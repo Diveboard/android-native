@@ -155,10 +155,11 @@ public class					Picture
 		// Create a new file on cache_picture_[picture name]
 		File file;
 		if (_uniqId == null)
-			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
 		else
-			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1] + _uniqId);
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
+		System.out.println("Saving picture: " + file.getAbsolutePath());
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file
@@ -199,9 +200,9 @@ public class					Picture
 		
 		File file;
 		if (_uniqId == null)
-			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1]);
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
 		else
-			file = new File(context.getCacheDir() + "_picture_" + picture_name[picture_name.length - 1] + _uniqId);
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
 		{
 			FileInputStream inputStream = context.openFileInput(file.getName());
