@@ -558,39 +558,35 @@ public class					DiveboardModel
 		}
 	}
 	
+	/*
+	 * Method preloadPictures
+	 * When launched, it will preload all created picture in the model.
+	 */
 	public void					preloadPictures()
 	{
-		for (int i = 0, size = pictureList.size(); i < size; i++)
-		{
-			Thread new_thread = new Thread(new LoadPictureThread(pictureList.get(i)));
-			new_thread.start();
-		}
+		Thread new_thread = new Thread(new LoadPictureThread());
+		new_thread.start();
 	}
 	
 	private class				LoadPictureThread implements Runnable
 	{
-		private Picture			_picture;
-		
-		public LoadPictureThread(Picture picture)
-		{
-			_picture = picture;
-		}
-		
 		@Override
 		public void run()
 		{
-			if (_picture != null)
+			for (int i = 0, size = pictureList.size(); i < size; i++)
+			{
 				try
 				{
-					_picture.loadPicture(_context, Picture.Size.LARGE);
-					_picture.loadPicture(_context, Picture.Size.MEDIUM);
-					_picture.loadPicture(_context, Picture.Size.SMALL);
-					_picture.loadPicture(_context, Picture.Size.THUMB);
+					pictureList.get(i).loadPicture(_context, Picture.Size.THUMB);
+					pictureList.get(i).loadPicture(_context, Picture.Size.SMALL);
+					pictureList.get(i).loadPicture(_context, Picture.Size.MEDIUM);
+					pictureList.get(i).loadPicture(_context, Picture.Size.LARGE);
 				}
 				catch (IOException e)
 				{
 					e.printStackTrace();
 				}
+			}
 		}
 	}
 }
