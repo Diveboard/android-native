@@ -10,11 +10,13 @@ import java.net.URL;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.support.v4.app.DialogFragment;
 
 public class					Picture
 {
@@ -42,6 +44,7 @@ public class					Picture
 		_urlMedium = url;
 		_urlSmall = url;
 		_urlThumbnail = url;
+		DiveboardModel.pictureList.add(this);
 	}
 	
 	public							Picture(final String url, final String uniqid)
@@ -52,6 +55,7 @@ public class					Picture
 		_urlSmall = url;
 		_urlThumbnail = url;
 		_uniqId = uniqid;
+		DiveboardModel.pictureList.add(this);
 	}
 	
 	public 							Picture(final JSONObject json) throws JSONException
@@ -61,6 +65,7 @@ public class					Picture
 		_urlMedium = json.getString("medium");
 		_urlSmall = json.getString("small");
 		_urlThumbnail = json.getString("thumbnail");
+		DiveboardModel.pictureList.add(this);
 	}
 	
 	public synchronized boolean		loadPicture(final Context context) throws IOException

@@ -18,7 +18,6 @@ import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -46,6 +45,7 @@ public class					DiveboardModel
 	private boolean				_connected = false;
 	private String				_token;
 	private String				_unitPreferences;
+	public static ArrayList<Picture>	pictureList = new ArrayList<Picture>();
 
 	/*
 	 * Method DiveboardModel
@@ -555,6 +555,42 @@ public class					DiveboardModel
 				dives.get(i).applyEdit(new JSONObject(json));
 				break ;
 			}
+		}
+	}
+	
+	public void					preloadPictures()
+	{
+		for (int i = 0, size = pictureList.size(); i < size; i++)
+		{
+			Thread new_thread = new Thread(new LoadPictureThread(pictureList.get(i)));
+			new_thread.start();
+		}
+	}
+	
+	private class				LoadPictureThread implements Runnable
+	{
+		private Picture			_picture;
+		
+		public LoadPictureThread(Picture picture)
+		{
+			_picture = picture;
+		}
+		
+		@Override
+		public void run()
+		{
+			if (_picture != null)
+				try
+				{
+					_picture.loadPicture(_context, Picture.Size.LARGE);
+					_picture.loadPicture(_context, Picture.Size.MEDIUM);
+					_picture.loadPicture(_context, Picture.Size.SMALL);
+					_picture.loadPicture(_context, Picture.Size.THUMB);
+				}
+				catch (IOException e)
+				{
+					e.printStackTrace();
+				}
 		}
 	}
 }
