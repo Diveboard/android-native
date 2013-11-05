@@ -1,9 +1,13 @@
 package com.diveboard.mobile;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
@@ -43,6 +47,7 @@ public class SignUpActivity extends FragmentActivity {
 	 */
 	private FBLoginFragment mFBLoginFragment;
 	private UserLoginTask mAuthTask = null;
+	private LoginTask mLoginTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -167,11 +172,15 @@ public class SignUpActivity extends FragmentActivity {
 		mConfirmPasswordView.setError(null);
 		mURLView.setError(null);
 		mNicknameView.setError(null);
+		mNewsletterView.setError(null);
+		mTermsView.setError(null);
 		// Store values at the time of the login attempt.
 		mEmail = mEmailView.getText().toString();
+		mEmail = mEmail.replace(" ", "");
 		mPassword = mPasswordView.getText().toString();
 		mConfirmPassword = mConfirmPasswordView.getText().toString();
 		mURL = mURLView.getText().toString();
+		mURL = mURL.replace(" ", "");
 		mNickname = mNicknameView.getText().toString();
 		mNewsletter = mNewsletterView.isChecked();
 		mTerms = mTermsView.isChecked();
@@ -182,7 +191,7 @@ public class SignUpActivity extends FragmentActivity {
 		// Check for a check terms.
 		if (!mTermsView.isChecked()) {
 			mTermsView.setError(getString(R.string.error_check_required));
-			focusView = mNicknameView;
+			focusView = mTermsView;
 			cancel = true;
 		}
 		
@@ -191,14 +200,23 @@ public class SignUpActivity extends FragmentActivity {
 			mNicknameView.setError(getString(R.string.error_field_required));
 			focusView = mNicknameView;
 			cancel = true;
+		} else if (mNickname.length() < 3 || mNickname.length() > 30) {
+			mNicknameView.setError(getString(R.string.error_invalid_nickname));
+			focusView = mNicknameView;
+			cancel = true;
 		}
-		
+		String pattern = "^[A-Za-z\\.0-9\\-\\_]*$";
 		// Check for a valid URL.
 		if (TextUtils.isEmpty(mURL)) {
 			mURLView.setError(getString(R.string.error_field_required));
 			focusView = mURLView;
 			cancel = true;
-		} else if (mURL.length() < 3) {
+		} else if (mURL.length() < 4) {
+			mURLView.setError(getString(R.string.error_short_url));
+			focusView = mURLView;
+			cancel = true;
+		} else if (!mURL.matches(pattern))
+		{
 			mURLView.setError(getString(R.string.error_invalid_url));
 			focusView = mURLView;
 			cancel = true;
@@ -207,7 +225,7 @@ public class SignUpActivity extends FragmentActivity {
 		// Check for a confirm password.
 		if (TextUtils.isEmpty(mConfirmPassword)) {
 			mConfirmPasswordView.setError(getString(R.string.error_field_required));
-			focusView = mPasswordView;
+			focusView = mConfirmPasswordView;
 			cancel = true;
 		} else if (!mPassword.contentEquals(mConfirmPassword))
 		{
@@ -221,7 +239,7 @@ public class SignUpActivity extends FragmentActivity {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 5) {
+		} else if (mPassword.length() < 5 || mPassword.length() > 20) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -232,7 +250,7 @@ public class SignUpActivity extends FragmentActivity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@") && !mEmail.contains(".") && !mEmail.contains(" ")) {
+		} else if (!mEmail.contains("@") || !mEmail.contains(".")) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
@@ -297,41 +315,87 @@ public class SignUpActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
+	public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 		@Override
-		protected Boolean doInBackground(Void... params) {
-			// TODO: attempt authentication against a network service.
-
-			try {
-				// Simulate network access.
-				Thread.sleep(2000);
-			} catch (InterruptedException e) {
-				return false;
-			}
-
-			for (String credential : DUMMY_CREDENTIALS) {
-				String[] pieces = credential.split(":");
-				if (pieces[0].equals(mEmail)) {
-					// Account exists, return true if the password matches.
-					return pieces[1].equals(mPassword);
-				}
-			}
-
-			// TODO: register the new account here.
-			return true;
+		protected JSONObject doInBackground(Void... params) {
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			return AC.getModel().doRegister(mEmail, mPassword, mConfirmPassword, mURL, mNickname, mNewsletter);
 		}
 
 		@Override
-		protected void onPostExecute(final Boolean success) {
+		protected void onPostExecute(final JSONObject json) {
 			mAuthTask = null;
 			showProgress(false);
+			try {
+				Boolean success = json.getBoolean("success");
+				if (success == true)
+				{
+					showProgress(true);
+					mLoginTask = new LoginTask();
+					mLoginTask.execute((Void) null);
+				}
+				else
+				{
+					String error = json.getString("error");
+					String params = json.getString("params");
+					if (params.contentEquals("email"))
+					{
+						mEmailView.setError(getString(R.string.error_incorrect_field));
+						mEmailView.requestFocus();
+					}
+					else if (params.contentEquals("password"))
+					{
+						mPasswordView.setError(getString(R.string.error_incorrect_field));
+						mPasswordView.requestFocus();
+					}
+					else if (params.contentEquals("password_check"))
+					{
+						mConfirmPasswordView.setError(getString(R.string.error_incorrect_field));
+						mConfirmPasswordView.requestFocus();
+					}
+					else if (params.contentEquals("vanity_url"))
+					{
+						mURLView.setError(getString(R.string.error_incorrect_field));
+						mURLView.requestFocus();
+					}
+					else if (params.contentEquals("nickname"))
+					{
+						mNicknameView.setError(getString(R.string.error_incorrect_field));
+						mNicknameView.requestFocus();
+					}
+				}
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 
-			if (success) {
-				finish();
-			} else {
-				mPasswordView
-						.setError(getString(R.string.error_incorrect_password));
-				mPasswordView.requestFocus();
+		@Override
+		protected void onCancelled() {
+			mAuthTask = null;
+			showProgress(false);
+		}
+	}
+	
+	/**
+	 * Represents an asynchronous login/registration task used to authenticate
+	 * the user.
+	 */
+	public class LoginTask extends AsyncTask<Void, Void, Integer> {
+		@Override
+		protected Integer doInBackground(Void... params) {
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			return AC.getModel().doLogin(mEmail, mPassword);
+		}
+
+		@Override
+		protected void onPostExecute(final Integer success) {
+			mLoginTask = null;
+			showProgress(false);
+			if (success != -1)
+			{
+				Intent editDiveActivity = new Intent(SignUpActivity.this, DivesActivity.class);
+			    startActivity(editDiveActivity);
 			}
 		}
 

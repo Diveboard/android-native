@@ -15,10 +15,14 @@
     <string name="action_forgot_password">Recover lost password</string>
     <string name="login_progress_signing_in">Signing in&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
-    <string name="error_invalid_password">This password is too short</string>
-    <string name="error_invalid_url">This URL is too short</string>
+    <string name="error_invalid_password">This password is too short or too long</string>
+    <string name="error_invalid_nickname">This nickname is too short or too long</string>
+    <string name="error_short_url">This URL is too short (below 4 characters)</string>
+    <string name="error_invalid_url">This URL mist not contain invalid characters</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_same_field">This password must be the same</string>
     <string name="error_check_required">This field must be checked</string>
+    <string name="error_incorrect_field">This field must be checked</string>
 
 </resources>
