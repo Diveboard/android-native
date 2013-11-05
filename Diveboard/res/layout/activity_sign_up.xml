@@ -115,7 +115,9 @@
 						            android:layout_width="match_parent"
 						            android:layout_height="wrap_content"
 						            android:orientation="vertical"
-						            android:padding="5dp" >
+						            android:paddingLeft="10dp"
+						            android:paddingRight="10dp"
+						            android:paddingBottom="10dp" >
 	
 							        <EditText
 						                android:id="@+id/email"
@@ -125,7 +127,9 @@
 						                android:inputType="textEmailAddress"
 						                android:maxLines="1"
 						                android:singleLine="true"
-						                android:padding="15dp" />
+						                android:padding="15dp"
+						                android:textColor="@color/dark_grey"
+						                android:background="@drawable/sign_up_field_background" />
 						            <EditText
 						                android:id="@+id/password"
 						                android:layout_width="match_parent"
@@ -133,7 +137,10 @@
 						                android:hint="@string/sign_up_password"
 						                android:inputType="textPassword"
 						                android:maxLines="1"
-						                android:singleLine="true" />
+						                android:singleLine="true"
+						                android:padding="15dp"
+						                android:background="@drawable/sign_up_field_background"
+						                android:layout_marginTop="8dp" />
 									<EditText
 						                android:id="@+id/confirm_password"
 						                android:layout_width="match_parent"
@@ -141,7 +148,10 @@
 						                android:hint="@string/sign_up_confirm_password"
 						                android:inputType="textPassword"
 						                android:maxLines="1"
-						                android:singleLine="true" />
+						                android:singleLine="true"
+						                android:padding="15dp"
+						                android:background="@drawable/sign_up_field_background"
+						                android:layout_marginTop="8dp" />
 									<EditText
 						                android:id="@+id/url"
 						                android:layout_width="match_parent"
@@ -149,7 +159,10 @@
 						                android:hint="@string/sign_up_url"
 						                android:inputType="text"
 						                android:maxLines="1"
-						                android:singleLine="true" />
+						                android:singleLine="true"
+						                android:padding="15dp"
+						                android:background="@drawable/sign_up_field_background"
+						                android:layout_marginTop="8dp" />
 									<EditText
 						                android:id="@+id/nickname"
 						                android:layout_width="match_parent"
@@ -157,22 +170,33 @@
 						                android:hint="@string/sign_up_nickname"
 						                android:inputType="text"
 						                android:maxLines="1"
-						                android:singleLine="true" />
+						                android:singleLine="true"
+						                android:padding="15dp"
+						                android:background="@drawable/sign_up_field_background"
+						                android:layout_marginTop="8dp" />
 	
 									<LinearLayout
 									    android:layout_width="match_parent"
 									    android:layout_height="wrap_content"
 									    android:orientation="horizontal"
 									    android:gravity="right">
-									    <TextView
-									        android:id="@+id/newsletter"
-									        android:layout_width="wrap_content"
-									        android:layout_height="wrap_content"
-									        android:text="@string/sign_up_newsletter" />
+
+										<TextView
+										    android:id="@+id/newsletter"
+										    android:layout_width="wrap_content"
+										    android:layout_height="match_parent"
+										    android:text="@string/sign_up_newsletter"
+										    android:gravity="center" />
+
 									    <CheckBox
 									        android:id="@+id/newsletter_check"
 									        android:layout_width="wrap_content"
-									        android:layout_height="wrap_content" />
+									        android:layout_height="wrap_content"
+									        android:layout_marginTop="8dp"
+									        android:layout_marginBottom="8dp"
+									        android:layout_marginLeft="10dp"
+									        android:button="@drawable/sign_up_checkbox_selector" />
+
 									</LinearLayout>
 									<LinearLayout
 									    android:layout_width="match_parent"
@@ -187,7 +211,9 @@
 									    <CheckBox
 									        android:id="@+id/terms_check"
 									        android:layout_width="wrap_content"
-									        android:layout_height="wrap_content" />
+									        android:layout_height="wrap_content"
+									        android:layout_marginLeft="10dp"
+									        android:button="@drawable/sign_up_checkbox_selector" />
 									</LinearLayout>
 						            <Button
 						                android:id="@+id/sign_in_button"
