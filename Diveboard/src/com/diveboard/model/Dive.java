@@ -65,6 +65,8 @@ public class					Dive implements IModel
 	private Picture				_featuredPicture;
 	private ArrayList<Picture>	_pictures;
 	private ArrayList<Pair<String, String>>	_editList = new ArrayList<Pair<String, String>>();
+	private String				_shopName;
+	private Picture				_shopPicture;
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
@@ -179,6 +181,8 @@ public class					Dive implements IModel
 		else
 			_pictures = null;
 		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
+		_shopName = (json.isNull("shop_name")) ? null : json.getString("shop_name");
+		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -586,5 +590,21 @@ public class					Dive implements IModel
 
 	public void setProfile(Picture _profile) {
 		this._profile = _profile;
+	}
+
+	public String getShopName() {
+		return _shopName;
+	}
+
+	public void setShopName(String _shopName) {
+		this._shopName = _shopName;
+	}
+
+	public Picture getShopPicture() {
+		return _shopPicture;
+	}
+
+	public void setShopPicture(Picture _shopPicture) {
+		this._shopPicture = _shopPicture;
 	}
 }
