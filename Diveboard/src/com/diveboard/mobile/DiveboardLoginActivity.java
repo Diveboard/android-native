@@ -43,6 +43,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	/**
 	 * The default email to populate the email field with.
 	 */
+	public static final int TEXT_SIZE = 15;
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
 
 	/**
@@ -102,8 +103,13 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		}
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		((TextView)findViewById(R.id.sign_up)).setText("SIGNUP FOR DIVEBOARD");
 		((TextView)findViewById(R.id.sign_up)).setTypeface(faceB);
+		((TextView)findViewById(R.id.email)).setTypeface(faceR);
+		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.password)).setTypeface(faceR);
+		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);

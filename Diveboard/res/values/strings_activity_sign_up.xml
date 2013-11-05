@@ -16,7 +16,9 @@
     <string name="login_progress_signing_in">Signing in&#8230;</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
+    <string name="error_invalid_url">This URL is too short</string>
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
+    <string name="error_check_required">This field must be checked</string>
 
 </resources>

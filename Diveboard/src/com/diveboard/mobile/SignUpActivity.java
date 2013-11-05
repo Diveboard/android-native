@@ -179,10 +179,40 @@ public class SignUpActivity extends FragmentActivity {
 		boolean cancel = false;
 		View focusView = null;
 
+		// Check for a check terms.
+		if (!mTermsView.isChecked()) {
+			mTermsView.setError(getString(R.string.error_check_required));
+			focusView = mNicknameView;
+			cancel = true;
+		}
+		
+		// Check for a valid Nickname.
+		if (TextUtils.isEmpty(mNickname)) {
+			mNicknameView.setError(getString(R.string.error_field_required));
+			focusView = mNicknameView;
+			cancel = true;
+		}
+		
+		// Check for a valid URL.
+		if (TextUtils.isEmpty(mURL)) {
+			mURLView.setError(getString(R.string.error_field_required));
+			focusView = mURLView;
+			cancel = true;
+		} else if (mURL.length() < 3) {
+			mURLView.setError(getString(R.string.error_invalid_url));
+			focusView = mURLView;
+			cancel = true;
+		}
+		
 		// Check for a confirm password.
-		if (TextUtils.isEmpty(mPassword)) {
-			mPasswordView.setError(getString(R.string.error_field_required));
+		if (TextUtils.isEmpty(mConfirmPassword)) {
+			mConfirmPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
+			cancel = true;
+		} else if (!mPassword.contentEquals(mConfirmPassword))
+		{
+			mConfirmPasswordView.setError(getString(R.string.error_same_field));
+			focusView = mConfirmPasswordView;
 			cancel = true;
 		}
 		
@@ -191,7 +221,7 @@ public class SignUpActivity extends FragmentActivity {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 4) {
+		} else if (mPassword.length() < 5) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -202,7 +232,7 @@ public class SignUpActivity extends FragmentActivity {
 			mEmailView.setError(getString(R.string.error_field_required));
 			focusView = mEmailView;
 			cancel = true;
-		} else if (!mEmail.contains("@")) {
+		} else if (!mEmail.contains("@") && !mEmail.contains(".") && !mEmail.contains(" ")) {
 			mEmailView.setError(getString(R.string.error_invalid_email));
 			focusView = mEmailView;
 			cancel = true;
