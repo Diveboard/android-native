@@ -4,22 +4,27 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
+import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
+import android.view.Window;
 import android.view.inputmethod.EditorInfo;
+import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
+
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class SignUpActivity extends Activity {
+public class SignUpActivity extends FragmentActivity {
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
@@ -31,19 +36,31 @@ public class SignUpActivity extends Activity {
 	 * The default email to populate the email field with.
 	 */
 	public static final String EXTRA_EMAIL = "com.example.android.authenticatordemo.extra.EMAIL";
+	public static final int TEXT_SIZE = 15;
 
 	/**
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
+	private FBLoginFragment mFBLoginFragment;
 	private UserLoginTask mAuthTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
 	private String mPassword;
+	private String mConfirmPassword;
+	private String mURL;
+	private String mNickname;
+	private Boolean mNewsletter = false;
+	private Boolean mTerms = false;
 
 	// UI references.
 	private EditText mEmailView;
 	private EditText mPasswordView;
+	private EditText mConfirmPasswordView;
+	private EditText mURLView;
+	private EditText mNicknameView;
+	private CheckBox mNewsletterView;
+	private CheckBox mTermsView;
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
@@ -51,13 +68,36 @@ public class SignUpActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
+			getActionBar().hide();
+		}
+		else
+		{
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+		}
 		setContentView(R.layout.activity_sign_up);
-
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		((TextView)findViewById(R.id.title)).setText("SIGNUP FOR DIVEBOARD");
+		((TextView)findViewById(R.id.title)).setTypeface(faceB);
+		((TextView)findViewById(R.id.email)).setTypeface(faceR);
+		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.password)).setTypeface(faceR);
+		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.confirm_password)).setTypeface(faceR);
+		((TextView)findViewById(R.id.confirm_password)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.url)).setTypeface(faceR);
+		((TextView)findViewById(R.id.url)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.nickname)).setTypeface(faceR);
+		((TextView)findViewById(R.id.nickname)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.newsletter)).setTypeface(faceR);
+		((TextView)findViewById(R.id.newsletter)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.terms)).setTypeface(faceR);
+		((TextView)findViewById(R.id.terms)).setTextSize(TEXT_SIZE);
 		// Set up the login form.
-		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
+		//mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
-		mEmailView.setText(mEmail);
+		//mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
 		mPasswordView
@@ -72,11 +112,29 @@ public class SignUpActivity extends Activity {
 						return false;
 					}
 				});
-
+		mConfirmPasswordView = (EditText)findViewById(R.id.confirm_password);
+		mURLView = (EditText)findViewById(R.id.url);
+		mNicknameView = (EditText)findViewById(R.id.nickname);
+		mNewsletterView = (CheckBox)findViewById(R.id.newsletter_check);
+		mTermsView = (CheckBox)findViewById(R.id.terms_check);
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
-
+//		if (savedInstanceState == null)
+//		{
+//			// Add the fragment on initial activity setup
+//			mFBLoginFragment = new FBLoginFragment();
+//			getSupportFragmentManager()
+//			.beginTransaction()
+//			.add(R.id.login_fields, mFBLoginFragment)
+//			.commit();
+//		}
+//		else
+//		{
+//			// Or set the fragment from restored state info
+//			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
+//					.findFragmentById(R.id.login_fields);
+//		}
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -106,14 +164,28 @@ public class SignUpActivity extends Activity {
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
-
+		mConfirmPasswordView.setError(null);
+		mURLView.setError(null);
+		mNicknameView.setError(null);
 		// Store values at the time of the login attempt.
 		mEmail = mEmailView.getText().toString();
 		mPassword = mPasswordView.getText().toString();
+		mConfirmPassword = mConfirmPasswordView.getText().toString();
+		mURL = mURLView.getText().toString();
+		mNickname = mNicknameView.getText().toString();
+		mNewsletter = mNewsletterView.isChecked();
+		mTerms = mTermsView.isChecked();
 
 		boolean cancel = false;
 		View focusView = null;
 
+		// Check for a confirm password.
+		if (TextUtils.isEmpty(mPassword)) {
+			mPasswordView.setError(getString(R.string.error_field_required));
+			focusView = mPasswordView;
+			cancel = true;
+		}
+		
 		// Check for a valid password.
 		if (TextUtils.isEmpty(mPassword)) {
 			mPasswordView.setError(getString(R.string.error_field_required));
