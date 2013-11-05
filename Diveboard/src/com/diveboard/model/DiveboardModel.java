@@ -589,4 +589,56 @@ public class					DiveboardModel
 			}
 		}
 	}
+	
+	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String vanity, final String nickname, final boolean loop)
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/register_email");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
+			args.add(new BasicNameValuePair("email", email));
+			args.add(new BasicNameValuePair("vanity_url", vanity));
+			args.add(new BasicNameValuePair("password", password));
+			args.add(new BasicNameValuePair("nickname", nickname));
+			args.add(new BasicNameValuePair("password_check", confirm_password));
+			args.add(new BasicNameValuePair("accept_newsletter_email", (loop == true) ? "true" : "false"));
+			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			try
+			{
+				// Set parameters
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+				return (json);
+			}
+			catch (UnsupportedEncodingException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (null);
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (null);
+			} catch (JSONException e)
+			{
+				e.printStackTrace();
+				client.close();
+				return (null);
+			}
+		}
+		return (null);
+	}
 }
