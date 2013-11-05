@@ -23,7 +23,6 @@
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        	
         <activity
             android:name="com.diveboard.mobile.DivesActivity"
             android:label="@string/app_name" >
@@ -61,7 +60,6 @@
             android:label="@string/title_activity_login" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -69,15 +67,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/app_id" />
-
         <activity
-            android:name="com.diveboard.mobile.DiveboardFacebookLoginActivity"
-            android:label="@string/title_activity_diveboard_facebook_login" >
-            
-        </activity>
-        <activity
-            android:name="com.diveboard.mobile.FBLoginFragment"
-            android:label="@string/title_activity_fblogin_fragment" >
+            android:name="com.diveboard.mobile.SignUpActivity"
+            android:label="@string/title_activity_sign_up" >
         </activity>
     </application>
 

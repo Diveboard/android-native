@@ -1,42 +1,29 @@
 package com.diveboard.mobile;
 
-import com.diveboard.mobile.editdive.EditDiveActivity;
-import com.diveboard.model.DiveboardModel;
-import com.facebook.Session;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
-import android.view.Window;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
  * well.
  */
-public class DiveboardLoginActivity extends FragmentActivity {
+public class SignUpActivity extends Activity {
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
 	 */
-	private FBLoginFragment mFBLoginFragment;
 	private static final String[] DUMMY_CREDENTIALS = new String[] {
 			"foo@example.com:hello", "bar@example.com:world" };
 
@@ -62,48 +49,11 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	private TextView mLoginStatusMessageView;
 
 	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		DiveboardModel model = new DiveboardModel(getApplicationContext());
-		//DiveboardModel model = new DiveboardModel(30, getApplicationContext());
-		AC.setModel(model);
-		if (model.isLogged() == true)
-		{
-			Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
-		    startActivity(editDiveActivity);
-		    return ;
-		}
-		
-	}
-	
-	@Override
-	public void onActivityResult(int requestCode, int resultCode, Intent data) {
-	  super.onActivityResult(requestCode, resultCode, data);
-	  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
-	}
-	
-	public void goToSignUp(View view)
-	{
-		Intent signUpActivity = new Intent(DiveboardLoginActivity.this, SignUpActivity.class);
-		startActivity(signUpActivity);
-	}
-	
-	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
-		setContentView(R.layout.activity_login);
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		((TextView)findViewById(R.id.sign_up)).setText("SIGNUP FOR DIVEBOARD");
-		((TextView)findViewById(R.id.sign_up)).setTypeface(faceB);
+
+		setContentView(R.layout.activity_sign_up);
+
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
@@ -127,21 +77,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		if (savedInstanceState == null)
-		{
-			// Add the fragment on initial activity setup
-			mFBLoginFragment = new FBLoginFragment();
-			getSupportFragmentManager()
-			.beginTransaction()
-			.add(R.id.login_fields, mFBLoginFragment)
-			.commit();
-		}
-		else
-		{
-			// Or set the fragment from restored state info
-			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
-					.findFragmentById(R.id.login_fields);
-		}
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -149,6 +84,13 @@ public class DiveboardLoginActivity extends FragmentActivity {
 						attemptLogin();
 					}
 				});
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		super.onCreateOptionsMenu(menu);
+		getMenuInflater().inflate(R.menu.sign_up, menu);
+		return true;
 	}
 
 	/**
@@ -213,9 +155,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 */
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	private void showProgress(final boolean show) {
-		InputMethodManager imm = (InputMethodManager)getSystemService(
-			      Context.INPUT_METHOD_SERVICE);
-			imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
 		// On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
 		// for very easy animations. If available, use these APIs to fade-in
 		// the progress spinner.
@@ -256,36 +195,41 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+	public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
 		@Override
-		protected Integer doInBackground(Void... params) {
-			ApplicationController AC = (ApplicationController)getApplicationContext();
-//			DiveboardModel model = new DiveboardModel(getApplicationContext());
-			
-//			AC.setModel(model);
-			return AC.getModel().doLogin(mEmail, mPassword);
-			//return 30;
+		protected Boolean doInBackground(Void... params) {
+			// TODO: attempt authentication against a network service.
+
+			try {
+				// Simulate network access.
+				Thread.sleep(2000);
+			} catch (InterruptedException e) {
+				return false;
+			}
+
+			for (String credential : DUMMY_CREDENTIALS) {
+				String[] pieces = credential.split(":");
+				if (pieces[0].equals(mEmail)) {
+					// Account exists, return true if the password matches.
+					return pieces[1].equals(mPassword);
+				}
+			}
+
+			// TODO: register the new account here.
+			return true;
 		}
 
 		@Override
-		protected void onPostExecute(final Integer success) {
+		protected void onPostExecute(final Boolean success) {
 			mAuthTask = null;
 			showProgress(false);
 
-			if (success != -1) {
-				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
-			    startActivity(editDiveActivity);
-			}
-//			else if (success == 0 ){
-//				mPasswordView
-//						.setError(getString(R.string.error_incorrect_password));
-//				mPasswordView.requestFocus();
-//			}
-			else
-			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
+			if (success) {
+				finish();
+			} else {
+				mPasswordView
+						.setError(getString(R.string.error_incorrect_password));
+				mPasswordView.requestFocus();
 			}
 		}
 
