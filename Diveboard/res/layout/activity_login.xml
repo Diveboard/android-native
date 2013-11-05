@@ -62,19 +62,19 @@
         		    android:layout_alignParentTop="true"
         		    android:background="@color/yellow" />
 
-		        <LinearLayout
-		            android:id="@+id/layout"
-		            android:layout_width="250dp"
+		        <ScrollView
+		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
-		            android:layout_alignParentBottom="false"
-		            android:layout_alignParentLeft="false"
-		            android:layout_alignParentRight="false"
-		            android:layout_alignParentTop="false"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerInParent="true"
-		            android:layout_centerVertical="false"
-		            android:orientation="vertical" >
-
+		            android:layout_alignParentBottom="true"
+		            android:layout_alignParentTop="true" >
+		            
+		            <LinearLayout
+		                android:id="@+id/layout"
+		                android:layout_width="250dp"
+		                android:layout_height="wrap_content"
+		                android:layout_gravity="center"
+		                android:orientation="vertical" >
+		                
 					<LinearLayout
 					    android:layout_width="match_parent"
 					    android:layout_height="wrap_content"
@@ -97,7 +97,7 @@
 					            android:layout_height="match_parent"
 					            android:alpha="0.6"/>
 					        <LinearLayout
-					            android:padding="5dp"
+					            android:padding="10dp"
 						        android:orientation="vertical"
 						        android:id="@+id/login_fields"
 						        android:layout_width="match_parent"
@@ -126,7 +126,7 @@
 					                android:maxLines="1"
 					                android:singleLine="true"
 					                android:padding="15dp"
-					                android:layout_marginTop="5dp"
+					                android:layout_marginTop="8dp"
 					                android:background="@drawable/login_field"
 					                android:alpha="0.85"
 					                android:textColor="@color/dark_grey" />
@@ -134,15 +134,19 @@
 					                android:id="@+id/sign_in_button"
 					                android:layout_width="match_parent"
 					                android:layout_height="wrap_content"
-					                android:layout_marginTop="5dp"
-					                android:padding="5dp"
+					                android:layout_marginTop="8dp"
+					                android:padding="15dp"
 					                android:text="@string/action_sign_in_register"
 					                android:background="@drawable/login_button_selector"
 					                android:textColor="@drawable/login_button_text_selector" />
 						    </LinearLayout>
 					    </FrameLayout>
-					</LinearLayout>  
+					</LinearLayout> 
+					
 	        	</LinearLayout>
+		            
+		        </ScrollView>
+		        
 		    </RelativeLayout>
 		    
         	<FrameLayout
