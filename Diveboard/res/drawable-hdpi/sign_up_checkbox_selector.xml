@@ -8,13 +8,6 @@
 		    <size android:height="30dp" android:width="30dp"/>
 		</shape>
     </item>
-    <!--  Pressed checkbox -->
-    <item android:state_pressed="true">
-        <shape android:shape="oval">
-            <solid android:color="@color/dark_grey"/>
-		    <size android:height="30dp" android:width="30dp"/>
-        </shape>
-    </item>
     <!--  Checked checkbox -->
     <item android:state_pressed="false" android:state_checked="true">
         <shape android:shape="oval">

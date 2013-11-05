@@ -217,13 +217,13 @@
 									</LinearLayout>
 						            <Button
 						                android:id="@+id/sign_in_button"
-						                android:layout_width="wrap_content"
+						                android:layout_width="match_parent"
 						                android:layout_height="wrap_content"
-						                android:layout_gravity="right"
-						                android:layout_marginTop="16dp"
-						                android:paddingLeft="32dp"
-						                android:paddingRight="32dp"
-						                android:text="@string/action_sign_in_register" />
+						                android:layout_marginTop="8dp"
+						                android:padding="15dp"
+						                android:text="@string/action_sign_in_register"
+						                android:background="@drawable/sign_up_button_selector"
+						                android:textColor="@color/dark_grey" />
 							    </LinearLayout>
 						    </FrameLayout>
 						</LinearLayout>  
