@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,6 +111,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.password)).setTypeface(faceR);
 		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
+		((Button)findViewById(R.id.sign_in_button)).setTypeface(faceR);
+		
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);

@@ -138,7 +138,7 @@
 					                android:layout_height="wrap_content"
 					                android:layout_marginTop="8dp"
 					                android:padding="15dp"
-					                android:text="@string/action_sign_in_register"
+					                android:text="@string/action_login"
 					                android:background="@drawable/login_button_selector"
 					                android:textColor="@drawable/login_button_text_selector" />
 						    </LinearLayout>
