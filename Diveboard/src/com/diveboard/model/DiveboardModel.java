@@ -48,6 +48,8 @@ public class					DiveboardModel
 	
 	public static ArrayList<Picture>	pictureList = new ArrayList<Picture>();
 	private Integer				_pictureCount = 0;
+	private Thread				_pictureThread1 = null;
+	private Thread				_pictureThread2 = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -566,11 +568,22 @@ public class					DiveboardModel
 	 */
 	public void					preloadPictures()
 	{
-		_pictureCount = pictureList.size();
-		Thread thread1 = new Thread(new LoadPictureThread(0, 1));
-		Thread thread2 = new Thread(new LoadPictureThread(pictureList.size() -1, -1));
-		thread1.start();
-		thread2.start();
+		if (_pictureThread1 == null && _pictureThread2 == null)
+		{
+			_pictureCount = pictureList.size();
+			_pictureThread1 = new Thread(new LoadPictureThread(0, 2));
+			_pictureThread2 = new Thread(new LoadPictureThread(1, 2));
+			_pictureThread1.start();
+			_pictureThread2.start();
+		}
+	}
+	
+	public void					stopPreloadPictures()
+	{
+		if (_pictureThread1 != null)
+			_pictureThread1.stop();
+		if (_pictureThread2 != null)
+			_pictureThread2.stop();
 	}
 	
 	private class				LoadPictureThread implements Runnable
@@ -591,6 +604,7 @@ public class					DiveboardModel
 			{
 				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0; i += _increment)
 				{
+					System.out.println("Loading pictures " + i);
 					try
 					{
 						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
@@ -617,6 +631,7 @@ public class					DiveboardModel
 			{
 				for (int i = _start; i >= 0 && _pictureCount > 0; i += _increment)
 				{
+					System.out.println("Loading pictures " + i);
 					try
 					{
 						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
