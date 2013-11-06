@@ -48,8 +48,8 @@ public class					DiveboardModel
 	
 	public static ArrayList<Picture>	pictureList = new ArrayList<Picture>();
 	private Integer				_pictureCount = 0;
-	private Thread				_pictureThread1 = null;
-	private Thread				_pictureThread2 = null;
+	private LoadPictureThread	_pictureThread1 = null;
+	private LoadPictureThread	_pictureThread2 = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -571,8 +571,8 @@ public class					DiveboardModel
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
 			_pictureCount = pictureList.size();
-			_pictureThread1 = new Thread(new LoadPictureThread(0, 2));
-			_pictureThread2 = new Thread(new LoadPictureThread(1, 2));
+			_pictureThread1 = new LoadPictureThread(0, 2);
+			_pictureThread2 = new LoadPictureThread(1, 2);
 			_pictureThread1.start();
 			_pictureThread2.start();
 		}
@@ -581,9 +581,9 @@ public class					DiveboardModel
 	public void					stopPreloadPictures()
 	{
 		if (_pictureThread1 != null)
-			((LoadPictureThread)_pictureThread1).cancel();
+			_pictureThread1.cancel();
 		if (_pictureThread2 != null)
-			((LoadPictureThread)_pictureThread2).cancel();
+			_pictureThread2.cancel();
 	}
 	
 	private class				LoadPictureThread extends Thread
