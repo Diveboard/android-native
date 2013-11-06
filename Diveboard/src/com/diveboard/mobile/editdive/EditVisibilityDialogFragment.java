@@ -75,8 +75,8 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 		list.add(getResources().getString(R.string.average_visibility));
 		list.add(getResources().getString(R.string.good_visibility));
 		list.add(getResources().getString(R.string.excellent_visibility));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, list);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mVisibility.setAdapter(dataAdapter);
 		if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("average") == 0)

@@ -76,8 +76,8 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 		list.add(getResources().getString(R.string.medium_current));
 		list.add(getResources().getString(R.string.strong_current));
 		list.add(getResources().getString(R.string.extreme_current));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_spinner_item, list);
-		dataAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mCurrent.setAdapter(dataAdapter);
 		if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("light") == 0)
