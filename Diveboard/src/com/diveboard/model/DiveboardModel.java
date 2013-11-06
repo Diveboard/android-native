@@ -295,6 +295,9 @@ public class					DiveboardModel
 		
 		file = new File(_context.getFilesDir() + "_unit_preferences");
 		file.delete();
+		
+		_user.setDives(null);
+		_user = null;
 	}
 	
 	/*
