@@ -577,10 +577,10 @@ public class					DiveboardModel
 			{
 				try
 				{
-					pictureList.get(i).loadPicture(_context, Picture.Size.THUMB);
-					pictureList.get(i).loadPicture(_context, Picture.Size.SMALL);
-					pictureList.get(i).loadPicture(_context, Picture.Size.MEDIUM);
-					pictureList.get(i).loadPicture(_context, Picture.Size.LARGE);
+					pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+					pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+					pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+					pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
 				}
 				catch (IOException e)
 				{
