@@ -88,7 +88,8 @@
 					        android:paddingLeft="5dp"
 					        android:paddingRight="5dp"
 					        android:layout_marginTop="20dp"
-					        android:src="@drawable/full_diveboard_grey" />
+					        android:src="@drawable/full_diveboard_grey"
+					        android:onClick="goToPascalDives"/>
 
 					    <FrameLayout
 					        android:layout_width="match_parent"

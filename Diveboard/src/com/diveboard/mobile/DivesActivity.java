@@ -44,6 +44,8 @@ import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -62,6 +64,8 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Scroller;
@@ -182,8 +186,34 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //	    }
 	}
 	
-	public void goToEditDive(View view)
+	public void goToSettings(View view)
 	{
+		PopupMenu popup = new PopupMenu(this, view);
+	    MenuInflater inflater = popup.getMenuInflater();
+	    inflater.inflate(R.menu.settings, popup.getMenu());
+	    popup.show();
+	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+	    {
+
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				switch (item.getItemId()) {
+		        case R.id.menu_settings:
+		    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
+		    	    startActivity(editDiveActivity);
+		            return true;
+		        default:
+		            return false;
+				}
+			}
+	    	
+	    });
+
+	}
+	
+	public void goToEditDive(View view)
+	{	
 		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
 		editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    startActivity(editDiveActivity);
@@ -355,21 +385,21 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 				// Footer static text
-				((TextView)diveFooter.findViewById(R.id.title_footer1)).setText("CURRENTLY VIEWING ");
-				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTypeface(faceR);
-				((TextView)diveFooter.findViewById(R.id.title_footer1)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.title_footer2)).setText("DIVES, SHOPS ");
-				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTypeface(faceB);
-				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.title_footer3)).setText("AND ");
-				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTypeface(faceR);
-				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.title_footer4)).setText("SPOTS ");
-				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTypeface(faceB);
-				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.title_footer5)).setText("NEAR");
-				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTypeface(faceR);
-				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+				((TextView)diveFooter.findViewById(R.id.title_footer)).setText("CURRENTLY VIEWING DIVES FROM LOGBOOK");
+				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.title_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setText("DIVES, SHOPS ");
+//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTypeface(faceB);
+//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setText("AND ");
+//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTypeface(faceR);
+//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setText("SPOTS ");
+//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTypeface(faceB);
+//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setText("NEAR");
+//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTypeface(faceR);
+//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));

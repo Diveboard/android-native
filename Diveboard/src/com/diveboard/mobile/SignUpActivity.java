@@ -1,5 +1,6 @@
 package com.diveboard.mobile;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -324,6 +325,7 @@ public class SignUpActivity extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(final JSONObject json) {
+			System.out.println(json.toString());
 			mAuthTask = null;
 			showProgress(false);
 			try {
@@ -336,33 +338,41 @@ public class SignUpActivity extends FragmentActivity {
 				}
 				else
 				{
-					String error = json.getString("error");
-					String params = json.getString("params");
-					if (params.contentEquals("email"))
+					JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
+					for (int i = 0; i < jsonArray.length(); i++)
 					{
-						mEmailView.setError(getString(R.string.error_incorrect_field));
-						mEmailView.requestFocus();
+						String error = ((JSONObject)jsonArray.get(i)).getString("error");
+						String params = ((JSONObject)jsonArray.get(i)).getString("params");
+						if (params.contentEquals("nickname"))
+						{
+							mNicknameView.setError(error);
+							mNicknameView.requestFocus();
+						}
+						else if (params.contentEquals("vanity_url"))
+						{
+							mURLView.setError(error);
+							mURLView.requestFocus();
+						}
+						else if (params.contentEquals("password_check"))
+						{
+							mConfirmPasswordView.setError(error);
+							mConfirmPasswordView.requestFocus();
+						}
+						else if (params.contentEquals("password"))
+						{
+							mPasswordView.setError(error);
+							mPasswordView.requestFocus();
+						}
+						else if (params.contentEquals("email"))
+						{
+							mEmailView.setError(error);
+							mEmailView.requestFocus();
+						}
 					}
-					else if (params.contentEquals("password"))
-					{
-						mPasswordView.setError(getString(R.string.error_incorrect_field));
-						mPasswordView.requestFocus();
-					}
-					else if (params.contentEquals("password_check"))
-					{
-						mConfirmPasswordView.setError(getString(R.string.error_incorrect_field));
-						mConfirmPasswordView.requestFocus();
-					}
-					else if (params.contentEquals("vanity_url"))
-					{
-						mURLView.setError(getString(R.string.error_incorrect_field));
-						mURLView.requestFocus();
-					}
-					else if (params.contentEquals("nickname"))
-					{
-						mNicknameView.setError(getString(R.string.error_incorrect_field));
-						mNicknameView.requestFocus();
-					}
+//					String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
+//					String params = json.getString("params");
+//					System.out.println(error + " " + params);
+					
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

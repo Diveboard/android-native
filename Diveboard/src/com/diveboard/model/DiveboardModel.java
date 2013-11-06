@@ -568,7 +568,7 @@ public class					DiveboardModel
 	{
 		_pictureCount = pictureList.size();
 		Thread thread1 = new Thread(new LoadPictureThread(0, 1));
-		Thread thread2 = new Thread(new LoadPictureThread(pictureList.size(), -1));
+		Thread thread2 = new Thread(new LoadPictureThread(pictureList.size() -1, -1));
 		thread1.start();
 		thread2.start();
 	}
@@ -589,7 +589,7 @@ public class					DiveboardModel
 		{
 			if (_increment > 0)
 			{
-				for (int i = _start, size = pictureList.size(); i < size; i += _increment)
+				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0; i += _increment)
 				{
 					try
 					{
@@ -605,13 +605,17 @@ public class					DiveboardModel
 					synchronized (_pictureCount)
 					{
 						_pictureCount--;
+					}
+					if (_pictureCount < 0)
+					{
+						_pictureCount = 0;
 					}
 					System.out.println(_pictureCount + " pictures remaining");
 				}
 			}
 			else if (_increment < 0)
 			{
-				for (int i = _start; i >= 0; i += _increment)
+				for (int i = _start; i >= 0 && _pictureCount > 0; i += _increment)
 				{
 					try
 					{
@@ -627,6 +631,10 @@ public class					DiveboardModel
 					synchronized (_pictureCount)
 					{
 						_pictureCount--;
+					}
+					if (_pictureCount < 0)
+					{
+						_pictureCount = 0;
 					}
 					System.out.println(_pictureCount + " pictures remaining");
 				}
@@ -684,5 +692,13 @@ public class					DiveboardModel
 			}
 		}
 		return (null);
+	}
+
+	public Integer getPictureCount() {
+		return _pictureCount;
+	}
+
+	public void setPictureCount(Integer _pictureCount) {
+		this._pictureCount = _pictureCount;
 	}
 }

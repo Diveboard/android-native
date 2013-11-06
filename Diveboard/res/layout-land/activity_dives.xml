@@ -114,41 +114,52 @@
 			    android:layout_height="10dp"
 			    android:background="#FFFFFF" >
 				<TextView
-				    android:id="@+id/title_footer1"
+				    android:id="@+id/title_footer"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:layout_marginLeft="10dp"
 				    android:layout_marginTop="5dp"/>
-				<TextView
-				    android:id="@+id/title_footer2"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_toRightOf="@id/title_footer1"
-				    android:layout_marginTop="5dp"/>
-				<TextView
-				    android:id="@+id/title_footer3"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_toRightOf="@id/title_footer2"
-				    android:layout_marginTop="5dp"/>
-				<TextView
-				    android:id="@+id/title_footer4"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_toRightOf="@id/title_footer3"
-				    android:layout_marginTop="5dp"/>
-				<TextView
-				    android:id="@+id/title_footer5"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_toRightOf="@id/title_footer4"
-				    android:layout_marginTop="5dp"/>
+<!-- 				<TextView -->
+<!-- 				    android:id="@+id/title_footer2" -->
+<!-- 				    android:layout_width="wrap_content" -->
+<!-- 				    android:layout_height="wrap_content" -->
+<!-- 				    android:layout_toRightOf="@id/title_footer1" -->
+<!-- 				    android:layout_marginTop="5dp"/> -->
+<!-- 				<TextView -->
+<!-- 				    android:id="@+id/title_footer3" -->
+<!-- 				    android:layout_width="wrap_content" -->
+<!-- 				    android:layout_height="wrap_content" -->
+<!-- 				    android:layout_toRightOf="@id/title_footer2" -->
+<!-- 				    android:layout_marginTop="5dp"/> -->
+<!-- 				<TextView -->
+<!-- 				    android:id="@+id/title_footer4" -->
+<!-- 				    android:layout_width="wrap_content" -->
+<!-- 				    android:layout_height="wrap_content" -->
+<!-- 				    android:layout_toRightOf="@id/title_footer3" -->
+<!-- 				    android:layout_marginTop="5dp"/> -->
+<!-- 				<TextView -->
+<!-- 				    android:id="@+id/title_footer5" -->
+<!-- 				    android:layout_width="wrap_content" -->
+<!-- 				    android:layout_height="wrap_content" -->
+<!-- 				    android:layout_toRightOf="@id/title_footer4" -->
+<!-- 				    android:layout_marginTop="5dp"/> -->
 				<TextView
 				    android:id="@+id/content_footer"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
-				    android:layout_below="@id/title_footer1"
+				    android:layout_below="@id/title_footer"
 				    android:layout_marginLeft="10dp"/>
+				<ImageView
+				    android:id="@+id/overflow"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:layout_alignParentRight="true"
+				    android:src="@drawable/ic_action_overflow"
+				    android:layout_centerVertical="true"
+				    android:background="@drawable/overflow_background"
+				    android:layout_alignParentTop="true"
+				    android:layout_alignParentBottom="true"
+				    android:onClick="goToSettings"/>
 			</RelativeLayout>
         </LinearLayout>
 <!--     </ScrollView> -->

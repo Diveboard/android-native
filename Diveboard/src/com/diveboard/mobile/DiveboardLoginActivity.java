@@ -51,6 +51,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * Keep track of the login task to ensure we can cancel it if requested.
 	 */
 	private UserLoginTask mAuthTask = null;
+	private PascalLoginTask mPascalTask = null;
 
 	// Values for email and password at the time of the login attempt.
 	private String mEmail;
@@ -78,6 +79,16 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		    return ;
 		}
 		
+	}
+	
+	public void goToPascalDives(View view)
+	{
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		//DiveboardModel model = new DiveboardModel(getApplicationContext());
+		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
+		AC.setModel(model);
+		mPascalTask = new PascalLoginTask();
+		mPascalTask.execute((Void) null);
 	}
 	
 	@Override
@@ -274,6 +285,50 @@ public class DiveboardLoginActivity extends FragmentActivity {
 //			AC.setModel(model);
 			return AC.getModel().doLogin(mEmail, mPassword);
 			//return 30;
+		}
+
+		@Override
+		protected void onPostExecute(final Integer success) {
+			mAuthTask = null;
+			showProgress(false);
+
+			if (success != -1) {
+				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+			    startActivity(editDiveActivity);
+			}
+//			else if (success == 0 ){
+//				mPasswordView
+//						.setError(getString(R.string.error_incorrect_password));
+//				mPasswordView.requestFocus();
+//			}
+			else
+			{
+				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mAuthTask = null;
+			showProgress(false);
+		}
+	}
+	
+	/**
+	 * Represents an asynchronous login/registration task used to authenticate
+	 * the user.
+	 */
+	public class PascalLoginTask extends AsyncTask<Void, Void, Integer> {
+		@Override
+		protected Integer doInBackground(Void... params) {
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+//			DiveboardModel model = new DiveboardModel(getApplicationContext());
+			
+//			AC.setModel(model);
+			//return AC.getModel().doLogin(mEmail, mPassword);
+			return 48;
 		}
 
 		@Override

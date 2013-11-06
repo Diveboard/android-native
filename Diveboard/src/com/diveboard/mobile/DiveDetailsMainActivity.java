@@ -80,12 +80,12 @@ public class DiveDetailsMainActivity extends Activity {
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView)findViewById(R.id.dive_shop)).setTypeface(faceB);
 		((TextView)findViewById(R.id.dive_shop)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		if (mDive.getShop() != null)
+		if (mDive.getShopName() != null)
 		{
-			((TextView)findViewById(R.id.shop_name)).setText(mDive.getShop().getName());
+			((TextView)findViewById(R.id.shop_name)).setText(mDive.getShopName().toUpperCase());
 			((TextView)findViewById(R.id.shop_name)).setTypeface(faceB);
 			((TextView)findViewById(R.id.shop_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			((TextView)findViewById(R.id.shop_reviews)).setText("??? REVIEWS");
+			((TextView)findViewById(R.id.shop_reviews)).setText("0 REVIEW");
 			((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
 			((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 			mShopLogo = ((ImageView)findViewById(R.id.shop_image));
@@ -135,7 +135,7 @@ public class DiveDetailsMainActivity extends Activity {
 			temp = "null";
 		temp += " | ";
 		if (mDive.getTempBottom() != null)
-			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
+			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempBottom().getSmallName();
 		else
 			temp += "null";
 		((TextView)findViewById(R.id.temp_content)).setText(temp);
@@ -171,7 +171,9 @@ public class DiveDetailsMainActivity extends Activity {
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				return mDive.getShop().getLogo().getPicture(DiveDetailsMainActivity.this);
+				if (mDive.getShopPicture() != null)
+					return mDive.getShopPicture().getPicture(DiveDetailsMainActivity.this);
+				//return mDive.getShop().getLogo().getPicture(DiveDetailsMainActivity.this);
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
