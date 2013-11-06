@@ -581,20 +581,27 @@ public class					DiveboardModel
 	public void					stopPreloadPictures()
 	{
 		if (_pictureThread1 != null)
-			_pictureThread1.stop();
+			((LoadPictureThread)_pictureThread1).cancel();
 		if (_pictureThread2 != null)
-			_pictureThread2.stop();
+			((LoadPictureThread)_pictureThread2).cancel();
 	}
 	
-	private class				LoadPictureThread implements Runnable
+	private class				LoadPictureThread extends Thread
 	{
 		private int				_start;
 		private int				_increment;
+		private boolean			_run;
 		
 		public LoadPictureThread(int start, int increment)
 		{
 			_start = start;
 			_increment = increment;
+			_run = true;
+		}
+		
+		public void				cancel()
+		{
+			_run = false;
 		}
 		
 		@Override
@@ -602,7 +609,7 @@ public class					DiveboardModel
 		{
 			if (_increment > 0)
 			{
-				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0; i += _increment)
+				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0 && _run; i += _increment)
 				{
 					System.out.println("Loading pictures " + i);
 					try
@@ -629,7 +636,7 @@ public class					DiveboardModel
 			}
 			else if (_increment < 0)
 			{
-				for (int i = _start; i >= 0 && _pictureCount > 0; i += _increment)
+				for (int i = _start; i >= 0 && _pictureCount > 0 && _run; i += _increment)
 				{
 					System.out.println("Loading pictures " + i);
 					try
