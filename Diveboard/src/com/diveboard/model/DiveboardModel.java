@@ -45,8 +45,10 @@ public class					DiveboardModel
 	private boolean				_connected = false;
 	private String				_token;
 	private String				_unitPreferences;
+	
 	public static ArrayList<Picture>	pictureList = new ArrayList<Picture>();
-
+	private Integer				_pictureCount = 0;
+	
 	/*
 	 * Method DiveboardModel
 	 * Constructor, initialize the object
@@ -564,27 +566,69 @@ public class					DiveboardModel
 	 */
 	public void					preloadPictures()
 	{
-		Thread new_thread = new Thread(new LoadPictureThread());
-		new_thread.start();
+		_pictureCount = pictureList.size();
+		Thread thread1 = new Thread(new LoadPictureThread(0, 1));
+		Thread thread2 = new Thread(new LoadPictureThread(pictureList.size(), -1));
+		thread1.start();
+		thread2.start();
 	}
 	
 	private class				LoadPictureThread implements Runnable
 	{
+		private int				_start;
+		private int				_increment;
+		
+		public LoadPictureThread(int start, int increment)
+		{
+			_start = start;
+			_increment = increment;
+		}
+		
 		@Override
 		public void run()
 		{
-			for (int i = 0, size = pictureList.size(); i < size; i++)
+			if (_increment > 0)
 			{
-				try
+				for (int i = _start, size = pictureList.size(); i < size; i += _increment)
 				{
-					pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
-					pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
-					pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
-					pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+					try
+					{
+						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+						pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+						pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+						pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					synchronized (_pictureCount)
+					{
+						_pictureCount--;
+					}
+					System.out.println(_pictureCount + " pictures remaining");
 				}
-				catch (IOException e)
+			}
+			else if (_increment < 0)
+			{
+				for (int i = _start; i >= 0; i += _increment)
 				{
-					e.printStackTrace();
+					try
+					{
+						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+						pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+						pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+						pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					synchronized (_pictureCount)
+					{
+						_pictureCount--;
+					}
+					System.out.println(_pictureCount + " pictures remaining");
 				}
 			}
 		}
