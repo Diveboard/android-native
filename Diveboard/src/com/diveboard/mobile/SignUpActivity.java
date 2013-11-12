@@ -93,6 +93,8 @@ public class SignUpActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.newsletter)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.terms)).setTypeface(faceR);
 		((TextView)findViewById(R.id.terms)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.sign_in_button)).setTypeface(faceR);
+		((TextView)findViewById(R.id.authButton)).setTypeface(faceR);
 		// Set up the login form.
 		//mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
@@ -143,6 +145,12 @@ public class SignUpActivity extends FragmentActivity {
 				});
 	}
 
+	public void goToFBLogin(View view)
+	{
+		Intent editDiveActivity = new Intent(SignUpActivity.this, FBLoginActivity.class);
+	    startActivity(editDiveActivity);
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		super.onCreateOptionsMenu(menu);

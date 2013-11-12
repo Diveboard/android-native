@@ -84,10 +84,10 @@
 					    <ImageView
 					        android:id="@+id/logo"
 					        android:layout_width="wrap_content"
-					        android:layout_height="50dp"
+					        android:layout_height="70dp"
 					        android:paddingLeft="5dp"
 					        android:paddingRight="5dp"
-					        android:layout_marginTop="20dp"
+					        android:layout_marginTop="0dp"
 					        android:src="@drawable/full_diveboard_grey"
 					        android:onClick="goToPascalDives"/>
 
@@ -143,13 +143,23 @@
 					                android:background="@drawable/login_button_selector"
 					                android:textColor="@drawable/login_button_text_selector" />
 					            <Button
-							        android:id="@+id/authButton"
-							        android:layout_width="wrap_content"
-							        android:layout_height="wrap_content"
-							        android:layout_gravity="center_horizontal"
-							        android:layout_marginTop="30dp"
-							        android:onClick="goToFBLogin"
-							    />
+					                android:id="@+id/authButton"
+					                android:layout_width="match_parent"
+					                android:layout_height="wrap_content"
+					                android:layout_marginTop="8dp"
+					                android:padding="15dp"
+					                android:text="@string/action_FBlogin"
+					                android:background="@drawable/login_button_selector"
+					                android:textColor="@drawable/login_button_text_selector"
+					                android:onClick="goToFBLogin" />
+<!-- 					            <Button -->
+<!-- 							        android:id="@+id/authButton" -->
+<!-- 							        android:layout_width="wrap_content" -->
+<!-- 							        android:layout_height="wrap_content" -->
+<!-- 							        android:layout_gravity="center_horizontal" -->
+<!-- 							        android:layout_marginTop="30dp" -->
+<!-- 							        android:onClick="goToFBLogin" -->
+<!-- 							    /> -->
 						    </LinearLayout>
 					    </FrameLayout>
 					</LinearLayout> 

@@ -115,6 +115,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.password)).setTypeface(faceR);
 		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
+		((TextView)findViewById(R.id.authButton)).setTypeface(faceR);
 		((Button)findViewById(R.id.sign_in_button)).setTypeface(faceR);
 		
 		// Set up the login form.

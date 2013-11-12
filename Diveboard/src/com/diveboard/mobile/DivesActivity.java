@@ -142,7 +142,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     	AC.setDataReady(false);
     	AC.setPageIndex(0);
     	AC.getModel().doLogout();
-    	AC.setModel(null);
+    	//AC.setModel(null);
     	finish();
 	}
 	

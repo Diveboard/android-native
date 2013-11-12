@@ -228,6 +228,16 @@
 						                android:text="@string/action_sign_in_register"
 						                android:background="@drawable/sign_up_button_selector"
 						                android:textColor="@color/dark_grey" />
+						            <Button
+						                android:id="@+id/authButton"
+						                android:layout_width="match_parent"
+						                android:layout_height="wrap_content"
+						                android:layout_marginTop="8dp"
+						                android:padding="15dp"
+						                android:text="@string/action_FBlogin"
+						                android:background="@drawable/sign_up_button_selector"
+						                android:textColor="@color/dark_grey"
+						                android:onClick="goToFBLogin"/>
 							    </LinearLayout>
 						    </FrameLayout>
 						</LinearLayout>  
