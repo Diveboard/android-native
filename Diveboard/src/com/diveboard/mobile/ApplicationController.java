@@ -1,5 +1,6 @@
 package com.diveboard.mobile;
 
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Application;
@@ -12,7 +13,6 @@ public class ApplicationController extends Application {
 	private boolean mDataRefreshed = false;
 	private int mPageIndex = 0;
 	private int mCarouselIndex = 0;
-
 
 	public boolean isDataRefreshed() {
 		return mDataRefreshed;

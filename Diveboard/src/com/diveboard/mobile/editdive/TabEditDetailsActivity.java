@@ -24,9 +24,13 @@ import com.diveboard.model.DiveboardModel;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 
@@ -59,6 +63,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
 		super.onBackPressed();
+		mModel.getDives().get(mIndex).clearEditList();
 	};
 	
     @Override
@@ -192,6 +197,27 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
+    	
+	    Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+    	
+	    TextView title = (TextView) findViewById(R.id.title);
+	    title.setTypeface(faceB);
+	    title.setText(getResources().getString(R.string.tab_details_edit_title));
+	    
+	    Button save = (Button) findViewById(R.id.save_button);
+	    save.setTypeface(faceB);
+	    save.setText(getResources().getString(R.string.save_button));
+	    save.setOnClickListener(new OnClickListener()
+        {
+			@Override
+			public void onClick(View v)
+			{
+				Dive dive = mModel.getDives().get(mIndex);
+				mModel.getDataManager().save(dive);
+				finish();
+			}
+		});
+	    
     	Dive dive = mModel.getDives().get(mIndex);
     	
     	optionList = (ListView)findViewById(R.id.optionList);
@@ -296,9 +322,9 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(0)).setValue(dive.getTripName());
+		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 	
 	@Override
@@ -306,24 +332,24 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getNumber() != null)
-			((EditOption)mOptionAdapter.getItem(1)).setValue(dive.getNumber().toString());
+			((EditOption)mOptionAdapter.getItem(6)).setValue(dive.getNumber().toString());
 		else
-			((EditOption)mOptionAdapter.getItem(1)).setValue("0");
+			((EditOption)mOptionAdapter.getItem(6)).setValue("0");
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onDateEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(2)).setValue(dive.getDate());
+		((EditOption)mOptionAdapter.getItem(0)).setValue(dive.getDate());
 		String[] time_in = dive.getTimeIn().split("T");
 		String new_time_in = dive.getDate() + "T" + time_in[1];
 		dive.setTimeIn(new_time_in);
-		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
@@ -331,72 +357,72 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		String[] time_in = dive.getTimeIn().split("T");
-		((EditOption)mOptionAdapter.getItem(3)).setValue(time_in[1]);
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onMaxDepthEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(5)).setValue(Integer.toString(dive.getDuration()) + " min");
+		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(dive.getDuration()) + " min");
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onSurfaceTempEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(9)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+		((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onBottomTempEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(10)).setValue(Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName());
+		((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onWeightsEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+		((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onVisibilityEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(12)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
+		((EditOption)mOptionAdapter.getItem(10)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
 	public void onCurrentEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(13)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
+		((EditOption)mOptionAdapter.getItem(11)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
@@ -405,7 +431,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 
 	@Override
@@ -414,6 +440,6 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(15)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
-		mModel.getDataManager().save(dive);
+		//mModel.getDataManager().save(dive);
 	}
 }

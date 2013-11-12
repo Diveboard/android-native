@@ -56,5 +56,6 @@
     <string name="fresh_water">Fresh</string>
     <string name="title_activity_diveboard_facebook_login">DiveboardFacebookLoginActivity</string>
     <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
+    <string name="tab_details_edit_title">DIVE DETAILS</string>
 
 </resources>
