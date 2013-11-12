@@ -197,31 +197,23 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	optionList = (ListView)findViewById(R.id.optionList);
     	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
-		elem.add(new EditOption("Trip name : ", dive.getTripName()));
-		if (dive.getNumber() != null)
-			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
-		else
-			elem.add(new EditOption("Dive number : ", Integer.toString(0)));
 		elem.add(new EditOption("Date : ", dive.getDate()));
 		String[] time_in = dive.getTimeIn().split("T");
 		elem.add(new EditOption("Time in : ", time_in[1]));
 		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
 		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
 		elem.add(new EditOption("Safety stops : ", "not implemented"));
-		elem.add(new EditOption("Other divers : ", "not implemented"));
-		elem.add(new EditOption("Diving type & activities : ", "not implemented"));
-		if (dive.getTempSurface() != null)
-			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
-		else
-			elem.add(new EditOption("Surface temperature : ", "Not defined"));
-		if (dive.getTempBottom() != null)
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
-		else
-			elem.add(new EditOption("Bottom temperature : ", "Not defined"));
 		if (dive.getWeights() != null)
 			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
 		else
 			elem.add(new EditOption("Weights : ", "Not defined"));
+		if (dive.getNumber() != null)
+			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
+		else
+			elem.add(new EditOption("Dive number : ", Integer.toString(0)));
+		elem.add(new EditOption("Trip name : ", dive.getTripName()));
+		elem.add(new EditOption("Other divers : ", "not implemented"));
+		elem.add(new EditOption("Diving type & activities : ", "not implemented"));
 		if (dive.getVisibility() != null)
 			elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
 		else
@@ -230,6 +222,14 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			elem.add(new EditOption("Current : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
 		else
 			elem.add(new EditOption("Current : ", "Not defined"));
+		if (dive.getTempSurface() != null)
+			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
+		else
+			elem.add(new EditOption("Surface temperature : ", "Not defined"));
+		if (dive.getTempBottom() != null)
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
+		else
+			elem.add(new EditOption("Bottom temperature : ", "Not defined"));
 		if (dive.getAltitude() != null)
 			elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
 		else
@@ -249,37 +249,37 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 				switch (position)
 				{
 					case 0:
-						_editTripNameDialog();
-						break ;
-					case 1:
-						_editDiveNumberDialog();
-						break ;
-					case 2:
 						_editDateDialog();
 						break ;
-					case 3:
+					case 1:
 						_editTimeInDialog();
 						break ;
-					case 4:
+					case 2:
 						_editMaxDepth();
 						break ;
-					case 5:
+					case 3:
 						_editDuration();
 						break ;
-					case 9:
-						_editSurfaceTemp();
-						break ;
-					case 10:
-						_editBottomTemp();
-						break ;
-					case 11:
+					case 5:
 						_editWeights();
 						break ;
-					case 12:
+					case 6:
+						_editDiveNumberDialog();
+						break ;
+					case 7:
+						_editTripNameDialog();
+						break ;
+					case 10:
 						_editVisibility();
 						break ;
-					case 13:
+					case 11:
 						_editCurrent();
+						break ;
+					case 12:
+						_editSurfaceTemp();
+						break ;
+					case 13:
+						_editBottomTemp();
 						break ;
 					case 14:
 						_editAltitude();
