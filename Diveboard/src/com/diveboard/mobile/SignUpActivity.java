@@ -74,13 +74,6 @@ public class SignUpActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
 		setContentView(R.layout.activity_sign_up);
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");

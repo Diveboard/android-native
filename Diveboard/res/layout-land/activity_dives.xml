@@ -159,7 +159,7 @@
 				    android:background="@drawable/overflow_background"
 				    android:layout_alignParentTop="true"
 				    android:layout_alignParentBottom="true"
-				    android:onClick="goToSettings"/>
+				    android:onClick="openMenu"/>
 			</RelativeLayout>
         </LinearLayout>
 <!--     </ScrollView> -->

@@ -50,6 +50,8 @@ public class					DiveboardModel
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
+	private Object				_lock1 = new Object();
+	private Object				_lock2 = new Object();
 	
 	/*
 	 * Method DiveboardModel
@@ -295,9 +297,17 @@ public class					DiveboardModel
 		
 		file = new File(_context.getFilesDir() + "_unit_preferences");
 		file.delete();
-		
-		_user.setDives(null);
+		if (_user != null)
+			_user.setDives(null);
 		_user = null;
+		synchronized (_lock1)
+		{
+			synchronized (_lock2)
+			{
+				DiveboardModel.pictureList = null;
+				DiveboardModel.pictureList = new ArrayList<Picture>();
+			}
+		}
 	}
 	
 	/*
@@ -574,8 +584,8 @@ public class					DiveboardModel
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
 			_pictureCount = pictureList.size();
-			_pictureThread1 = new LoadPictureThread(0, 2);
-			_pictureThread2 = new LoadPictureThread(1, 2);
+			_pictureThread1 = new LoadPictureThread(0, 2, 1);
+			_pictureThread2 = new LoadPictureThread(1, 2, 2);
 			_pictureThread1.start();
 			_pictureThread2.start();
 		}
@@ -594,12 +604,14 @@ public class					DiveboardModel
 		private int				_start;
 		private int				_increment;
 		private boolean			_run;
+		private int				_locknb;
 		
-		public LoadPictureThread(int start, int increment)
+		public LoadPictureThread(int start, int increment, int locknb)
 		{
 			_start = start;
 			_increment = increment;
 			_run = true;
+			_locknb = locknb;
 		}
 		
 		public void				cancel()
@@ -614,13 +626,29 @@ public class					DiveboardModel
 			{
 				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0 && _run; i += _increment)
 				{
-					System.out.println("Loading pictures " + i);
 					try
 					{
-						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
-						pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
-						pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
-						pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+						if (_locknb == 1)
+						{
+							synchronized (_lock1)
+							{
+								System.out.println("Loading pictures " + i);
+								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+							}
+						}
+						else if (_locknb == 2)
+						{
+							synchronized (_lock2)
+							{
+								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+							}
+						}
 					}
 					catch (IOException e)
 					{

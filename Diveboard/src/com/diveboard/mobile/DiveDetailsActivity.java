@@ -66,13 +66,6 @@ public class DiveDetailsActivity extends TabActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set the action bar
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
 		setContentView(R.layout.activity_dive_details);
 		ViewTreeObserver vto = ((ViewGroup)findViewById(R.id.root)).getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {

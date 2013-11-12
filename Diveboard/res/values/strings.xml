@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
-    <string name="app_id">193803977296892</string>
+    <string name="app_id">367340190067848</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
@@ -56,5 +56,7 @@
     <string name="fresh_water">Fresh</string>
     <string name="title_activity_diveboard_facebook_login">DiveboardFacebookLoginActivity</string>
     <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
+    <string name="title_activity_fblogin">FBLoginActivity</string>
+    <string name="title_activity_intro">IntroActivity</string>
 
 </resources>

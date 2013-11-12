@@ -1,6 +1,6 @@
 <resources>
 
-    <string name="title_activity_login">Diveboard</string>
+    <string name="title_activity_login">Login</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">YOUR EMAIL</string>

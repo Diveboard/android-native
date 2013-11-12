@@ -106,13 +106,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
@@ -127,41 +120,41 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
-		mEmailView.setText(mEmail);
+		//mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
-		mPasswordView
-				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-					@Override
-					public boolean onEditorAction(TextView textView, int id,
-							KeyEvent keyEvent) {
-						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-							attemptLogin();
-							return true;
-						}
-						return false;
-					}
-				});
+//		mPasswordView
+//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+//					@Override
+//					public boolean onEditorAction(TextView textView, int id,
+//							KeyEvent keyEvent) {
+//						if (id == R.id.login || id == EditorInfo.IME_NULL) {
+//							attemptLogin();
+//							return true;
+//						}
+//						return false;
+//					}
+//				});
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-		if (savedInstanceState == null)
-		{
-			// Add the fragment on initial activity setup
-			mFBLoginFragment = new FBLoginFragment();
-			getSupportFragmentManager()
-			.beginTransaction()
-			.add(R.id.login_fields, mFBLoginFragment)
-			.commit();
-		}
-		else
-		{
-			// Or set the fragment from restored state info
-			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
-					.findFragmentById(R.id.login_fields);
-		}
+//		if (savedInstanceState == null)
+//		{
+//			// Add the fragment on initial activity setup
+//			mFBLoginFragment = new FBLoginFragment();
+//			getSupportFragmentManager()
+//			.beginTransaction()
+//			.add(R.id.login_fields, mFBLoginFragment)
+//			.commit();
+//		}
+//		else
+//		{
+//			// Or set the fragment from restored state info
+//			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
+//					.findFragmentById(R.id.login_fields);
+//		}
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -171,6 +164,12 @@ public class DiveboardLoginActivity extends FragmentActivity {
 				});
 	}
 
+	public void goToFBLogin(View view)
+	{
+		Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, FBLoginActivity.class);
+	    startActivity(editDiveActivity);
+	}
+	
 	/**
 	 * Attempts to sign in or register the account specified by the login form.
 	 * If there are form errors (invalid email, missing fields, etc.), the
@@ -293,6 +292,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			showProgress(false);
 
 			if (success != -1) {
+				mEmailView.setText("");
+				mPasswordView.setText("");
 				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
 			    startActivity(editDiveActivity);
 			}

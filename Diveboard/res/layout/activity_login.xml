@@ -84,7 +84,7 @@
 					    <ImageView
 					        android:id="@+id/logo"
 					        android:layout_width="wrap_content"
-					        android:layout_height="40dp"
+					        android:layout_height="50dp"
 					        android:paddingLeft="5dp"
 					        android:paddingRight="5dp"
 					        android:layout_marginTop="20dp"
@@ -142,6 +142,14 @@
 					                android:text="@string/action_login"
 					                android:background="@drawable/login_button_selector"
 					                android:textColor="@drawable/login_button_text_selector" />
+					            <Button
+							        android:id="@+id/authButton"
+							        android:layout_width="wrap_content"
+							        android:layout_height="wrap_content"
+							        android:layout_gravity="center_horizontal"
+							        android:layout_marginTop="30dp"
+							        android:onClick="goToFBLogin"
+							    />
 						    </LinearLayout>
 					    </FrameLayout>
 					</LinearLayout> 
@@ -155,7 +163,8 @@
         	<FrameLayout
         	    android:layout_width="match_parent"
         	    android:layout_height="50dp"
-        	    android:onClick="goToSignUp">
+        	    android:onClick="goToSignUp"
+        	    android:background="@color/white">
 		        <TextView
 		            android:id="@+id/sign_up"
 		            android:layout_width="wrap_content"

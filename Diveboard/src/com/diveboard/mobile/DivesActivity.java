@@ -40,6 +40,8 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
+import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -59,6 +61,7 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -73,6 +76,8 @@ import android.widget.SeekBar;
 import android.widget.Toast;
 import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
+import com.facebook.*;
+import com.facebook.model.*;
 
 public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks {
 
@@ -106,13 +111,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		super.onCreate(savedInstanceState);
 		// Set the action bar
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
 		setContentView(R.layout.activity_dives);
 		
 		// Initialize data
@@ -134,12 +132,26 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		}
 	}
 	
+	public void logout()
+	{
+		if (Session.getActiveSession() != null)
+			Session.getActiveSession().closeAndClearTokenInformation();
+		Session.setActiveSession(null);
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+    	AC.getModel().stopPreloadPictures();
+    	AC.setDataReady(false);
+    	AC.setPageIndex(0);
+    	AC.getModel().doLogout();
+    	AC.setModel(null);
+    	finish();
+	}
+	
 	@Override
 	public void onBackPressed() {
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		AC.setModel(null);
-		AC.setDataReady(false);
-		finish();
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		AC.setModel(null);
+//		AC.setDataReady(false);
+//		finish();
 		//android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
@@ -170,10 +182,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		}
 		else
 		{
-			ApplicationController AC = (ApplicationController)getApplicationContext();
-			AC.setModel(null);
-			AC.setDataReady(false);
-			finish();
+			logout();
 		}
 	}
 	
@@ -186,7 +195,33 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //	    }
 	}
 	
-	public void goToSettings(View view)
+//	public void goToSettings(View view)
+//	{
+//		PopupMenu popup = new PopupMenu(this, view);
+//	    MenuInflater inflater = popup.getMenuInflater();
+//	    inflater.inflate(R.menu.settings, popup.getMenu());
+//	    popup.show();
+//	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+//	    {
+//
+//			@Override
+//			public boolean onMenuItemClick(MenuItem item) {
+//				switch (item.getItemId()) {
+//		        case R.id.menu_settings:
+//		    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+////		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
+//		    	    startActivity(editDiveActivity);
+//		            return true;
+//		        default:
+//		            return false;
+//				}
+//			}
+//	    	
+//	    });
+//
+//	}
+	
+	public void goToMenuV3(View view)
 	{
 		PopupMenu popup = new PopupMenu(this, view);
 	    MenuInflater inflater = popup.getMenuInflater();
@@ -203,6 +238,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(editDiveActivity);
 		            return true;
+		        case R.id.menu_logout:
+		        	logout();
+		            return true;
 		        default:
 		            return false;
 				}
@@ -210,6 +248,42 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	
 	    });
 
+	}
+	
+	public void goToMenuV2(View view)
+	{
+		// Settings floating menu
+		registerForContextMenu(view);
+		openContextMenu(view);
+		unregisterForContextMenu(view);
+	}
+	
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	public void openMenu(View view)
+	{
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+		{
+			goToMenuV3(view);
+		}
+		else
+			goToMenuV2(view);
+	}
+	
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    switch (item.getItemId()) {
+	    	case R.id.menu_settings:
+	    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
+	    	    startActivity(editDiveActivity);
+	            return true;
+	    	case R.id.menu_logout:
+	        	logout();
+	            return true;
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
 	}
 	
 	public void goToEditDive(View view)
@@ -309,6 +383,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		// TODO Auto-generated method stub
 		super.onActivityResult(arg0, arg1, arg2);
 	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, v, menuInfo);
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.settings, menu);
+	}
 
 	/**
 	 * Footer text
@@ -363,9 +445,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
-					mModel.doLogout();
-					AC.setDataReady(false);
-					finish();
+					logout();
 					return ;
 				}
 				else
@@ -388,18 +468,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setText("CURRENTLY VIEWING DIVES FROM LOGBOOK");
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setText("DIVES, SHOPS ");
-//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTypeface(faceB);
-//				((TextView)diveFooter.findViewById(R.id.title_footer2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setText("AND ");
-//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTypeface(faceR);
-//				((TextView)diveFooter.findViewById(R.id.title_footer3)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setText("SPOTS ");
-//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTypeface(faceB);
-//				((TextView)diveFooter.findViewById(R.id.title_footer4)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setText("NEAR");
-//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTypeface(faceR);
-//				((TextView)diveFooter.findViewById(R.id.title_footer5)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
@@ -414,7 +482,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				mBackground2 = (ImageView)findViewById(R.id.background2);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
-				
+				//Pager setting
 				mPager = (ViewPager) findViewById(R.id.pager);
 		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
 		        mPager.setAdapter(mPagerAdapter);

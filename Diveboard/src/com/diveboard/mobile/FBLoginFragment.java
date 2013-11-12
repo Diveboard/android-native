@@ -37,6 +37,7 @@ public class FBLoginFragment extends Fragment{
 				@Override
 				public void onCompleted(GraphUser user, Response response) {
 					if (user != null) {
+						System.out.println("yo");
 						mId = user.getId();
 						mAuthTask = new UserLoginTask();
 						mAuthTask.execute((Void) null);

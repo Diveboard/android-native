@@ -27,11 +27,6 @@ public class					EditDiveActivity extends TabActivity
 	{
 	    super.onCreate(savedInstanceState);
 	    
-	    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
-			getActionBar().hide();
-		else
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-	    
 	    setContentView(R.layout.activity_edit_dive);
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
