@@ -200,6 +200,14 @@ public class					DataManager
 		for (int i = 0, length = edit_list.size(); i < length; i++)
 		{
 			String json = "{\"id\":\"" + dive.getId() + "\", \"" + edit_list.get(i).first + "\":\"" + edit_list.get(i).second + "\"}";
+			try
+			{
+				dive.applyEdit(new JSONObject(json));
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json);
 			_editList.add(new_elem);
 		}

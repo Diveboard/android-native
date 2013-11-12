@@ -229,11 +229,19 @@ public class					Dive implements IModel
 	}
 	
 	public Distance getAltitude() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("altitude"))
+			{
+				Distance result = new Distance(Double.parseDouble(_editList.get(i).second));
+				return (result);
+			}
+		}
 		return _altitude;
 	}
 
 	public void setAltitude(Distance _altitude) {
-		this._altitude = _altitude;
+		//this._altitude = _altitude;
 		Pair<String, String> new_elem = new Pair<String, String>("altitude", Double.toString(_altitude.getDistance()));
 		_editList.add(new_elem);
 	}
@@ -263,21 +271,31 @@ public class					Dive implements IModel
 	}
 
 	public String getDate() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("date"))
+				return (_editList.get(i).second);
+		}
 		return _date;
 	}
 
 	public void setDate(String _date) {
-		this._date = _date;
+		//this._date = _date;
 		Pair<String, String> new_elem = new Pair<String, String>("date", _date);
 		_editList.add(new_elem);
 	}
 
 	public int getDuration() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("duration"))
+				return (Integer.parseInt(_editList.get(i).second));
+		}
 		return _duration;
 	}
 
 	public void setDuration(int _duration) {
-		this._duration = _duration;
+		//this._duration = _duration;
 		Pair<String, String> new_elem = new Pair<String, String>("duration", Integer.toString(_duration));
 		_editList.add(new_elem);
 	}
@@ -299,11 +317,19 @@ public class					Dive implements IModel
 	}
 
 	public Distance getMaxdepth() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("maxdepth"))
+			{
+				Distance result = new Distance(Double.parseDouble(_editList.get(i).second));
+				return (result);
+			}
+		}
 		return _maxdepth;
 	}
 
 	public void setMaxdepth(Distance _maxdepth) {
-		this._maxdepth = _maxdepth;
+		//this._maxdepth = _maxdepth;
 		Pair<String, String> new_elem = new Pair<String, String>("maxdepth", Double.toString(_maxdepth.getDistance()));
 		_editList.add(new_elem);
 	}
@@ -317,11 +343,16 @@ public class					Dive implements IModel
 	}
 	
 	public String getCurrent() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("current"))
+				return (_editList.get(i).second);
+		}
 		return _current;
 	}
 
 	public void setCurrent(String _current) {
-		this._current = _current;
+		//this._current = _current;
 		Pair<String, String> new_elem = new Pair<String, String>("current", _current);
 		_editList.add(new_elem);
 	}
@@ -407,21 +438,37 @@ public class					Dive implements IModel
 	}
 
 	public Temperature getTempBottom() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("temp_bottom"))
+			{
+				Temperature result = new Temperature(Double.parseDouble(_editList.get(i).second));
+				return (result);
+			}
+		}
 		return _tempBottom;
 	}
 
 	public void setTempBottom(Temperature _tempBottom) {
-		this._tempBottom = _tempBottom;
+		//this._tempBottom = _tempBottom;
 		Pair<String, String> new_elem = new Pair<String, String>("temp_bottom", Double.toString(_tempBottom.getTemperature()));
 		_editList.add(new_elem);
 	}
 
 	public Temperature getTempSurface() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("temp_surface"))
+			{
+				Temperature result = new Temperature(Double.parseDouble(_editList.get(i).second));
+				return (result);
+			}
+		}
 		return _tempSurface;
 	}
 
 	public void setTempSurface(Temperature _tempSurface) {
-		this._tempSurface = _tempSurface;
+		//this._tempSurface = _tempSurface;
 		Pair<String, String> new_elem = new Pair<String, String>("temp_surface", Double.toString(_tempSurface.getTemperature()));
 		_editList.add(new_elem);
 	}
@@ -443,21 +490,31 @@ public class					Dive implements IModel
 	}
 
 	public String getTimeIn() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("time_in"))
+				return (_editList.get(i).second);
+		}
 		return _timeIn;
 	}
 
 	public void setTimeIn(String _timeIn) {
-		this._timeIn = _timeIn;
+		//this._timeIn = _timeIn;
 		Pair<String, String> new_elem = new Pair<String, String>("time_in", _timeIn);
 		_editList.add(new_elem);
 	}
 
 	public String getTripName() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("trip_name"))
+				return (_editList.get(i).second);
+		}
 		return _tripName;
 	}
 
 	public void setTripName(String _tripName) {
-		this._tripName = _tripName;
+		//this._tripName = _tripName;
 		Pair<String, String> new_elem = new Pair<String, String>("trip_name", _tripName);
 		_editList.add(new_elem);
 	}
@@ -479,41 +536,64 @@ public class					Dive implements IModel
 	}
 
 	public String getVisibility() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("visibility"))
+				return (_editList.get(i).second);
+		}
 		return _visibility;
 	}
 
 	public void setVisibility(String _visibility) {
-		this._visibility = _visibility;
+		//this._visibility = _visibility;
 		Pair<String, String> new_elem = new Pair<String, String>("visibility", _visibility);
 		_editList.add(new_elem);
 	}
 
 	public String getWater() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("water"))
+				return (_editList.get(i).second);
+		}
 		return _water;
 	}
 
 	public void setWater(String _water) {
-		this._water = _water;
+		//this._water = _water;
 		Pair<String, String> new_elem = new Pair<String, String>("water", _water);
 		_editList.add(new_elem);
 	}
 
 	public Weight getWeights() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("weights"))
+			{
+				Weight result = new Weight(Double.parseDouble(_editList.get(i).second));
+				return (result);
+			}
+		}
 		return _weights;
 	}
 
 	public void setWeights(Weight _weights) {
-		this._weights = _weights;
+		//this._weights = _weights;
 		Pair<String, String> new_elem = new Pair<String, String>("weights", Double.toString(_weights.getWeight()));
 		_editList.add(new_elem);
 	}
 
 	public String getNotes() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("notes"))
+				return (_editList.get(i).second);
+		}
 		return _notes;
 	}
 
 	public void setNotes(String notes) {
-		this._notes = notes;
+		//this._notes = notes;
 		Pair<String, String> new_elem = new Pair<String, String>("notes", _notes.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\\n"));
 		_editList.add(new_elem);
 	}
@@ -527,11 +607,16 @@ public class					Dive implements IModel
 	}
 
 	public Integer getNumber() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("number"))
+				return (Integer.parseInt(_editList.get(i).second));
+		}
 		return _number;
 	}
 
 	public void setNumber(Integer _number) {
-		this._number = _number;
+		//this._number = _number;
 		Pair<String, String> new_elem = new Pair<String, String>("number", Integer.toString(_number));
 		_editList.add(new_elem);
 	}
