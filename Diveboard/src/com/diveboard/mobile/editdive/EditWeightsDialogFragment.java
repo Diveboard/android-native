@@ -3,6 +3,7 @@ package com.diveboard.mobile.editdive;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 import com.diveboard.model.Weight;
 
 import android.app.Activity;
@@ -65,7 +66,10 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		
 		mWeights = (EditText) view.findViewById(R.id.weights);
 		mWeights.setTypeface(faceR);
-		mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights().getWeight()));
+		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
+			mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights().getWeight()));
+		else
+			mWeights.setText("0.0");
 		mWeights.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -73,8 +77,13 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
         
 		TextView weights_label = (TextView) view.findViewById(R.id.weights_label);
 		weights_label.setTypeface(faceR);
-		weights_label.setText(mModel.getDives().get(getArguments().getInt("index")).getWeights().getSmallName());
-		
+		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
+			weights_label.setText(mModel.getDives().get(getArguments().getInt("index")).getWeights().getSmallName());
+		else
+		{
+			Weight temp_weight = new Weight(0.0);
+			weights_label.setText(temp_weight.getSmallName());
+		}
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));

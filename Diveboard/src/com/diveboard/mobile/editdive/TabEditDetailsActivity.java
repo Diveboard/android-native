@@ -222,13 +222,22 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
 		else
 			elem.add(new EditOption("Weights : ", "Not defined"));
-		elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
+		if (dive.getVisibility() != null)
+			elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
+		else
+			elem.add(new EditOption("Visibility : ", "Not defined"));
 		if (dive.getCurrent() != null)
 			elem.add(new EditOption("Current : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
 		else
 			elem.add(new EditOption("Current : ", "Not defined"));
-		elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
-		elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
+		if (dive.getAltitude() != null)
+			elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
+		else
+			elem.add(new EditOption("Altitude : ", "Not defined"));
+		if (dive.getWater() != null)
+			elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
+		else
+			elem.add(new EditOption("Water type : ", "Not defined"));
 		
 		mOptionAdapter = new OptionAdapter(this, elem);
 		optionList.setAdapter(mOptionAdapter);

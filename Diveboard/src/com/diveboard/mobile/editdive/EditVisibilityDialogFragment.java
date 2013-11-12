@@ -79,12 +79,15 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mVisibility.setAdapter(dataAdapter);
-		if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("average") == 0)
-			mVisibility.setSelection(1);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("good") == 0)
-			mVisibility.setSelection(2);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("excellent") == 0)
-			mVisibility.setSelection(3);
+		if (mModel.getDives().get(getArguments().getInt("index")).getVisibility() != null)
+		{
+			if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("average") == 0)
+				mVisibility.setSelection(1);
+			else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("good") == 0)
+				mVisibility.setSelection(2);
+			else if (mModel.getDives().get(getArguments().getInt("index")).getVisibility().compareTo("excellent") == 0)
+				mVisibility.setSelection(3);
+		}
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);

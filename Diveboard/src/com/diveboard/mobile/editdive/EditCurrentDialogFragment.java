@@ -80,14 +80,17 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mCurrent.setAdapter(dataAdapter);
-		if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("light") == 0)
-			mCurrent.setSelection(1);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("medium") == 0)
-			mCurrent.setSelection(2);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("strong") == 0)
-			mCurrent.setSelection(3);
-		else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("extreme") == 0)
-			mCurrent.setSelection(4);
+		if (mModel.getDives().get(getArguments().getInt("index")).getCurrent() != null)
+		{
+			if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("light") == 0)
+				mCurrent.setSelection(1);
+			else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("medium") == 0)
+				mCurrent.setSelection(2);
+			else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("strong") == 0)
+				mCurrent.setSelection(3);
+			else if (mModel.getDives().get(getArguments().getInt("index")).getCurrent().compareTo("extreme") == 0)
+				mCurrent.setSelection(4);
+		}
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
