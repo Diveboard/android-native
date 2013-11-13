@@ -234,7 +234,7 @@
 						                android:layout_height="wrap_content"
 						                android:layout_marginTop="8dp"
 						                android:padding="15dp"
-						                android:text="@string/action_FBlogin"
+						                android:text="@string/action_FBregister"
 						                android:background="@drawable/sign_up_button_selector"
 						                android:textColor="@color/dark_grey"
 						                android:onClick="goToFBLogin"/>

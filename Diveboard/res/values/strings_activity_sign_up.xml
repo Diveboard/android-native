@@ -22,7 +22,7 @@
     <string name="error_incorrect_password">This password is incorrect</string>
     <string name="error_field_required">This field is required</string>
     <string name="error_same_field">This password must be the same</string>
-    <string name="error_check_required">This field must be checked</string>
-    <string name="error_incorrect_field">This field must be checked</string>
+    <string name="error_check_required">This field must be checked</string>   
+	<string name="action_FBregister">FB REGISTER</string>
 
 </resources>

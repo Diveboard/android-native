@@ -35,13 +35,6 @@ public class GalleryCarouselActivity extends FragmentActivity {
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		// Set the action bar
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2) {
-			getActionBar().hide();
-		}
-		else
-		{
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-		}
 		setContentView(R.layout.activity_gallery_carousel);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
