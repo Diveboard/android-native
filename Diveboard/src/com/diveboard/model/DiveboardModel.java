@@ -308,12 +308,24 @@ public class					DiveboardModel
 		if (_user != null)
 			_user.setDives(null);
 		_user = null;
-		synchronized (_lock1)
+		
+		Thread logout_thread = new LogoutThread();
+		logout_thread.start();
+	}
+	
+	private class				LogoutThread extends Thread
+	{
+		@Override
+		public void run()
 		{
-			synchronized (_lock2)
+			stopPreloadPictures();
+			synchronized (_lock1)
 			{
-				DiveboardModel.pictureList = null;
-				DiveboardModel.pictureList = new ArrayList<Picture>();
+				synchronized (_lock2)
+				{
+					DiveboardModel.pictureList = null;
+					DiveboardModel.pictureList = new ArrayList<Picture>();
+				}
 			}
 		}
 	}
