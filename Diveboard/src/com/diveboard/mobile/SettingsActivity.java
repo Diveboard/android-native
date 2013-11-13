@@ -13,6 +13,7 @@ import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
+import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
@@ -86,8 +87,19 @@ public class SettingsActivity extends PreferenceActivity {
 		getPreferenceScreen().addPreference(applicationInfo);
 		
 		Preference remainingPictures = new Preference(this);
-		remainingPictures.setEnabled(false);
+		remainingPictures.setEnabled(true);
+		remainingPictures.setKey("remaining");
 		remainingPictures.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + AC.getModel().getPictureCount());
+		remainingPictures.setOnPreferenceClickListener(new OnPreferenceClickListener()
+		{
+			@Override
+			public boolean onPreferenceClick(Preference arg0)
+			{
+				Preference remaining = (Preference) findPreference("remaining");
+				remaining.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getPictureCount());
+				return true;
+			}
+		});
 		//remainingPictures.setSummary(getResources().getString(R.string.remaining_pictures_summary) + " " + AC.getModel().getPictureCount());
 		
 		getPreferenceScreen().addPreference(remainingPictures);
