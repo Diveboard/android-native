@@ -63,6 +63,14 @@ public class DiveDetailsActivity extends TabActivity {
 	private Bitmap mMapWhite;
 	
 	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		// Set the action bar

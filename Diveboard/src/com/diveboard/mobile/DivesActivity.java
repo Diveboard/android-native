@@ -104,32 +104,32 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	// Model to display
 	private DiveboardModel mModel;
 	
-
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
 	@Override
 	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
+		super.onCreate(savedInstanceState);	
 		// Set the action bar
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.getModel() == null)
+			System.out.println("model null");
 		setContentView(R.layout.activity_dives);
-		
+		mLoadDataFormView = findViewById(R.id.load_data_form);
+		mLoadDataStatusView = findViewById(R.id.load_data_status);
+		mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
 		// Initialize data
 		mModel = AC.getModel();
 		if (AC.isDataReady() == false)
-		{
-			//mModel = new DiveboardModel(30, this);
-			//AC.setModel(mModel);
-			mLoadDataFormView = findViewById(R.id.load_data_form);
-			mLoadDataStatusView = findViewById(R.id.load_data_status);
-			mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
-			System.out.println("loadData");
 			loadData();
-		}
 		else
-		{
-			System.out.println("createPages");
 			createPages();
-		}
 	}
 	
 	public void logout()
@@ -138,21 +138,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			Session.getActiveSession().closeAndClearTokenInformation();
 		Session.setActiveSession(null);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-    	AC.getModel().stopPreloadPictures();
     	AC.setDataReady(false);
     	AC.setPageIndex(0);
     	AC.getModel().doLogout();
-    	//AC.setModel(null);
     	finish();
 	}
 	
 	@Override
 	public void onBackPressed() {
-//		ApplicationController AC = (ApplicationController)getApplicationContext();
-//		AC.setModel(null);
-//		AC.setDataReady(false);
-//		finish();
-		//android.os.Process.killProcess(android.os.Process.myPid());
 	}
 	
 	// The three methods below are called by the TaskFragment when new
@@ -182,7 +175,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		}
 		else
 		{
-			logout();
+			//finish();
+//			System.out.println("logout");
+//			logout();
 		}
 	}
 	

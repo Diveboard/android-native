@@ -38,6 +38,14 @@ public class DiveDetailsMainActivity extends Activity {
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
 	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
 	public int dpToPx(int dp) {
 	    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
@@ -85,9 +93,9 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.shop_name)).setText(mDive.getShopName().toUpperCase());
 			((TextView)findViewById(R.id.shop_name)).setTypeface(faceB);
 			((TextView)findViewById(R.id.shop_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			((TextView)findViewById(R.id.shop_reviews)).setText("0 REVIEW");
-			((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
-			((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+//			((TextView)findViewById(R.id.shop_reviews)).setText("0 REVIEW");
+//			((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
+//			((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 			mShopLogo = ((ImageView)findViewById(R.id.shop_image));
 			mDownloadShopLogoTask = new DownloadShopLogoTask(mShopLogo);
 			mDownloadShopLogoTask.execute();
@@ -100,6 +108,8 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 		((TextView)findViewById(R.id.depth_graph)).setTypeface(faceB);
 		((TextView)findViewById(R.id.depth_graph)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		((TextView) findViewById(R.id.max_depth)).setTypeface(faceR);
 		mDownloadGraphTask = new DownloadGraphTask(((ImageView)findViewById(R.id.graph)));
 		mDownloadGraphTask.execute();
 		((TextView)findViewById(R.id.date)).setTypeface(faceB);
@@ -188,8 +198,10 @@ public class DiveDetailsMainActivity extends Activity {
 				final ImageView imageView = imageViewReference.get();
 				if (result != null && imageView != null)
 				{	
+					System.out.println("Shop result = " + result);
+					mShopLogo.setVisibility(View.VISIBLE);
 					mShopLogo.setImageBitmap(result);
-					mShopLogo.setScaleType(ScaleType.CENTER_CROP);
+					mShopLogo.setScaleType(ScaleType.FIT_CENTER);
 				}
 			}
 		}

@@ -32,6 +32,14 @@ public class GalleryCarouselActivity extends FragmentActivity {
 	private DiveboardModel mModel;
 	
 	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
+	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		// Set the action bar

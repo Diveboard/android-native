@@ -1,5 +1,6 @@
 package com.diveboard.mobile.editdive;
 
+import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 
 import android.app.TabActivity;
@@ -20,6 +21,14 @@ public class					EditDiveActivity extends TabActivity
 	private int					mIndex;
 	private TabHost				mTabHost;
 	private Typeface			mFaceB;
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
 	
 	/** Called when the activity is first created. */
 	@Override

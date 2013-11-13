@@ -29,6 +29,13 @@ public class FBLoginActivity extends Activity {
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
 	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -139,6 +146,8 @@ public class FBLoginActivity extends Activity {
 		protected Integer doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			//System.out.println(mId + " " + mToken);
+			if (AC.getModel() == null)
+				System.out.println("Model null");
 			return AC.getModel().doFbLogin(mId, mToken);
 		}
 

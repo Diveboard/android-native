@@ -33,6 +33,7 @@ public class TaskFragment extends Fragment {
 	@Override
 	public void onAttach(Activity activity)
 	{
+		System.out.println("onAttach");
 		super.onAttach(activity);
 		mCallbacks = (TaskCallbacks) activity;
 	}
@@ -56,13 +57,9 @@ public class TaskFragment extends Fragment {
 	@Override
 	public void onDetach()
 	{
+		System.out.println("onDetach");
 		super.onDetach();
 		mCallbacks = null;
-		if (mTaskEnded == false)
-		{
-			ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-			AC.setModel(null);
-		}
 	}
 	
 	/**

@@ -70,6 +70,14 @@ public class SignUpActivity extends FragmentActivity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

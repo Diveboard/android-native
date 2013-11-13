@@ -4,9 +4,12 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Application;
+import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 
 public class ApplicationController extends Application {
+
 	private static ApplicationController singleton;
 	private DiveboardModel mModel = null;
 	private boolean mDataReady = false;
@@ -14,6 +17,16 @@ public class ApplicationController extends Application {
 	private int mPageIndex = 0;
 	private int mCarouselIndex = 0;
 
+	public void handleLowMemory()
+	{
+		if (getModel() == null)
+		{
+			Intent editDiveActivity = new Intent(getApplicationContext(), DiveboardLoginActivity.class);
+			editDiveActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+			startActivity(editDiveActivity);
+		}
+	}
+	
 	public boolean isDataRefreshed() {
 		return mDataRefreshed;
 	}
