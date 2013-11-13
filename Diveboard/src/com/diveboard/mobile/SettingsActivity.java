@@ -1,5 +1,6 @@
 package com.diveboard.mobile;
 
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Configuration;
@@ -8,13 +9,16 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.CheckBoxPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
+import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
 import android.preference.PreferenceFragment;
 import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
+import android.preference.SwitchPreference;
 import android.text.TextUtils;
 
 import java.util.List;
@@ -37,6 +41,8 @@ public class SettingsActivity extends PreferenceActivity {
 	 * as a master/detail two-pane view on tablets. When true, a single pane is
 	 * shown on tablets.
 	 */
+	private ListPreference mUnitSetting;
+	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 
 	@Override
@@ -59,6 +65,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * device configuration dictates that a simplified, single-pane UI should be
 	 * shown.
 	 */
+	@SuppressLint("NewApi")
 	private void setupSimplePreferencesScreen() {
 		if (!isSimplePreferences(this)) {
 			return;
@@ -73,11 +80,74 @@ public class SettingsActivity extends PreferenceActivity {
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
 
+		PreferenceCategory applicationInfo = new PreferenceCategory(this);
+		applicationInfo.setTitle(getResources().getString(R.string.misc_category));
+		
+		getPreferenceScreen().addPreference(applicationInfo);
+		
+		Preference remainingPictures = new Preference(this);
+		remainingPictures.setEnabled(false);
+		remainingPictures.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + AC.getModel().getPictureCount());
+		//remainingPictures.setSummary(getResources().getString(R.string.remaining_pictures_summary) + " " + AC.getModel().getPictureCount());
+		
+		getPreferenceScreen().addPreference(remainingPictures);
+		
+		PreferenceCategory userSettings = new PreferenceCategory(this);
+		userSettings.setTitle(getResources().getString(R.string.user_settings_category));
+		
+		getPreferenceScreen().addPreference(userSettings);
+		
+		mUnitSetting = new ListPreference(this);
+		mUnitSetting.setEnabled(true);
+		mUnitSetting.setTitle(getResources().getString(R.string.unit_setting_title));
+		mUnitSetting.setEntries(getResources().getStringArray(R.array.unit_entries));
+		mUnitSetting.setEntryValues(getResources().getStringArray(R.array.unit_entries));
+		mUnitSetting.setKey("unit");
+		mUnitSetting.setValueIndex(1);
+		mUnitSetting.setSummary(mUnitSetting.getEntry());
+		mUnitSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+		{
+			@Override
+			public boolean onPreferenceChange(Preference pref, Object newVal)
+			{
+				ListPreference unit = (ListPreference) findPreference("unit");
+				pref.setSummary(newVal.toString());
+				return true;
+			}
+			
+		});
+		
+		getPreferenceScreen().addPreference(mUnitSetting);
+		
+		PreferenceCategory systemCategory = new PreferenceCategory(this);
+		systemCategory.setTitle(getResources().getString(R.string.system_settings_category));
+		getPreferenceScreen().addPreference(systemCategory);		
+		
+//		if (Build.VERSION.SDK_INT >= 14)
+//		{
+//			SwitchPreference phoneNetworkDownload = new SwitchPreference(this);
+//			phoneNetworkDownload.setChecked(true);
+//			phoneNetworkDownload.setTitle(getResources().getString(R.string.phone_network_download_title));
+//			phoneNetworkDownload.setSummary(getResources().getString(R.string.phone_network_download_summary));
+//			
+//			getPreferenceScreen().addPreference(phoneNetworkDownload);
+//		}
+//		else
+//		{
+			CheckBoxPreference phoneNetworkDownload = new CheckBoxPreference(this);
+			phoneNetworkDownload.setChecked(true);
+			phoneNetworkDownload.setTitle(getResources().getString(R.string.phone_network_download_title));
+			phoneNetworkDownload.setSummary(getResources().getString(R.string.phone_network_download_summary));
+			
+			getPreferenceScreen().addPreference(phoneNetworkDownload);
+//		}
+		
 		// Add 'notifications' preferences, and a corresponding header.
-		PreferenceCategory fakeHeader = new PreferenceCategory(this);
-		//fakeHeader.setTitle(R.string.pref_header_notifications);
-		fakeHeader.setTitle("Pictures loading remaining: " + AC.getModel().getPictureCount());
-		getPreferenceScreen().addPreference(fakeHeader);
+//		PreferenceCategory fakeHeader = new PreferenceCategory(this);
+//		
+//		//fakeHeader.setTitle(R.string.pref_header_notifications);
+//		fakeHeader.setTitle("Pictures loading remaining: " + AC.getModel().getPictureCount());
+//		getPreferenceScreen().addPreference(fakeHeader);
 		//addPreferencesFromResource(R.xml.pref_notification);
 
 		// Add 'data and sync' preferences, and a corresponding header.
