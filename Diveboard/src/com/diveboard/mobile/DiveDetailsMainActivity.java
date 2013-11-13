@@ -108,6 +108,10 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 		((TextView)findViewById(R.id.depth_graph)).setTypeface(faceB);
 		((TextView)findViewById(R.id.depth_graph)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.max_depth_title)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.max_depth_title)).setText("MAX DEPTH: ");
+		((TextView) findViewById(R.id.max_depth_title)).setTypeface(faceB);
+		((TextView) findViewById(R.id.max_depth)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		((TextView) findViewById(R.id.max_depth)).setTypeface(faceR);
 		mDownloadGraphTask = new DownloadGraphTask(((ImageView)findViewById(R.id.graph)));
@@ -127,41 +131,75 @@ public class DiveDetailsMainActivity extends Activity {
 		((TextView)findViewById(R.id.date_content)).setTypeface(faceR);
 		((TextView)findViewById(R.id.date_content)).setText(mDive.getDate() + " " + mDive.getTime());
 		((TextView)findViewById(R.id.date_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView)findViewById(R.id.water_content)).setTypeface(faceR);
-		((TextView)findViewById(R.id.water_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView)findViewById(R.id.water_content)).setText(mDive.getWater());
+		if (mDive.getWater() != null)
+		{
+			((TextView)findViewById(R.id.water_content)).setTypeface(faceR);
+			((TextView)findViewById(R.id.water_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView)findViewById(R.id.water_content)).setText(Character.toUpperCase(mDive.getWater().charAt(0)) + mDive.getWater().substring(1));
+		}
+		else
+		{
+			((TextView)findViewById(R.id.water)).setVisibility(View.GONE);
+			((TextView)findViewById(R.id.water_content)).setVisibility(View.GONE);
+		}
 		((TextView)findViewById(R.id.duration_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView)findViewById(R.id.duration_content)).setTypeface(faceR);
 		((TextView)findViewById(R.id.duration_content)).setText(mDive.getDuration() + "mins");
-		((TextView)findViewById(R.id.visibility_content)).setTypeface(faceR);
-		((TextView)findViewById(R.id.visibility_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView)findViewById(R.id.visibility_content)).setText(mDive.getVisibility());
-		((TextView)findViewById(R.id.temp_content)).setTypeface(faceR);
-		((TextView)findViewById(R.id.temp_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		if (mDive.getVisibility() != null)
+		{
+			((TextView)findViewById(R.id.visibility_content)).setTypeface(faceR);
+			((TextView)findViewById(R.id.visibility_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView)findViewById(R.id.visibility_content)).setText(Character.toUpperCase(mDive.getVisibility().charAt(0)) + mDive.getVisibility().substring(1));
+		}
+		else
+		{
+			((TextView)findViewById(R.id.visibility)).setVisibility(View.GONE);
+			((TextView)findViewById(R.id.visibility_content)).setVisibility(View.GONE);
+		}
+		
 		String temp;
 		if (mDive.getTempSurface() != null)
 			temp = "SURF " + mDive.getTempSurface().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
 		else
-			temp = "null";
+			temp = "-";
 		temp += " | ";
 		if (mDive.getTempBottom() != null)
 			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempBottom().getSmallName();
 		else
-			temp += "null";
-		((TextView)findViewById(R.id.temp_content)).setText(temp);
-		((TextView)findViewById(R.id.dive_type_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView)findViewById(R.id.dive_type_content)).setTypeface(faceR);
+			temp += "-";
+		if (temp.contentEquals("- | -"))
+		{
+			((TextView)findViewById(R.id.temp)).setVisibility(View.GONE);
+			((TextView)findViewById(R.id.temp_content)).setVisibility(View.GONE);
+		}
+		else
+		{
+			((TextView)findViewById(R.id.temp_content)).setTypeface(faceR);
+			((TextView)findViewById(R.id.temp_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView)findViewById(R.id.temp_content)).setText(temp);
+		}
+		
 		String type = "";
 		for (int i = 0; i < mDive.getDivetype().size(); i++)
 		{	
 			if (mDive.getDivetype().get(i) != null)
-				type += mDive.getDivetype().get(i) + ", ";
+				type += Character.toUpperCase(mDive.getDivetype().get(i).charAt(0)) + mDive.getDivetype().get(i).substring(1) + ", ";
 		}
 		if (type != "")
 			type = (String) type.subSequence(0, type.length() - 2);
 		else
-			type = "Null";
-		((TextView)findViewById(R.id.dive_type_content)).setText(type);
+			type = "";
+		if (type.contentEquals(""))
+		{
+			((TextView)findViewById(R.id.dive_type)).setVisibility(View.GONE);
+			((TextView)findViewById(R.id.dive_type_content)).setVisibility(View.GONE);
+		}
+		else
+		{
+			((TextView)findViewById(R.id.dive_type_content)).setTypeface(faceR);
+			((TextView)findViewById(R.id.dive_type_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView)findViewById(R.id.dive_type_content)).setText(type);
+		}
 		mPic = ((ImageView)findViewById(R.id.profile_image));
 		mRoundedPic = ((ImageView)findViewById(R.id.main_image_cache));
 		mDownloadImageTask = new DownloadImageTask(mPic);

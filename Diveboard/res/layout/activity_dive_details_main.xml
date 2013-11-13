@@ -98,9 +98,7 @@
 			    <LinearLayout
 			        android:layout_width="match_parent"
 			        android:layout_height="match_parent"
-			        android:gravity="center_horizontal"
 			        android:orientation="vertical" >
-
 				    <ImageView
 			            android:id="@+id/shop_image"
 			            android:layout_height="100dp"
@@ -110,7 +108,9 @@
 		                android:id="@+id/shop_name"
 		                android:layout_width="wrap_content"
 		                android:layout_height="wrap_content"
-		                android:textColor="#000000"/>
+		                android:textColor="#000000"
+		                android:gravity="center_horizontal"
+		                android:layout_gravity="center_horizontal"/>
 <!-- 				    <TextView -->
 <!-- 		                android:id="@+id/shop_reviews" -->
 <!-- 		                android:layout_width="wrap_content" -->
@@ -125,7 +125,8 @@
 		        android:layout_height="wrap_content"
 		        android:layout_marginBottom="1dp"
 		        android:background="@color/white"
-		        android:padding="10dp">
+		        android:padding="10dp"
+		        android:gravity="center">
 			    <TextView
 	                android:id="@+id/depth_graph"
 	                android:layout_width="wrap_content"
@@ -138,10 +139,20 @@
 			        android:layout_width="wrap_content"
 			        android:layout_height="wrap_content"
 			        android:scaleType="fitXY"/>
-			    <TextView
-			        android:id="@+id/max_depth"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content"/>
+			    <LinearLayout
+			        android:gravity="center"
+			        android:orientation="horizontal"
+			        android:layout_width="match_parent"
+			        android:layout_height="wrap_content">
+				    <TextView
+				        android:id="@+id/max_depth_title"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"/>
+				    <TextView
+				        android:id="@+id/max_depth"
+				        android:layout_width="wrap_content"
+				        android:layout_height="wrap_content"/>
+			    </LinearLayout>
 			    </LinearLayout>
 	    	</LinearLayout>
 	    <LinearLayout
@@ -158,8 +169,9 @@
 		        android:padding="10dp">
 			    <LinearLayout
 			        android:orientation="vertical"
-			        android:layout_width="wrap_content"
+			        android:layout_width="0dp"
 			        android:layout_height="wrap_content"
+			        android:layout_weight="0.4"
 			        android:layout_marginRight="10dp">
 				    <RelativeLayout
 				        android:layout_width="match_parent"
@@ -175,16 +187,31 @@
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
-			                android:text="2013/10/31 10:07"
 			                android:layout_alignLeft="@id/date"
 			                android:layout_below="@id/date"/>
+				        <TextView
+			                android:id="@+id/visibility"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:textColor="#000000"
+			                android:text="VISIBILITY: "
+			                android:layout_below="@id/date_content"
+			                android:layout_alignLeft="@id/date"
+			                android:layout_marginTop="10dp"/>
+				        <TextView
+			                android:id="@+id/visibility_content"
+			                android:layout_width="wrap_content"
+			                android:layout_height="wrap_content"
+			                android:textColor="#000000"
+			                android:layout_below="@id/visibility"
+			                android:layout_alignLeft="@id/date"/>
 				        <TextView
 			                android:id="@+id/water"
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
 			                android:text="WATER: "
-			                android:layout_below="@id/date_content"
+			                android:layout_below="@id/visibility_content"
 			                android:layout_alignLeft="@id/date"
 			                android:layout_marginTop="10dp"/>
 				        <TextView
@@ -192,55 +219,38 @@
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
-			                android:text="Salt"
 			                android:layout_below="@id/water"
-			                android:layout_alignLeft="@id/date"/>
-				        <TextView
-			                android:id="@+id/duration"
-			                android:layout_width="wrap_content"
-			                android:layout_height="wrap_content"
-			                android:textColor="#000000"
-			                android:text="DURATION: "
-			                android:layout_below="@id/water_content"
-			                android:layout_alignLeft="@id/date"
-			                android:layout_marginTop="10dp"/>
-				        <TextView
-			                android:id="@+id/duration_content"
-			                android:layout_width="wrap_content"
-			                android:layout_height="wrap_content"
-			                android:textColor="#000000"
-			                android:text="49mins"
-			                android:layout_below="@id/duration"
 			                android:layout_alignLeft="@id/date"/>
 		        	</RelativeLayout>
 		        </LinearLayout>
 		        <LinearLayout
 			        android:orientation="vertical"
-			        android:layout_width="wrap_content"
-			        android:layout_height="wrap_content">
+			        android:layout_width="0dp"
+			        android:layout_height="wrap_content"
+			        android:layout_weight="0.6">
 		        	<RelativeLayout
 				        android:layout_width="match_parent"
 				        android:layout_height="match_parent">
 				        <TextView
-			                android:id="@+id/visibility"
+			                android:id="@+id/duration"
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
-			                android:text="VISIBILITY: "/>
+			                android:text="DURATION: "/>
 				        <TextView
-			                android:id="@+id/visibility_content"
+			                android:id="@+id/duration_content"
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
-			                android:layout_below="@id/visibility"/>
+			                android:layout_below="@id/duration"/>
 				        <TextView
 			                android:id="@+id/temp"
 			                android:layout_width="wrap_content"
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
 			                android:text="TEMP: "
-			                android:layout_below="@id/visibility_content"
-			                android:layout_alignLeft="@id/visibility"
+			                android:layout_below="@id/duration_content"
+			                android:layout_alignLeft="@id/duration"
 			                android:layout_marginTop="10dp"/>
 				        <TextView
 			                android:id="@+id/temp_content"
@@ -248,7 +258,7 @@
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
 			                android:layout_below="@id/temp"
-			                android:layout_alignLeft="@id/visibility"/>
+			                android:layout_alignLeft="@id/duration"/>
 				        <TextView
 			                android:id="@+id/dive_type"
 			                android:layout_width="wrap_content"
@@ -256,7 +266,7 @@
 			                android:textColor="#000000"
 			                android:text="DIVE TYPE: "
 			                android:layout_below="@id/temp_content"
-			                android:layout_alignLeft="@id/visibility"
+			                android:layout_alignLeft="@id/duration"
 			                android:layout_marginTop="10dp"/>
 				        <TextView
 			                android:id="@+id/dive_type_content"
@@ -264,7 +274,7 @@
 			                android:layout_height="wrap_content"
 			                android:textColor="#000000"
 			                android:layout_below="@id/dive_type"
-			                android:layout_alignLeft="@id/visibility"/>
+			                android:layout_alignLeft="@id/duration"/>
 		        	</RelativeLayout>
 		        </LinearLayout>
 	        </LinearLayout>
