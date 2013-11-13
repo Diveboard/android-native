@@ -46,7 +46,7 @@ public class					DiveboardModel
 	private String				_token;
 	private String				_unitPreferences;
 	
-	public static ArrayList<Picture>	pictureList = new ArrayList<Picture>();
+	public static ArrayList<Picture>	pictureList;
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
@@ -63,12 +63,14 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token);
+		DiveboardModel.pictureList = new ArrayList<Picture>();
 	}
 	
 	public						DiveboardModel(final Context context)
 	{
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		DiveboardModel.pictureList = new ArrayList<Picture>();
 	}
 	
 	public boolean				isLogged()
@@ -180,6 +182,9 @@ public class					DiveboardModel
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_unitPreferences.getBytes());
 				
+				DiveboardModel.pictureList = null;
+				DiveboardModel.pictureList = new ArrayList<Picture>();
+				
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -263,6 +268,9 @@ public class					DiveboardModel
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_unitPreferences.getBytes());
+				
+				DiveboardModel.pictureList = null;
+				DiveboardModel.pictureList = new ArrayList<Picture>();
 				
 				return (_userId);
 			}
