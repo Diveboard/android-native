@@ -309,25 +309,9 @@ public class					DiveboardModel
 			_user.setDives(null);
 		_user = null;
 		
-		Thread logout_thread = new LogoutThread();
-		logout_thread.start();
-	}
-	
-	private class				LogoutThread extends Thread
-	{
-		@Override
-		public void run()
-		{
-			stopPreloadPictures();
-			synchronized (_lock1)
-			{
-				synchronized (_lock2)
-				{
-					DiveboardModel.pictureList = null;
-					DiveboardModel.pictureList = new ArrayList<Picture>();
-				}
-			}
-		}
+		stopPreloadPictures();
+		DiveboardModel.pictureList = null;
+		DiveboardModel.pictureList = new ArrayList<Picture>();
 	}
 	
 	/*
@@ -653,9 +637,17 @@ public class					DiveboardModel
 							synchronized (_lock1)
 							{
 								System.out.println("Loading pictures " + i);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
 							}
 						}
@@ -663,9 +655,17 @@ public class					DiveboardModel
 						{
 							synchronized (_lock2)
 							{
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								if (!_run)
+									break ;
 								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
 							}
 						}
@@ -692,9 +692,17 @@ public class					DiveboardModel
 					System.out.println("Loading pictures " + i);
 					try
 					{
+						if (!_run)
+							break ;
 						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+						if (!_run)
+							break ;
 						pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+						if (!_run)
+							break ;
 						pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+						if (!_run)
+							break ;
 						pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
 					}
 					catch (IOException e)

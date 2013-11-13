@@ -5,6 +5,7 @@
     </issue>
     <issue id="NewApi">
         <ignore path="src/com/diveboard/mobile/DiveDetailsActivity.java" />
+        <ignore path="src/com/diveboard/mobile/DivesActivity.java" />
         <ignore path="src/com/diveboard/mobile/EditDiveActivity.java" />
         <ignore path="src/com/diveboard/mobile/EditTripNameDialog.java" />
         <ignore path="src/com/diveboard/mobile/EditTripNameDialogFragment.java" />
