@@ -9,6 +9,7 @@ import java.net.URL;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONStringer;
 
 import android.app.Activity;
 import android.content.Context;
@@ -17,6 +18,7 @@ import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.v4.app.DialogFragment;
+import android.util.Pair;
 
 public class					Picture
 {
@@ -44,7 +46,8 @@ public class					Picture
 		_urlMedium = url;
 		_urlSmall = url;
 		_urlThumbnail = url;
-		DiveboardModel.pictureList.add(this);
+		Pair<String, Picture> new_elem = new Pair<String, Picture>(url, this);
+		DiveboardModel.pictureList.add(new_elem);
 	}
 	
 	public							Picture(final String url, final String uniqid)
@@ -55,17 +58,27 @@ public class					Picture
 		_urlSmall = url;
 		_urlThumbnail = url;
 		_uniqId = uniqid;
-		DiveboardModel.pictureList.add(this);
+		Pair<String, Picture> new_elem = new Pair<String, Picture>(url, this);
+		DiveboardModel.pictureList.add(new_elem);
 	}
 	
 	public 							Picture(final JSONObject json) throws JSONException
 	{
 		_urlDefault = json.getString("large");
+		Pair<String, Picture> new_elem = new Pair<String, Picture>(_urlDefault, this);
+		DiveboardModel.pictureList.add(new_elem);
 		_urlLarge = json.getString("large");
+		new_elem = new Pair<String, Picture>(_urlLarge, this);
+		DiveboardModel.pictureList.add(new_elem);
 		_urlMedium = json.getString("medium");
+		new_elem = new Pair<String, Picture>(_urlMedium, this);
+		DiveboardModel.pictureList.add(new_elem);
 		_urlSmall = json.getString("small");
+		new_elem = new Pair<String, Picture>(_urlSmall, this);
+		DiveboardModel.pictureList.add(new_elem);
 		_urlThumbnail = json.getString("thumbnail");
-		DiveboardModel.pictureList.add(this);
+		new_elem = new Pair<String, Picture>(_urlThumbnail, this);
+		DiveboardModel.pictureList.add(new_elem);
 	}
 	
 	public synchronized boolean		loadPicture(final Context context) throws IOException
@@ -132,23 +145,29 @@ public class					Picture
 	private synchronized void			_savePicture(final Context context, final Size size) throws IOException
 	{
 		String[] picture_name;
+		String url;
 		
 		switch (size)
 		{
 			case LARGE:
 				picture_name = _urlLarge.split("/");
+				url = _urlLarge;
 				break ;
 			case MEDIUM:
 				picture_name = _urlMedium.split("/");
+				url = _urlMedium;
 				break ;
 			case SMALL:
 				picture_name = _urlSmall.split("/");
+				url = _urlSmall;
 				break ;
 			case THUMB:
 				picture_name = _urlThumbnail.split("/");
+				url = _urlThumbnail;
 				break ;
 			default:
 				picture_name = _urlDefault.split("/");
+				url = _urlDefault;
 				break ;
 		}
 		
@@ -167,6 +186,29 @@ public class					Picture
 		{
 			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
 				file.delete();
+		}
+		_updateSaveList(context, url);
+	}
+	
+	private synchronized void				_updateSaveList(final Context context, String url)
+	{
+		System.out.println("UPDATE SAVE LIST");
+		DiveboardModel.savedPictureList.put(url);
+		File file = new File(context.getFilesDir() + "_saved_pictures");
+		try
+		{
+			file.createNewFile();
+			FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+			outputStream.write(DiveboardModel.savedPictureList.toString().getBytes());
+			outputStream.close();
+		}
+		catch (FileNotFoundException e)
+		{
+			e.printStackTrace();
+		}
+		catch (IOException e)
+		{
+			e.printStackTrace();
 		}
 	}
 	

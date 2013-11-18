@@ -46,7 +46,8 @@ public class					DiveboardModel
 	private String				_token;
 	private String				_unitPreferences;
 	
-	public static ArrayList<Picture>	pictureList;
+	public static ArrayList<Pair<String, Picture>>	pictureList;
+	public static JSONArray		savedPictureList;
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
@@ -63,14 +64,16 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token);
-		DiveboardModel.pictureList = new ArrayList<Picture>();
+		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
+		_initSavedPictures();
 	}
 	
 	public						DiveboardModel(final Context context)
 	{
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		DiveboardModel.pictureList = new ArrayList<Picture>();
+		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
+		_initSavedPictures();
 	}
 	
 	public boolean				isLogged()
@@ -183,7 +186,7 @@ public class					DiveboardModel
 				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
-				DiveboardModel.pictureList = new ArrayList<Picture>();
+				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				
 				return (_userId);
 			}
@@ -270,7 +273,7 @@ public class					DiveboardModel
 				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
-				DiveboardModel.pictureList = new ArrayList<Picture>();
+				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				
 				return (_userId);
 			}
@@ -311,7 +314,7 @@ public class					DiveboardModel
 		
 		stopPreloadPictures();
 		DiveboardModel.pictureList = null;
-		DiveboardModel.pictureList = new ArrayList<Picture>();
+		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 	}
 	
 	/*
@@ -587,11 +590,38 @@ public class					DiveboardModel
 	{
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
-			_pictureCount = pictureList.size();
+			_refreshPictureList();
+			_pictureCount = DiveboardModel.pictureList.size();
 			_pictureThread1 = new LoadPictureThread(0, 2, 1);
 			_pictureThread2 = new LoadPictureThread(1, 2, 2);
 			_pictureThread1.start();
 			_pictureThread2.start();
+		}
+	}
+	
+	private void				_refreshPictureList()
+	{
+		System.out.println("Refresh PICTURES");
+		
+		for (int i = 0, size = DiveboardModel.savedPictureList.length(); i < size; i++)
+		{
+			String url;
+			try
+			{
+				url = DiveboardModel.savedPictureList.getString(i);
+				System.out.println("REFRESH : " + url);
+				for (int j = 0; j < DiveboardModel.pictureList.size(); j++)
+				{
+					if (DiveboardModel.pictureList.get(j).first.equals(url))
+					{
+						DiveboardModel.pictureList.remove(j);
+						j = 0;
+					}
+				}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -639,16 +669,16 @@ public class					DiveboardModel
 								System.out.println("Loading pictures " + i);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
 						}
 						else if (_locknb == 2)
@@ -657,16 +687,16 @@ public class					DiveboardModel
 							{
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
 								if (!_run)
 									break ;
-								pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
 						}
 					}
@@ -694,16 +724,16 @@ public class					DiveboardModel
 					{
 						if (!_run)
 							break ;
-						pictureList.get(i).getPicture(_context, Picture.Size.THUMB);
+						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
 						if (!_run)
 							break ;
-						pictureList.get(i).getPicture(_context, Picture.Size.SMALL);
+						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
 						if (!_run)
 							break ;
-						pictureList.get(i).getPicture(_context, Picture.Size.MEDIUM);
+						pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
 						if (!_run)
 							break ;
-						pictureList.get(i).getPicture(_context, Picture.Size.LARGE);
+						pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 					}
 					catch (IOException e)
 					{
@@ -781,5 +811,33 @@ public class					DiveboardModel
 
 	public void setPictureCount(Integer _pictureCount) {
 		this._pictureCount = _pictureCount;
+	}
+	
+	private void					_initSavedPictures()
+	{
+		File file = new File(_context.getFilesDir() + "_saved_pictures");
+		if (file.exists())
+		{
+				FileInputStream fileInputStream;
+				try
+				{
+					fileInputStream = _context.openFileInput(file.getName());
+					StringBuffer fileContent = new StringBuffer("");
+					byte[] buffer = new byte[1];
+					while (fileInputStream.read(buffer) != -1)
+						fileContent.append(new String(buffer));
+					DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+					fileInputStream.close();
+				}
+				catch (FileNotFoundException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+		}
+		else
+			DiveboardModel.savedPictureList = new JSONArray();
 	}
 }
