@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.concurrent.Semaphore;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,6 +49,7 @@ public class					DiveboardModel
 	
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static JSONArray		savedPictureList;
+	public static Semaphore		savedPictureLock;
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
@@ -66,6 +68,8 @@ public class					DiveboardModel
 		_cache = new DataManager(context, _userId, _token);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new JSONArray();
+		savedPictureLock = new Semaphore(1);
+		_initSavedPictures();
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -74,6 +78,8 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new JSONArray();
+		savedPictureLock = new Semaphore(1);
+		_initSavedPictures();
 	}
 	
 	public boolean				isLogged()
@@ -188,7 +194,7 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				_initSavedPictures();
+				//_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -827,7 +833,17 @@ public class					DiveboardModel
 					byte[] buffer = new byte[1];
 					while (fileInputStream.read(buffer) != -1)
 						fileContent.append(new String(buffer));
-					DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+					
+					try
+					{
+						DiveboardModel.savedPictureLock.acquire();
+						DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+						DiveboardModel.savedPictureLock.release();
+					}
+					catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					
 					fileInputStream.close();
 				}
 				catch (FileNotFoundException e) {

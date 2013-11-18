@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URL;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
@@ -193,22 +194,31 @@ public class					Picture
 	private synchronized void				_updateSaveList(final Context context, String url)
 	{
 		System.out.println("UPDATE SAVE LIST");
-		DiveboardModel.savedPictureList.put(url);
-		File file = new File(context.getFilesDir() + "_saved_pictures");
-		try
+		synchronized (DiveboardModel.savedPictureList)
 		{
-			file.createNewFile();
-			FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-			outputStream.write(DiveboardModel.savedPictureList.toString().getBytes());
-			outputStream.close();
-		}
-		catch (FileNotFoundException e)
-		{
-			e.printStackTrace();
-		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
+			DiveboardModel.savedPictureList.put(url);
+			File file = new File(context.getFilesDir() + "_saved_pictures");
+			try
+			{
+				DiveboardModel.savedPictureLock.acquire();
+				file.createNewFile();
+				FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+				outputStream.write(DiveboardModel.savedPictureList.toString().getBytes());
+				outputStream.close();
+				DiveboardModel.savedPictureLock.release();
+			}
+			catch (FileNotFoundException e)
+			{
+				e.printStackTrace();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch (InterruptedException e)
+			{
+				e.printStackTrace();
+			}
 		}
 	}
 	
