@@ -48,7 +48,7 @@ public class					DiveboardModel
 	private String				_unitPreferences;
 	
 	public static ArrayList<Pair<String, Picture>>	pictureList;
-	public static JSONArray		savedPictureList;
+	public static ArrayList<String>	savedPictureList;
 	public static Semaphore		savedPictureLock;
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
@@ -67,8 +67,8 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-		DiveboardModel.savedPictureList = new JSONArray();
-		savedPictureLock = new Semaphore(1);
+		DiveboardModel.savedPictureList = new ArrayList<String>();
+		DiveboardModel.savedPictureLock = new Semaphore(1);
 		_initSavedPictures();
 	}
 	
@@ -77,8 +77,8 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-		DiveboardModel.savedPictureList = new JSONArray();
-		savedPictureLock = new Semaphore(1);
+		DiveboardModel.savedPictureList = new ArrayList<String>();
+		DiveboardModel.savedPictureLock = new Semaphore(1);
 		_initSavedPictures();
 	}
 	
@@ -194,7 +194,8 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				//_initSavedPictures();
+				DiveboardModel.savedPictureList = new ArrayList<String>();
+				_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -281,7 +282,8 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				//_initSavedPictures();
+				DiveboardModel.savedPictureList = new ArrayList<String>();
+				_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -610,24 +612,18 @@ public class					DiveboardModel
 	{
 		System.out.println("Refresh PICTURES");
 		
-		for (int i = 0, size = DiveboardModel.savedPictureList.length(); i < size; i++)
+		for (int i = 0, size = DiveboardModel.savedPictureList.size(); i < size; i++)
 		{
 			String url;
-			try
+			url = DiveboardModel.savedPictureList.get(i);
+			System.out.println("REFRESH : " + url);
+			for (int j = 0; j < DiveboardModel.pictureList.size(); j++)
 			{
-				url = DiveboardModel.savedPictureList.getString(i);
-				System.out.println("REFRESH : " + url);
-				for (int j = 0; j < DiveboardModel.pictureList.size(); j++)
+				if (DiveboardModel.pictureList.get(j).first.equals(url))
 				{
-					if (DiveboardModel.pictureList.get(j).first.equals(url))
-					{
-						DiveboardModel.pictureList.remove(j);
-						j = 0;
-					}
+					DiveboardModel.pictureList.remove(j);
+					j = 0;
 				}
-			}
-			catch (JSONException e) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -837,7 +833,16 @@ public class					DiveboardModel
 					try
 					{
 						DiveboardModel.savedPictureLock.acquire();
-						DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+						
+						String[] savedPictureArray = fileContent.toString().split(";");
+						
+						for (int i = 0, length = savedPictureArray.length; i < length; i++)
+						{
+							System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
+							DiveboardModel.savedPictureList.add(savedPictureArray[i]);
+						}
+						
+						//DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
 						DiveboardModel.savedPictureLock.release();
 					}
 					catch (InterruptedException e) {
@@ -850,11 +855,11 @@ public class					DiveboardModel
 					e.printStackTrace();
 				} catch (IOException e) {
 					e.printStackTrace();
-				} catch (JSONException e) {
-					e.printStackTrace();
 				}
 		}
 		else
-			DiveboardModel.savedPictureList = new JSONArray();
+		{
+			DiveboardModel.savedPictureList = new ArrayList<String>();
+		}
 	}
 }

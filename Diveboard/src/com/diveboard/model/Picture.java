@@ -196,15 +196,25 @@ public class					Picture
 		System.out.println("UPDATE SAVE LIST");
 		synchronized (DiveboardModel.savedPictureList)
 		{
-			DiveboardModel.savedPictureList.put(url);
+			//DiveboardModel.savedPictureList.put(url);
+			DiveboardModel.savedPictureList.add(url);
+			url += ";";
 			File file = new File(context.getFilesDir() + "_saved_pictures");
+			if (!file.exists())
+				try {
+					file.createNewFile();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			try
 			{
 				DiveboardModel.savedPictureLock.acquire();
-				file.createNewFile();
-				FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(DiveboardModel.savedPictureList.toString().getBytes());
+				System.out.println("START WRITE");
+				FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_APPEND);
+				outputStream.write(url.getBytes());
 				outputStream.close();
+				System.out.println("END WRITE");
 				DiveboardModel.savedPictureLock.release();
 			}
 			catch (FileNotFoundException e)
