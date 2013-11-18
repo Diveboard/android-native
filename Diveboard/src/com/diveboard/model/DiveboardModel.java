@@ -65,7 +65,7 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-		_initSavedPictures();
+		DiveboardModel.savedPictureList = new JSONArray();
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -73,7 +73,7 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-		_initSavedPictures();
+		DiveboardModel.savedPictureList = new JSONArray();
 	}
 	
 	public boolean				isLogged()
@@ -119,6 +119,7 @@ public class					DiveboardModel
 				e.printStackTrace();
 				return false;
 			}
+			_initSavedPictures();
 			return true;
 		}
 		return false;
@@ -187,7 +188,7 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				
+				_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
@@ -274,7 +275,7 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				
+				_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
