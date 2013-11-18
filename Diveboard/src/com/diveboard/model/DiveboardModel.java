@@ -281,7 +281,7 @@ public class					DiveboardModel
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
-				_initSavedPictures();
+				//_initSavedPictures();
 				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
