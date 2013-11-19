@@ -35,12 +35,17 @@
         android:id="@+id/login_form"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
+		<ImageView
+		    android:background="@color/yellow"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:layout_marginBottom="60dp"/>
 		<ImageView
 		    android:id="@+id/login_motif"
 		    android:layout_width="match_parent"
 		    android:layout_height="match_parent"
-		    android:alpha="0.5"/>
+		    android:src="@drawable/map_bg"
+		    android:scaleType="centerCrop"/>
 
 		<LinearLayout
 		    android:id="@+id/rl_top"
@@ -56,13 +61,13 @@
 		        android:layout_weight="1">
 
 		        <ImageView
-        		    android:id="@+id/login_background"
-        		    android:layout_width="match_parent"
-        		    android:layout_height="match_parent"
-        		    android:layout_alignParentTop="true"
-        		    android:background="@color/yellow" />
+		            android:id="@+id/login_background"
+		            android:layout_width="match_parent"
+		            android:layout_height="match_parent"
+		            android:layout_alignParentTop="true" />
 
 		        <ScrollView
+		            android:id="@+id/scollview"
 		            android:layout_width="match_parent"
 		            android:layout_height="wrap_content"
 		            android:layout_alignParentBottom="true"
@@ -70,7 +75,7 @@
 		            
 		            <LinearLayout
 		                android:id="@+id/layout"
-		                android:layout_width="250dp"
+		                android:layout_width="252dp"
 		                android:layout_height="wrap_content"
 		                android:layout_gravity="center"
 		                android:orientation="vertical" >
@@ -108,19 +113,22 @@
 						        <EditText
 					                android:id="@+id/email"
 					                android:layout_width="match_parent"
-					                android:layout_height="wrap_content"
+					                android:layout_height="40dp"
 					                android:hint="@string/prompt_email"
 					                android:inputType="textEmailAddress"
 					                android:maxLines="1"
 					                android:singleLine="true"
-					                android:padding="15dp"
+					                android:paddingLeft="20dp"
+					                android:paddingRight="20dp"
+					                android:paddingTop="7dp"
+					                android:paddingBottom="7dp"
 					                android:background="@drawable/login_field"
 					                android:alpha="0.85"
 					                android:textColor="@color/dark_grey" />
 					            <EditText
 					                android:id="@+id/password"
 					                android:layout_width="match_parent"
-					                android:layout_height="wrap_content"
+					                android:layout_height="40dp"
 					                android:hint="@string/prompt_password"
 					                android:imeActionId="@+id/login"
 					                android:imeActionLabel="@string/action_sign_in_short"
@@ -128,7 +136,10 @@
 					                android:inputType="textPassword"
 					                android:maxLines="1"
 					                android:singleLine="true"
-					                android:padding="15dp"
+					                android:paddingLeft="20dp"
+					                android:paddingRight="20dp"
+					                android:paddingTop="7dp"
+					                android:paddingBottom="7dp"
 					                android:layout_marginTop="8dp"
 					                android:background="@drawable/login_field"
 					                android:alpha="0.85"
@@ -136,22 +147,22 @@
 					            <Button
 					                android:id="@+id/sign_in_button"
 					                android:layout_width="match_parent"
-					                android:layout_height="wrap_content"
+					                android:layout_height="40dp"
 					                android:layout_marginTop="8dp"
-					                android:padding="15dp"
+					                android:paddingLeft="20dp"
+					                android:paddingRight="20dp"
+					                android:paddingTop="7dp"
+					                android:paddingBottom="7dp"
 					                android:text="@string/action_login"
 					                android:background="@drawable/login_button_selector"
 					                android:textColor="@drawable/login_button_text_selector" />
-					            <Button
+					            <ImageView
 					                android:id="@+id/authButton"
 					                android:layout_width="match_parent"
 					                android:layout_height="wrap_content"
-					                android:layout_marginTop="8dp"
-					                android:padding="15dp"
-					                android:text="@string/action_FBlogin"
-					                android:background="@drawable/login_button_selector"
-					                android:textColor="@drawable/login_button_text_selector"
-					                android:onClick="goToFBLogin" />
+									android:layout_marginTop="8dp"
+					                android:onClick="goToFBLogin"
+					                android:src="@drawable/ic_facebook_register_btn"/>
 <!-- 					            <Button -->
 <!-- 							        android:id="@+id/authButton" -->
 <!-- 							        android:layout_width="wrap_content" -->
@@ -160,6 +171,11 @@
 <!-- 							        android:layout_marginTop="30dp" -->
 <!-- 							        android:onClick="goToFBLogin" -->
 <!-- 							    /> -->
+<!-- 					                android:layout_marginTop="8dp"
+					                android:padding="15dp"
+					                android:text="@string/action_FBlogin"
+					                android:background="@drawable/login_button_selector"
+					                android:textColor="@drawable/login_button_text_selector" -->
 						    </LinearLayout>
 					    </FrameLayout>
 					</LinearLayout> 
@@ -172,9 +188,9 @@
 		    
         	<FrameLayout
         	    android:layout_width="match_parent"
-        	    android:layout_height="50dp"
-        	    android:onClick="goToSignUp"
-        	    android:background="@color/white">
+        	    android:layout_height="60dp"
+        	    android:onClick="goToSignUp" >
+
 		        <TextView
 		            android:id="@+id/sign_up"
 		            android:layout_width="wrap_content"

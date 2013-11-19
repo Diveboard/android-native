@@ -3,7 +3,7 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import com.diveboard.mobile.editdive.TabEditGearActivity;
+import com.diveboard.mobile.editdive.TabEditSpotsActivity;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 
@@ -103,14 +103,15 @@ public class DiveDetailsActivity extends TabActivity {
 				intent.putExtra("index", AC.getPageIndex());
 				setupTab(getResources().getString(R.string.tab_details_label), intent, R.drawable.ic_details_grey);
 
-				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
 				setupTab(getResources().getString(R.string.tab_photos_label), intent, R.drawable.ic_photos_white);
 
-				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
 				setupTab(getResources().getString(R.string.tab_species_label), intent, R.drawable.ic_species_white);
 
-				intent = new Intent(DiveDetailsActivity.this, TabEditGearActivity.class);
+				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
 				setupTab(getResources().getString(R.string.tab_map_label), intent, R.drawable.ic_map_white);
+
 				((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
 				mTabHost.setOnTabChangedListener(new OnTabChangeListener(){
 					@Override

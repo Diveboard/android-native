@@ -9,7 +9,7 @@
     <string name="sign_up_url">DIVEBOARD URL</string>
     <string name="sign_up_nickname">DESIRED NICKNAME</string>
     <string name="sign_up_newsletter">KEEP ME IN THE LOOP</string>
-    <string name="sign_up_terms">I AGREE TO THE TERMS OF SERVICE</string>
+    <string name="sign_up_terms">I AGREE TO THE TERMS</string>
     <string name="action_sign_in_register">SIGN UP!</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="action_forgot_password">Recover lost password</string>

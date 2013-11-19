@@ -2,7 +2,6 @@ package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.TabEditGearActivity;
 import com.diveboard.model.Dive;
 
 import android.os.Bundle;
@@ -49,16 +48,16 @@ public class					NewDiveActivity extends TabActivity
 	    Intent intent = new Intent(this, TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_details_label), intent);
 	    	    
-	    intent = new Intent(this,TabEditGearActivity.class);
+	    intent = new Intent(this,TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_notes_label), intent);
 	
-	    intent = new Intent(this,TabEditGearActivity.class);
+	    intent = new Intent(this,TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_gear_label), intent);
 	    
-	    intent = new Intent(this,TabEditGearActivity.class);
+	    intent = new Intent(this,TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_species_label), intent);
 	    
-	    intent = new Intent(this,TabEditGearActivity.class);
+	    intent = new Intent(this,TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
 	}
 	

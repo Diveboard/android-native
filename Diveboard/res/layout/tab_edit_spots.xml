@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:background="@drawable/tab_body_background">
+        
+         <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="40dp"
+            android:paddingLeft="15dp"
+            android:textSize="20sp"
+            android:textColor="@color/dark_grey"
+            android:gravity="center"/>
+
+         <Button
+             android:id="@+id/save_button"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:background="@drawable/edit_save_button_selector"
+             android:textColor="@color/white"
+             android:padding="15dp"
+             android:textSize="15sp" />
+        
+    </LinearLayout>
+
+<!--         <EditText
+            android:id="@+id/notes"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:inputType="textMultiLine"
+            android:gravity="top"
+            android:padding="10dp"
+            android:background="@drawable/tab_body_background"
+            android:textColor="@color/dark_grey" >
+
+            <requestFocus />
+        </EditText> -->
+		<TextView
+		    android:id="@+id/current_spot"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:background="@drawable/tab_body_background"
+		    android:textColor="@color/dark_grey"
+		    android:gravity="center"
+		    android:text="Current spot:"/>
+		<LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_width="match_parent"
+		    android:layout_height="wrap_content">
+	 		<EditText 
+			    android:id="@+id/search_bar"
+			    android:layout_width="0dp"
+			    android:layout_height="wrap_content"
+			    android:layout_weight="0.8"
+			    />
+	 		<Button
+	 		    android:layout_width="0dp"
+	 		    android:layout_height="wrap_content"
+	 		    android:layout_weight="0.2"
+	 		    android:text="OK"
+	 		    android:onClick="doMySearch"/>
+ 		</LinearLayout>
+		<ListView
+		    android:id="@+id/list_view"
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"/>
+	</LinearLayout>

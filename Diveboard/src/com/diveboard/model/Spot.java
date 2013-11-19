@@ -12,8 +12,8 @@ public class					Spot implements IModel
 	private Integer				_id;
 	private String				_shakenId;
 	private String				_name;
-	private double				_lat;
-	private double				_lng;
+	private Double				_lat;
+	private Double				_lng;
 	private Integer				_zoom;
 	private Integer				_locationId;
 	private String				_locationName;

@@ -44,7 +44,7 @@ public class TabEditNotesActivity extends Activity
 	    mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 	    mModel = ((ApplicationController)getApplicationContext()).getModel();
-		mIndex = getIntent().getIntExtra("index", -1);
+		mIndex = getIntent().getIntExtra("index", 0);
 	    
 	    TextView title = (TextView) findViewById(R.id.title);
 	    title.setTypeface(mFaceB);
