@@ -17,14 +17,16 @@ public class ApplicationController extends Application {
 	private int mPageIndex = 0;
 	private int mCarouselIndex = 0;
 
-	public void handleLowMemory()
+	public Boolean handleLowMemory()
 	{
 		if (getModel() == null)
 		{
 			Intent editDiveActivity = new Intent(getApplicationContext(), DiveboardLoginActivity.class);
 			editDiveActivity.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
 			startActivity(editDiveActivity);
+			return true;
 		}
+		return false;
 	}
 	
 	public boolean isDataRefreshed() {

@@ -59,5 +59,6 @@
     <string name="title_activity_fblogin">FBLoginActivity</string>
     <string name="title_activity_intro">IntroActivity</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
+    <string name="title_activity_new_dive">NewDiveActivity</string>
 
 </resources>

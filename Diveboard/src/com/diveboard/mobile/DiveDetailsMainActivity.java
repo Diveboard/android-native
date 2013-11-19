@@ -63,12 +63,14 @@ public class DiveDetailsMainActivity extends Activity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.handleLowMemory() == true)
+			return ;
 		setContentView(R.layout.activity_dive_details_main);
-		System.out.println(dpToPx(50));
+		//System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35), dpToPx(35));
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView)findViewById(R.id.dive_note)).setText(mDive.getNotes());

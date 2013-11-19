@@ -3,6 +3,7 @@ package com.diveboard.mobile;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -55,9 +56,11 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 	
 	@Override
-	protected void onPostCreate(Bundle savedInstanceState) {
-		super.onPostCreate(savedInstanceState);
-
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.handleLowMemory() == true)
+			return ;
 		setupSimplePreferencesScreen();
 	}
 

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:background="#000000">
-    <android.support.v4.view.ViewPager
+    <ru.truba.touchgallery.GalleryWidget.GalleryViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"

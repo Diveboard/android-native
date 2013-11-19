@@ -826,7 +826,7 @@ public class					DiveboardModel
 				{
 					fileInputStream = _context.openFileInput(file.getName());
 					StringBuffer fileContent = new StringBuffer("");
-					byte[] buffer = new byte[1];
+					byte[] buffer = new byte[2048];
 					while (fileInputStream.read(buffer) != -1)
 						fileContent.append(new String(buffer));
 					

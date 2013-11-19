@@ -84,7 +84,10 @@
         <activity
             android:name="com.diveboard.mobile.IntroActivity"
             android:label="@string/title_activity_intro" >
-            
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.NewDiveActivity"
+            android:label="@string/title_activity_new_dive" >
         </activity>
     </application>
 

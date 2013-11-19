@@ -228,10 +228,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
-		        case R.id.menu_settings:
-		    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+				case R.id.add_dive:
+					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
-		    	    startActivity(editDiveActivity);
+		    	    startActivity(newDiveActivity);
+		        case R.id.menu_settings:
+		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
+		    	    startActivity(settingsActivity);
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
@@ -268,10 +272,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public boolean onContextItemSelected(MenuItem item) {
 	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    switch (item.getItemId()) {
+	    	case R.id.add_dive:
+	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+//	    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
+	    	    startActivity(newDiveActivity);
 	    	case R.id.menu_settings:
-	    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
 	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
-	    	    startActivity(editDiveActivity);
+	    	    startActivity(settingsActivity);
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();

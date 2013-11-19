@@ -378,7 +378,7 @@ public class DivesFragment extends Fragment {
 				for (int i = 0; i < result.size(); i++)
 				{
 					((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).addView(result.get(i));
-					System.out.println(result.size());
+					//System.out.println(result.size());
 					if (getActivity() != null && (result.size() == 0 || getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE))
 					{
 						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()

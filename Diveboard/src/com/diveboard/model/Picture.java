@@ -304,8 +304,12 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
-			return (file.getAbsolutePath());
-		else
-			return null;
+			try {
+				return (file.getCanonicalPath());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		return null;
 	}
 }
