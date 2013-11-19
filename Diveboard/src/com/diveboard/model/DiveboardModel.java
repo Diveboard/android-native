@@ -872,7 +872,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/register_email");
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_text");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("term", term));
