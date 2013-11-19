@@ -902,4 +902,43 @@ public class					DiveboardModel
 		}
 		return null;
 	}
+	
+	public JSONObject					searchSpotCoord(final String lat_min, final String lng_min, final String lat_max, final String lng_max)
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_coord");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+			args.add(new BasicNameValuePair("lat_min", lat_min));
+			args.add(new BasicNameValuePair("lng_min", lng_min));
+			args.add(new BasicNameValuePair("lat_max", lat_max));
+			args.add(new BasicNameValuePair("lng_max", lng_max));
+			try
+			{
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+				client.close();
+				return (json);
+			}
+			catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

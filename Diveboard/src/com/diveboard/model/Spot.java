@@ -28,20 +28,20 @@ public class					Spot implements IModel
 	public						Spot(JSONObject json) throws JSONException
 	{
 		_id = (json.isNull("id")) ? null : json.getInt("id");
-		_shakenId = json.getString("shaken_id");
-		_name = json.getString("name");
-		_lat = json.getDouble("lat");
-		_lng = json.getDouble("lng");
+		_shakenId = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
+		_name = (json.isNull("name")) ? null : json.getString("name");
+		_lat = (json.isNull("lat")) ? null : json.getDouble("lat");
+		_lng = (json.isNull("lng")) ? null : json.getDouble("lng");
 		_zoom = (json.isNull("zoom")) ? null : json.getInt("zoom");
 		_locationId = (json.isNull("location_id")) ? null : json.getInt("location_id");
 		_locationName = (json.isNull("location_name")) ? null : json.getString("location_name");
 		_regionId = (json.isNull("region_id")) ? null : json.getInt("region_id");
 		_countryId = (json.isNull("country_id")) ? null : json.getInt("country_id");
 		_privateUserId = (json.isNull("private_user_id")) ? null : json.getInt("private_user_id");
-		_countryCode = json.getString("country_code");
-		_countryName = json.getString("country_name");
-		_countryFlagBig = new Picture(json.getString("country_flag_big"));
-		_countryFlagSmall = new Picture(json.getString("country_flag_small"));
+		_countryCode = (json.isNull("country_code")) ? null : json.getString("country_code");
+		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
+		_countryFlagBig = (json.isNull("country_flag_big")) ? null : new Picture(json.getString("country_flag_big"));
+		_countryFlagSmall = (json.isNull("country_flag_small")) ? null : new Picture(json.getString("country_flag_small"));
 	}
 
 	public Integer getId() {
