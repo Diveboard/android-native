@@ -80,7 +80,15 @@ public class					Dive implements IModel
 		if (c.get(Calendar.DATE) < 10)
 			_date += "0";
 		_date += Integer.toString(c.get(Calendar.DATE));
-		_timeIn = _date + "T00:00:00Z";
+		_timeIn = _date + "T";
+		if (c.get(Calendar.HOUR_OF_DAY) < 10)
+			_timeIn += "0";
+		_timeIn += Integer.toString(c.get(Calendar.HOUR_OF_DAY)) + ":";
+		if (c.get(Calendar.MINUTE) < 10)
+			_timeIn += "0";
+		_timeIn += Integer.toString(c.get(Calendar.MINUTE)) + ":00Z";
+		_maxdepth = new Distance(0.0);
+		_duration = 0;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
