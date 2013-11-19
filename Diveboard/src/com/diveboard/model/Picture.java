@@ -304,17 +304,8 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
-		{
 			return (file.getAbsolutePath());
-		}
 		else
-		{
-			try {
-				getPicture(context, size);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			return (getLocalPath(context, size));
-		}
+			return null;
 	}
 }
