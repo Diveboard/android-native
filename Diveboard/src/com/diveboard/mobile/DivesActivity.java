@@ -7,6 +7,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -232,6 +233,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(newDiveActivity);
+		    	    return true;
 		        case R.id.menu_settings:
 		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
@@ -276,6 +278,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 //	    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(newDiveActivity);
+	    	    return true;
 	    	case R.id.menu_settings:
 	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
 	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());

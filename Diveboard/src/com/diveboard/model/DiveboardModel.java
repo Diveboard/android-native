@@ -862,4 +862,44 @@ public class					DiveboardModel
 			DiveboardModel.savedPictureList = new ArrayList<String>();
 		}
 	}
+	
+	public JSONObject					searchSpotText(final String term, final String lat, final String lng)
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected() && term != null)
+		{
+			// Creating web client
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/register_email");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+			args.add(new BasicNameValuePair("term", term));
+			if (lat != null)
+				args.add(new BasicNameValuePair("lat", lat));
+			if (lng != null)
+				args.add(new BasicNameValuePair("lng", lng));
+			try
+			{
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+				client.close();
+				return (json);
+			}
+			catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

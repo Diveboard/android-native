@@ -1,6 +1,7 @@
 package com.diveboard.model;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +68,20 @@ public class					Dive implements IModel
 	private ArrayList<Pair<String, String>>	_editList = new ArrayList<Pair<String, String>>();
 	private String				_shopName;
 	private Picture				_shopPicture;
+	
+	public						Dive()
+	{
+		Calendar c = Calendar.getInstance();
+		_id = -1;
+		_date = Integer.toString(c.get(Calendar.YEAR)) + "-";
+		if (c.get(Calendar.MONTH) < 10)
+			_date += "0";
+		_date += Integer.toString(c.get(Calendar.MONTH)) + "-";
+		if (c.get(Calendar.DATE) < 10)
+			_date += "0";
+		_date += Integer.toString(c.get(Calendar.DATE));
+		_timeIn = _date + "T00:00:00Z";
+	}
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
