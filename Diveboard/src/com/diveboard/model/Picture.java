@@ -275,4 +275,46 @@ public class					Picture
 		}
 		return false;
 	}
+	
+	public String					getLocalPath(final Context context, final Size size)
+	{
+		String[] picture_name;
+		
+		switch (size)
+		{
+			case LARGE:
+				picture_name = _urlLarge.split("/");
+				break ;
+			case MEDIUM:
+				picture_name = _urlMedium.split("/");
+				break ;
+			case SMALL:
+				picture_name = _urlSmall.split("/");
+				break ;
+			case THUMB:
+				picture_name = _urlThumbnail.split("/");
+				break ;
+			default:
+				picture_name = _urlDefault.split("/");
+				break ;
+		}
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
+		if (file.exists())
+		{
+			return (file.getAbsolutePath());
+		}
+		else
+		{
+			try {
+				getPicture(context, size);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			return (getLocalPath(context, size));
+		}
+	}
 }
