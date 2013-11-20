@@ -114,9 +114,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 1)
 		{
-			Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
 			AC.setPageIndex(0);
 			AC.setRefresh(0);
 			finish();
