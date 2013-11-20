@@ -17,6 +17,7 @@ public class ApplicationController extends Application {
 	private int mPageIndex = 0;
 	private int mCarouselIndex = 0;
 	private Dive mtempDive = null;
+	private boolean mRefresh = false;
 	
 	public Boolean handleLowMemory()
 	{
@@ -101,5 +102,13 @@ public class ApplicationController extends Application {
 
 	public void setTempDive(Dive mtempDive) {
 		this.mtempDive = mtempDive;
+	}
+
+	public boolean isRefresh() {
+		return mRefresh;
+	}
+
+	public void setRefresh(boolean mRefresh) {
+		this.mRefresh = mRefresh;
 	}
 }
