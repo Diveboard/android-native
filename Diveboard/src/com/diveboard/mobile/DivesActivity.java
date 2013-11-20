@@ -81,6 +81,7 @@ import com.facebook.*;
 import com.facebook.model.*;
 import com.uservoice.uservoicesdk.UserVoice;
 
+
 public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks {
 
 	// Number of pages in Dives
@@ -129,6 +130,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (AC.getModel() == null)
 			System.out.println("model null");
+		
 		setContentView(R.layout.activity_dives);
 		mLoadDataFormView = findViewById(R.id.load_data_form);
 		mLoadDataStatusView = findViewById(R.id.load_data_status);

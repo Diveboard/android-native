@@ -29,6 +29,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.bugsense.trace.BugSenseHandler;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -71,14 +72,15 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	protected void onResume()
 	{
 		super.onResume();
-////		Config config = new Config("yoursite.uservoice.com");
-//		Config config = new Config("diveboard.uservoice.com");
-////		config.setTopicId(9579);
-//		UserVoice.init(config, this);
-//		config.setShowForum(false);
-//	    config.setShowContactUs(true);
-//	    config.setShowPostIdea(false);
-//	    config.setShowKnowledgeBase(false);
+		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, "9ba91668");
+//		Config config = new Config("yoursite.uservoice.com");
+		Config config = new Config("diveboard.uservoice.com");
+//		config.setTopicId(9579);
+		UserVoice.init(config, this);
+		config.setShowForum(false);
+	    config.setShowContactUs(true);
+	    config.setShowPostIdea(false);
+	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
 		AC.setDataRefreshed(false);
