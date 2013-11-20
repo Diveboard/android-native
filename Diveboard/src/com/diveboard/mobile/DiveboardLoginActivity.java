@@ -71,15 +71,14 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	protected void onResume()
 	{
 		super.onResume();
-		System.out.println("onResume");
-//		Config config = new Config("yoursite.uservoice.com");
-		Config config = new Config("diveboard.uservoice.com");
-//		config.setTopicId(9579);
-		UserVoice.init(config, this);
-		config.setShowForum(false);
-	    config.setShowContactUs(true);
-	    config.setShowPostIdea(false);
-	    config.setShowKnowledgeBase(false);
+////		Config config = new Config("yoursite.uservoice.com");
+//		Config config = new Config("diveboard.uservoice.com");
+////		config.setTopicId(9579);
+//		UserVoice.init(config, this);
+//		config.setShowForum(false);
+//	    config.setShowContactUs(true);
+//	    config.setShowPostIdea(false);
+//	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
 		AC.setDataRefreshed(false);
@@ -97,18 +96,17 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	
 	public void goToPascalDives(View view)
 	{
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		//DiveboardModel model = new DiveboardModel(getApplicationContext());
-		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
-		AC.setModel(model);
-		mPascalTask = new PascalLoginTask();
-		mPascalTask.execute((Void) null);
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		//DiveboardModel model = new DiveboardModel(getApplicationContext());
+//		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
+//		AC.setModel(model);
+//		mPascalTask = new PascalLoginTask();
+//		mPascalTask.execute((Void) null);
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  super.onActivityResult(requestCode, resultCode, data);
-	  System.out.println("onActivityResult");
 	  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
