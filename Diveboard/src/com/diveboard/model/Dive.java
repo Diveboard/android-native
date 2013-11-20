@@ -485,6 +485,7 @@ public class					Dive implements IModel
 
 	public void setSpot(JSONObject _spot) {
 		//this._spot = _spot;
+		System.out.println("DIVE EDIT " + _spot);
 		Pair<String, String> new_elem = new Pair<String, String>("spot", _spot.toString());
 		_editList.add(new_elem);
 	}

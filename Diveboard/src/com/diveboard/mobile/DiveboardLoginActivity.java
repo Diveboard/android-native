@@ -71,6 +71,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	protected void onResume()
 	{
 		super.onResume();
+		System.out.println("onResume");
 //		Config config = new Config("yoursite.uservoice.com");
 		Config config = new Config("diveboard.uservoice.com");
 //		config.setTopicId(9579);
@@ -80,6 +81,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	    config.setShowPostIdea(false);
 	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.setDataReady(false);
+		AC.setDataRefreshed(false);
 		DiveboardModel model = new DiveboardModel(getApplicationContext());
 		//DiveboardModel model = new DiveboardModel(30, getApplicationContext());
 		AC.setModel(model);
@@ -105,6 +108,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  super.onActivityResult(requestCode, resultCode, data);
+	  System.out.println("onActivityResult");
 	  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	

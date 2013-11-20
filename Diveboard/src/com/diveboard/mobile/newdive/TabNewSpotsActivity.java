@@ -1,4 +1,4 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -8,24 +8,15 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveDetailsActivity;
-import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.Picture;
+import com.diveboard.model.Dive;
 import com.diveboard.model.Spot;
 
 import android.app.Activity;
-import android.app.ListActivity;
-import android.app.SearchManager;
-import android.app.TabActivity;
 import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,18 +29,15 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					TabEditSpotsActivity extends Activity
+public class					TabNewSpotsActivity extends Activity
 {
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
-	private DiveboardModel				mModel;
+	private Dive						mDive;
 	private int							mIndex;
 	private SpotsTask 					mSpotsTask;
 	private Spot						mSpot;
@@ -64,7 +52,7 @@ public class					TabEditSpotsActivity extends Activity
 	    setContentView(R.layout.tab_edit_spots);
 	    mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-	    mModel = ((ApplicationController)getApplicationContext()).getModel();
+	    mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		mIndex = getIntent().getIntExtra("index", 0);
 		
 		TextView title = (TextView) findViewById(R.id.title);
@@ -73,12 +61,15 @@ public class					TabEditSpotsActivity extends Activity
 	    ((TextView)findViewById(R.id.current_spot_title)).setTypeface(mFaceB);
 	    ((TextView)findViewById(R.id.current_spot)).setTypeface(mFaceR);
 	    ((TextView)findViewById(R.id.no_spot)).setTypeface(mFaceR);
-	    ((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
+	    if (mDive.getSpot() != null)
+	    	((TextView)findViewById(R.id.current_spot)).setText(mDive.getSpot().getName());
+	    else
+	    	((TextView)findViewById(R.id.current_spot)).setText("");
 	    ((TextView)findViewById(R.id.search_bar)).setTypeface(mFaceR);
 	    //((Button)findViewById(R.id.ok_search)).setTypeface(mFaceR);
 	    Button save = (Button) findViewById(R.id.save_button);
 	    save.setTypeface(mFaceB);
-	    save.setText(getResources().getString(R.string.save_button));
+	    save.setText(getResources().getString(R.string.add_button));
 	    save.setOnClickListener(new OnClickListener()
         {
 			@Override
@@ -88,10 +79,11 @@ public class					TabEditSpotsActivity extends Activity
 //				mModel.getDataManager().save(mModel.getDives().get(mIndex));
 				System.out.println("current spot = " + ((TextView)findViewById(R.id.current_spot)).getText().toString());
 				if (mSelectedObject != null)
-					mModel.getDives().get(mIndex).setSpot(mSelectedObject);
-				mModel.getDataManager().save(mModel.getDives().get(mIndex));
-				ApplicationController AC = (ApplicationController)getApplicationContext();
-				AC.setRefresh(2);
+					mDive.setSpot(mSelectedObject);
+				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				dives.add(0, mDive);
+				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
+				((ApplicationController)getApplicationContext()).setRefresh(1);
 				finish();
 			}
 		});
@@ -129,7 +121,7 @@ public class					TabEditSpotsActivity extends Activity
     {  	
     	ListView lv = ((ListView)findViewById(R.id.list_view));
     	List<Spot> listSpots = new ArrayList<Spot>();
-    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+    	SpotAdapter adapter = new SpotAdapter(TabNewSpotsActivity.this, listSpots);
     	lv.setAdapter(adapter);
     	((TextView)findViewById(R.id.no_spot)).setVisibility(View.GONE);
     	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -168,7 +160,7 @@ public class					TabEditSpotsActivity extends Activity
 						else
 						{
 							System.out.println(result.toString());
-							SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+							SpotAdapter adapter = new SpotAdapter(TabNewSpotsActivity.this, listSpots);
 							lv.setAdapter(adapter);
 							lv.setOnItemClickListener(new OnItemClickListener()
 							{
@@ -178,7 +170,7 @@ public class					TabEditSpotsActivity extends Activity
 									((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
 							    	ListView lv = ((ListView)findViewById(R.id.list_view));
 							    	List<Spot> listSpots = new ArrayList<Spot>();
-							    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+							    	SpotAdapter adapter = new SpotAdapter(TabNewSpotsActivity.this, listSpots);
 							    	lv.setAdapter(adapter);
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);

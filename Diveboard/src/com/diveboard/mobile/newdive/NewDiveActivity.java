@@ -51,8 +51,8 @@ public class					NewDiveActivity extends TabActivity
 	    intent = new Intent(this,TabNewNotesActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_notes_label), intent);
 	
-	    intent = new Intent(this,TabNewDetailsActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_gear_label), intent);
+	    intent = new Intent(this,TabNewSpotsActivity.class);
+	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
 	    
 //	    intent = new Intent(this,TabNewDetailsActivity.class);
 //	    setupTab(new TextView(this), getResources().getString(R.string.tab_species_label), intent);

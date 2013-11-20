@@ -114,6 +114,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 1)
 		{
+			Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			AC.setPageIndex(0);
 			AC.setRefresh(0);
 			finish();
 			startActivity(getIntent());
@@ -236,6 +240,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
+				case R.id.refresh:
+					ApplicationController AC = (ApplicationController)getApplicationContext();
+					AC.setPageIndex(0);
+					AC.setModel(null);
+					finish();
+					//AC.handleLowMemory();
+					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
@@ -284,6 +295,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public boolean onContextItemSelected(MenuItem item) {
 	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 	    switch (item.getItemId()) {
+		    case R.id.refresh:
+		    	ApplicationController AC = (ApplicationController)getApplicationContext();
+		    	AC.setPageIndex(0);
+				AC.setModel(null);
+				finish();
+				//AC.handleLowMemory();
+				return true;
 	    	case R.id.add_dive:
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 //	    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());

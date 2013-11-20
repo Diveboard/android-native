@@ -214,6 +214,12 @@ public class					DataManager
 			json.put("notes", dive.getNotes());
 			json.put("weights", dive.getWeights().getWeight().toString());
 			json.put("user_id", _model.getUser().getId());
+			if (dive.getSpot() != null)
+			{
+				JSONObject temp = new JSONObject();
+				temp.put("id", dive.getSpot().getId());
+				json.put("spot", temp);
+			}
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			_editList.add(new_elem);
 		}
@@ -233,18 +239,19 @@ public class					DataManager
 			try
 			{
 				JSONObject obj = new JSONObject(json);
+				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else
 					obj.put(edit_list.get(i).first, edit_list.get(i).second);
-				dive.applyEdit(new JSONObject(json));
+				dive.applyEdit(obj);
+				Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), obj.toString());
+				_editList.add(new_elem);
 			}
 			catch (JSONException e)
 			{
 				e.printStackTrace();
 			}
-			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json);
-			_editList.add(new_elem);
 		}
 	}
 	
@@ -382,11 +389,15 @@ public class					DataManager
 							args.add(new BasicNameValuePair("auth_token", _token));
 							args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
 							JSONObject checkObject = new JSONObject(elem.second);
+							System.out.println("BEFORE " + elem.second);
 							if (checkObject.isNull("spot") == false)
 							{
-								JSONObject spot = new JSONObject();
-								spot.put("id", checkObject.getInt("id"));
-								args.add(new BasicNameValuePair("arg", spot.toString()));
+								JSONObject spot = checkObject.getJSONObject("spot");
+								JSONObject temp = new JSONObject();
+								temp.put("id", spot.get("id"));
+								checkObject.put("spot", temp);
+								args.add(new BasicNameValuePair("arg", checkObject.toString()));
+								System.out.println("SPOT SEND " + checkObject);
 							}
 							else
 								args.add(new BasicNameValuePair("arg", elem.second));

@@ -100,7 +100,7 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.newdive.TabNewDetailsActivity"
-            android:label="@string/title_activity_edit_dive" >
+            android:label="@string/title_activity_new_dive" >
         </activity>
         <activity
             android:name="com.diveboard.mobile.EmptyActivity"
@@ -118,7 +118,11 @@
 	    <activity android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity" android:hardwareAccelerated="true" />
         <activity
 	    	android:name="com.diveboard.mobile.newdive.TabNewNotesActivity"
-            android:label="@string/title_activity_edit_dive" >
+            android:label="@string/title_activity_new_dive" >
+        </activity>
+        <activity
+	    	android:name="com.diveboard.mobile.newdive.TabNewSpotsActivity"
+            android:label="@string/title_activity_new_dive" >
         </activity>
     </application>
 

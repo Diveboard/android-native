@@ -73,18 +73,18 @@
 					        android:text="EDIT"
 					        android:layout_marginLeft="10dp"
 					        android:layout_alignParentRight="false"
-					        android:layout_weight="0.5"
+					        android:layout_weight="1"
 					        android:layout_width="0dp"
 					        android:layout_height="wrap_content">
 					    </Button>
-					    <Button
+<!-- 					    <Button
 					        android:id="@+id/deleteDiveButton"
 					        android:text="DELETE"
 					        android:layout_marginLeft="10dp"
 					        android:layout_width="0dp"
 					        android:layout_weight="0.5"
 					        android:layout_height="wrap_content">
-				    </Button>
+				    </Button> -->
 				    </LinearLayout>
 			   	</RelativeLayout>
 		   	</RelativeLayout>
