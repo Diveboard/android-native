@@ -38,14 +38,6 @@ public class DiveDetailsMainActivity extends Activity {
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
 	
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		AC.handleLowMemory();
-	}
-	
 	public int dpToPx(int dp) {
 	    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
 	    int px = Math.round(dp * (displayMetrics.xdpi / DisplayMetrics.DENSITY_DEFAULT));       
@@ -64,8 +56,6 @@ public class DiveDetailsMainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-		if (AC.handleLowMemory() == true)
-			return ;
 		setContentView(R.layout.activity_dive_details_main);
 		//System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35), dpToPx(35));
@@ -88,6 +78,7 @@ public class DiveDetailsMainActivity extends Activity {
 		((TextView)findViewById(R.id.user_country)).setTypeface(faceR);
 		((TextView)findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button)findViewById(R.id.goToEditButton)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_shop)).setTypeface(faceB);
 		((TextView)findViewById(R.id.dive_shop)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		if (mDive.getShopName() != null)

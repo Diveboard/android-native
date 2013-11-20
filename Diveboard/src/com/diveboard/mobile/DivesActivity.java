@@ -79,6 +79,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.facebook.*;
 import com.facebook.model.*;
+import com.uservoice.uservoicesdk.UserVoice;
 
 public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks {
 
@@ -111,6 +112,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+		AC.setRefresh(false);
 	}
 	
 	@Override
@@ -239,6 +241,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(settingsActivity);
 		            return true;
+		        case R.id.report_bug:
+		        	UserVoice.launchContactUs(DivesActivity.this);
+		            return true;
 		        case R.id.menu_logout:
 		        	logout();
 		            return true;
@@ -284,6 +289,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(settingsActivity);
 	            return true;
+	    	case R.id.report_bug:
+	        	UserVoice.launchContactUs(DivesActivity.this);
+	            return true;
 	    	case R.id.menu_logout:
 	        	logout();
 	            return true;
@@ -308,9 +316,19 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	
 	public void goToGalleryCarousel(View view)
 	{
-		Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
-		galleryCarousel.putExtra("index", mPager.getCurrentItem());
-		startActivity(galleryCarousel);
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+		{
+			Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
+			galleryCarousel.putExtra("index", mPager.getCurrentItem());
+			startActivity(galleryCarousel);
+		}
+		else
+		{
+			Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
+			diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+			startActivity(diveDetailsActivity);
+		}
 	}
 	
 	public void loadData()
@@ -445,18 +463,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    public void onGlobalLayout() { 
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		      //We create the pager with the associated pages
-				if (mModel.getDives() == null || mModel.getDives().size() == 0)
-				{
-					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
-					logout();
-					return ;
-				}
-				else
-					mNbPages = mModel.getDives().size();
-		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
+		      //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
 				int offset = 0;
@@ -474,113 +481,128 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setText("CURRENTLY VIEWING DIVES FROM LOGBOOK");
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setText("No dive found!");
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-				//We write the text for the footer
-				//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
-				//Each circle must be white with a transparent circle in the center
-				Bitmap bitmap = ImageHelper.getRoundedLayer(mScreenSetup);
-				Bitmap bitmap_small = ImageHelper.getRoundedLayerSmall(mScreenSetup);
-				//We load the first background of the activity
-				mScreen = (RelativeLayout)findViewById(R.id.screen);
-				mBackground1 = (ImageView)findViewById(R.id.background1);
-				mBackground2 = (ImageView)findViewById(R.id.background2);
-				DownloadImageTask task = new DownloadImageTask();
-				task.execute(AC.getPageIndex());
-				//Pager setting
-				mPager = (ViewPager) findViewById(R.id.pager);
-		        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
-		        mPager.setAdapter(mPagerAdapter);
-		        mPager.setPageMargin(margin + offset);
-		        mPager.setOffscreenPageLimit(2);
-		        mPager.setCurrentItem(AC.getPageIndex());
-		        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-		        //The tracking bar is set
-		        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
-		        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
-		        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		        seekBarParams.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
-		        mSeekBar.setLayoutParams(seekBarParams);
-		        mSeekBar.setMax(mModel.getDives().size() - 1);
-		        mSeekBar.setProgress(AC.getPageIndex());
-		        //Events when the user changes a page
-		        mPager.setOnPageChangeListener(new OnPageChangeListener()
-		        {
-					@Override
-					public void onPageScrollStateChanged(int arg0) {
-						if (arg0 == 0)
-						{
-							ApplicationController AC = ((ApplicationController)getApplicationContext());
-							AC.setPageIndex(mPager.getCurrentItem());
-							mSeekBar.setProgress(mPager.getCurrentItem());
-							RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
-							Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-							((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
-							((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
-							((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-							DownloadImageTask task = new DownloadImageTask();
-							task.execute(mPager.getCurrentItem());
-							mSeekBar.setEnabled(true);
-						}
-					}
-
-					@Override
-					public void onPageScrolled(int arg0, float arg1, int arg2) {	
-					}
-
-					@Override
-					public void onPageSelected(int arg0) {
-					}
-		        	
-		        });
-		        //Events when the user changes the seek bar
-		        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
-		        {
-		        	@Override
-		        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-		        	{
-		        	}
-
-					@Override
-					public void onStartTrackingTouch(SeekBar seekBar) {
-					}
-
-					@Override
-					public void onStopTrackingTouch(SeekBar seekBar) {
-						mPager.setCurrentItem(seekBar.getProgress(), true);
-						mSeekBar.setEnabled(false);
-					}
-		        });
-		        
-		        if (AC.isDataRefreshed() != true)
-		        {
-		        	AC.setDataRefreshed(true);
-			        mModel.setOnDataRefreshComplete(new DataRefreshListener()
+				//We create the pager with the associated pages
+				if (mModel.getDives() == null || mModel.getDives().size() == 0)
+				{
+//					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
+//					toast.setGravity(Gravity.CENTER, 0, 0);
+//					toast.show();
+					//logout();
+					return ;
+				}
+				else
+				{
+					mNbPages = mModel.getDives().size();
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
+					//We write the text for the footer
+					//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
+					//Each circle must be white with a transparent circle in the center
+					Bitmap bitmap = ImageHelper.getRoundedLayer(mScreenSetup);
+					Bitmap bitmap_small = ImageHelper.getRoundedLayerSmall(mScreenSetup);
+					//We load the first background of the activity
+					mScreen = (RelativeLayout)findViewById(R.id.screen);
+					mBackground1 = (ImageView)findViewById(R.id.background1);
+					mBackground2 = (ImageView)findViewById(R.id.background2);
+					DownloadImageTask task = new DownloadImageTask();
+					task.execute(AC.getPageIndex());
+					//Pager setting
+					mPager = (ViewPager) findViewById(R.id.pager);
+			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
+			        mPager.setAdapter(mPagerAdapter);
+			        mPager.setPageMargin(margin + offset);
+			        mPager.setOffscreenPageLimit(2);
+			        mPager.setCurrentItem(AC.getPageIndex());
+			        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+			        //The tracking bar is set
+			        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
+			        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
+			        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        seekBarParams.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
+			        mSeekBar.setLayoutParams(seekBarParams);
+			        mSeekBar.setMax(mModel.getDives().size() - 1);
+			        mSeekBar.setProgress(AC.getPageIndex());
+			        //Events when the user changes a page
+			        mPager.setOnPageChangeListener(new OnPageChangeListener()
 			        {
-	
 						@Override
-						public void onDataRefreshComplete() {
-							//System.out.println("Data refresh complete");
-							try {
-								mModel.overwriteData();
-							} catch (IOException e) {
-								// TODO Auto-generated catch block
-								e.printStackTrace();
+						public void onPageScrollStateChanged(int arg0) {
+							if (arg0 == 0)
+							{
+								ApplicationController AC = ((ApplicationController)getApplicationContext());
+								AC.setPageIndex(mPager.getCurrentItem());
+								mSeekBar.setProgress(mPager.getCurrentItem());
+								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
+								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
+								DownloadImageTask task = new DownloadImageTask();
+								task.execute(mPager.getCurrentItem());
+								mSeekBar.setEnabled(true);
 							}
-							
+						}
+
+						@Override
+						public void onPageScrolled(int arg0, float arg1, int arg2) {	
+						}
+
+						@Override
+						public void onPageSelected(int arg0) {
 						}
 			        	
 			        });
-			        new Thread(new Runnable()
-					{
-						public void run()
-						{
-							mModel.refreshData();
+			        //Events when the user changes the seek bar
+			        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+			        {
+			        	@Override
+			        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
+			        	{
+			        	}
+
+						@Override
+						public void onStartTrackingTouch(SeekBar seekBar) {
 						}
-					}).start();
-		        }
-		        
+
+						@Override
+						public void onStopTrackingTouch(SeekBar seekBar) {
+							mPager.setCurrentItem(seekBar.getProgress(), true);
+							mSeekBar.setEnabled(false);
+						}
+			        });
+			        
+			        if (AC.isDataRefreshed() != true)
+			        {
+			        	AC.setDataRefreshed(true);
+				        mModel.setOnDataRefreshComplete(new DataRefreshListener()
+				        {
+		
+							@Override
+							public void onDataRefreshComplete() {
+								//System.out.println("Data refresh complete");
+								try {
+									mModel.overwriteData();
+								} catch (IOException e) {
+									// TODO Auto-generated catch block
+									e.printStackTrace();
+								}
+								
+							}
+				        	
+				        });
+				        new Thread(new Runnable()
+						{
+							public void run()
+							{
+								mModel.refreshData();
+							}
+						}).start();
+			        }
+				}
 		    } 
 		});
 	}

@@ -3,6 +3,8 @@ package com.diveboard.mobile;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
+import com.uservoice.uservoicesdk.Config;
+import com.uservoice.uservoicesdk.UserVoice;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -69,6 +71,14 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	protected void onResume()
 	{
 		super.onResume();
+//		Config config = new Config("yoursite.uservoice.com");
+		Config config = new Config("diveboard.uservoice.com");
+//		config.setTopicId(9579);
+		UserVoice.init(config, this);
+		config.setShowForum(false);
+	    config.setShowContactUs(true);
+	    config.setShowPostIdea(false);
+	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		DiveboardModel model = new DiveboardModel(getApplicationContext());
 		//DiveboardModel model = new DiveboardModel(30, getApplicationContext());

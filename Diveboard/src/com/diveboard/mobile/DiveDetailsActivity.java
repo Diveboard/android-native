@@ -53,14 +53,6 @@ public class DiveDetailsActivity extends TabActivity {
 	private TabHost	 mTabHost;
 	private Typeface mFaceB;
 	private Typeface mFaceR;
-	private Bitmap mDetailsGrey;
-	private Bitmap mDetailsWhite;
-	private Bitmap mPhotosGrey;
-	private Bitmap mPhotosWhite;
-	private Bitmap mSpeciesGrey;
-	private Bitmap mSpeciesWhite;
-	private Bitmap mMapGrey;
-	private Bitmap mMapWhite;
 	
 	@Override
 	protected void onResume()
@@ -68,8 +60,19 @@ public class DiveDetailsActivity extends TabActivity {
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+		if (AC.isRefresh() == true)
+		{
+			onCreate(null);
+		}
 	}
 	
+//	@Override
+//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//		//super.onActivityResult(requestCode, resultCode, data);
+//		
+//		onCreate(null);
+//	}
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -90,27 +93,19 @@ public class DiveDetailsActivity extends TabActivity {
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-//				mDetailsGrey = scaleBitmap(R.drawable.ic_details_grey);
-//				mDetailsWhite = scaleBitmap(R.drawable.ic_details_white);
-//				mPhotosGrey = scaleBitmap(R.drawable.ic_photos_grey);
-//				mPhotosWhite = scaleBitmap(R.drawable.ic_photos_white);
-//				mSpeciesGrey = scaleBitmap(R.drawable.ic_species_grey);
-//				mSpeciesWhite = scaleBitmap(R.drawable.ic_species_white);
-//				mMapGrey = scaleBitmap(R.drawable.ic_map_grey);
-//				mMapWhite = scaleBitmap(R.drawable.ic_map_white);
 				//We built the tabs
 				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);
 				intent.putExtra("index", AC.getPageIndex());
 				setupTab(getResources().getString(R.string.tab_details_label), intent, R.drawable.ic_details_grey);
 
-				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
+				intent = new Intent(DiveDetailsActivity.this, PhotosActivity.class);
 				setupTab(getResources().getString(R.string.tab_photos_label), intent, R.drawable.ic_photos_white);
 
-				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
-				setupTab(getResources().getString(R.string.tab_species_label), intent, R.drawable.ic_species_white);
-
-				intent = new Intent(DiveDetailsActivity.this, TabEditSpotsActivity.class);
-				setupTab(getResources().getString(R.string.tab_map_label), intent, R.drawable.ic_map_white);
+//				intent = new Intent(DiveDetailsActivity.this, EmptyActivity.class);
+//				setupTab(getResources().getString(R.string.tab_species_label), intent, R.drawable.ic_species_white);
+//
+//				intent = new Intent(DiveDetailsActivity.this, EmptyActivity.class);
+//				setupTab(getResources().getString(R.string.tab_map_label), intent, R.drawable.ic_map_white);
 
 				((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
 				mTabHost.setOnTabChangedListener(new OnTabChangeListener(){
@@ -141,7 +136,20 @@ public class DiveDetailsActivity extends TabActivity {
 						if (mTabHost.getCurrentTab() == 0)
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_details_grey));
 						else if (mTabHost.getCurrentTab() == 1)
-							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_grey));
+						{
+							ApplicationController AC = (ApplicationController)getApplicationContext();
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							{
+								Intent galleryCarousel = new Intent(DiveDetailsActivity.this, GalleryCarouselActivity.class);
+								galleryCarousel.putExtra("index", AC.getPageIndex());
+								startActivity(galleryCarousel);
+								mTabHost.setCurrentTab(0);
+							}
+							else
+							{
+								((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_grey));
+							}
+						}
 						else if (mTabHost.getCurrentTab() == 2)
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));
 						else if (mTabHost.getCurrentTab() == 3)
@@ -156,7 +164,7 @@ public class DiveDetailsActivity extends TabActivity {
 				((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName());
 				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);
-//				((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
+				((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
 		    }

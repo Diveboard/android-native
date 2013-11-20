@@ -4,6 +4,8 @@
           android:title="New dive" />
     <item android:id="@+id/menu_settings"
           android:title="Settings" />
+    <item android:id="@+id/report_bug"
+          android:title="Report a bug" />
     <item android:id="@+id/menu_logout"
           android:title="Logout" />
 <!--     <group android:id="@+id/group_delete"> -->
