@@ -77,6 +77,8 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.user_country)).setText("");
 		((TextView)findViewById(R.id.user_country)).setTypeface(faceR);
 		((TextView)findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button)findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button)findViewById(R.id.deleteDiveButton)).setTypeface(faceR);
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.goToEditButton)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_shop)).setTypeface(faceB);

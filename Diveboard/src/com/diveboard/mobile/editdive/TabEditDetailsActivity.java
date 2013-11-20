@@ -215,7 +215,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			{
 				Dive dive = mModel.getDives().get(mIndex);
 				mModel.getDataManager().save(dive);
-				((ApplicationController)getApplicationContext()).setRefresh(true);
+				((ApplicationController)getApplicationContext()).setRefresh(2);
 				finish();
 			}
 		});

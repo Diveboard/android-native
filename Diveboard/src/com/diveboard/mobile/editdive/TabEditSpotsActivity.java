@@ -33,6 +33,8 @@ import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -50,6 +52,9 @@ public class					TabEditSpotsActivity extends Activity
 	private DiveboardModel				mModel;
 	private int							mIndex;
 	private SpotsTask 					mSpotsTask;
+	private Spot						mSpot;
+	private JSONObject					mSelectedObject;
+	private JSONArray					mArray;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -74,16 +79,18 @@ public class					TabEditSpotsActivity extends Activity
 	    Button save = (Button) findViewById(R.id.save_button);
 	    save.setTypeface(mFaceB);
 	    save.setText(getResources().getString(R.string.save_button));
-//	    save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
+	    save.setOnClickListener(new OnClickListener()
+        {
+			@Override
+			public void onClick(View v)
+			{
 //				mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
 //				mModel.getDataManager().save(mModel.getDives().get(mIndex));
-//				finish();
-//			}
-//		});
+				mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+				mModel.getDataManager().save(mModel.getDives().get(mIndex));
+				finish();
+			}
+		});
 	    EditText editText = (EditText) findViewById(R.id.search_bar);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
 
@@ -100,19 +107,19 @@ public class					TabEditSpotsActivity extends Activity
 	    });
     }
     
-    public void setCurrentSpot(View view)
-    {  	
-    	((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
-    	ListView lv = ((ListView)findViewById(R.id.list_view));
-    	List<Spot> listSpots = new ArrayList<Spot>();
-    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
-    	lv.setAdapter(adapter);
-//    	SpotAdapter adapter = ((SpotAdapter)lv.getAdapter());
-//    	for (int i = 0; i < adapter.getCount(); i++)
-//    	{
-//    		adapter.
-//    	}
-    }
+//    public void setCurrentSpot(View view)
+//    {  	
+//    	((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
+//    	ListView lv = ((ListView)findViewById(R.id.list_view));
+//    	List<Spot> listSpots = new ArrayList<Spot>();
+//    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+//    	lv.setAdapter(adapter);
+////    	SpotAdapter adapter = ((SpotAdapter)lv.getAdapter());
+////    	for (int i = 0; i < adapter.getCount(); i++)
+////    	{
+////    		adapter.
+////    	}
+//    }
     
     public void doMySearch()
     {  	
@@ -142,12 +149,12 @@ public class					TabEditSpotsActivity extends Activity
 				if (result.getBoolean("success") == true)
 				{
 					try {
-						JSONArray array = result.getJSONArray("spots");
+						mArray = result.getJSONArray("spots");
 						ListView lv = ((ListView)findViewById(R.id.list_view));
 						List<Spot> listSpots = new ArrayList<Spot>();
-						for (int i = 0; i < array.length(); i++)
+						for (int i = 0; i < mArray.length(); i++)
 						{
-							Spot spot = new Spot(array.getJSONObject(i));
+							Spot spot = new Spot(mArray.getJSONObject(i));
 							listSpots.add(spot);
 						}
 						if (listSpots.size() == 0)
@@ -159,6 +166,24 @@ public class					TabEditSpotsActivity extends Activity
 							System.out.println(result.toString());
 							SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
 							lv.setAdapter(adapter);
+							lv.setOnItemClickListener(new OnItemClickListener()
+							{
+								@Override
+								public void onItemClick(AdapterView<?> parent,
+										View view, int position, long id) {
+									((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
+							    	ListView lv = ((ListView)findViewById(R.id.list_view));
+							    	List<Spot> listSpots = new ArrayList<Spot>();
+							    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+							    	lv.setAdapter(adapter);
+							    	try {
+										mSelectedObject = mArray.getJSONObject(position);
+									} catch (JSONException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+								}
+							});
 						}
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block

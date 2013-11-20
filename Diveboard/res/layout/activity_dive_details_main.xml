@@ -61,16 +61,31 @@
 				                android:textColor="#000000"
 				                android:text="United Kingdom"/>
 				    </LinearLayout>
-				    <Button
-				        android:onClick="goToEditDive"
-				        android:id="@+id/goToEditButton"
-				        android:layout_toRightOf="@id/profile_info"
-				        android:text="EDIT"
-				        android:layout_marginLeft="10dp"
-				        android:layout_alignParentRight="true"
+				    <LinearLayout
+				        android:orientation="horizontal"
 				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content">
+				        android:layout_height="wrap_content"
+				        android:layout_toRightOf="@id/profile_info"
+				        android:layout_alignParentRight="true">
+				        <Button
+					        android:onClick="goToEditDive"
+					        android:id="@+id/goToEditButton"
+					        android:text="EDIT"
+					        android:layout_marginLeft="10dp"
+					        android:layout_alignParentRight="false"
+					        android:layout_weight="0.5"
+					        android:layout_width="0dp"
+					        android:layout_height="wrap_content">
+					    </Button>
+					    <Button
+					        android:id="@+id/deleteDiveButton"
+					        android:text="DELETE"
+					        android:layout_marginLeft="10dp"
+					        android:layout_width="0dp"
+					        android:layout_weight="0.5"
+					        android:layout_height="wrap_content">
 				    </Button>
+				    </LinearLayout>
 			   	</RelativeLayout>
 		   	</RelativeLayout>
 	    </LinearLayout>

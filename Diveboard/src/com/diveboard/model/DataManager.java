@@ -229,9 +229,14 @@ public class					DataManager
 		
 		for (int i = 0, length = edit_list.size(); i < length; i++)
 		{
-			String json = "{\"id\":\"" + dive.getId() + "\", \"" + edit_list.get(i).first + "\":\"" + edit_list.get(i).second + "\"}";
+			String json = "{\"id\":\"" + dive.getId() + "\"}";
 			try
 			{
+				JSONObject obj = new JSONObject(json);
+				if (edit_list.get(i).first.equals("spot"))
+					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				else
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
 				dive.applyEdit(new JSONObject(json));
 			}
 			catch (JSONException e)

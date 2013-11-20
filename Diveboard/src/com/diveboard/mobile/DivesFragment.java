@@ -186,12 +186,15 @@ public class DivesFragment extends Fragment {
 		else
 			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
 		//Set the title details content
-		((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
-		((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
-		((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
-		((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
-		((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+		if (mDive.getSpot() != null)
+		{
+			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
+			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
+			((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
+			((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());
+			((TextView) mFragment.findViewById(R.id.dive_name)).setTypeface(faceB);
+			((TextView) mFragment.findViewById(R.id.dive_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 35 / 100));
+		}
 		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
@@ -303,7 +306,8 @@ public class DivesFragment extends Fragment {
 						return mDive.getFeaturedPicture().getPicture(getActivity().getApplicationContext(), Picture.Size.MEDIUM);
 					}
 					isPicture = false;
-					return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
+					if (mDive.getThumbnailImageUrl() != null)
+						return mDive.getThumbnailImageUrl().getPicture(getActivity().getApplicationContext());
 				}
 					
 			} catch (IOException e) {

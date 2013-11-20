@@ -60,9 +60,11 @@ public class DiveDetailsActivity extends TabActivity {
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
-		if (AC.isRefresh() == true)
+		if (AC.getRefresh() == 2)
 		{
-			onCreate(null);
+			AC.setRefresh(1);
+			finish();
+			startActivity(getIntent());
 		}
 	}
 	

@@ -112,7 +112,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
-		AC.setRefresh(false);
+		if (AC.getRefresh() == 1)
+		{
+			AC.setRefresh(0);
+			finish();
+			startActivity(getIntent());
+		}
 	}
 	
 	@Override
@@ -513,6 +518,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					//Pager setting
 					mPager = (ViewPager) findViewById(R.id.pager);
 			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
+			        if (mPagerAdapter == null)
+			        	System.out.println("mPagerAdapter == null");
+			        else if (mPager == null)
+			        	System.out.println("mPager == null");
+			        else
+			        	System.out.println("??? == null");
 			        mPager.setAdapter(mPagerAdapter);
 			        mPager.setPageMargin(margin + offset);
 			        mPager.setOffscreenPageLimit(2);
@@ -625,7 +636,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			try {
 				if (mModel.getDives().get(mItemNb).getFeaturedPicture() != null)
 					result = mModel.getDives().get(mItemNb).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
-				else
+				else if (mModel.getDives().get(mItemNb).getThumbnailImageUrl() != null)
 					result = mModel.getDives().get(mItemNb).getThumbnailImageUrl().getPicture(getApplicationContext());
 			} catch (Exception e) {
 				// TODO Auto-generated catch block

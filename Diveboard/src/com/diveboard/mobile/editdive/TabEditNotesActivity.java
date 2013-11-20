@@ -50,7 +50,7 @@ public class TabEditNotesActivity extends Activity
 			{
 				mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
 				mModel.getDataManager().save(mModel.getDives().get(mIndex));
-				((ApplicationController)getApplicationContext()).setRefresh(true);
+				((ApplicationController)getApplicationContext()).setRefresh(2);
 				finish();
 			}
 		});
