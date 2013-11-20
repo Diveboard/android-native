@@ -35,7 +35,9 @@ public class					EditDiveActivity extends TabActivity
 	public void onCreate(Bundle savedInstanceState)
 	{
 	    super.onCreate(savedInstanceState);
-	    
+	    ApplicationController AC = (ApplicationController)getApplicationContext();
+	    if (AC.handleLowMemory() == true)
+			return ;
 	    setContentView(R.layout.activity_edit_dive);
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
@@ -59,9 +61,9 @@ public class					EditDiveActivity extends TabActivity
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
 	    
 	    
-	    intent = new Intent(this,TabEditSpotsActivity.class);
-	    intent.putExtra("index", mIndex);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
+//	    intent = new Intent(this,TabEditSpotsActivity.class);
+//	    intent.putExtra("index", mIndex);
+//	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
 	}
 	
 	private void					setupTab(final View view, final String tag, final Intent content)

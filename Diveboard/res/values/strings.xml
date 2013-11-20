@@ -63,5 +63,9 @@
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
     <string name="add_button">ADD</string>
-	<string name="search_hint">Search spot</string>
+    <string name="search_hint">Search spot</string>
+    <string name="title_activity_empty">EmptyActivity</string>
+    <string name="activity_in_progress">No picture in dive!</string>
+    <string name="title_activity_photos">PhotosActivity</string>
+
 </resources>

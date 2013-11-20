@@ -18,8 +18,7 @@
             android:layout_height="40dp"
             android:paddingLeft="15dp"
             android:textSize="20sp"
-            android:textColor="@color/dark_grey"
-            android:gravity="center"/>
+            android:textColor="@color/dark_grey"/>
 
          <Button
              android:id="@+id/save_button"
@@ -44,33 +43,55 @@
 
             <requestFocus />
         </EditText> -->
-		<TextView
-		    android:id="@+id/current_spot"
-		    android:layout_width="match_parent"
-		    android:layout_height="40dp"
-		    android:background="@drawable/tab_body_background"
-		    android:textColor="@color/dark_grey"
-		    android:gravity="center"
-		    android:text="Current spot:"/>
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:background="@drawable/tab_body_background"
+            android:gravity="center">
+            <TextView
+			    android:id="@+id/current_spot_title"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textColor="@color/dark_grey"
+			    android:text="Current spot: "/>
+            <TextView
+			    android:id="@+id/current_spot"
+			    android:layout_width="wrap_content"
+			    android:layout_height="wrap_content"
+			    android:textColor="@color/dark_grey"/>
+        </LinearLayout>
+		
 		<LinearLayout
 		    android:orientation="horizontal"
 		    android:layout_width="match_parent"
-		    android:layout_height="wrap_content">
+		    android:layout_height="40dp"
+		    android:background="@drawable/tab_body_background">
 	 		<EditText 
 			    android:id="@+id/search_bar"
-			    android:layout_width="0dp"
+			    android:layout_width="match_parent"
 			    android:layout_height="wrap_content"
-			    android:layout_weight="0.8"
-			    />
-	 		<Button
+			    android:hint="@string/search_hint"
+			    android:inputType="text"
+			    android:imeOptions="actionSearch"/>
+<!-- 	 		<Button
+	 		    android:id="@+id/ok_search"
 	 		    android:layout_width="0dp"
 	 		    android:layout_height="wrap_content"
 	 		    android:layout_weight="0.2"
 	 		    android:text="OK"
-	 		    android:onClick="doMySearch"/>
+	 		    android:onClick="doMySearch"/> -->
  		</LinearLayout>
+ 		<TextView
+ 		    android:gravity="center"
+ 		    android:id="@+id/no_spot"
+ 		    android:text="No spot found"
+ 		    android:layout_width="match_parent"
+ 		    android:layout_height="match_parent"
+ 		    android:visibility="gone"/>
 		<ListView
 		    android:id="@+id/list_view"
+		    android:background="@color/white"
 		    android:layout_width="match_parent"
 		    android:layout_height="match_parent"/>
 	</LinearLayout>

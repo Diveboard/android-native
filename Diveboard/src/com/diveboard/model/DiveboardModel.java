@@ -616,7 +616,7 @@ public class					DiveboardModel
 		{
 			String url;
 			url = DiveboardModel.savedPictureList.get(i);
-			System.out.println("REFRESH : " + url);
+			//System.out.println("REFRESH : " + url);
 			for (int j = 0; j < DiveboardModel.pictureList.size(); j++)
 			{
 				if (DiveboardModel.pictureList.get(j).first.equals(url))
@@ -838,7 +838,7 @@ public class					DiveboardModel
 						
 						for (int i = 0, length = savedPictureArray.length; i < length; i++)
 						{
-							System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
+							//System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
 							DiveboardModel.savedPictureList.add(savedPictureArray[i]);
 						}
 						

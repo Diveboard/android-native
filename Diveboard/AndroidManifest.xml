@@ -20,11 +20,12 @@
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
         <activity
-            android:screenOrientation="portrait"
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
-            android:label="@string/title_activity_login" >
+            android:label="@string/title_activity_login"
+            android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -55,11 +56,13 @@
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditSpotsActivity"
             android:label="@string/title_activity_edit_dive" >
-            <intent-filter>
-	            <action android:name="android.intent.action.SEARCH" />
-	        </intent-filter>
-	        <meta-data android:name="android.app.searchable"
-	                   android:resource="@xml/search_bar"/>
+<!--             <intent-filter>
+                <action android:name="android.intent.action.SEARCH" />
+            </intent-filter>
+
+            <meta-data
+                android:name="android.app.searchable"
+                android:resource="@xml/search_bar" /> -->
         </activity>
         <activity
             android:name="com.diveboard.mobile.DiveDetailsActivity"
@@ -75,9 +78,9 @@
             android:value="@string/app_id" />
 
         <activity
-            android:screenOrientation="portrait"
             android:name="com.diveboard.mobile.SignUpActivity"
-            android:label="@string/title_activity_sign_up" >
+            android:label="@string/title_activity_sign_up"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.diveboard.mobile.SettingsActivity"
@@ -99,6 +102,20 @@
             android:name="com.diveboard.mobile.newdive.TabNewDetailsActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
+        <activity
+            android:name="com.diveboard.mobile.EmptyActivity"
+            android:label="@string/title_activity_empty" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.PhotosActivity"
+            android:label="@string/title_activity_photos" >
+        </activity>
+        <activity android:name="com.uservoice.uservoicesdk.activity.PortalActivity" />
+	    <activity android:name="com.uservoice.uservoicesdk.activity.ForumActivity" />
+	    <activity android:name="com.uservoice.uservoicesdk.activity.ArticleActivity" android:hardwareAccelerated="true" />
+	    <activity android:name="com.uservoice.uservoicesdk.activity.TopicActivity" />
+	    <activity android:name="com.uservoice.uservoicesdk.activity.ContactActivity" android:hardwareAccelerated="true" />
+	    <activity android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity" android:hardwareAccelerated="true" />
     </application>
 
 </manifest>
