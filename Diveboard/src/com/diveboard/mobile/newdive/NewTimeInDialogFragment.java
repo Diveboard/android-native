@@ -100,6 +100,17 @@ public class					NewTimeInDialogFragment extends DialogFragment
 					new_timein += mTimeIn.getCurrentMinute();
 				new_timein += ":00Z";
 				mDive.setTimeIn(new_timein);
+				String new_time = "";
+				if (mTimeIn.getCurrentHour() < 10)
+					new_time += "0" + mTimeIn.getCurrentHour();
+				else
+					new_time += mTimeIn.getCurrentHour();
+				new_time += ":";
+				if (mTimeIn.getCurrentMinute() < 10)
+					new_time += "0" + mTimeIn.getCurrentMinute();
+				else
+					new_time += mTimeIn.getCurrentMinute();
+				mDive.setTime(new_time);
 				mListener.onTimeInEditComplete(NewTimeInDialogFragment.this);
 				dismiss();
 			}

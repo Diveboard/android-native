@@ -113,7 +113,7 @@ public class SettingsActivity extends PreferenceActivity {
 		getPreferenceScreen().addPreference(userSettings);
 		
 		mUnitSetting = new ListPreference(this);
-		mUnitSetting.setEnabled(true);
+		mUnitSetting.setEnabled(false);
 		mUnitSetting.setTitle(getResources().getString(R.string.unit_setting_title));
 		mUnitSetting.setEntries(getResources().getStringArray(R.array.unit_entries));
 		mUnitSetting.setEntryValues(getResources().getStringArray(R.array.unit_entries));
@@ -153,6 +153,7 @@ public class SettingsActivity extends PreferenceActivity {
 			phoneNetworkDownload.setChecked(true);
 			phoneNetworkDownload.setTitle(getResources().getString(R.string.phone_network_download_title));
 			phoneNetworkDownload.setSummary(getResources().getString(R.string.phone_network_download_summary));
+			phoneNetworkDownload.setEnabled(false);
 			
 			getPreferenceScreen().addPreference(phoneNetworkDownload);
 //		}

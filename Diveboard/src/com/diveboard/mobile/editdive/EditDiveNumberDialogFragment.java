@@ -93,7 +93,10 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+				if (mDiveNumber.getText().toString().equals(""))
+					mModel.getDives().get(getArguments().getInt("index")).setNumber(0);
+				else
+					mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
 				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
 				dismiss();
 			}
