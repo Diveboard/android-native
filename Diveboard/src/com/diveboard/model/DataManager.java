@@ -370,14 +370,22 @@ public class					DataManager
 							postRequest = null;
 						if (postRequest == null)
 							break ;
-						// Adding parameters
-						ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
-						args.add(new BasicNameValuePair("auth_token", _token));
-						args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
-						args.add(new BasicNameValuePair("arg", elem.second));
-						args.add(new BasicNameValuePair("flavour", "mobile"));
 						try
 						{
+							// Adding parameters
+							ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
+							args.add(new BasicNameValuePair("auth_token", _token));
+							args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+							JSONObject checkObject = new JSONObject(elem.second);
+							if (checkObject.isNull("spot") == false)
+							{
+								JSONObject spot = new JSONObject();
+								spot.put("id", checkObject.getInt("id"));
+								args.add(new BasicNameValuePair("arg", spot.toString()));
+							}
+							else
+								args.add(new BasicNameValuePair("arg", elem.second));
+							args.add(new BasicNameValuePair("flavour", "mobile"));
 							// Set parameters
 							postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 							// Execute request
