@@ -261,6 +261,8 @@ public class					Dive implements IModel
 			_water = json.getString("water");
 		if (!json.isNull("notes"))
 			_notes = json.getString("notes");
+		if (!json.isNull("spot"))
+			_spot = new Spot(json.getJSONObject("spot"));
 	}
 	
 	public Distance getAltitude() {
@@ -465,11 +467,26 @@ public class					Dive implements IModel
 	}
 
 	public Spot getSpot() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("spot"))
+			{
+				Spot result;
+				try {
+					result = new Spot(new JSONObject(_editList.get(i).second));
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return _spot;
 	}
 
-	public void setSpot(Spot _spot) {
-		this._spot = _spot;
+	public void setSpot(JSONObject _spot) {
+		//this._spot = _spot;
+		Pair<String, String> new_elem = new Pair<String, String>("spot", _spot.toString());
+		_editList.add(new_elem);
 	}
 
 	public Temperature getTempBottom() {
