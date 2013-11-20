@@ -328,7 +328,7 @@ public class					DataManager
 						try
 						{
 							// Set parameters
-							postRequest.setEntity(new UrlEncodedFormEntity(args));
+							postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 							// Execute request
 							HttpResponse response = client.execute(postRequest);
 							// Get response

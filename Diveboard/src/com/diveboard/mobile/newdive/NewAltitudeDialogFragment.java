@@ -1,7 +1,9 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.model.Distance;
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -21,16 +23,16 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					NewAltitudeDialogFragment extends DialogFragment implements OnEditorActionListener
 {
-	public interface			EditDiveNumberDialogListener
+	public interface			EditAltitudeDialogListener
 	{
-        void					onDiveNumberEditComplete(DialogFragment dialog);
+        void					onAltitudeEditComplete(DialogFragment dialog);
     }
 	
-	private DiveboardModel		mModel;
-	private EditText			mDiveNumber;
-	private EditDiveNumberDialogListener	mListener;
+	private Dive				mDive;
+	private EditText			mAltitude;
+	private EditAltitudeDialogListener	mListener;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -40,12 +42,12 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditDiveNumberDialogListener) activity;
+			 mListener = (EditAltitudeDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onDiveNumberEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onAltitudeEditComplete");
 		 }
 	 }
 	
@@ -53,26 +55,27 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_dive_number, container);
-		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		View view = inflater.inflate(R.layout.dialog_edit_altitude, container);
+		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_divenumber_title));
+		title.setText(getResources().getString(R.string.edit_altitude_title));
 		
-		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
-		mDiveNumber.setTypeface(faceR);
-		if (mModel.getDives().get(getArguments().getInt("index")).getNumber() == null)
-			mDiveNumber.setText("0");
-		else
-			mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
-		mDiveNumber.requestFocus();
+		mAltitude = (EditText) view.findViewById(R.id.altitude);
+		mAltitude.setTypeface(faceR);
+		mAltitude.setText(Double.toString(mDive.getAltitude().getDistance()));
+		mAltitude.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-		mDiveNumber.setOnEditorActionListener(this);
-        
+		mAltitude.setOnEditorActionListener(this);
+		
+		TextView max_depth_label = (TextView) view.findViewById(R.id.altitude_label);
+		max_depth_label.setTypeface(faceR);
+		max_depth_label.setText(mDive.getAltitude().getSmallName());
+		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -93,8 +96,18 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+				Double dbl;
+				try
+				{
+					dbl = Double.parseDouble(mAltitude.getText().toString());
+				}
+				catch (NumberFormatException e)
+				{
+					dbl = 0.0;
+				}
+				Distance new_altitude = new Distance(dbl);
+				mDive.setAltitude(new_altitude);
+				mListener.onAltitudeEditComplete(NewAltitudeDialogFragment.this);
 				dismiss();
 			}
 		});
@@ -104,12 +117,22 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	}
 
 	@Override
-	public boolean					onEditorAction(TextView v, int actionId, KeyEvent event)
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+			Double dbl;
+			try
+			{
+				dbl = Double.parseDouble(mAltitude.getText().toString());
+			}
+			catch (NumberFormatException e)
+			{
+				dbl = 0.0;
+			}
+			Distance new_altitude = new Distance(dbl);
+			mDive.setAltitude(new_altitude);
+			mListener.onAltitudeEditComplete(NewAltitudeDialogFragment.this);
 			dismiss();
 			return true;
 		}

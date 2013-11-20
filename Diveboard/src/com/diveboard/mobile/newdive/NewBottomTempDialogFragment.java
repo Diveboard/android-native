@@ -1,8 +1,10 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Temperature;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -21,16 +23,17 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					NewBottomTempDialogFragment extends DialogFragment implements OnEditorActionListener
 {
-	public interface			EditDiveNumberDialogListener
+	public interface			EditBottomTempDialogListener
 	{
-        void					onDiveNumberEditComplete(DialogFragment dialog);
+        void					onBottomTempEditComplete(DialogFragment dialog);
     }
 	
-	private DiveboardModel		mModel;
-	private EditText			mDiveNumber;
-	private EditDiveNumberDialogListener	mListener;
+	private Dive				mDive;
+	private EditText			mBottomTemp;
+	private EditBottomTempDialogListener	mListener;
+	private Temperature			mTemperature;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -40,12 +43,12 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 		 try
 		 {
 			 // Instantiate the NoticeDialogListener so we can send events to the host
-			 mListener = (EditDiveNumberDialogListener) activity;
+			 mListener = (EditBottomTempDialogListener) activity;
 		 }
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onDiveNumberEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onBottomTempEditComplete");
 		 }
 	 }
 	
@@ -53,26 +56,32 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		View view = inflater.inflate(R.layout.dialog_edit_dive_number, container);
-		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
+		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_divenumber_title));
+		title.setText(getResources().getString(R.string.edit_bottom_temp_title));
 		
-		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
-		mDiveNumber.setTypeface(faceR);
-		if (mModel.getDives().get(getArguments().getInt("index")).getNumber() == null)
-			mDiveNumber.setText("0");
+		mBottomTemp = (EditText) view.findViewById(R.id.temperature);
+		mBottomTemp.setTypeface(faceR);
+		if (mDive.getTempBottom() == null)
+			mTemperature = new Temperature(0.0);
 		else
-			mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
-		mDiveNumber.requestFocus();
+			mTemperature = mDive.getTempBottom();
+		mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
+		mBottomTemp.setHint(getResources().getString(R.string.bottom_temp_hint));
+		mBottomTemp.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
-		mDiveNumber.setOnEditorActionListener(this);
-        
+		mBottomTemp.setOnEditorActionListener(this);
+		
+		TextView temp_label = (TextView) view.findViewById(R.id.temp_label);
+		temp_label.setTypeface(faceR);
+		temp_label.setText("°" + mTemperature.getSmallName());
+		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -93,8 +102,18 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+				Temperature temperature;
+				
+				try
+				{
+					temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+				}
+				catch (NumberFormatException e)
+				{
+					temperature = new Temperature(0.0);
+				}
+				mDive.setTempBottom(temperature);
+				mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
 				dismiss();
 			}
 		});
@@ -104,12 +123,22 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	}
 
 	@Override
-	public boolean					onEditorAction(TextView v, int actionId, KeyEvent event)
+	public boolean onEditorAction(TextView v, int actionId, KeyEvent event)
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+			Temperature temperature;
+			
+			try
+			{
+				temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+			}
+			catch (NumberFormatException e)
+			{
+				temperature = new Temperature(0.0);
+			}
+			mDive.setTempBottom(temperature);
+			mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
 			dismiss();
 			return true;
 		}

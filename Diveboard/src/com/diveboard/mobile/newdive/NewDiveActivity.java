@@ -54,11 +54,11 @@ public class					NewDiveActivity extends TabActivity
 	    intent = new Intent(this,TabNewDetailsActivity.class);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_gear_label), intent);
 	    
-	    intent = new Intent(this,TabNewDetailsActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_species_label), intent);
-	    
-	    intent = new Intent(this,TabNewDetailsActivity.class);
-	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
+//	    intent = new Intent(this,TabNewDetailsActivity.class);
+//	    setupTab(new TextView(this), getResources().getString(R.string.tab_species_label), intent);
+//	    
+//	    intent = new Intent(this,TabNewDetailsActivity.class);
+//	    setupTab(new TextView(this), getResources().getString(R.string.tab_photos_label), intent);
 	}
 	
 	private void					setupTab(final View view, final String tag, final Intent content)

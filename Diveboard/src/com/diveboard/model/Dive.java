@@ -89,6 +89,8 @@ public class					Dive implements IModel
 		_timeIn += Integer.toString(c.get(Calendar.MINUTE)) + ":00Z";
 		_maxdepth = new Distance(0.0);
 		_duration = 0;
+		_tripName = "";
+		_altitude = new Distance(0.0);
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -617,7 +619,7 @@ public class					Dive implements IModel
 
 	public void setNotes(String notes) {
 		//this._notes = notes;
-		Pair<String, String> new_elem = new Pair<String, String>("notes", notes.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\\n"));
+		Pair<String, String> new_elem = new Pair<String, String>("notes", notes.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n"));
 		_editList.add(new_elem);
 	}
 

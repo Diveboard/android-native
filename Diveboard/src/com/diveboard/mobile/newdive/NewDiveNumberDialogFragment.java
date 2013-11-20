@@ -1,7 +1,8 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -21,14 +22,14 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					EditDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
+public class					NewDiveNumberDialogFragment extends DialogFragment implements OnEditorActionListener
 {
 	public interface			EditDiveNumberDialogListener
 	{
         void					onDiveNumberEditComplete(DialogFragment dialog);
     }
 	
-	private DiveboardModel		mModel;
+	private Dive				mDive;
 	private EditText			mDiveNumber;
 	private EditDiveNumberDialogListener	mListener;
 	
@@ -54,7 +55,7 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	{
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		View view = inflater.inflate(R.layout.dialog_edit_dive_number, container);
-		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
@@ -64,10 +65,10 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 		
 		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
 		mDiveNumber.setTypeface(faceR);
-		if (mModel.getDives().get(getArguments().getInt("index")).getNumber() == null)
+		if (mDive.getNumber() == null)
 			mDiveNumber.setText("0");
 		else
-			mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
+			mDiveNumber.setText(Integer.toString(mDive.getNumber()));
 		mDiveNumber.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -93,8 +94,8 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+				mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+				mListener.onDiveNumberEditComplete(NewDiveNumberDialogFragment.this);
 				dismiss();
 			}
 		});
@@ -108,8 +109,8 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
-			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
+			mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+			mListener.onDiveNumberEditComplete(NewDiveNumberDialogFragment.this);
 			dismiss();
 			return true;
 		}

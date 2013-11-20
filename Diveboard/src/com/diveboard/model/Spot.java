@@ -24,6 +24,8 @@ public class					Spot implements IModel
 	private String				_countryName;
 	private Picture				_countryFlagBig;
 	private Picture				_countryFlagSmall;
+	private String				_cname;
+	private String				_location;
 	
 	public						Spot(JSONObject json) throws JSONException
 	{
@@ -42,6 +44,8 @@ public class					Spot implements IModel
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_countryFlagBig = (json.isNull("country_flag_big")) ? null : new Picture(json.getString("country_flag_big"));
 		_countryFlagSmall = (json.isNull("country_flag_small")) ? null : new Picture(json.getString("country_flag_small"));
+		_cname = (json.isNull("cname")) ? null : json.getString("cname");
+		_location = (json.isNull("location")) ? null : json.getString("location");
 	}
 
 	public Integer getId() {
@@ -101,6 +105,8 @@ public class					Spot implements IModel
 	}
 
 	public String getLocationName() {
+		if (_locationName == null)
+			return _location;
 		return _locationName;
 	}
 
@@ -141,6 +147,8 @@ public class					Spot implements IModel
 	}
 
 	public String getCountryName() {
+		if (_countryName == null)
+			return _cname;
 		return _countryName;
 	}
 
