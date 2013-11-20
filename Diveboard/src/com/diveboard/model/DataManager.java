@@ -39,18 +39,20 @@ public class					DataManager
 	private final Object							_lock = new Object(); // Lock for _editList
 	private int										_userId;
 	private String									_token;
+	private DiveboardModel							_model;
 	
 	/*
 	 * Method DataManager
 	 * Constructor, initialize the object
 	 */
-	public						DataManager(final Context context, final int userId, final String token)
+	public						DataManager(final Context context, final int userId, final String token, DiveboardModel model)
 	{
 		_context = context;
 		_userId = userId;
 		_cacheData = new SparseArray<HashMap<String, String>>();
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_token = token;
+		_model = model;
 	}
 	
 	/*
@@ -180,10 +182,44 @@ public class					DataManager
 		synchronized (_lock)
 		{
 			if (object.getClass() == Dive.class)
-				_saveDive(object);
+			{
+				if (((Dive)object).getId() == -1)
+					_addDive(object);
+				else
+					_saveDive(object);
+			}
 			((IModel)object).clearEditList();
 		}
 		commit();
+	}
+	
+	private void				_addDive(Object object)
+	{
+		JSONObject				json = new JSONObject();
+		Dive					dive = (Dive) object;
+		
+		try
+		{
+			json.put("date", dive.getDate());
+			json.put("time_in", dive.getTimeIn());
+			json.put("maxdepth", dive.getMaxdepth().getDistance().toString());
+			json.put("duration", dive.getDuration());
+			json.put("trip_name", dive.getTripName());
+			json.put("altitude", dive.getAltitude().getDistance().toString());
+			json.put("visibility", dive.getVisibility());
+			json.put("current", dive.getCurrent());
+			json.put("temp_surface", dive.getTempSurface().getTemperature().toString());
+			json.put("temp_bottom", dive.getTempBottom().getTemperature().toString());
+			json.put("water", dive.getWater());
+			json.put("notes", dive.getNotes());
+			json.put("weights", dive.getWeights().getWeight().toString());
+			json.put("user_id", _model.getUser().getId());
+			Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
+			_editList.add(new_elem);
+		}
+		catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	private void				_saveDive(Object object)
@@ -268,13 +304,28 @@ public class					DataManager
 			{
 				JSONObject json = new JSONObject(result);
 				JSONArray jarray = json.getJSONArray("result");
-				for (int i = 0, length = jarray.length(); i < length; i++)
+				if (Integer.parseInt(info[1]) == -1)
 				{
-					JSONObject temp = jarray.getJSONObject(i);
-					if (temp.getInt("id") == Integer.parseInt(info[1]))
+					for (int i = jarray.length() - 1; i >= 0; i--)
 					{
-						jarray.put(i, result_obj);
-						break ;
+						JSONObject temp = jarray.getJSONObject(i);
+						if (temp.getInt("id") == -1)
+						{
+							jarray.put(i, result_obj);
+							break ;
+						}
+					}
+				}
+				else
+				{
+					for (int i = 0, length = jarray.length(); i < length; i++)
+					{
+						JSONObject temp = jarray.getJSONObject(i);
+						if (temp.getInt("id") == Integer.parseInt(info[1]))
+						{
+							jarray.put(i, result_obj);
+							break ;
+						}
 					}
 				}
 				saveCache(_userId, "dives", json.toString());
@@ -337,6 +388,21 @@ public class					DataManager
 							JSONObject json = new JSONObject(result);
 							if (json.getBoolean("success") == false)
 								break ;
+							if (Integer.parseInt(info[1]) == -1)
+							{
+								System.out.println(result);
+								// New Dive segment
+								ArrayList<Dive> dives = _model.getDives();
+								JSONObject new_dive = json.getJSONObject("result");
+								for (int i = dives.size() - 1; i >= 0; i--)
+								{
+									if (dives.get(i).getId() == -1)
+									{
+										_model.getDives().get(i).setId(new_dive.getInt("id"));
+										break ;
+									}
+								}
+							}
 							_applyEditCache(elem.first, json.getJSONObject("result"));
 						}
 						catch (UnsupportedEncodingException e) 

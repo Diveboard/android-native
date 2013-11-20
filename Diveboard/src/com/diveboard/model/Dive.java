@@ -18,7 +18,7 @@ public class					Dive implements IModel
 	private Distance			_altitude;
 	// buddies
 	private String				_class;
-	private boolean				_complete;
+	private Boolean				_complete;
 	private String				_current;
 	private String				_date;
 	private ArrayList<DiveGear>	_diveGears = new ArrayList<DiveGear>();
@@ -37,13 +37,13 @@ public class					Dive implements IModel
 	private Distance			_maxdepth;
 	//notes
 	private String				_permalink;
-	private int					_privacy;
+	private Integer				_privacy;
 	// public_notes
 	private String				_safetystops;
 	private String				_shakenId;
 	private Shop				_shop;
 	private Integer				_shopId;
-	private int					_spotId;
+	private Integer				_spotId;
 	private Spot				_spot;
 	private Temperature			_tempBottom;
 	private Temperature			_tempSurface;
@@ -91,21 +91,31 @@ public class					Dive implements IModel
 		_duration = 0;
 		_tripName = "";
 		_altitude = new Distance(0.0);
+		_visibility = "bad";
+		_current = "none";
+		_tempSurface = new Temperature(0.0);
+		_tempBottom = new Temperature(0.0);
+		_water = "salt";
+		_notes = "";
+		_weights = new Weight(0.0);
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
 		_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"));
 		// buddies
-		_class = json.getString("class");
-		_complete = json.getBoolean("complete");
+		_class = (json.isNull("class")) ? null : json.getString("class");
+		_complete = (json.isNull("complete")) ? null : json.getBoolean("complete");
 		_current = (json.isNull("current")) ? null : json.getString("current");
 		_date = (json.isNull("date")) ? null : json.getString("date");
-		JSONArray jarray = json.getJSONArray("dive_gears");
-		for (int i = 0, length = jarray.length(); i < length; i++)
+		JSONArray jarray = (json.isNull("dive_gears")) ? null : json.getJSONArray("dive_gears");
+		if (jarray != null)
 		{
-			DiveGear new_elem = new DiveGear(jarray.getJSONObject(i));
-			_diveGears.add(new_elem);
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				DiveGear new_elem = new DiveGear(jarray.getJSONObject(i));
+				_diveGears.add(new_elem);
+			}
 		}
 		// dive shop
 		if (!json.isNull("divetype"))
@@ -123,27 +133,27 @@ public class					Dive implements IModel
 		_duration = json.getInt("duration");
 		_favorite = (json.isNull("favorite")) ? null : json.getBoolean("favorite");
 		// flavour
-		_fullpermalink = json.getString("fullpermalink");
+		_fullpermalink = (json.isNull("fullpermalink")) ? null : json.getString("fullpermalink");
 		// gears
 		_guide = (json.isNull("guide")) ? null : json.getString("guide");
-		_id = json.getInt("id");
-		_lat = json.getDouble("lat");
+		_id = (json.isNull("id")) ? -1 : json.getInt("id");
+		_lat = (json.isNull("lat")) ? 0.0 : json.getDouble("lat");
 		// legacy_buddies_hash
-		_lng = json.getDouble("lng");
+		_lng = (json.isNull("lng")) ? 0.0 : json.getDouble("lng");
 		_maxdepth = new Distance(json.getDouble("maxdepth"));
 		// notes
-		_permalink = json.getString("permalink");
-		_privacy = json.getInt("privacy");
+		_permalink = (json.isNull("permalink")) ? null : json.getString("permalink");
+		_privacy = (json.isNull("privacy")) ? null : json.getInt("privacy");
 		// public_notes
 		_safetystops = (json.isNull("safetystops")) ? null : json.getString("safetystops");
-		_shakenId = json.getString("shaken_id");
+		_shakenId = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
 		_shopId = (json.isNull("shop_id")) ? null : json.getInt("shop_id");
 		// species
-		_spotId = json.getInt("spot_id");
+		_spotId = (json.isNull("spot_id")) ? null : json.getInt("spot_id");
 		_spot = (json.isNull("spot")) ? null : new Spot(json.getJSONObject("spot"));
 		_tempBottom = (json.isNull("temp_bottom")) ? null : new Temperature(json.getDouble("temp_bottom"));
 		_tempSurface = (json.isNull("temp_surface")) ? null : new Temperature(json.getDouble("temp_surface"));
-		_thumbnailImageUrl = new Picture(json.getString("thumbnail_image_url"));
+		_thumbnailImageUrl = (json.isNull("thumbnail_image_url")) ? null : new Picture(json.getString("thumbnail_image_url"));
 		_thumbnailProfileUrl = (json.isNull("thumbnail_profile_url")) ? null : new Picture(json.getString("thumbnail_profile_url"));
 		_time = (json.isNull("time")) ? null : json.getString("time");
 		_timeIn = json.getString("time_in");

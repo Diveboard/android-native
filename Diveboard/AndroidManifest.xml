@@ -116,6 +116,10 @@
 	    <activity android:name="com.uservoice.uservoicesdk.activity.TopicActivity" />
 	    <activity android:name="com.uservoice.uservoicesdk.activity.ContactActivity" android:hardwareAccelerated="true" />
 	    <activity android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity" android:hardwareAccelerated="true" />
+        <activity
+	    	android:name="com.diveboard.mobile.newdive.TabNewNotesActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
     </application>
 
 </manifest>
