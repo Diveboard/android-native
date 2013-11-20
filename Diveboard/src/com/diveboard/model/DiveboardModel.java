@@ -65,7 +65,7 @@ public class					DiveboardModel
 		_userId = userId;
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		_cache = new DataManager(context, _userId, _token);
+		_cache = new DataManager(context, _userId, _token, this);
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -114,7 +114,7 @@ public class					DiveboardModel
 					fileContent.append(new String(buffer));
 				_unitPreferences = fileContent.toString();
 				fileInputStream.close();
-				_cache = new DataManager(_context, _userId, _token);
+				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
 			{
@@ -173,7 +173,7 @@ public class					DiveboardModel
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
 				// Initialize DataManager
-				_cache = new DataManager(_context, _userId, _token);
+				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
 				client.close();
 				
@@ -261,7 +261,7 @@ public class					DiveboardModel
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
 				// Initialize DataManager
-				_cache = new DataManager(_context, _userId, _token);
+				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
 				client.close();
 				
@@ -427,8 +427,13 @@ public class					DiveboardModel
 	{
 		// Load user information
 		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
-		HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + Integer.toString(_userId) + "?flavour=mobile");
-		HttpResponse response = client.execute(getRequest);
+		HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/V2/user/" + Integer.toString(_userId));
+		ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+		args.add(new BasicNameValuePair("auth_token", _token));
+		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("flavour", "mobile"));
+		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+		HttpResponse response = client.execute(postRequest);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
 		if (!temp_mode)
@@ -441,7 +446,8 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(result);
 		json = json.getJSONObject("result");
 		String dive_str = "%5B";
-		JSONArray jarray = json.getJSONArray("public_dive_ids");
+		System.out.println(json);
+		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
 			if (i != 0)
@@ -449,8 +455,14 @@ public class					DiveboardModel
 			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
 		dive_str = dive_str.concat("%5D");
-		getRequest = new HttpGet("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str) + "&flavour=mobile");
-		response = client.execute(getRequest);
+		postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str));
+		args = new ArrayList<NameValuePair>();
+		args.add(new BasicNameValuePair("auth_token", _token));
+		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("flavour", "mobile"));
+		args.add(new BasicNameValuePair("arg", dive_str));
+		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+		response = client.execute(postRequest);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
 		if (!temp_mode)
@@ -581,12 +593,19 @@ public class					DiveboardModel
 	{
 		ArrayList<Dive> dives = getDives();
 		
-		for (int i = 0, length = dives.size(); i < length; i++)
+		// Create Dive if new dive type
+		if (id == -1)
+			dives.add(0, new Dive(new JSONObject(json)));
+		else
 		{
-			if (dives.get(i).getId() == id)
+			// Apply edit if edit type
+			for (int i = 0, length = dives.size(); i < length; i++)
 			{
-				dives.get(i).applyEdit(new JSONObject(json));
-				break ;
+				if (dives.get(i).getId() == id)
+				{
+					dives.get(i).applyEdit(new JSONObject(json));
+					break ;
+				}
 			}
 		}
 	}
@@ -616,7 +635,7 @@ public class					DiveboardModel
 		{
 			String url;
 			url = DiveboardModel.savedPictureList.get(i);
-			System.out.println("REFRESH : " + url);
+			//System.out.println("REFRESH : " + url);
 			for (int j = 0; j < DiveboardModel.pictureList.size(); j++)
 			{
 				if (DiveboardModel.pictureList.get(j).first.equals(url))
@@ -838,7 +857,7 @@ public class					DiveboardModel
 						
 						for (int i = 0, length = savedPictureArray.length; i < length; i++)
 						{
-							System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
+							//System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
 							DiveboardModel.savedPictureList.add(savedPictureArray[i]);
 						}
 						

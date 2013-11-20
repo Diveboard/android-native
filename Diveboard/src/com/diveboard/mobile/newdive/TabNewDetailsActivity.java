@@ -211,8 +211,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			@Override
 			public void onClick(View v)
 			{
-//				Dive dive = mModel.getDives().get(mIndex);
-//				mModel.getDataManager().save(dive);
+				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				dives.add(0, mDive);
+				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				finish();
 			}
 		});

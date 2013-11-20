@@ -99,6 +99,10 @@
             android:name="com.diveboard.mobile.newdive.TabNewDetailsActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
+        <activity
+            android:name="com.diveboard.mobile.newdive.TabNewNotesActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
     </application>
 
 </manifest>
