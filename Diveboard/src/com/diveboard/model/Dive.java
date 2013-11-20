@@ -263,6 +263,8 @@ public class					Dive implements IModel
 			_notes = json.getString("notes");
 		if (!json.isNull("spot"))
 			_spot = new Spot(json.getJSONObject("spot"));
+		if (!json.isNull("time"))
+			_time = json.getString("time");
 	}
 	
 	public Distance getAltitude() {
@@ -372,11 +374,18 @@ public class					Dive implements IModel
 	}
 
 	public String getTime() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("time"))
+				return (_editList.get(i).second);
+		}
 		return _time;
 	}
 
 	public void setTime(String _time) {
-		this._time = _time;
+		//this._time = _time;
+		Pair<String, String> new_elem = new Pair<String, String>("time", _time);
+		_editList.add(new_elem);
 	}
 	
 	public String getCurrent() {
@@ -647,7 +656,7 @@ public class					Dive implements IModel
 
 	public void setNotes(String notes) {
 		//this._notes = notes;
-		Pair<String, String> new_elem = new Pair<String, String>("notes", notes.replaceAll("\"", "\\\\\"").replaceAll("\n", "\\\\n"));
+		Pair<String, String> new_elem = new Pair<String, String>("notes", notes.replaceAll("\"", "\\\\\""));
 		_editList.add(new_elem);
 	}
 
