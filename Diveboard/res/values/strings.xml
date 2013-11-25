@@ -10,7 +10,7 @@
     <string name="hello_world">Hello World!</string>
     <string name="tab_notes_edit_title">DIVE NOTES</string>
     <string name="tab_spots_title">SPOTS</string>
-    <string name="save_button">SAVE</string>
+    <string name="save_button">OK</string>
     <string name="tab_details_label">DETAILS</string>
     <string name="tab_notes_label">NOTES</string>
     <string name="tab_gear_label">GEAR</string>
