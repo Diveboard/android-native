@@ -22,7 +22,7 @@
 	        android:layout_centerVertical="true">
 			<ImageView
 		        android:id="@+id/trip_image"
-		        android:layout_height="50dp"
+		        android:layout_height="48dp"
 		        android:layout_width="48dp"
 		        android:src="@drawable/ic_diveboard_white"
 		        android:layout_marginLeft="10dp"
@@ -79,13 +79,13 @@
 	                    android:layout_width="match_parent"
 	                    android:background="@color/white">
 	                </FrameLayout>
-	                <LinearLayout
+<!-- 	                <LinearLayout
 	                    android:orientation="vertical"
 	                    android:background="@color/white"
 	                    android:layout_width="match_parent"
 	                    android:layout_alignParentTop="true"
 	                    android:layout_height="10dp">
-	                </LinearLayout>
+	                </LinearLayout> -->
 	            </RelativeLayout>
        		</LinearLayout>
 		</TabHost>

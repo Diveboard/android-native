@@ -245,16 +245,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					AC.getModel().stopPreloadPictures();
 					AC.setModel(null);
 					finish();
-					//AC.handleLowMemory();
 					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(newDiveActivity);
 		    	    return true;
 		        case R.id.menu_settings:
 		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(settingsActivity);
 		            return true;
 		        case R.id.report_bug:
@@ -301,16 +298,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	AC.getModel().stopPreloadPictures();
 				AC.setModel(null);
 				finish();
-				//AC.handleLowMemory();
 				return true;
 	    	case R.id.add_dive:
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//	    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(newDiveActivity);
 	    	    return true;
 	    	case R.id.menu_settings:
 	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(settingsActivity);
 	            return true;
 	    	case R.id.report_bug:
@@ -557,7 +551,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        mPager.setPageMargin(margin + offset);
 			        mPager.setOffscreenPageLimit(2);
 			        mPager.setCurrentItem(AC.getPageIndex());
-			        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+			        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 			        //The tracking bar is set
 			        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 			        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());

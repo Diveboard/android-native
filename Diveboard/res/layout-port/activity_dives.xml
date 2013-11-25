@@ -113,53 +113,54 @@
 			    android:layout_width="match_parent"
 			    android:layout_height="10dp"
 			    android:background="#FFFFFF" >
-				<TextView
-				    android:id="@+id/title_footer"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_marginLeft="10dp"
-				    android:layout_marginTop="5dp"/>
-<!-- 				<TextView -->
-<!-- 				    android:id="@+id/title_footer2" -->
-<!-- 				    android:layout_width="wrap_content" -->
-<!-- 				    android:layout_height="wrap_content" -->
-<!-- 				    android:layout_toRightOf="@id/title_footer1" -->
-<!-- 				    android:layout_marginTop="5dp"/> -->
-<!-- 				<TextView -->
-<!-- 				    android:id="@+id/title_footer3" -->
-<!-- 				    android:layout_width="wrap_content" -->
-<!-- 				    android:layout_height="wrap_content" -->
-<!-- 				    android:layout_toRightOf="@id/title_footer2" -->
-<!-- 				    android:layout_marginTop="5dp"/> -->
-<!-- 				<TextView -->
-<!-- 				    android:id="@+id/title_footer4" -->
-<!-- 				    android:layout_width="wrap_content" -->
-<!-- 				    android:layout_height="wrap_content" -->
-<!-- 				    android:layout_toRightOf="@id/title_footer3" -->
-<!-- 				    android:layout_marginTop="5dp"/> -->
-<!-- 				<TextView -->
-<!-- 				    android:id="@+id/title_footer5" -->
-<!-- 				    android:layout_width="wrap_content" -->
-<!-- 				    android:layout_height="wrap_content" -->
-<!-- 				    android:layout_toRightOf="@id/title_footer4" -->
-<!-- 				    android:layout_marginTop="5dp"/> -->
-				<TextView
-				    android:id="@+id/content_footer"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:layout_below="@id/title_footer"
-				    android:layout_marginLeft="10dp"/>
-				<ImageView
-				    android:id="@+id/overflow"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
+		       <LinearLayout
+			        android:id="@+id/footer_image_layout"
+			        android:orientation="vertical"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_centerVertical="true">
+					<ImageView
+				        android:id="@+id/footer_image"
+				        android:layout_height="40dp"
+				        android:layout_width="40dp"
+				        android:src="@drawable/ic_diveboard_grey"
+				        android:layout_marginLeft="4dp" />
+				</LinearLayout>
+				<LinearLayout
+			        android:id="@+id/footer_info"
+			        android:orientation="vertical"
+			        android:layout_width="wrap_content"
+			        android:layout_height="wrap_content"
+			        android:layout_toRightOf="@id/footer_image_layout"
+			        android:layout_centerVertical="true">
+					<TextView
+					    android:id="@+id/title_footer"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:layout_marginLeft="10dp"
+					    android:layout_marginTop="5dp"/>
+					<TextView
+					    android:id="@+id/content_footer"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"
+					    android:layout_marginLeft="10dp"/>
+				</LinearLayout>
+				<LinearLayout
+				    android:layout_toRightOf="@id/footer_info"
 				    android:layout_alignParentRight="true"
-				    android:src="@drawable/ic_action_overflow"
-				    android:layout_centerVertical="true"
-				    android:background="@drawable/overflow_background"
-				    android:layout_alignParentTop="true"
-				    android:layout_alignParentBottom="true"
-				    android:onClick="openMenu"/>
+				    android:orientation="vertical"
+				    android:layout_height="match_parent"
+				    android:layout_width="wrap_content"
+				    android:gravity="right|center_vertical"
+				    android:onClick="openMenu">
+				    <ImageView
+					    android:id="@+id/overflow"
+					    android:layout_width="wrap_content"
+					    android:layout_height="wrap_content"					    
+					    android:src="@drawable/ic_action_overflow"					    
+					    android:background="@drawable/overflow_background"
+					    />
+				</LinearLayout>				
 			</RelativeLayout>
         </LinearLayout>
 <!--     </ScrollView> -->

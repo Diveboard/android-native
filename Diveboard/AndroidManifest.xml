@@ -1,11 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
-    android:versionCode="1"
-    android:versionName="1.0" >
+    android:versionCode="80"
+    android:versionName="3.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <!--
+         The following two permissions are not required to use
+	     Google Maps Android API v2, but are recommended.
+    -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -14,11 +22,18 @@
     <application
         android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
-        android:debuggable="true"
+        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
+        <meta-data
+            android:name="com.google.android.gms.version"
+            android:value="@integer/google_play_services_version" />
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyActYnLGFI7NCJ4AKPCQ0wjHrbCVKYaDX0" />
+
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
             android:label="@string/title_activity_login"
@@ -56,13 +71,16 @@
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditSpotsActivity"
             android:label="@string/title_activity_edit_dive" >
-<!--             <intent-filter>
+
+            <!--
+                 <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
 
             <meta-data
                 android:name="android.app.searchable"
-                android:resource="@xml/search_bar" /> -->
+                android:resource="@xml/search_bar" />
+            -->
         </activity>
         <activity
             android:name="com.diveboard.mobile.DiveDetailsActivity"
@@ -111,18 +129,28 @@
             android:label="@string/title_activity_photos" >
         </activity>
         <activity android:name="com.uservoice.uservoicesdk.activity.PortalActivity" />
-	    <activity android:name="com.uservoice.uservoicesdk.activity.ForumActivity" />
-	    <activity android:name="com.uservoice.uservoicesdk.activity.ArticleActivity" android:hardwareAccelerated="true" />
-	    <activity android:name="com.uservoice.uservoicesdk.activity.TopicActivity" />
-	    <activity android:name="com.uservoice.uservoicesdk.activity.ContactActivity" android:hardwareAccelerated="true" />
-	    <activity android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity" android:hardwareAccelerated="true" />
+        <activity android:name="com.uservoice.uservoicesdk.activity.ForumActivity" />
         <activity
-	    	android:name="com.diveboard.mobile.newdive.TabNewNotesActivity"
+            android:name="com.uservoice.uservoicesdk.activity.ArticleActivity"
+            android:hardwareAccelerated="true" />
+        <activity android:name="com.uservoice.uservoicesdk.activity.TopicActivity" />
+        <activity
+            android:name="com.uservoice.uservoicesdk.activity.ContactActivity"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity"
+            android:hardwareAccelerated="true" />
+        <activity
+            android:name="com.diveboard.mobile.newdive.TabNewNotesActivity"
             android:label="@string/title_activity_new_dive" >
         </activity>
         <activity
-	    	android:name="com.diveboard.mobile.newdive.TabNewSpotsActivity"
+            android:name="com.diveboard.mobile.newdive.TabNewSpotsActivity"
             android:label="@string/title_activity_new_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.MapActivity"
+            android:label="@string/title_activity_map" >
         </activity>
     </application>
 

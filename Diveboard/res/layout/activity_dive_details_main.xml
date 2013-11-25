@@ -73,7 +73,7 @@
 					        android:text="EDIT"
 					        android:layout_marginLeft="10dp"
 					        android:layout_alignParentRight="false"
-					        android:layout_weight="1"
+					        android:layout_weight="0.5"
 					        android:layout_width="0dp"
 					        android:layout_height="wrap_content">
 					    </Button>
@@ -83,6 +83,7 @@
 					        android:layout_marginLeft="10dp"
 					        android:layout_width="0dp"
 					        android:layout_weight="0.5"
+					        android:onClick="goToDeleteDive"
 					        android:layout_height="wrap_content">
 				    </Button> -->
 				    </LinearLayout>

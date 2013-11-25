@@ -98,6 +98,14 @@ public class					Dive implements IModel
 		_water = null;
 		_notes = "";
 		_weights = null;
+		JSONObject arg = new JSONObject();
+		try {
+			arg.put("id", 1);
+			Spot new_spot = new Spot(arg);
+			_spot = new_spot;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public						Dive(JSONObject json) throws JSONException

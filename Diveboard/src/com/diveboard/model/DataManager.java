@@ -439,7 +439,9 @@ public class					DataManager
 						else if (info[0].equals("Dive_delete"))
 						{
 							_deleteDive(client, elem.first);
-							break ;
+							_editList.remove(0);
+							_cacheEditList();
+							continue ;
 						}
 						else
 							postRequest = null;
@@ -521,14 +523,13 @@ public class					DataManager
 		private void					_deleteDive(AndroidHttpClient client, String elemtag)
 		{
 			String[]					info = elemtag.split(":");
-			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=\"" + _token + "\"&apikey=\"px6LQxmV8wQMdfWsoCwK\"&flavour=\"mobile\"");
+			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=%22" + _token + "%22&apikey=%22px6LQxmV8wQMdfWsoCwK%22&flavour=%22mobile%22");
 			try
 			{
+				System.out.println("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=%22" + _token + "%22&apikey=%22px6LQxmV8wQMdfWsoCwK%22&flavour=%22mobile%22");
 				client.execute(deleteRequest);
 				_applyEditCache(elemtag, null);
 				client.close();
-				_editList.remove(0);
-				_cacheEditList();
 			}
 			catch (IOException e) {
 				e.printStackTrace();

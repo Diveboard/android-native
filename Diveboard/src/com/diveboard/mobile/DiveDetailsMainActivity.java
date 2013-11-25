@@ -53,6 +53,13 @@ public class DiveDetailsMainActivity extends Activity {
 	    startActivity(editDiveActivity);
 	}
 	
+	public void goToDeleteDive(View view)
+	{
+		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(AC.getPageIndex()));
+		finish();
+	}
+	
 	public void goToURL(View view)
 	{
 		String url = mDive.getFullpermalink().toString();

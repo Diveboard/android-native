@@ -89,19 +89,19 @@ public class					TabEditSpotsActivity extends Activity
 //				mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
 //				mModel.getDataManager().save(mModel.getDives().get(mIndex));
 				System.out.println("current spot = " + ((TextView)findViewById(R.id.current_spot)).getText().toString());
-				if (mHasChanged == true && mSelectedObject != null)
-					mModel.getDives().get(mIndex).setSpot(mSelectedObject);
-				else if (mHasChanged == true && mSelectedObject == null)
-				{
-					JSONObject jobject = new JSONObject();
-					try {
-						jobject.put("id", 1);
-					} catch (JSONException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					mModel.getDives().get(mIndex).setSpot(jobject);
-				}
+//				if (mHasChanged == true && mSelectedObject != null)
+//					mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+//				else if (mHasChanged == true && mSelectedObject == null)
+//				{
+//					JSONObject jobject = new JSONObject();
+//					try {
+//						jobject.put("id", 1);
+//					} catch (JSONException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//					mModel.getDives().get(mIndex).setSpot(jobject);
+//				}
 				mModel.getDataManager().save(mModel.getDives().get(mIndex));
 				ApplicationController AC = (ApplicationController)getApplicationContext();
 				AC.setRefresh(2);
@@ -118,6 +118,14 @@ public class					TabEditSpotsActivity extends Activity
 				mSelectedObject = null;
 				mHasChanged = true;
 				v.setVisibility(View.GONE);
+				JSONObject jobject = new JSONObject();
+				try {
+					jobject.put("id", 1);
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				mModel.getDives().get(mIndex).setSpot(jobject);
 			}
 		});
 	    if (mModel.getDives().get(mIndex).getSpot().getId() == 1)
@@ -214,6 +222,7 @@ public class					TabEditSpotsActivity extends Activity
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
+										mModel.getDives().get(mIndex).setSpot(mSelectedObject);
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();

@@ -101,13 +101,15 @@ public class DiveDetailsActivity extends TabActivity {
 				setupTab(getResources().getString(R.string.tab_details_label), intent, R.drawable.ic_details_grey);
 
 				intent = new Intent(DiveDetailsActivity.this, PhotosActivity.class);
+				intent.putExtra("index", AC.getPageIndex());
 				setupTab(getResources().getString(R.string.tab_photos_label), intent, R.drawable.ic_photos_white);
 
 //				intent = new Intent(DiveDetailsActivity.this, EmptyActivity.class);
 //				setupTab(getResources().getString(R.string.tab_species_label), intent, R.drawable.ic_species_white);
 //
-//				intent = new Intent(DiveDetailsActivity.this, EmptyActivity.class);
-//				setupTab(getResources().getString(R.string.tab_map_label), intent, R.drawable.ic_map_white);
+				intent = new Intent(DiveDetailsActivity.this, MapActivity.class);
+				intent.putExtra("index", AC.getPageIndex());
+				setupTab(getResources().getString(R.string.tab_map_label), intent, R.drawable.ic_map_white);
 
 				((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
 				mTabHost.setOnTabChangedListener(new OnTabChangeListener(){
@@ -124,11 +126,11 @@ public class DiveDetailsActivity extends TabActivity {
 							{
 								((ImageView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_white));
 							}
+//							else if (i == 2)
+//							{
+//								((ImageView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_white));
+//							}
 							else if (i == 2)
-							{
-								((ImageView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_white));
-							}
-							else if (i == 3)
 							{
 								((ImageView)(tab_widget.getChildTabViewAt(i)).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_map_white));
 							}
@@ -152,9 +154,9 @@ public class DiveDetailsActivity extends TabActivity {
 								((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_grey));
 							}
 						}
+//						else if (mTabHost.getCurrentTab() == 2)
+//							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));
 						else if (mTabHost.getCurrentTab() == 2)
-							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));
-						else if (mTabHost.getCurrentTab() == 3)
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_map_grey));
 						if (mTabHost.getCurrentTab() == 0)
 							((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
