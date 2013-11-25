@@ -66,6 +66,7 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 		mMaxDepth = (EditText) view.findViewById(R.id.max_depth);
 		mMaxDepth.setTypeface(faceR);
 		mMaxDepth.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth().getDistance()));
+		mMaxDepth.setSelection(mMaxDepth.getText().length());
 		mMaxDepth.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
