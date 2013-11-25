@@ -13,6 +13,7 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
@@ -174,7 +175,20 @@ public class					DataManager
 	
 	public void					delete(Object object)
 	{
-		
+		synchronized (_lock)
+		{
+			if (object.getClass() == Dive.class)
+				_deleteDive(object);
+		}
+		commit();
+	}
+	
+	private void				_deleteDive(Object object)
+	{
+		Dive dive = (Dive) object;
+		Pair<String, String> new_elem = new Pair<String, String>("Dive_delete:" + dive.getId(), null);
+		_editList.add(new_elem);
+		commit();
 	}
 	
 	public void					save(Object object)
@@ -366,6 +380,36 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("Dive_delete"))
+		{
+			String result = get(_userId, "dives");
+			JSONObject json;
+			try
+			{
+				json = new JSONObject(result);
+				JSONArray jarray = json.getJSONArray("result");
+				for (int i = 0, length = jarray.length(); i < length; i++)
+				{
+					JSONObject temp = jarray.getJSONObject(i);
+					if (temp.getInt("id") == Integer.parseInt(info[1]))
+					{
+						ArrayList<String> list = new ArrayList<String>();
+						for (int j = 0, len = jarray.length(); j < len; j++) 
+						    list.add(jarray.get(j).toString());
+						list.remove(i);
+						JSONArray new_jarray = new JSONArray(list);
+						saveCache(_userId, "dives", json.toString());
+						commitCache();
+						break ;
+					}
+				}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -392,6 +436,11 @@ public class					DataManager
 						String[] info = elem.first.split(":");
 						if (info[0].compareTo("Dive") == 0)
 							postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
+						else if (info[0].equals("Dive_delete"))
+						{
+							_deleteDive(client, elem.first);
+							break ;
+						}
 						else
 							postRequest = null;
 						if (postRequest == null)
@@ -466,6 +515,23 @@ public class					DataManager
 				}
 				else
 					break ;
+			}
+		}
+		
+		private void					_deleteDive(AndroidHttpClient client, String elemtag)
+		{
+			String[]					info = elemtag.split(":");
+			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=\"" + _token + "\"&apikey=\"px6LQxmV8wQMdfWsoCwK\"&flavour=\"mobile\"");
+			try
+			{
+				client.execute(deleteRequest);
+				_applyEditCache(elemtag, null);
+				client.close();
+				_editList.remove(0);
+				_cacheEditList();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
 			}
 		}
 	}
