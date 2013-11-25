@@ -186,7 +186,7 @@ public class DivesFragment extends Fragment {
 		else
 			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
 		//Set the title details content
-		if (mDive.getSpot() != null)
+		if (mDive.getSpot() != null && mDive.getSpot().getId() != 1)
 		{
 			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
 			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);

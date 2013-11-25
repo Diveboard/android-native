@@ -160,12 +160,28 @@ public class DiveDetailsActivity extends TabActivity {
 							((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 					}
 				});
-				((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getTripName());
-				((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
-				((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
-				((TextView)findViewById(R.id.place_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName());
+				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getTripName() == null)
+				{
+					((TextView)findViewById(R.id.trip_name)).setVisibility(View.GONE);
+				}
+				else
+				{
+					((TextView)findViewById(R.id.trip_name)).setText(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getTripName());
+					((TextView)findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
+					((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
+				}
+				String place_name = "";
+				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getId() != 1 && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
+					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
+				else if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() == null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
+					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
+				else if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() != null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() == null)
+					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName();
+				((TextView)findViewById(R.id.place_name)).setText(place_name);
 				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);
+				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() == null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() == null)
+					((TextView)findViewById(R.id.place_name)).setVisibility(View.GONE);
 				((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());

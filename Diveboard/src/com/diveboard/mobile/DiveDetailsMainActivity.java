@@ -7,6 +7,7 @@ import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.Picture;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -52,6 +53,14 @@ public class DiveDetailsMainActivity extends Activity {
 	    startActivity(editDiveActivity);
 	}
 	
+	public void goToURL(View view)
+	{
+		String url = mDive.getFullpermalink().toString();
+		Intent i = new Intent(Intent.ACTION_VIEW);
+		i.setData(Uri.parse(url));
+		startActivity(i);
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -66,6 +75,7 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
 			((TextView)findViewById(R.id.dive_note)).setText("No Note for this dive");
+		((TextView)findViewById(R.id.dive_url)).setPaintFlags(((TextView)findViewById(R.id.dive_url)).getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 		((TextView)findViewById(R.id.dive_note)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_note)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView)findViewById(R.id.logged_by)).setText(AC.getModel().getUser().getNickname());

@@ -115,7 +115,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 1)
 		{
-			AC.setPageIndex(0);
+			//AC.setPageIndex(0);
 			AC.setRefresh(0);
 			finish();
 			startActivity(getIntent());
@@ -242,6 +242,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				case R.id.refresh:
 					ApplicationController AC = (ApplicationController)getApplicationContext();
 					AC.setPageIndex(0);
+					AC.getModel().stopPreloadPictures();
 					AC.setModel(null);
 					finish();
 					//AC.handleLowMemory();
@@ -297,6 +298,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    case R.id.refresh:
 		    	ApplicationController AC = (ApplicationController)getApplicationContext();
 		    	AC.setPageIndex(0);
+		    	AC.getModel().stopPreloadPictures();
 				AC.setModel(null);
 				finish();
 				//AC.handleLowMemory();
@@ -444,23 +446,33 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public static String getPositon(int i, DiveboardModel model)
 	{
 		String pos = "";
-		if (model.getDives().get(i).getLat() > 0)
+		if (model.getDives().get(i).getLat() == null)
+		{
+			pos += "0° ";
+			pos += "N";
+		}
+		else if (model.getDives().get(i).getLat() >= 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLat()) + "° ";
 			pos += "N";
 		}
-		else
+		else if (model.getDives().get(i).getLat() < 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (model.getDives().get(i).getLng() > 0)
+		if (model.getDives().get(i).getLng() == null)
+		{
+			pos += "0° ";
+			pos += "E";
+		}
+		else if (model.getDives().get(i).getLng() >= 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLng()) + "° ";
 			pos += "E";
 		}
-		else
+		else if (model.getDives().get(i).getLng() < 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLng() * (-1)) + "° ";
 			pos += "W";

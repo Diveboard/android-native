@@ -31,9 +31,9 @@ public class					Dive implements IModel
 	// gears
 	private String				_guide;
 	private int					_id;
-	private double				_lat;
+	private Double				_lat;
 	// legacy_buddies_hash
-	private double				_lng;
+	private Double				_lng;
 	private Distance			_maxdepth;
 	//notes
 	private String				_permalink;
@@ -351,7 +351,7 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-	public double getLat() {
+	public Double getLat() {
 		return _lat;
 	}
 
@@ -359,7 +359,7 @@ public class					Dive implements IModel
 		this._lat = _lat;
 	}
 
-	public double getLng() {
+	public Double getLng() {
 		return _lng;
 	}
 

@@ -46,20 +46,33 @@
         <LinearLayout
             android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:layout_height="40dp"
+            android:layout_height="wrap_content"
             android:background="@drawable/tab_body_background"
             android:gravity="center">
-            <TextView
-			    android:id="@+id/current_spot_title"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:textColor="@color/dark_grey"
-			    android:text="Current spot: "/>
-            <TextView
-			    android:id="@+id/current_spot"
-			    android:layout_width="wrap_content"
-			    android:layout_height="wrap_content"
-			    android:textColor="@color/dark_grey"/>
+			<LinearLayout
+	            android:orientation="horizontal"
+	        	android:layout_width="0dp"
+	        	android:layout_height="40dp"
+	        	android:layout_weight="1"
+	        	android:gravity="center">
+	            <TextView
+				    android:id="@+id/current_spot_title"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:textColor="@color/dark_grey"
+				    android:text="Current spot: "/>
+	            <TextView
+				    android:id="@+id/current_spot"
+				    android:layout_width="wrap_content"
+				    android:layout_height="wrap_content"
+				    android:textColor="@color/dark_grey"/>
+	         </LinearLayout>
+	         <ImageView
+	             android:id="@+id/remove_button"
+	             android:layout_width="29dp"
+	             android:layout_height="29dp"
+	             android:src="@drawable/com_facebook_close"
+	             android:layout_marginRight="10dp"/>
         </LinearLayout>
 		
 		<LinearLayout

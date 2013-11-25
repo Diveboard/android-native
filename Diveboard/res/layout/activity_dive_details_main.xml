@@ -303,17 +303,40 @@
 	        android:orientation="horizontal"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
+	        android:background="#FFDADBDC">
+		    <LinearLayout
+		        android:orientation="vertical"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:background="@color/white"
+		        android:layout_marginBottom="1dp"
+		        android:padding="10dp">
+	<!-- 	        <FrameLayout -->
+	<!-- 		        android:layout_width="match_parent" -->
+	<!-- 		        android:layout_height="match_parent" -->
+	<!-- 		        android:background="@color/white" -->
+	<!-- 		        android:padding="0dp"> -->
+			        <TextView 
+			            android:id="@+id/dive_note"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"/>
+	<!-- 	        </FrameLayout> -->
+		    </LinearLayout>
+		</LinearLayout>
+		<LinearLayout
+	        android:orientation="vertical"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
 	        android:background="@color/white"
-	        android:layout_margin="10dp">
-<!-- 	        <FrameLayout -->
-<!-- 		        android:layout_width="match_parent" -->
-<!-- 		        android:layout_height="match_parent" -->
-<!-- 		        android:background="@color/white" -->
-<!-- 		        android:padding="0dp"> -->
-		        <TextView 
-		            android:id="@+id/dive_note"
+	        android:padding="10dp">
+		        <TextView
+		            android:id="@+id/dive_url"
 		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"/>
+		            android:layout_height="wrap_content"
+		            android:onClick="goToURL"
+		            android:clickable="true"
+		            android:text="View dive in browser"
+		            android:textColor="@color/blue"/>
 <!-- 	        </FrameLayout> -->
 	    </LinearLayout>
 	</LinearLayout>

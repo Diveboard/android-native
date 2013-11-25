@@ -55,6 +55,7 @@ public class					TabEditSpotsActivity extends Activity
 	private Spot						mSpot;
 	private JSONObject					mSelectedObject = null;
 	private JSONArray					mArray;
+	private Boolean						mHasChanged = false;
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -73,7 +74,8 @@ public class					TabEditSpotsActivity extends Activity
 	    ((TextView)findViewById(R.id.current_spot_title)).setTypeface(mFaceB);
 	    ((TextView)findViewById(R.id.current_spot)).setTypeface(mFaceR);
 	    ((TextView)findViewById(R.id.no_spot)).setTypeface(mFaceR);
-	    ((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
+	     if (mModel.getDives().get(mIndex).getSpot().getId() != 1)
+	    	 ((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
 	    ((TextView)findViewById(R.id.search_bar)).setTypeface(mFaceR);
 	    //((Button)findViewById(R.id.ok_search)).setTypeface(mFaceR);
 	    Button save = (Button) findViewById(R.id.save_button);
@@ -87,14 +89,41 @@ public class					TabEditSpotsActivity extends Activity
 //				mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
 //				mModel.getDataManager().save(mModel.getDives().get(mIndex));
 				System.out.println("current spot = " + ((TextView)findViewById(R.id.current_spot)).getText().toString());
-				if (mSelectedObject != null)
+				if (mHasChanged == true && mSelectedObject != null)
 					mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+				else if (mHasChanged == true && mSelectedObject == null)
+				{
+					JSONObject jobject = new JSONObject();
+					try {
+						jobject.put("id", 1);
+					} catch (JSONException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					mModel.getDives().get(mIndex).setSpot(jobject);
+				}
 				mModel.getDataManager().save(mModel.getDives().get(mIndex));
 				ApplicationController AC = (ApplicationController)getApplicationContext();
 				AC.setRefresh(2);
 				finish();
 			}
 		});
+	    ImageView remove = (ImageView) findViewById(R.id.remove_button);
+	    remove.setOnClickListener(new OnClickListener()
+        {
+
+			@Override
+			public void onClick(View v) {
+				((TextView)findViewById(R.id.current_spot)).setText("");
+				mSelectedObject = null;
+				mHasChanged = true;
+				v.setVisibility(View.GONE);
+			}
+		});
+	    if (mModel.getDives().get(mIndex).getSpot().getId() == 1)
+	    {
+	    	remove.setVisibility(View.GONE);
+	    }
 	    EditText editText = (EditText) findViewById(R.id.search_bar);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
 
@@ -180,6 +209,9 @@ public class					TabEditSpotsActivity extends Activity
 							    	List<Spot> listSpots = new ArrayList<Spot>();
 							    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
 							    	lv.setAdapter(adapter);
+							    	ImageView remove = (ImageView) findViewById(R.id.remove_button);
+							    	remove.setVisibility(View.VISIBLE);
+							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
 									} catch (JSONException e) {
