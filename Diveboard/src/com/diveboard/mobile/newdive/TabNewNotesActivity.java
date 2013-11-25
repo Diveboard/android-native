@@ -8,6 +8,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
@@ -36,6 +37,20 @@ public class TabNewNotesActivity extends Activity
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
 	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		Bundle bundle = new Bundle();
+		
+		// put
+		Intent intent = new Intent();
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		super.onBackPressed();
+		mDive = null;
+		((ApplicationController)getApplicationContext()).setTempDive(null);
+	};
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -70,6 +85,7 @@ public class TabNewNotesActivity extends Activity
 				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
+				((ApplicationController)getApplicationContext()).setTempDive(null);
 				finish();
 			}
 		});

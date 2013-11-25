@@ -389,7 +389,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		String[] time_in = dive.getTimeIn().split("T");
 		String new_time_in = dive.getDate() + "T" + time_in[1];
 		dive.setTimeIn(new_time_in);
-		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
+		String[] time = time_in[1].split(":");
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time[0] + ":" + time[1]);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}

@@ -37,8 +37,9 @@ public class					NewDiveActivity extends TabActivity
 	    
 	    setContentView(R.layout.activity_edit_dive);
 	    
-	    Dive new_dive = new Dive();
-	    ((ApplicationController)getApplicationContext()).setTempDive(new_dive);
+	    if (((ApplicationController)getApplicationContext()).getTempDive() == null)
+	    	((ApplicationController)getApplicationContext()).setTempDive(new Dive());
+	    
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
 	    

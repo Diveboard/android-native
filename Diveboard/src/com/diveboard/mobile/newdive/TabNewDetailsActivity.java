@@ -220,6 +220,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
+				((ApplicationController)getApplicationContext()).setTempDive(null);
 				finish();
 			}
 		});
@@ -350,7 +351,8 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		String[] time_in = mDive.getTimeIn().split("T");
 		String new_time_in = mDive.getDate() + "T" + time_in[1];
 		mDive.setTimeIn(new_time_in);
-		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
+		String[] time = time_in[1].split(":");
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time[0] + ":" + time[1]);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
