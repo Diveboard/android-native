@@ -72,6 +72,7 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 		
 		mVisibility = (Spinner) view.findViewById(R.id.visibility);
 		List<String> list = new ArrayList<String>();
+		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.bad_visibility));
 		list.add(getResources().getString(R.string.average_visibility));
 		list.add(getResources().getString(R.string.good_visibility));
@@ -80,15 +81,16 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mVisibility.setAdapter(dataAdapter);
-		if (mDive.getVisibility() != null)
-		{
-			if (mDive.getVisibility().compareTo("average") == 0)
-				mVisibility.setSelection(1);
-			else if (mDive.getVisibility().compareTo("good") == 0)
-				mVisibility.setSelection(2);
-			else if (mDive.getVisibility().compareTo("excellent") == 0)
-				mVisibility.setSelection(3);
-		}
+		if (mDive.getVisibility() == null)
+			mVisibility.setSelection(0);
+		else if (mDive.getVisibility().compareTo("bad") == 0)
+			mVisibility.setSelection(1);
+		else if (mDive.getVisibility().compareTo("average") == 0)
+			mVisibility.setSelection(2);
+		else if (mDive.getVisibility().compareTo("good") == 0)
+			mVisibility.setSelection(3);
+		else if (mDive.getVisibility().compareTo("excellent") == 0)
+			mVisibility.setSelection(4);
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -110,8 +112,13 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 			@Override
 			public void onClick(View v)
 			{
-				String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-				mDive.setVisibility(visibility[0].toLowerCase());
+				if (mVisibility.getSelectedItemPosition() == 0)
+					mDive.setVisibility(null);
+				else
+				{
+					String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
+					mDive.setVisibility(visibility[0].toLowerCase());
+				}
 				mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
 				dismiss();
 			}
@@ -126,8 +133,13 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-			mDive.setVisibility(visibility[0].toLowerCase());
+			if (mVisibility.getSelectedItemPosition() == 0)
+				mDive.setVisibility(null);
+			else
+			{
+				String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
+				mDive.setVisibility(visibility[0].toLowerCase());
+			}
 			mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
 			dismiss();
 			return true;

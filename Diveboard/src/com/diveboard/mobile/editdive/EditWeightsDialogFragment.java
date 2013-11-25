@@ -69,7 +69,7 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
 			mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights().getWeight()));
 		else
-			mWeights.setText("0.0");
+			mWeights.setText("");
 		mWeights.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -104,7 +104,14 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				try
+				{
+					mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				}
+				catch (NumberFormatException e)
+				{
+					mModel.getDives().get(getArguments().getInt("index")).setWeights(null);
+				}
 				mListener.onWeightsEditComplete(EditWeightsDialogFragment.this);
 				dismiss();
 			}
@@ -119,7 +126,14 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+			try
+			{
+				mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+			}
+			catch (NumberFormatException e)
+			{
+				mModel.getDives().get(getArguments().getInt("index")).setWeights(null);
+			}
 			mListener.onWeightsEditComplete(EditWeightsDialogFragment.this);
 			dismiss();
 			return true;

@@ -70,7 +70,7 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 		if (mDive.getWeights() != null)
 			mWeights.setText(Double.toString(mDive.getWeights().getWeight()));
 		else
-			mWeights.setText("0.0");
+			mWeights.setText("");
 		mWeights.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
@@ -105,7 +105,14 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 			@Override
 			public void onClick(View v)
 			{
-				mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				try
+				{
+					mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				}
+				catch (NumberFormatException e)
+				{
+					mDive.setWeights(null);
+				}
 				mListener.onWeightsEditComplete(NewWeightsDialogFragment.this);
 				dismiss();
 			}
@@ -120,7 +127,14 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+			try
+			{
+				mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+			}
+			catch (NumberFormatException e)
+			{
+				mDive.setWeights(null);
+			}
 			mListener.onWeightsEditComplete(NewWeightsDialogFragment.this);
 			dismiss();
 			return true;

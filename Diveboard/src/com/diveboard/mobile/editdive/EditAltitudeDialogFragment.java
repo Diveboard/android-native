@@ -65,15 +65,19 @@ public class					EditAltitudeDialogFragment extends DialogFragment implements On
 		
 		mAltitude = (EditText) view.findViewById(R.id.altitude);
 		mAltitude.setTypeface(faceR);
-		mAltitude.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getAltitude().getDistance()));
+		if (mModel.getDives().get(getArguments().getInt("index")).getAltitude() == null)
+			mAltitude.setText("");
+		else
+			mAltitude.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getAltitude().getDistance()));
 		mAltitude.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mAltitude.setOnEditorActionListener(this);
 		
 		TextView max_depth_label = (TextView) view.findViewById(R.id.altitude_label);
+		Distance tmp = new Distance(0.0);
 		max_depth_label.setTypeface(faceR);
-		max_depth_label.setText(mModel.getDives().get(getArguments().getInt("index")).getAltitude().getSmallName());
+		max_depth_label.setText(tmp.getSmallName());
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -102,9 +106,9 @@ public class					EditAltitudeDialogFragment extends DialogFragment implements On
 				}
 				catch (NumberFormatException e)
 				{
-					dbl = 0.0;
+					dbl = null;
 				}
-				Distance new_altitude = new Distance(dbl);
+				Distance new_altitude = (dbl == null) ? null : new Distance(dbl);
 				mModel.getDives().get(getArguments().getInt("index")).setAltitude(new_altitude);
 				mListener.onAltitudeEditComplete(EditAltitudeDialogFragment.this);
 				dismiss();
@@ -127,9 +131,9 @@ public class					EditAltitudeDialogFragment extends DialogFragment implements On
 			}
 			catch (NumberFormatException e)
 			{
-				dbl = 0.0;
+				dbl = null;
 			}
-			Distance new_altitude = new Distance(dbl);
+			Distance new_altitude = (dbl == null) ? null : new Distance(dbl);
 			mModel.getDives().get(getArguments().getInt("index")).setAltitude(new_altitude);
 			mListener.onAltitudeEditComplete(EditAltitudeDialogFragment.this);
 			dismiss();

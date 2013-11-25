@@ -67,5 +67,6 @@
     <string name="title_activity_empty">EmptyActivity</string>
     <string name="activity_in_progress">No picture in dive!</string>
     <string name="title_activity_photos">PhotosActivity</string>
+    <string name="null_select">-</string>
 
 </resources>

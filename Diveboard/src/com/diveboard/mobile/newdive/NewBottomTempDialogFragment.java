@@ -71,7 +71,10 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 			mTemperature = new Temperature(0.0);
 		else
 			mTemperature = mDive.getTempBottom();
-		mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
+		if (mDive.getTempBottom() == null)
+			mBottomTemp.setText("");
+		else
+			mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
 		mBottomTemp.setHint(getResources().getString(R.string.bottom_temp_hint));
 		mBottomTemp.requestFocus();
 		
@@ -110,7 +113,7 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 				}
 				catch (NumberFormatException e)
 				{
-					temperature = new Temperature(0.0);
+					temperature = null;
 				}
 				mDive.setTempBottom(temperature);
 				mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
@@ -135,7 +138,7 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 			}
 			catch (NumberFormatException e)
 			{
-				temperature = new Temperature(0.0);
+				temperature = null;
 			}
 			mDive.setTempBottom(temperature);
 			mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);

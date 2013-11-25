@@ -71,14 +71,19 @@ public class					EditWaterDialogFragment extends DialogFragment implements OnEdi
 		
 		mWater = (Spinner) view.findViewById(R.id.water);
 		List<String> list = new ArrayList<String>();
+		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.salt_water));
 		list.add(getResources().getString(R.string.fresh_water));
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mWater.setAdapter(dataAdapter);
-		if (mModel.getDives().get(getArguments().getInt("index")).getWater().compareTo("fresh") == 0)
+		if (mModel.getDives().get(getArguments().getInt("index")).getWater() == null)
+			mWater.setSelection(0);
+		else if (mModel.getDives().get(getArguments().getInt("index")).getWater().compareTo("salt") == 0)
 			mWater.setSelection(1);
+		else if (mModel.getDives().get(getArguments().getInt("index")).getWater().compareTo("fresh") == 0)
+			mWater.setSelection(2);
 
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -100,7 +105,10 @@ public class					EditWaterDialogFragment extends DialogFragment implements OnEdi
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
+				if (mWater.getSelectedItemPosition() == 0)
+					mModel.getDives().get(getArguments().getInt("index")).setWater(null);
+				else
+					mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
 				mListener.onWaterEditComplete(EditWaterDialogFragment.this);
 				dismiss();
 			}
@@ -115,7 +123,10 @@ public class					EditWaterDialogFragment extends DialogFragment implements OnEdi
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
+			if (mWater.getSelectedItemPosition() == 0)
+				mModel.getDives().get(getArguments().getInt("index")).setWater(null);
+			else
+				mModel.getDives().get(getArguments().getInt("index")).setWater(((String)mWater.getSelectedItem()).toLowerCase());
 			mListener.onWaterEditComplete(EditWaterDialogFragment.this);
 			dismiss();
 			return true;

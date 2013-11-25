@@ -89,15 +89,15 @@ public class					Dive implements IModel
 		_timeIn += Integer.toString(c.get(Calendar.MINUTE)) + ":00Z";
 		_maxdepth = new Distance(0.0);
 		_duration = 0;
-		_tripName = "";
-		_altitude = new Distance(0.0);
-		_visibility = "bad";
-		_current = "none";
-		_tempSurface = new Temperature(0.0);
-		_tempBottom = new Temperature(0.0);
-		_water = "salt";
+		_tripName = null;
+		_altitude = null;
+		_visibility = null;
+		_current = null;
+		_tempSurface = null;
+		_tempBottom = null;
+		_water = null;
 		_notes = "";
-		_weights = new Weight(0.0);
+		_weights = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -235,8 +235,8 @@ public class					Dive implements IModel
 	{
 		if (!json.isNull("trip_name"))
 			_tripName = json.getString("trip_name");
-		if (!json.isNull("number"))
-			_number = json.getInt("number");
+		if (json.has("number"))
+			_number = (json.isNull("number")) ? null : json.getInt("number");
 		if (!json.isNull("date"))
 			_date = json.getString("date");
 		if (!json.isNull("time_in"))
@@ -245,24 +245,29 @@ public class					Dive implements IModel
 			_maxdepth = new Distance(json.getDouble("maxdepth"));
 		if (!json.isNull("duration"))
 			_duration = json.getInt("duration");
-		if (!json.isNull("temp_surface"))
-			_tempSurface = new Temperature(json.getDouble("temp_surface"));
-		if (!json.isNull("temp_bottom"))
-			_tempBottom = new Temperature(json.getDouble("temp_bottom"));
-		if (!json.isNull("weights"))
-			_weights = new Weight(json.getDouble("weights"));
-		if (!json.isNull("visibility"))
-			_visibility = json.getString("visibility");
-		if (!json.isNull("current"))
-			_current = json.getString("current");
-		if (!json.isNull("altitude"))
-			_altitude = new Distance(json.getDouble("altitude"));
-		if (!json.isNull("water"))
-			_water = json.getString("water");
+		if (json.has("temp_surface"))
+			_tempSurface = (json.isNull("temp_surface")) ? null : new Temperature(json.getDouble("temp_surface"));
+		if (json.has("temp_bottom"))
+			_tempBottom = (json.isNull("temp_bottom")) ? null : new Temperature(json.getDouble("temp_bottom"));
+		if (json.has("weights"))
+			_weights = (json.isNull("weights")) ? null : new Weight(json.getDouble("weights"));
+		if (json.has("visibility"))
+			_visibility = (json.isNull("visibility")) ? null : json.getString("visibility");
+		if (json.has("current"))
+			_current = (json.isNull("current")) ? null : json.getString("current");
+		if (json.has("altitude"))
+			_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"));
+		if (json.has("water"))
+			_water = (json.isNull("water")) ? null : json.getString("water");
 		if (!json.isNull("notes"))
 			_notes = json.getString("notes");
 		if (!json.isNull("spot"))
+		{
 			_spot = new Spot(json.getJSONObject("spot"));
+			_lng = _spot.getLng();
+			_lat = _spot.getLat();
+			_spotId = _spot.getId();
+		}
 		if (!json.isNull("time"))
 			_time = json.getString("time");
 	}
@@ -272,6 +277,8 @@ public class					Dive implements IModel
 		{
 			if (_editList.get(i).first.contentEquals("altitude"))
 			{
+				if (_editList.get(i).second == null)
+					return null;
 				Distance result = new Distance(Double.parseDouble(_editList.get(i).second));
 				return (result);
 			}
@@ -281,7 +288,12 @@ public class					Dive implements IModel
 
 	public void setAltitude(Distance _altitude) {
 		//this._altitude = _altitude;
-		Pair<String, String> new_elem = new Pair<String, String>("altitude", Double.toString(_altitude.getDistance()));
+		Pair<String, String> new_elem;
+		
+		if (_altitude == null)
+			new_elem = new Pair<String, String>("altitude", null);
+		else
+			new_elem = new Pair<String, String>("altitude", Double.toString(_altitude.getDistance()));
 		_editList.add(new_elem);
 	}
 
@@ -482,6 +494,8 @@ public class					Dive implements IModel
 			{
 				Spot result;
 				try {
+					if (_editList.get(i).second.equals("null"))
+						return null;
 					result = new Spot(new JSONObject(_editList.get(i).second));
 					return (result);
 				} catch (JSONException e) {
@@ -504,6 +518,8 @@ public class					Dive implements IModel
 		{
 			if (_editList.get(i).first.contentEquals("temp_bottom"))
 			{
+				if (_editList.get(i).second == null)
+					return null;
 				Temperature result = new Temperature(Double.parseDouble(_editList.get(i).second));
 				return (result);
 			}
@@ -513,7 +529,12 @@ public class					Dive implements IModel
 
 	public void setTempBottom(Temperature _tempBottom) {
 		//this._tempBottom = _tempBottom;
-		Pair<String, String> new_elem = new Pair<String, String>("temp_bottom", Double.toString(_tempBottom.getTemperature()));
+		Pair<String, String> new_elem;
+		
+		if (_tempBottom == null)
+			new_elem = new Pair<String, String>("temp_bottom", null);
+		else
+			new_elem = new Pair<String, String>("temp_bottom", Double.toString(_tempBottom.getTemperature()));
 		_editList.add(new_elem);
 	}
 
@@ -522,6 +543,8 @@ public class					Dive implements IModel
 		{
 			if (_editList.get(i).first.contentEquals("temp_surface"))
 			{
+				if (_editList.get(i).second == null)
+					return null;
 				Temperature result = new Temperature(Double.parseDouble(_editList.get(i).second));
 				return (result);
 			}
@@ -531,7 +554,12 @@ public class					Dive implements IModel
 
 	public void setTempSurface(Temperature _tempSurface) {
 		//this._tempSurface = _tempSurface;
-		Pair<String, String> new_elem = new Pair<String, String>("temp_surface", Double.toString(_tempSurface.getTemperature()));
+		Pair<String, String> new_elem;
+		
+		if (_tempSurface == null)
+			new_elem = new Pair<String, String>("temp_surface", null);
+		else
+			new_elem = new Pair<String, String>("temp_surface", Double.toString(_tempSurface.getTemperature()));
 		_editList.add(new_elem);
 	}
 
@@ -608,7 +636,8 @@ public class					Dive implements IModel
 
 	public void setVisibility(String _visibility) {
 		//this._visibility = _visibility;
-		Pair<String, String> new_elem = new Pair<String, String>("visibility", _visibility);
+		Pair<String, String> new_elem;
+		new_elem = new Pair<String, String>("visibility", _visibility);
 		_editList.add(new_elem);
 	}
 
@@ -632,6 +661,8 @@ public class					Dive implements IModel
 		{
 			if (_editList.get(i).first.contentEquals("weights"))
 			{
+				if (_editList.get(i).second == null)
+					return null;
 				Weight result = new Weight(Double.parseDouble(_editList.get(i).second));
 				return (result);
 			}
@@ -641,7 +672,12 @@ public class					Dive implements IModel
 
 	public void setWeights(Weight _weights) {
 		//this._weights = _weights;
-		Pair<String, String> new_elem = new Pair<String, String>("weights", Double.toString(_weights.getWeight()));
+		Pair<String, String> new_elem;
+		
+		if (_weights == null)
+			new_elem = new Pair<String, String>("weights", null);
+		else
+			new_elem = new Pair<String, String>("weights", Double.toString(_weights.getWeight()));
 		_editList.add(new_elem);
 	}
 
@@ -672,14 +708,23 @@ public class					Dive implements IModel
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
 			if (_editList.get(i).first.contentEquals("number"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
 				return (Integer.parseInt(_editList.get(i).second));
+			}
 		}
 		return _number;
 	}
 
 	public void setNumber(Integer _number) {
 		//this._number = _number;
-		Pair<String, String> new_elem = new Pair<String, String>("number", Integer.toString(_number));
+		Pair<String, String> new_elem;
+		
+		if (_number == null)
+			new_elem = new Pair<String, String>("number", null);
+		else
+			new_elem = new Pair<String, String>("number", Integer.toString(_number));
 		_editList.add(new_elem);
 	}
 

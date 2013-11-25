@@ -243,7 +243,12 @@ public class					DataManager
 				if (edit_list.get(i).first.equals("spot"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else
-					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				{
+					if (edit_list.get(i).second == null)
+						obj.put(edit_list.get(i).first, JSONObject.NULL);
+					else
+						obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				}
 				dive.applyEdit(obj);
 				Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), obj.toString());
 				_editList.add(new_elem);

@@ -70,7 +70,10 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 			mTemperature = new Temperature(0.0);
 		else
 			mTemperature = mModel.getDives().get(getArguments().getInt("index")).getTempBottom();
-		mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
+		if (mModel.getDives().get(getArguments().getInt("index")).getTempBottom() == null)
+			mBottomTemp.setText("");
+		else
+			mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
 		mBottomTemp.setHint(getResources().getString(R.string.bottom_temp_hint));
 		mBottomTemp.requestFocus();
 		
@@ -109,7 +112,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 				}
 				catch (NumberFormatException e)
 				{
-					temperature = new Temperature(0.0);
+					temperature = null;
 				}
 				mModel.getDives().get(getArguments().getInt("index")).setTempBottom(temperature);
 				mListener.onBottomTempEditComplete(EditBottomTempDialogFragment.this);
@@ -134,7 +137,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 			}
 			catch (NumberFormatException e)
 			{
-				temperature = new Temperature(0.0);
+				temperature = null;
 			}
 			mModel.getDives().get(getArguments().getInt("index")).setTempBottom(temperature);
 			mListener.onBottomTempEditComplete(EditBottomTempDialogFragment.this);

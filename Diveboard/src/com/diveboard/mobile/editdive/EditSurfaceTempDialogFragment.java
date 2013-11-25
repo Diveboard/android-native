@@ -70,7 +70,10 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 			mTemperature = new Temperature(0.0);
 		else
 			mTemperature = mModel.getDives().get(getArguments().getInt("index")).getTempSurface();
-		mSurfaceTemp.setText(Double.toString(mTemperature.getTemperature()));
+		if (mModel.getDives().get(getArguments().getInt("index")).getTempSurface() == null)
+			mSurfaceTemp.setText("");
+		else
+			mSurfaceTemp.setText(Double.toString(mTemperature.getTemperature()));
 		mSurfaceTemp.setHint(getResources().getString(R.string.surface_temp_hint));
 		mSurfaceTemp.requestFocus();
 		
@@ -109,7 +112,7 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 				}
 				catch (NumberFormatException e)
 				{
-					temperature = new Temperature(0.0);
+					temperature = null;
 				}
 				mModel.getDives().get(getArguments().getInt("index")).setTempSurface(temperature);
 				mListener.onSurfaceTempEditComplete(EditSurfaceTempDialogFragment.this);
@@ -134,7 +137,7 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 			}
 			catch (NumberFormatException e)
 			{
-				temperature = new Temperature(0.0);
+				temperature = null;
 			}
 			mModel.getDives().get(getArguments().getInt("index")).setTempSurface(temperature);
 			mListener.onSurfaceTempEditComplete(EditSurfaceTempDialogFragment.this);
