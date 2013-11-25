@@ -10,7 +10,7 @@
     <string name="hello_world">Hello World!</string>
     <string name="tab_notes_edit_title">DIVE NOTES</string>
     <string name="tab_spots_title">SPOTS</string>
-    <string name="save_button">OK</string>
+    <string name="save_button">SAVE</string>
     <string name="tab_details_label">DETAILS</string>
     <string name="tab_notes_label">NOTES</string>
     <string name="tab_gear_label">GEAR</string>
@@ -22,7 +22,7 @@
     <string name="characters_left">Characters Left</string>
     <string name="tripname_hint">Trip name</string>
     <string name="cancel">Cancel</string>
-    <string name="save">Save</string>
+    <string name="save">Ok</string>
     <string name="divenumber_hint">Dive Number</string>
     <string name="edit_divenumber_title">Dive Number</string>
     <string name="edit_date_title">Date</string>
