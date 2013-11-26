@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -335,6 +336,8 @@ public class					DataManager
 		commitOnline.start();
 	}
 	
+	
+	// Apply modifications on Cache List
 	private void						_applyEditCache(String elemtag, JSONObject result_obj)
 	{
 		String[] info = elemtag.split(":");
@@ -396,10 +399,13 @@ public class					DataManager
 					if (temp.getInt("id") == Integer.parseInt(info[1]))
 					{
 						ArrayList<String> list = new ArrayList<String>();
-						for (int j = 0, len = jarray.length(); j < len; j++) 
+						for (int j = 0, len = jarray.length(); j < len; j++)
+						{
 						    list.add(jarray.get(j).toString());
+						}
 						list.remove(i);
 						JSONArray new_jarray = new JSONArray(list);
+						//saveCache(_userId, "dives", new_jarray.toString());
 						saveCache(_userId, "dives", json.toString());
 						commitCache();
 						break ;
@@ -533,7 +539,7 @@ public class					DataManager
 		private void					_deleteDive(AndroidHttpClient client, String elemtag)
 		{
 			String[]					info = elemtag.split(":");
-			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + TextUtils.htmlEncode(_token) + "&apikey=" + TextUtils.htmlEncode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
+			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 			try
 			{
 				//System.out.println("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + Html.escapeHtml(_token) + "&apikey=" + Html.escapeHtml("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
