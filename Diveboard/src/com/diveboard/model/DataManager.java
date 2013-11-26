@@ -24,6 +24,8 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.text.Html;
+import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseArray;
 
@@ -429,90 +431,98 @@ public class					DataManager
 					Pair<String, String> elem;
 					synchronized (_lock)
 					{
-						System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
-						elem = _editList.get(0);
-						// Process
-						AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-						String[] info = elem.first.split(":");
-						if (info[0].compareTo("Dive") == 0)
-							postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
-						else if (info[0].equals("Dive_delete"))
+						if (_editList.size() != 0)
 						{
-							_deleteDive(client, elem.first);
-							_editList.remove(0);
-							_cacheEditList();
-							continue ;
-						}
-						else
-							postRequest = null;
-						if (postRequest == null)
-							break ;
-						try
-						{
-							// Adding parameters
-							ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
-							args.add(new BasicNameValuePair("auth_token", _token));
-							args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
-							JSONObject checkObject = new JSONObject(elem.second);
-							System.out.println("BEFORE " + elem.second);
-							if (checkObject.isNull("spot") == false)
+							System.out.println("TESTOK");
+							//System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
+							elem = _editList.get(0);
+							// Process
+							AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+							String[] info = elem.first.split(":");
+							if (info[0].compareTo("Dive") == 0)
 							{
-								JSONObject spot = checkObject.getJSONObject("spot");
-								JSONObject temp = new JSONObject();
-								temp.put("id", spot.get("id"));
-								checkObject.put("spot", temp);
-								args.add(new BasicNameValuePair("arg", checkObject.toString()));
-								System.out.println("SPOT SEND " + checkObject);
+								System.out.println("ENTER DIVE");
+								postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
+							}
+							else if (info[0].equals("Dive_delete"))
+							{
+								System.out.println("REMOVE");
+								_deleteDive(client, elem.first);
+								_editList.remove(0);
+								_cacheEditList();
+								continue ;
 							}
 							else
-								args.add(new BasicNameValuePair("arg", elem.second));
-							args.add(new BasicNameValuePair("flavour", "mobile"));
-							// Set parameters
-							postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-							// Execute request
-							HttpResponse response = client.execute(postRequest);
-							// Get response
-							HttpEntity entity = response.getEntity();
-							String result = ContentExtractor.getASCII(entity);
-							JSONObject json = new JSONObject(result);
-							if (json.getBoolean("success") == false)
+								postRequest = null;
+							if (postRequest == null)
 								break ;
-							if (Integer.parseInt(info[1]) == -1)
+							try
 							{
-								System.out.println(result);
-								// New Dive segment
-								ArrayList<Dive> dives = _model.getDives();
-								JSONObject new_dive = json.getJSONObject("result");
-								for (int i = dives.size() - 1; i >= 0; i--)
+								// Adding parameters
+								ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
+								args.add(new BasicNameValuePair("auth_token", _token));
+								args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+								JSONObject checkObject = new JSONObject(elem.second);
+								System.out.println("BEFORE " + elem.second);
+								if (checkObject.isNull("spot") == false)
 								{
-									if (dives.get(i).getId() == -1)
+									JSONObject spot = checkObject.getJSONObject("spot");
+									JSONObject temp = new JSONObject();
+									temp.put("id", spot.get("id"));
+									checkObject.put("spot", temp);
+									args.add(new BasicNameValuePair("arg", checkObject.toString()));
+									System.out.println("SPOT SEND " + checkObject);
+								}
+								else
+									args.add(new BasicNameValuePair("arg", elem.second));
+								args.add(new BasicNameValuePair("flavour", "mobile"));
+								// Set parameters
+								postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+								// Execute request
+								HttpResponse response = client.execute(postRequest);
+								// Get response
+								HttpEntity entity = response.getEntity();
+								String result = ContentExtractor.getASCII(entity);
+								JSONObject json = new JSONObject(result);
+								if (json.getBoolean("success") == false)
+									break ;
+								if (Integer.parseInt(info[1]) == -1)
+								{
+									System.out.println(result);
+									// New Dive segment
+									ArrayList<Dive> dives = _model.getDives();
+									JSONObject new_dive = json.getJSONObject("result");
+									for (int i = dives.size() - 1; i >= 0; i--)
 									{
-										_model.getDives().get(i).setId(new_dive.getInt("id"));
-										break ;
+										if (dives.get(i).getId() == -1)
+										{
+											_model.getDives().get(i).setId(new_dive.getInt("id"));
+											break ;
+										}
 									}
 								}
+								_applyEditCache(elem.first, json.getJSONObject("result"));
 							}
-							_applyEditCache(elem.first, json.getJSONObject("result"));
+							catch (UnsupportedEncodingException e) 
+							{
+								e.printStackTrace();
+								break ;
+							}
+							catch (IOException e)
+							{
+								e.printStackTrace();
+								break ;
+							} catch (JSONException e)
+							{
+								e.printStackTrace();
+								break ;
+							}
+							client.close();
+							// Remove edit from cache
+							_editList.remove(0);
+							// Save edit in cache
+							_cacheEditList();
 						}
-						catch (UnsupportedEncodingException e) 
-						{
-							e.printStackTrace();
-							break ;
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-							break ;
-						} catch (JSONException e)
-						{
-							e.printStackTrace();
-							break ;
-						}
-						client.close();
-						// Remove edit from cache
-						_editList.remove(0);
-						// Save edit in cache
-						_cacheEditList();
 					}
 				}
 				else
@@ -523,10 +533,10 @@ public class					DataManager
 		private void					_deleteDive(AndroidHttpClient client, String elemtag)
 		{
 			String[]					info = elemtag.split(":");
-			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=%22" + _token + "%22&apikey=%22px6LQxmV8wQMdfWsoCwK%22&flavour=%22mobile%22");
+			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + TextUtils.htmlEncode(_token) + "&apikey=" + TextUtils.htmlEncode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 			try
 			{
-				System.out.println("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=%22" + _token + "%22&apikey=%22px6LQxmV8wQMdfWsoCwK%22&flavour=%22mobile%22");
+				//System.out.println("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + Html.escapeHtml(_token) + "&apikey=" + Html.escapeHtml("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 				client.execute(deleteRequest);
 				_applyEditCache(elemtag, null);
 				client.close();

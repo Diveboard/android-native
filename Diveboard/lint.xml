@@ -13,6 +13,7 @@
         <ignore path="src/com/diveboard/mobile/TabEditDetailsActivity.java" />
         <ignore path="src/com/diveboard/mobile/TabEditNotesActivity.java" />
         <ignore path="src/com/diveboard/mobile/editdive/EditDiveActivity.java" />
+        <ignore path="src/com/diveboard/model/DataManager.java" />
     </issue>
     <issue id="ValidFragment">
         <ignore path="src/com/diveboard/mobile/EditTripNameDialogFragment.java" />

@@ -312,4 +312,18 @@ public class					Picture
 			}
 		return null;
 	}
+	
+	public void					deletePicture(final Context context)
+	{
+		String[] picture_name = _urlDefault.split("/");
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
+		if (file.exists())
+		{
+			file.delete();
+		}
+	}
 }

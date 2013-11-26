@@ -77,7 +77,7 @@
 					        android:layout_width="0dp"
 					        android:layout_height="wrap_content">
 					    </Button>
-<!-- 					    <Button
+					    <Button
 					        android:id="@+id/deleteDiveButton"
 					        android:text="DELETE"
 					        android:layout_marginLeft="10dp"
@@ -85,7 +85,7 @@
 					        android:layout_weight="0.5"
 					        android:onClick="goToDeleteDive"
 					        android:layout_height="wrap_content">
-				    </Button> -->
+	 				    </Button>
 				    </LinearLayout>
 			   	</RelativeLayout>
 		   	</RelativeLayout>
