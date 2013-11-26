@@ -31,6 +31,13 @@ public class TabNewNotesActivity extends Activity
 	private EditText					mNotes;
 	
 	@Override
+	protected void onPause()
+	{
+		mDive.setNotes(mNotes.getText().toString());
+		super.onPause();
+	}
+	
+	@Override
 	protected void onResume()
 	{
 		super.onResume();

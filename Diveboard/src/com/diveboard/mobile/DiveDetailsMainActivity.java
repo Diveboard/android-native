@@ -192,11 +192,14 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 		
 		String type = "";
-		for (int i = 0; i < mDive.getDivetype().size(); i++)
-		{	
-			if (mDive.getDivetype().get(i) != null)
-				type += Character.toUpperCase(mDive.getDivetype().get(i).charAt(0)) + mDive.getDivetype().get(i).substring(1) + ", ";
-		}
+		if (mDive.getDivetype() == null)
+			type = "";
+		else
+			for (int i = 0; i < mDive.getDivetype().size(); i++)
+			{	
+				if (mDive.getDivetype().get(i) != null)
+					type += Character.toUpperCase(mDive.getDivetype().get(i).charAt(0)) + mDive.getDivetype().get(i).substring(1) + ", ";
+			}
 		if (type != "")
 			type = (String) type.subSequence(0, type.length() - 2);
 		else
@@ -274,7 +277,7 @@ public class DiveDetailsMainActivity extends Activity {
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				if (DiveDetailsMainActivity.this != null)
+				if (DiveDetailsMainActivity.this != null && mDive.getProfile() != null)
 				{
 					return mDive.getProfile().getPicture(getApplicationContext());
 				}

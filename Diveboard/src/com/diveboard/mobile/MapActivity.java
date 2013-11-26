@@ -26,7 +26,8 @@ public class MapActivity extends Activity {
 		Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		mIndex = getIntent().getIntExtra("index", -1);
-		if (AC.getModel().getDives().get(mIndex).getLat() == 0 && AC.getModel().getDives().get(mIndex).getLng() == 0)
+		if ((AC.getModel().getDives().get(mIndex).getLat() == null || AC.getModel().getDives().get(mIndex).getLng() == null)
+				|| AC.getModel().getDives().get(mIndex).getLat() == 0 && AC.getModel().getDives().get(mIndex).getLng() == 0)
 		{
 			TextView tv = new TextView(this);
 			tv.setText("No GPS found for actual dive");

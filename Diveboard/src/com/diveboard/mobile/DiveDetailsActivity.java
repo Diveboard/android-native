@@ -142,7 +142,7 @@ public class DiveDetailsActivity extends TabActivity {
 						else if (mTabHost.getCurrentTab() == 1)
 						{
 							ApplicationController AC = (ApplicationController)getApplicationContext();
-							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null && AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
 							{
 								Intent galleryCarousel = new Intent(DiveDetailsActivity.this, GalleryCarouselActivity.class);
 								galleryCarousel.putExtra("index", AC.getPageIndex());
@@ -231,8 +231,10 @@ public class DiveDetailsActivity extends TabActivity {
 			try {
 				if (mModel.getDives().get(mItemNb).getFeaturedPicture() != null)
 					result = mModel.getDives().get(mItemNb).getFeaturedPicture().getPicture(getApplicationContext(), Picture.Size.THUMB);
-				else
+				else if (mModel.getDives().get(mItemNb).getThumbnailImageUrl() != null)
 					result = mModel.getDives().get(mItemNb).getThumbnailImageUrl().getPicture(getApplicationContext());
+				else
+					result = null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

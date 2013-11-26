@@ -25,6 +25,13 @@ public class TabEditNotesActivity extends Activity
 	private int							mIndex;
 	private EditText					mNotes;
 	
+	@Override
+	protected void onPause()
+	{
+		mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
+		super.onPause();	
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
