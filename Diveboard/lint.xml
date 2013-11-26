@@ -3,6 +3,8 @@
     <issue id="DefaultLocale">
         <ignore path="src/com/diveboard/mobile/editdive/OptionAdapter.java" />
     </issue>
+    <issue id="ExtraTranslation" severity="warning" />
+    <issue id="MissingTranslation" severity="warning" />
     <issue id="NewApi">
         <ignore path="src/com/diveboard/mobile/DiveDetailsActivity.java" />
         <ignore path="src/com/diveboard/mobile/DivesActivity.java" />
@@ -15,6 +17,8 @@
         <ignore path="src/com/diveboard/mobile/editdive/EditDiveActivity.java" />
         <ignore path="src/com/diveboard/model/DataManager.java" />
     </issue>
+    <issue id="StringFormatInvalid" severity="warning" />
+    <issue id="StringFormatMatches" severity="warning" />
     <issue id="ValidFragment">
         <ignore path="src/com/diveboard/mobile/EditTripNameDialogFragment.java" />
     </issue>

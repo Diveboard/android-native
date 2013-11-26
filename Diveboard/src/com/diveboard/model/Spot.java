@@ -91,7 +91,7 @@ public class					Spot implements IModel
 		this._lng = _lng;
 	}
 
-	public int getZoom() {
+	public Integer getZoom() {
 		return _zoom;
 	}
 

@@ -90,7 +90,7 @@ public class DiveDetailsActivity extends TabActivity {
 		    	((ViewGroup)findViewById(R.id.root)).getViewTreeObserver().removeGlobalOnLayoutListener(this);
 		    	
 				
-				ApplicationController AC = ((ApplicationController)getApplicationContext());
+		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 				mModel = AC.getModel();
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
@@ -138,11 +138,15 @@ public class DiveDetailsActivity extends TabActivity {
 						}
 						((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
 						if (mTabHost.getCurrentTab() == 0)
+						{
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_details_grey));
+							((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
+						}
 						else if (mTabHost.getCurrentTab() == 1)
 						{
+							((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
 							ApplicationController AC = (ApplicationController)getApplicationContext();
-							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null && AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
 							{
 								Intent galleryCarousel = new Intent(DiveDetailsActivity.this, GalleryCarouselActivity.class);
 								galleryCarousel.putExtra("index", AC.getPageIndex());
@@ -157,7 +161,15 @@ public class DiveDetailsActivity extends TabActivity {
 //						else if (mTabHost.getCurrentTab() == 2)
 //							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));
 						else if (mTabHost.getCurrentTab() == 2)
+						{
+							ApplicationController AC = (ApplicationController)getApplicationContext();
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_map_grey));
+							if ((AC.getModel().getDives().get(AC.getPageIndex()).getLat() == null || AC.getModel().getDives().get(AC.getPageIndex()).getLng() == null)
+									|| AC.getModel().getDives().get(AC.getPageIndex()).getLat() == 0 && AC.getModel().getDives().get(AC.getPageIndex()).getLng() == 0)
+								((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
+							else
+								((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.GONE);
+						}
 						if (mTabHost.getCurrentTab() == 0)
 							((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 					}

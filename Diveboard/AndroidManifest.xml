@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
-    android:versionCode="80"
-    android:versionName="3.0" >
+    android:versionCode="81"
+    android:versionName="3.0.1" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -22,7 +22,7 @@
     <application
         android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -33,14 +33,15 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyActYnLGFI7NCJ4AKPCQ0wjHrbCVKYaDX0" />
-
+<!--         <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI" /> -->
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -84,7 +85,11 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.DiveDetailsActivity"
-            android:label="@string/title_activity_dive_details" >
+            android:label="@string/title_activity_dive_details_main" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.MapActivity"
+            android:label="@string/title_activity_dive_details_main" >
         </activity>
         <activity
             android:name="com.diveboard.mobile.DiveDetailsMainActivity"
@@ -147,10 +152,6 @@
         <activity
             android:name="com.diveboard.mobile.newdive.TabNewSpotsActivity"
             android:label="@string/title_activity_new_dive" >
-        </activity>
-        <activity
-            android:name="com.diveboard.mobile.MapActivity"
-            android:label="@string/title_activity_map" >
         </activity>
     </application>
 

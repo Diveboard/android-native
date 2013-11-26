@@ -59,12 +59,14 @@ public class MapActivity extends Activity {
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
 				Marker marker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng()))
-				.title("Hero")
-				.snippet("Actual quest"));
+				.position(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng())));
 				//.icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+				System.out.println(AC.getModel().getDives().get(mIndex).getSpot().getId());
+				Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
+				if (zoom == null)
+					zoom = 10;
 				if (AC.getModel().getDives().get(mIndex).getLat() != null && AC.getModel().getDives().get(mIndex).getLng() != null)
-					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng()), 14));
+					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng()), zoom));
 			}
 	    }
 	}
