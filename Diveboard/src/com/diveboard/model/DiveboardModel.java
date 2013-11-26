@@ -555,8 +555,10 @@ public class					DiveboardModel
 			_cache.saveCache(_userId, "user", _temp_user_json);
 			_cache.saveCache(_userId, "dives", _temp_dives_json);
 			_cache.commitCache();
-			_user = (User) _temp_user.clone();
-			_temp_user = null;
+			
+			// Copy new User into model;
+//			_user = (User) _temp_user.clone();
+//			_temp_user = null;
 		}
 		ArrayList<Dive> dives = _user.getDives();
 		for (int i = 0, len = dives.size(); i < len; i++)
