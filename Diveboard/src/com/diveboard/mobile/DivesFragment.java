@@ -14,6 +14,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -36,7 +37,7 @@ import android.widget.TextView;
 /**
  * The fragment that displays the "fragment_dives.xml" layout
  */
-public class DivesFragment extends Fragment {
+@SuppressLint("ValidFragment") public class DivesFragment extends Fragment {
 	private Dive mDive;
 	private Bitmap mRoundedLayer;
 	private Bitmap mRoundedLayerSmall;

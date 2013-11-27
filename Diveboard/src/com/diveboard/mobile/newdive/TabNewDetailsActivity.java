@@ -215,6 +215,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			{
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				dives.add(0, mDive);
+				System.out.println("NEW DIVE PRIVACY : " + mDive.getPrivacy());
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);
 				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
@@ -226,7 +227,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		});
 	    
     	optionList = (ListView)findViewById(R.id.optionList);
-    	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
 		elem.add(new EditOption("Date : ", mDive.getDate()));
 		String[] time_in = mDive.getTimeIn().split("T");
@@ -271,8 +271,12 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			elem.add(new EditOption("Water type : ", mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1)));
 		else
 			elem.add(new EditOption("Water type : ", ""));
+		if (mDive.getPrivacy() == 0)
+			elem.add(new EditOption("Dive privacy : ", "Public", 1));
+		else
+			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
-		mOptionAdapter = new OptionAdapter(this, elem);
+		mOptionAdapter = new OptionAdapter(this, elem, mDive);
 		optionList.setAdapter(mOptionAdapter);
 		
 		optionList.setOnItemClickListener(new OnItemClickListener() {
@@ -320,6 +324,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					case 12:
 						_editWater();
 						break ;
+//					case 13:
+//						_editPrivacyDialog();
+//						break ;
 				}
 			}
 		});

@@ -106,6 +106,7 @@ public class					Dive implements IModel
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+		_privacy = 0;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -278,6 +279,8 @@ public class					Dive implements IModel
 		}
 		if (!json.isNull("time"))
 			_time = json.getString("time");
+		if (!json.isNull("privacy"))
+			_privacy = json.getInt("privacy");
 	}
 	
 	public Distance getAltitude() {
@@ -456,11 +459,18 @@ public class					Dive implements IModel
 	}
 
 	public int getPrivacy() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("privacy"))
+				return (Integer.parseInt(_editList.get(i).second));
+		}
 		return _privacy;
 	}
 
 	public void setPrivacy(int _privacy) {
-		this._privacy = _privacy;
+		//this._privacy = _privacy;
+		Pair<String, String> new_elem = new Pair<String, String>("privacy", Integer.toString(_privacy));
+		_editList.add(new_elem);
 	}
 
 	public String getSafetystops() {

@@ -246,6 +246,7 @@ public class					DataManager
 			}
 			if (dive.getNumber() != null)
 				json.put("number", dive.getNumber());
+			json.put("privacy", Integer.toString(dive.getPrivacy()));
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			_editList.add(new_elem);
 		}

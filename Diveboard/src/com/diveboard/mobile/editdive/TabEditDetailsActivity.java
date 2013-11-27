@@ -267,8 +267,12 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
 		else
 			elem.add(new EditOption("Water type : ", ""));
+		if (dive.getPrivacy() == 0)
+			elem.add(new EditOption("Dive privacy : ", "Public", 1));
+		else
+			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
-		mOptionAdapter = new OptionAdapter(this, elem);
+		mOptionAdapter = new OptionAdapter(this, elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(mOptionAdapter);
 		
 		optionList.setOnItemClickListener(new OnItemClickListener() {
