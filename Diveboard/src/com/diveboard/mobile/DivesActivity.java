@@ -242,6 +242,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				case R.id.refresh:
 					ApplicationController AC = (ApplicationController)getApplicationContext();
 					AC.setPageIndex(0);
+					AC.setDataReady(false);
 					AC.getModel().stopPreloadPictures();
 					AC.setModel(null);
 					finish();
@@ -295,6 +296,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    case R.id.refresh:
 		    	ApplicationController AC = (ApplicationController)getApplicationContext();
 		    	AC.setPageIndex(0);
+		    	AC.setDataReady(false);
 		    	AC.getModel().stopPreloadPictures();
 				AC.setModel(null);
 				finish();

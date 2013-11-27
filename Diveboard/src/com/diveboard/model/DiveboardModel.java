@@ -409,6 +409,7 @@ public class					DiveboardModel
 		ArrayList<Dive> dives = new ArrayList<Dive>();
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
+			System.err.println("CREATING DIVE " + jarray.getJSONObject(i));
 			Dive dive = new Dive(jarray.getJSONObject(i));
 			dives.add(dive);
 		}
@@ -577,11 +578,13 @@ public class					DiveboardModel
 	
 	private void				_applyEdit()
 	{
+		System.out.println("APPLY EDIT");
 		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
 		try
 		{
 			for (int i = 0, length = edit_list.size(); i < length; i++)
 			{
+				System.out.println("EDIT ITEM : " + edit_list.get(i).first);
 				String[] info = edit_list.get(i).first.split(":");
 				if (info[0].compareTo("Dive") == 0)
 					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
@@ -602,6 +605,7 @@ public class					DiveboardModel
 		ArrayList<Dive> dives = getDives();
 		
 		// Create Dive if new dive type
+		System.out.println("APPLY EDIT " + id + " : " + json);
 		if (id == -1)
 			dives.add(0, new Dive(new JSONObject(json)));
 		else

@@ -349,18 +349,26 @@ public class					DataManager
 			try
 			{
 				JSONObject json = new JSONObject(result);
+				System.out.println("INITAL VALUE : " + json.toString());
 				JSONArray jarray = json.getJSONArray("result");
 				if (Integer.parseInt(info[1]) == -1)
 				{
-					for (int i = jarray.length() - 1; i >= 0; i--)
-					{
-						JSONObject temp = jarray.getJSONObject(i);
-						if (temp.getInt("id") == -1)
-						{
-							jarray.put(i, result_obj);
-							break ;
-						}
-					}
+					JSONArray new_array = new JSONArray();
+					new_array.put(0, result_obj);
+					for (int i = 0; i < jarray.length(); i++)
+						new_array.put(i + 1, jarray.get(i));
+					json.put("result", new_array);
+//					for (int i = jarray.length() - 1; i >= 0; i--)
+//					{
+//						JSONObject temp = jarray.getJSONObject(i);
+//						System.out.println("ID : " + temp.getInt("id") + " id:" + i);
+//						if (temp.getInt("id") == 0)
+//						{
+//							
+//							jarray.put(i, result_obj);
+//							break ;
+//						}
+//					}
 				}
 				else
 				{
@@ -370,6 +378,7 @@ public class					DataManager
 						if (temp.getInt("id") == Integer.parseInt(info[1]))
 						{
 							jarray.put(i, result_obj);
+							json.put("result", jarray);
 							break ;
 						}
 					}
@@ -440,7 +449,7 @@ public class					DataManager
 					{
 						if (_editList.size() != 0)
 						{
-							System.out.println("TESTOK");
+							System.out.println("SEND ITEM");
 							//System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
 							elem = _editList.get(0);
 							// Process
@@ -448,12 +457,10 @@ public class					DataManager
 							String[] info = elem.first.split(":");
 							if (info[0].compareTo("Dive") == 0)
 							{
-								System.out.println("ENTER DIVE");
 								postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
 							}
 							else if (info[0].equals("Dive_delete"))
 							{
-								System.out.println("REMOVE");
 								_deleteDive(client, elem.first);
 								_editList.remove(0);
 								_cacheEditList();
@@ -470,7 +477,6 @@ public class					DataManager
 								args.add(new BasicNameValuePair("auth_token", _token));
 								args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
 								JSONObject checkObject = new JSONObject(elem.second);
-								System.out.println("BEFORE " + elem.second);
 								if (checkObject.isNull("spot") == false)
 								{
 									JSONObject spot = checkObject.getJSONObject("spot");
@@ -478,7 +484,6 @@ public class					DataManager
 									temp.put("id", spot.get("id"));
 									checkObject.put("spot", temp);
 									args.add(new BasicNameValuePair("arg", checkObject.toString()));
-									System.out.println("SPOT SEND " + checkObject);
 								}
 								else
 									args.add(new BasicNameValuePair("arg", elem.second));
@@ -490,12 +495,12 @@ public class					DataManager
 								// Get response
 								HttpEntity entity = response.getEntity();
 								String result = ContentExtractor.getASCII(entity);
+								System.out.println("RESULT " + result);
 								JSONObject json = new JSONObject(result);
 								if (json.getBoolean("success") == false)
 									break ;
 								if (Integer.parseInt(info[1]) == -1)
 								{
-									System.out.println(result);
 									// New Dive segment
 									ArrayList<Dive> dives = _model.getDives();
 									JSONObject new_dive = json.getJSONObject("result");
@@ -503,7 +508,7 @@ public class					DataManager
 									{
 										if (dives.get(i).getId() == -1)
 										{
-											_model.getDives().get(i).setId(new_dive.getInt("id"));
+											_model.getDives().set(i, new Dive(new_dive));
 											break ;
 										}
 									}

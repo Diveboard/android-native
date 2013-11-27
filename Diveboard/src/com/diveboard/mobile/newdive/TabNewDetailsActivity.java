@@ -215,7 +215,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			{
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				dives.add(0, mDive);
-				System.out.println("NEW DIVE PRIVACY : " + mDive.getPrivacy());
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);
 				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
@@ -324,9 +323,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					case 12:
 						_editWater();
 						break ;
-//					case 13:
-//						_editPrivacyDialog();
-//						break ;
 				}
 			}
 		});
