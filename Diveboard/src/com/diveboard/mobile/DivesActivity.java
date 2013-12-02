@@ -51,6 +51,7 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
@@ -577,6 +578,22 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			        ((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
+			        ((RelativeLayout)findViewById(R.id.left_number)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							mPager.setCurrentItem(0);
+							
+						}
+					});
+			        ((RelativeLayout)findViewById(R.id.right_number)).setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							mPager.setCurrentItem(((int) (mModel.getDives().size() - 1)));
+							
+						}
+					});
 			        RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
 			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
@@ -594,7 +611,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        
 			        System.out.println("nb_dives_per_stroke = " + nb_dives_per_stroke + "max_strokes_possible = " + max_strokes_possible);
 			        
-			        if (nb_dives_per_stroke == 0)
+			        if (nb_dives_per_stroke < 1)
 			        {
 			        	nb_dives_per_stroke = (double) 1;
 			        	nb_strokes = mModel.getDives().size();
@@ -614,6 +631,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        	RelativeLayout child = new RelativeLayout(DivesActivity.this);
 				        RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, mScreenSetup.getDiveListSeekBarHeight());
 				        //child_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				        child.setOnClickListener(new OnClickListener() {
+							
+							@Override
+							public void onClick(View v) {
+								mPager.setCurrentItem(((int) (v.getId() * nb_dives_per_stroke)) - 1);
+							}
+						});
 				        child.setId(i);
 				        if (i > 1)
 				        	child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
