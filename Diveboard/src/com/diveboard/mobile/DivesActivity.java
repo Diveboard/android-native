@@ -24,6 +24,7 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -98,6 +99,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private ImageView mBackground2;
 	private	 int mBackground = 1;
 	
+	//Tracking bar
+	private Integer max_strokes_possible;
+	private Double nb_dives_per_stroke;
+	private Integer nb_strokes = 0;
+	private Integer position_stroke;
+	
 	// Thread for the data loading & the views associated
 	private TaskFragment mTaskFragment;
 	//private LoadDataTask mAuthTask = null;
@@ -116,6 +123,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		if (AC.getRefresh() == 1)
 		{
 			//AC.setPageIndex(0);
+			AC.setDataReady(false);
 			AC.setRefresh(0);
 			finish();
 			startActivity(getIntent());
@@ -555,23 +563,131 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        mPager.setCurrentItem(AC.getPageIndex());
 			        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 			        //The tracking bar is set
-			        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
+			        RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
+			        tracking_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        tracking_bar_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
+			        ((RelativeLayout)findViewById(R.id.tracking_bar)).setLayoutParams(tracking_bar_params);
+			        
+			        
+			        RelativeLayout.LayoutParams left_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        left_side_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			        ((RelativeLayout)findViewById(R.id.left_side)).setLayoutParams(left_side_params);
+			        
+			        RelativeLayout.LayoutParams left_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        ((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
+			        RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        ((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
+			        ((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
+			        ((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
+			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
+			        
+			        RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        center_bar_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+			        ((RelativeLayout)findViewById(R.id.center_bar)).setLayoutParams(center_bar_params);
+			        max_strokes_possible = (mScreenSetup.getScreenWidth() * 68 / 100) / (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100);
+			        nb_dives_per_stroke = (Double.parseDouble(Integer.toString(mModel.getDives().size())) / max_strokes_possible);
+			        
+			        System.out.println("nb_dives_per_stroke = " + nb_dives_per_stroke + "max_strokes_possible = " + max_strokes_possible);
+			        
+			        if (nb_dives_per_stroke == 0)
+			        {
+			        	nb_dives_per_stroke = (double) 1;
+			        	nb_strokes = mModel.getDives().size();
+			        }
+			        else
+			        {
+			        	nb_strokes = max_strokes_possible;
+			        }
+			        position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
+			        if (position_stroke > max_strokes_possible)
+			        	position_stroke = max_strokes_possible;
+			        System.out.println(max_strokes_possible);
+			        System.out.println(mScreenSetup.getScreenWidth() * 68 / 100 + " " + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100) + " " + (mScreenSetup.getScreenWidth() * 68 / 100) / (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100));
+			        int i = 1;
+			        for (; i < nb_strokes + 1; i++)
+			        {
+			        	RelativeLayout child = new RelativeLayout(DivesActivity.this);
+				        RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, mScreenSetup.getDiveListSeekBarHeight());
+				        //child_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+				        child.setId(i);
+				        if (i > 1)
+				        	child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
+				        child.setLayoutParams(child_params);
+				        //child.setBackgroundColor(Color.RED);
+				        
+				        RelativeLayout child_2 = new RelativeLayout(DivesActivity.this);
+				        RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+				        child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+				        child_2.setBackgroundColor(Color.WHITE);
+				        child_2.setLayoutParams(child_2_params);
+				        if (i == position_stroke)
+				        {
+					        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+					        child_2.getBackground().setAlpha(230);
+				        }
+				        else
+				        {
+					        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					        child_2.getBackground().setAlpha(125);
+				        }
+				        child.addView(child_2);
+				        ((RelativeLayout)findViewById(R.id.center_bar)).addView(child);
+			        }
+			        i++;
+			        RelativeLayout.LayoutParams right_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        right_side_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			        ((RelativeLayout)findViewById(R.id.right_side)).setLayoutParams(right_side_params);
+/*			        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
 			        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
 			        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			        seekBarParams.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
 			        mSeekBar.setLayoutParams(seekBarParams);
 			        mSeekBar.setMax(mModel.getDives().size() - 1);
-			        mSeekBar.setProgress(AC.getPageIndex());
+			        mSeekBar.setProgress(AC.getPageIndex());*/
 			        //Events when the user changes a page
 			        mPager.setOnPageChangeListener(new OnPageChangeListener()
 			        {
+			        	public final void upperStroke(final int index)
+			        	{
+			        		System.out.println(index);
+				        	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+				        	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(230);
+				        	child_2_params.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+				        	//((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).setBackgroundColor(Color.RED);
+				        	child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+				        	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+			        	}
+			        	
+			        	public final void lowerStroke(final int index)
+			        	{
+			        		System.out.println(index);
+				        	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+				        	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(125);
+				        	child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				        	child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+				        	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+			        	}
+			        	
 						@Override
 						public void onPageScrollStateChanged(int arg0) {
 							if (arg0 == 0)
 							{
 								ApplicationController AC = ((ApplicationController)getApplicationContext());
+								lowerStroke(position_stroke);
 								AC.setPageIndex(mPager.getCurrentItem());
-								mSeekBar.setProgress(mPager.getCurrentItem());
+								position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
+								if (position_stroke > max_strokes_possible)
+									position_stroke = max_strokes_possible;
+								//nb_dives_per_stroke = new Integer((mModel.getDives().size()) / max_strokes_possible).doubleValue();
+								upperStroke(position_stroke);
+								((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+/*								mSeekBar.setProgress(mPager.getCurrentItem());
+								mSeekBar.setEnabled(true);*/
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
@@ -579,7 +695,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 								DownloadImageTask task = new DownloadImageTask();
 								task.execute(mPager.getCurrentItem());
-								mSeekBar.setEnabled(true);
+								
 							}
 						}
 
@@ -593,7 +709,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        	
 			        });
 			        //Events when the user changes the seek bar
-			        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+/*			        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
 			        {
 			        	@Override
 			        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
@@ -609,7 +725,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 							mPager.setCurrentItem(seekBar.getProgress(), true);
 							mSeekBar.setEnabled(false);
 						}
-			        });
+			        });*/
 			        
 			        if (AC.isDataRefreshed() != true)
 			        {

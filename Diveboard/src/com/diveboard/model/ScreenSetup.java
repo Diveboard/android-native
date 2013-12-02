@@ -11,10 +11,33 @@ public class					ScreenSetup
 	}
 	
 	// Defines in Percent
+//	static final double[]		_wsp1 = {5.5, 7, 4, 3.25};							// Fragment Whitespace 1
+//	static final double[]		_wsp2 = {5, 6,426, 2, 2};							// Fragment Whitespace 2*
+//	static final double[]		_wsp3 = {1.5, 4, 3, 3};								// Fragment Whitespace 3*
+//	static final double[]		_wsp4 = {1.5, 3, 2, 3};								// Fragment Whitespace 4
+//	static final double[]		_frg_bann_h = {7, 12.857, 7, 7};					// Fragment Banner Height
+//	static final double[]		_frg_body_h = {65, 57,143, 67, 64};					// Fragment Body Height*
+//	static final double[]		_frg_foot_h = {5.7, 12, 0, 0};						// Fragment Footer Height
+//	static final double[]		_frg_w = {51.5, 140, 75, 75};						// Fragment Width
+//	static final double[]		_frag_out_circ_rad = {38, 80, 60, 60};				// Fragment Outer Circle Radius*
+//	static final double[]		_frag_circ_brdr_w = {1.5, 0, 3.2, 3.2};				// Fragment Circle Border Width
+//	static final double[]		_frag_body_title = {10, 17,136, 0, 0};				// Fragment Body Title*
+//	static final double[]		_frag_pict_circ_rad = {8, 10,71, 0, 4};				// Fragment Picture Circle Radius*
+//	static final double[]		_footer = {8, 13, 7.5, 10};							// Fragment Footer
+//	static final double[]		_frg_body_wsp1 = {2.5, 0, 0, 0};					// Fragment Body Whitespace 1*
+//	static final double[]		_frg_body_wsp2 = {1.3, 3, 0, 0};					// Fragment Body Whitespace 2*
+//	static final double[]		_frg_body_wsp3 = {2, 3.57, 0, 0};					// Fragment Body Whitespace 3*
+//	static final double[]		_frg_body_wsp4 = {2, 3.57, 0, 0};					// Fragment Body Whitespace 4*
+//	static final double[]		_dl_seekbar_h = {4, 6, 0 , 0};						// Dive List Seek Bar Height*
+//	static final double[]		_dl_profile_h = {6, 12, 0 , 0};						// Dive List Profile Box Height*
+//	static final double[]		_dl_profile_w = {51.5, 70, 0 , 0};					// Dive List Profile Box Width
+//	static final double[]		_frag_spict_brdr_margin = {6.5, 6.5, 6.5, 6.5};		// Dive List Small Pictures border margin
+	
+	// Defines in Percent
 	static final double[]		_wsp1 = {5.5, 7, 4, 3.25};							// Fragment Whitespace 1
-	static final double[]		_wsp2 = {1.5, 6,426, 2, 2};							// Fragment Whitespace 2*
-	static final double[]		_wsp3 = {2.5, 3, 3, 3};								// Fragment Whitespace 3*
-	static final double[]		_wsp4 = {1.5, 3, 2, 3};								// Fragment Whitespace 4
+	static final double[]		_wsp2 = {2, 6,426, 2, 2};							// Fragment Whitespace 2*
+	static final double[]		_wsp3 = {1.5, 4, 3, 3};								// Fragment Whitespace 3*
+	static final double[]		_wsp4 = {3, 2, 2, 3};								// Fragment Whitespace 4
 	static final double[]		_frg_bann_h = {7, 12.857, 7, 7};					// Fragment Banner Height
 	static final double[]		_frg_body_h = {65, 57,143, 67, 64};					// Fragment Body Height*
 	static final double[]		_frg_foot_h = {5.7, 12, 0, 0};						// Fragment Footer Height

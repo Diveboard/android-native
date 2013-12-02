@@ -37,7 +37,8 @@ import android.widget.TextView;
 /**
  * The fragment that displays the "fragment_dives.xml" layout
  */
-@SuppressLint("ValidFragment") public class DivesFragment extends Fragment {
+@SuppressLint("ValidFragment")
+public class DivesFragment extends Fragment {
 	private Dive mDive;
 	private Bitmap mRoundedLayer;
 	private Bitmap mRoundedLayerSmall;
@@ -326,6 +327,25 @@ import android.widget.TextView;
 				if (result != null && imageView != null)
 				{	
 					imageView.setImageBitmap(result);
+					imageView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							{
+								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
+								galleryCarousel.putExtra("index", AC.getPageIndex());
+								startActivity(galleryCarousel);
+							}
+							else
+							{
+								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+								diveDetailsActivity.putExtra("index", AC.getPageIndex());
+								startActivity(diveDetailsActivity);
+							}
+						}
+					});
 				}
 			}
 		}
@@ -384,32 +404,36 @@ import android.widget.TextView;
 				{
 					((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).addView(result.get(i));
 					//System.out.println(result.size());
-					if (getActivity() != null && (result.size() == 0 || getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE))
-					{
-						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
-								diveDetailsActivity.putExtra("index", AC.getPageIndex());
-								startActivity(diveDetailsActivity);
-							}
-						});
-					}
-					else
-					{
-						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
-								galleryCarousel.putExtra("index", AC.getPageIndex());
-								startActivity(galleryCarousel);
-							}
-						});
-					}
+//					ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//					Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+//					diveDetailsActivity.putExtra("index", AC.getPageIndex());
+//					startActivity(diveDetailsActivity);
+//					if (getActivity() != null && (result.size() == 0 || getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE))
+//					{
+//						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+//								diveDetailsActivity.putExtra("index", AC.getPageIndex());
+//								startActivity(diveDetailsActivity);
+//							}
+//						});
+//					}
+//					else
+//					{
+//						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
+//								galleryCarousel.putExtra("index", AC.getPageIndex());
+//								startActivity(galleryCarousel);
+//							}
+//						});
+//					}
 				}
 			}
 		}
