@@ -200,7 +200,7 @@ public class					DataManager
 		{
 			if (object.getClass() == Dive.class)
 			{
-				if (((Dive)object).getId() == -1)
+				if (((Dive)object).getId() < 0 && (((Dive)object).getEditList() == null || ((Dive)object).getEditList().size() == 0))
 					_addDive(object);
 				else
 					_saveDive(object);
@@ -217,6 +217,7 @@ public class					DataManager
 		
 		try
 		{
+			System.out.println("ADD DIVE");
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
 			json.put("maxdepth", dive.getMaxdepth().getDistance().toString());
@@ -247,7 +248,8 @@ public class					DataManager
 			if (dive.getNumber() != null)
 				json.put("number", dive.getNumber());
 			json.put("privacy", Integer.toString(dive.getPrivacy()));
-			Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
+			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
+			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);
 		}
 		catch (JSONException e) {
@@ -349,26 +351,15 @@ public class					DataManager
 			try
 			{
 				JSONObject json = new JSONObject(result);
-				System.out.println("INITAL VALUE : " + json.toString());
 				JSONArray jarray = json.getJSONArray("result");
-				if (Integer.parseInt(info[1]) == -1)
+				//if (Integer.parseInt(info[1]) == -1)
+				if (Integer.parseInt(info[1]) < 0)
 				{
 					JSONArray new_array = new JSONArray();
 					new_array.put(0, result_obj);
 					for (int i = 0; i < jarray.length(); i++)
 						new_array.put(i + 1, jarray.get(i));
 					json.put("result", new_array);
-//					for (int i = jarray.length() - 1; i >= 0; i--)
-//					{
-//						JSONObject temp = jarray.getJSONObject(i);
-//						System.out.println("ID : " + temp.getInt("id") + " id:" + i);
-//						if (temp.getInt("id") == 0)
-//						{
-//							
-//							jarray.put(i, result_obj);
-//							break ;
-//						}
-//					}
 				}
 				else
 				{
@@ -408,13 +399,15 @@ public class					DataManager
 					JSONObject temp = jarray.getJSONObject(i);
 					if (temp.getInt("id") == Integer.parseInt(info[1]))
 					{
-						ArrayList<String> list = new ArrayList<String>();
+						ArrayList<JSONObject> list = new ArrayList<JSONObject>();
 						for (int j = 0, len = jarray.length(); j < len; j++)
 						{
-						    list.add(jarray.get(j).toString());
+						    list.add(jarray.getJSONObject(j));
 						}
 						list.remove(i);
 						JSONArray new_jarray = new JSONArray(list);
+						
+						json.put("result", new_jarray);
 						//saveCache(_userId, "dives", new_jarray.toString());
 						saveCache(_userId, "dives", json.toString());
 						commitCache();
@@ -499,19 +492,11 @@ public class					DataManager
 								JSONObject json = new JSONObject(result);
 								if (json.getBoolean("success") == false)
 									break ;
-								if (Integer.parseInt(info[1]) == -1)
+								//if (Integer.parseInt(info[1]) == -1)
+								if (Integer.parseInt(info[1]) < 0)
 								{
 									// New Dive segment
-									ArrayList<Dive> dives = _model.getDives();
-									JSONObject new_dive = json.getJSONObject("result");
-									for (int i = dives.size() - 1; i >= 0; i--)
-									{
-										if (dives.get(i).getId() == -1)
-										{
-											_model.getDives().set(i, new Dive(new_dive));
-											break ;
-										}
-									}
+									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
 								_applyEditCache(elem.first, json.getJSONObject("result"));
 							}
@@ -548,13 +533,53 @@ public class					DataManager
 			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 			try
 			{
-				//System.out.println("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + Html.escapeHtml(_token) + "&apikey=" + Html.escapeHtml("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 				client.execute(deleteRequest);
 				_applyEditCache(elemtag, null);
 				client.close();
 			}
 			catch (IOException e) {
 				e.printStackTrace();
+			}
+		}
+		
+		/*
+		 * Refresh information of edit list with new dive id
+		 */
+		private void					_refreshNewDiveEditList(int id, JSONObject json) throws JSONException
+		{
+			ArrayList<Dive> dives = _model.getDives();
+			JSONObject new_dive = json.getJSONObject("result");
+			//for (int i = dives.size() - 1; i >= 0; i--)
+			for (int i = 0, size = dives.size(); i < size; i++)
+			{
+				//if (dives.get(i).getId() == -1)
+				if (dives.get(i).getId() == id)
+				{
+					Dive dive = new Dive(new_dive);
+					//Apply the changes on the mode dive list
+					_model.getDives().set(i, dive);
+					//Apply the changes on the edit list (update new id)
+					for (int j = 0, size2 = _editList.size(); j < size2; j++)
+					{
+						String[] elem_tag = _editList.get(j).first.split(":");
+						if (Integer.parseInt(elem_tag[1]) == id)
+						{
+							System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
+							JSONObject temp_obj;
+							try
+							{
+								temp_obj = new JSONObject(_editList.get(j).second);
+								temp_obj.put("id", dive.getId());
+								_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + dive.getId(), temp_obj.toString()));
+							}
+							catch (JSONException e) {
+								e.printStackTrace();
+							}
+						}
+					}
+					_cacheEditList();
+					break ;
+				}
 			}
 		}
 	}

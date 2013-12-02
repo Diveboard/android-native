@@ -187,7 +187,7 @@ public class					TabEditSpotsActivity extends Activity
 		protected void onPostExecute(JSONObject result)
 		{
 			try {
-				if (result.getBoolean("success") == true)
+				if (result != null && result.getBoolean("success") == true)
 				{
 					try {
 						mArray = result.getJSONArray("spots");

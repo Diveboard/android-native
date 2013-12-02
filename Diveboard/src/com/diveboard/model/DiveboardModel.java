@@ -578,7 +578,6 @@ public class					DiveboardModel
 	
 	private void				_applyEdit()
 	{
-		System.out.println("APPLY EDIT");
 		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
 		try
 		{
@@ -588,6 +587,8 @@ public class					DiveboardModel
 				String[] info = edit_list.get(i).first.split(":");
 				if (info[0].compareTo("Dive") == 0)
 					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
+				else if (info[0].equals("Dive_delete"))
+					_applyDeleteDive(Integer.parseInt(info[1]));
 			}
 		}
 		catch (NumberFormatException e)
@@ -600,25 +601,50 @@ public class					DiveboardModel
 		}
 	}
 	
+	private void				_applyDeleteDive(final int id)
+	{
+		ArrayList<Dive>			dives = getDives();
+		
+		for (int i = 0, size = dives.size(); i < size; i++)
+			if (dives.get(i).getId() == id)
+			{
+				dives.remove(i);
+				break ;
+			}
+	}
+	
 	private void				_applyEditDive(final int id, final String json) throws JSONException
 	{
 		ArrayList<Dive> dives = getDives();
+		boolean exist = false;
+		int i = 0;
 		
 		// Create Dive if new dive type
 		System.out.println("APPLY EDIT " + id + " : " + json);
-		if (id == -1)
-			dives.add(0, new Dive(new JSONObject(json)));
+		for (int size = dives.size(); i < size; i++)
+			if (dives.get(i).getId() == id)
+			{
+				exist = true;
+				break ;
+			}
+		//if (id == -1)
+		if (exist == false)
+		{
+			Dive new_dive = new Dive(new JSONObject(json));
+			new_dive.setId(id);
+			dives.add(0, new_dive);
+		}
 		else
 		{
 			// Apply edit if edit type
-			for (int i = 0, length = dives.size(); i < length; i++)
-			{
-				if (dives.get(i).getId() == id)
-				{
+//			for (int i = 0, length = dives.size(); i < length; i++)
+//			{
+//				if (dives.get(i).getId() == id)
+//				{
 					dives.get(i).applyEdit(new JSONObject(json));
-					break ;
-				}
-			}
+//					break ;
+//				}
+//			}
 		}
 	}
 	

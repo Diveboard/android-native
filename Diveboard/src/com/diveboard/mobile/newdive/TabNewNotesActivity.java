@@ -2,6 +2,9 @@ package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
@@ -12,6 +15,7 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -86,6 +90,23 @@ public class TabNewNotesActivity extends Activity
 			{
 				mDive.setNotes(mNotes.getText().toString());
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				ArrayList<Pair<String, String>> editList = mDive.getEditList();
+				if (editList != null && editList.size() > 0)
+				{
+					JSONObject edit = new JSONObject(); 
+					for (int i = 0, size = editList.size(); i < size; i++)
+						try {
+							edit.put(editList.get(i).first, editList.get(i).second);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					try {
+						mDive.applyEdit(edit);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					mDive.clearEditList();
+				}
 				dives.add(0, mDive);
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);

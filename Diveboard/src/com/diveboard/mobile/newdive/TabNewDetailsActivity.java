@@ -34,6 +34,9 @@ import com.diveboard.mobile.editdive.OptionAdapter;
 
 import java.util.ArrayList;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 
@@ -42,6 +45,7 @@ import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -214,6 +218,23 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			public void onClick(View v)
 			{
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				ArrayList<Pair<String, String>> editList = mDive.getEditList();
+				if (editList != null && editList.size() > 0)
+				{
+					JSONObject edit = new JSONObject(); 
+					for (int i = 0, size = editList.size(); i < size; i++)
+						try {
+							edit.put(editList.get(i).first, editList.get(i).second);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					try {
+						mDive.applyEdit(edit);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					mDive.clearEditList();
+				}
 				dives.add(0, mDive);
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);

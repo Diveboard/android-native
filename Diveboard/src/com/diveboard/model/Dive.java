@@ -74,12 +74,13 @@ public class					Dive implements IModel
 		Calendar c = Calendar.getInstance();
 		_id = -1;
 		_date = Integer.toString(c.get(Calendar.YEAR)) + "-";
-		if (c.get(Calendar.MONTH) < 10)
+		if (c.get(Calendar.MONTH) + 1 < 10)
 			_date += "0";
-		_date += Integer.toString(c.get(Calendar.MONTH)) + "-";
+		_date += Integer.toString(c.get(Calendar.MONTH) + 1) + "-";
 		if (c.get(Calendar.DATE) < 10)
 			_date += "0";
 		_date += Integer.toString(c.get(Calendar.DATE));
+		System.out.println("New Dive date : " + _date);
 		_timeIn = _date + "T";
 		if (c.get(Calendar.HOUR_OF_DAY) < 10)
 			_timeIn += "0";

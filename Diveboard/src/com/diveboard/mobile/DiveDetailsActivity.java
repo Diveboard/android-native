@@ -146,7 +146,8 @@ public class DiveDetailsActivity extends TabActivity {
 						{
 							((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
 							ApplicationController AC = (ApplicationController)getApplicationContext();
-							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
+									&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
 							{
 								Intent galleryCarousel = new Intent(DiveDetailsActivity.this, GalleryCarouselActivity.class);
 								galleryCarousel.putExtra("index", AC.getPageIndex());

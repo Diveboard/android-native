@@ -1,8 +1,11 @@
 package com.diveboard.mobile.newdive;
 
+import java.util.ArrayList;
+
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -38,8 +41,21 @@ public class					NewDiveActivity extends TabActivity
 	    setContentView(R.layout.activity_edit_dive);
 	    
 	    if (((ApplicationController)getApplicationContext()).getTempDive() == null)
-	    	((ApplicationController)getApplicationContext()).setTempDive(new Dive());
-	    
+	    {
+	    	DiveboardModel model = ((ApplicationController)getApplicationContext()).getModel();
+	    	ArrayList<Dive> dives = model.getDives();
+	    	int id = 0;
+	    	for (int i = 0, size = dives.size(); i < size; i++)
+	    	{
+	    		if (dives.get(i).getId() < id)
+	    			id = dives.get(i).getId();
+	    	}
+	    	id--;
+	    	Dive new_dive = new Dive();
+	    	System.out.println("New dive id: " + id);
+	    	new_dive.setId(id);
+	    	((ApplicationController)getApplicationContext()).setTempDive(new_dive);
+	    }
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
 	    

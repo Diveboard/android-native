@@ -26,6 +26,7 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -101,6 +102,23 @@ public class					TabNewSpotsActivity extends Activity
 				System.out.println("current spot = " + ((TextView)findViewById(R.id.current_spot)).getText().toString());
 				
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				ArrayList<Pair<String, String>> editList = mDive.getEditList();
+				if (editList != null && editList.size() > 0)
+				{
+					JSONObject edit = new JSONObject(); 
+					for (int i = 0, size = editList.size(); i < size; i++)
+						try {
+							edit.put(editList.get(i).first, editList.get(i).second);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+					try {
+						mDive.applyEdit(edit);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					mDive.clearEditList();
+				}
 				dives.add(0, mDive);
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);
@@ -190,7 +208,7 @@ public class					TabNewSpotsActivity extends Activity
 		protected void onPostExecute(JSONObject result)
 		{
 			try {
-				if (result.getBoolean("success") == true)
+				if (result != null && result.getBoolean("success") == true)
 				{
 					try {
 						mArray = result.getJSONArray("spots");
