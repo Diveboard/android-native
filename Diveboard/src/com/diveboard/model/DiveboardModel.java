@@ -46,6 +46,7 @@ public class					DiveboardModel
 	private boolean				_connected = false;
 	private String				_token;
 	private String				_unitPreferences;
+	private UserPreference		_preference;
 	
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static ArrayList<String>	savedPictureList;
@@ -86,7 +87,7 @@ public class					DiveboardModel
 	{
 		File file_id = new File(_context.getFilesDir() + "_logged_id");
 		File file_token = new File(_context.getFilesDir() + "_logged_token");
-		File unit_preferences = new File(_context.getFilesDir() + "_unit_preferences");
+//		File unit_preferences = new File(_context.getFilesDir() + "_unit_preferences");
 		if (file_id.exists() && file_token.exists())
 		{
 			try
@@ -97,6 +98,7 @@ public class					DiveboardModel
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
 				_userId = Integer.parseInt(fileContent.toString());
+				_preference = new UserPreference(_context, _userId);
 				fileInputStream.close();
 				
 				fileInputStream = _context.openFileInput(file_token.getName());
@@ -107,13 +109,13 @@ public class					DiveboardModel
 				_token = fileContent.toString();
 				fileInputStream.close();
 				
-				fileInputStream = _context.openFileInput(unit_preferences.getName());
-				fileContent = new StringBuffer("");
-				buffer = new byte[1];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
-				_unitPreferences = fileContent.toString();
-				fileInputStream.close();
+//				fileInputStream = _context.openFileInput(unit_preferences.getName());
+//				fileContent = new StringBuffer("");
+//				buffer = new byte[1];
+//				while (fileInputStream.read(buffer) != -1)
+//					fileContent.append(new String(buffer));
+//				_unitPreferences = fileContent.toString();
+//				fileInputStream.close();
 				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
@@ -172,6 +174,7 @@ public class					DiveboardModel
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
+				_preference = new UserPreference(_context, _userId);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
@@ -187,10 +190,10 @@ public class					DiveboardModel
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
 				
-				file = new File(_context.getFilesDir() + "_unit_preferences");
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(_unitPreferences.getBytes());
+//				file = new File(_context.getFilesDir() + "_unit_preferences");
+//				file.createNewFile();
+//				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+//				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
@@ -275,10 +278,10 @@ public class					DiveboardModel
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
 				
-				file = new File(_context.getFilesDir() + "_unit_preferences");
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(_unitPreferences.getBytes());
+//				file = new File(_context.getFilesDir() + "_unit_preferences");
+//				file.createNewFile();
+//				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+//				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
@@ -393,9 +396,12 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
 		if (!temp_mode)
-			_user = new User(json, _unitPreferences);
+		{
+//			_preference.setUnits(json.getJSONObject("units"));
+			_user = new User(json);
+		}
 		else
-			_temp_user = new User(json, _unitPreferences);
+			_temp_user = new User(json);
 	}
 	
 	/*
@@ -1000,5 +1006,10 @@ public class					DiveboardModel
 			}
 		}
 		return null;
+	}
+	
+	public UserPreference					getPreference()
+	{
+		return _preference;
 	}
 }

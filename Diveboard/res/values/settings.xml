@@ -12,5 +12,5 @@
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
-    
+    <string translatable="false" name="remaining_requests_title">Pending Requests</string>
 </resources>

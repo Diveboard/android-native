@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import com.diveboard.mobile.ApplicationController;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -90,8 +92,9 @@ public class					Picture
 	public synchronized boolean		loadPicture(final Context context, final Size size) throws IOException
 	{
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		
+		ApplicationController AC = (ApplicationController)context;
+		NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
+			
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			URL url;

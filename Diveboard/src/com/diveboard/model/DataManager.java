@@ -25,8 +25,6 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.text.Html;
-import android.text.TextUtils;
 import android.util.Pair;
 import android.util.SparseArray;
 

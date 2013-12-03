@@ -25,6 +25,12 @@ import android.text.TextUtils;
 
 import java.util.List;
 
+import org.json.JSONException;
+
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
+import com.diveboard.model.UserPreference;
+
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
  * handset devices, settings are presented as a single list. On tablets,
@@ -46,6 +52,8 @@ public class SettingsActivity extends PreferenceActivity {
 	private ListPreference mUnitSetting;
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
+	
+	private DiveboardModel		mModel;
 
 	@Override
 	protected void onResume()
@@ -75,6 +83,7 @@ public class SettingsActivity extends PreferenceActivity {
 //			return;
 //		}
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		mModel = AC.getModel();
 //		PreferenceCategory fakeHeader = new PreferenceCategory(this);
 //		fakeHeader.setTitle("Pictures loading remaining: " + AC.getModel().getPictureCount());
 //		getPreferenceScreen().addPreference(fakeHeader);
@@ -107,18 +116,50 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		getPreferenceScreen().addPreference(remainingPictures);
 		
+		Preference remainingRequest = new Preference(this);
+		remainingRequest.setEnabled(true);
+		remainingRequest.setKey("remaining_req");
+		remainingRequest.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
+		remainingRequest.setOnPreferenceClickListener(new OnPreferenceClickListener()
+		{
+			@Override
+			public boolean onPreferenceClick(Preference arg0)
+			{
+				Preference remaining = (Preference) findPreference("remaining_req");
+				remaining.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
+				return true;
+			}
+		});
+		
+		getPreferenceScreen().addPreference(remainingRequest);
+		
 		PreferenceCategory userSettings = new PreferenceCategory(this);
 		userSettings.setTitle(getResources().getString(R.string.user_settings_category));
 		
 		getPreferenceScreen().addPreference(userSettings);
 		
 		mUnitSetting = new ListPreference(this);
-		mUnitSetting.setEnabled(false);
+		//mUnitSetting.setEnabled(false);
 		mUnitSetting.setTitle(getResources().getString(R.string.unit_setting_title));
 		mUnitSetting.setEntries(getResources().getStringArray(R.array.unit_entries));
 		mUnitSetting.setEntryValues(getResources().getStringArray(R.array.unit_entries));
 		mUnitSetting.setKey("unit");
-		mUnitSetting.setValueIndex(1);
+		
+		try {
+			if (UserPreference.getUnits().getString("distance").equals("Km"))
+			{
+				mUnitSetting.setValueIndex(1);
+				mUnitSetting.setValue("Metric");
+			}
+			else
+			{
+				mUnitSetting.setValueIndex(0);
+				mUnitSetting.setValue("Imperial");
+			}
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		
 		mUnitSetting.setSummary(mUnitSetting.getEntry());
 		mUnitSetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
 		{
@@ -127,6 +168,17 @@ public class SettingsActivity extends PreferenceActivity {
 			{
 				ListPreference unit = (ListPreference) findPreference("unit");
 				pref.setSummary(newVal.toString());
+				String val = (String) newVal;
+				if (val.equals("Metric"))
+					mModel.getPreference().setUnits(1);
+				else
+					mModel.getPreference().setUnits(0);
+				try {
+					mModel.getUser().setUnitPreferences(new Units(UserPreference.getUnits()));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+				((ApplicationController)getApplicationContext()).setRefresh(1);
 				return true;
 			}
 			
@@ -150,10 +202,24 @@ public class SettingsActivity extends PreferenceActivity {
 //		else
 //		{
 			CheckBoxPreference phoneNetworkDownload = new CheckBoxPreference(this);
-			phoneNetworkDownload.setChecked(true);
+			if (mModel.getPreference().getNetwork() == 1)
+				phoneNetworkDownload.setChecked(true);
+			else
+				phoneNetworkDownload.setChecked(false);
 			phoneNetworkDownload.setTitle(getResources().getString(R.string.phone_network_download_title));
 			phoneNetworkDownload.setSummary(getResources().getString(R.string.phone_network_download_summary));
-			phoneNetworkDownload.setEnabled(false);
+			phoneNetworkDownload.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					Boolean val = (Boolean) newValue;
+					if (val == true)
+						mModel.getPreference().setNetwork(1);
+					else
+						mModel.getPreference().setNetwork(0);
+					return true;
+				}
+			});
+			//phoneNetworkDownload.setEnabled(false);
 			
 			getPreferenceScreen().addPreference(phoneNetworkDownload);
 //		}
