@@ -561,14 +561,17 @@ public class					DiveboardModel
 //			_user = (User) _temp_user.clone();
 //			_temp_user = null;
 		}
-		ArrayList<Dive> dives = _user.getDives();
-		for (int i = 0, len = dives.size(); i < len; i++)
+		if (_user != null)
 		{
-			if (dives.get(i).getProfile() != null)
-				dives.get(i).getProfile().deletePicture(_context);
+			ArrayList<Dive> dives = _user.getDives();
+			for (int i = 0, len = dives.size(); i < len; i++)
+			{
+				if (dives.get(i).getProfile() != null)
+					dives.get(i).getProfile().deletePicture(_context);
+			}
+			_enable_overwrite = false;
+			_applyEdit();
 		}
-		_enable_overwrite = false;
-		_applyEdit();
 	}
 	
 	public DataManager			getDataManager()

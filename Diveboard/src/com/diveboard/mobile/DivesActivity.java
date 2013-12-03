@@ -36,6 +36,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -50,6 +51,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -198,6 +200,34 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			//finish();
 //			System.out.println("logout");
 //			logout();
+		}
+	}
+	
+	@Override
+	public boolean onTouchEvent(MotionEvent event)
+	{
+		int action = MotionEventCompat.getActionMasked(event);
+		final String DEBUG_TAG = "DivesActivity";
+		
+		switch(action) {
+			case (MotionEvent.ACTION_DOWN) :
+	            Log.d(DEBUG_TAG,"Action was DOWN");
+	            return true;
+	        case (MotionEvent.ACTION_MOVE) :
+	            Log.d(DEBUG_TAG,"Action was MOVE");
+	            return true;
+	        case (MotionEvent.ACTION_UP) :
+	            Log.d(DEBUG_TAG,"Action was UP");
+	            return true;
+	        case (MotionEvent.ACTION_CANCEL) :
+	            Log.d(DEBUG_TAG,"Action was CANCEL");
+	            return true;
+	        case (MotionEvent.ACTION_OUTSIDE) :
+	            Log.d(DEBUG_TAG,"Movement occurred outside bounds " +
+	                    "of current screen element");
+	            return true;      
+	        default : 
+	            return super.onTouchEvent(event);
 		}
 	}
 	
