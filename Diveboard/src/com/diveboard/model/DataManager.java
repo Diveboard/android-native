@@ -441,9 +441,9 @@ public class					DataManager
 					{
 						if (_editList.size() != 0)
 						{
-							System.out.println("SEND ITEM");
 							//System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
 							elem = _editList.get(0);
+							System.out.println("SEND ITEM : " + elem.second);
 							// Process
 							AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 							String[] info = elem.first.split(":");
@@ -549,38 +549,75 @@ public class					DataManager
 			ArrayList<Dive> dives = _model.getDives();
 			System.out.println("REFRESH : " + json);
 			JSONObject new_dive = json.getJSONObject("result");
-			//for (int i = dives.size() - 1; i >= 0; i--)
 			for (int i = 0, size = dives.size(); i < size; i++)
 			{
-				//if (dives.get(i).getId() == -1)
 				if (dives.get(i).getId() == id)
 				{
 					Dive dive = new Dive(new_dive);
 					//Apply the changes on the mode dive list
 					_model.getDives().set(i, dive);
-					//Apply the changes on the edit list (update new id)
-					for (int j = 0, size2 = _editList.size(); j < size2; j++)
-					{
-						String[] elem_tag = _editList.get(j).first.split(":");
-						if (Integer.parseInt(elem_tag[1]) == id)
-						{
-							System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
-							JSONObject temp_obj;
-							try
-							{
-								temp_obj = new JSONObject(_editList.get(j).second);
-								temp_obj.put("id", dive.getId());
-								_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + dive.getId(), temp_obj.toString()));
-							}
-							catch (JSONException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-					_cacheEditList();
 					break ;
 				}
 			}
+			//Apply the changes on the edit list (update new id)
+			for (int j = 0, size2 = _editList.size(); j < size2; j++)
+			{
+				String[] elem_tag = _editList.get(j).first.split(":");
+				System.out.println("CHECKING : " + elem_tag[1] + " = " + id);
+				if (Integer.parseInt(elem_tag[1]) == id)
+				{
+					System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
+					JSONObject temp_obj;
+					try
+					{
+						if (_editList.get(j).second.equals("null") == false)
+						{
+							temp_obj = new JSONObject(_editList.get(j).second);
+							temp_obj.put("id", new_dive.getInt("id"));
+							_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + new_dive.getInt("id"), temp_obj.toString()));
+						}
+						else
+							_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + new_dive.getInt("id"), "null"));
+					}
+					catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			_cacheEditList();
+			//for (int i = dives.size() - 1; i >= 0; i--)
+//			for (int i = 0, size = dives.size(); i < size; i++)
+//			{
+//				//if (dives.get(i).getId() == -1)
+//				if (dives.get(i).getId() == id)
+//				{
+//					Dive dive = new Dive(new_dive);
+//					//Apply the changes on the mode dive list
+//					_model.getDives().set(i, dive);
+//					//Apply the changes on the edit list (update new id)
+//					for (int j = 0, size2 = _editList.size(); j < size2; j++)
+//					{
+//						String[] elem_tag = _editList.get(j).first.split(":");
+//						System.out.println("CHECKING : " + elem_tag[1] + " = " + id);
+//						if (Integer.parseInt(elem_tag[1]) == id)
+//						{
+//							System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
+//							JSONObject temp_obj;
+//							try
+//							{
+//								temp_obj = new JSONObject(_editList.get(j).second);
+//								temp_obj.put("id", dive.getId());
+//								_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + dive.getId(), temp_obj.toString()));
+//							}
+//							catch (JSONException e) {
+//								e.printStackTrace();
+//							}
+//						}
+//					}
+//					_cacheEditList();
+//					break ;
+//				}
+//			}
 		}
 	}
 }
