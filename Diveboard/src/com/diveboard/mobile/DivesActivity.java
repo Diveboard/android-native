@@ -337,7 +337,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				switch (item.getItemId()) {
 				case R.id.refresh:
 					ApplicationController AC = (ApplicationController)getApplicationContext();
-					AC.setPageIndex(0);
 					AC.setDataReady(false);
 					AC.getModel().stopPreloadPictures();
 					AC.setModel(null);
@@ -347,15 +346,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 		    	    startActivity(newDiveActivity);
 		    	    return true;
-		        case R.id.menu_settings:
-		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-		    	    startActivity(settingsActivity);
-		            return true;
 		        case R.id.report_bug:
 		        	UserVoice.launchContactUs(DivesActivity.this);
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
+		            return true;
+		        case R.id.menu_settings:
+		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+		    	    startActivity(settingsActivity);
 		            return true;
 		        default:
 		            return false;
@@ -391,7 +390,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    switch (item.getItemId()) {
 		    case R.id.refresh:
 		    	ApplicationController AC = (ApplicationController)getApplicationContext();
-		    	AC.setPageIndex(0);
 		    	AC.setDataReady(false);
 		    	AC.getModel().stopPreloadPictures();
 				AC.setModel(null);
@@ -401,15 +399,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 	    	    startActivity(newDiveActivity);
 	    	    return true;
-	    	case R.id.menu_settings:
-	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	    	    startActivity(settingsActivity);
-	            return true;
 	    	case R.id.report_bug:
 	        	UserVoice.launchContactUs(DivesActivity.this);
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();
+	            return true;
+	    	case R.id.menu_settings:
+	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+	    	    startActivity(settingsActivity);
 	            return true;
 	        default:
 	            return super.onContextItemSelected(item);
@@ -569,6 +567,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			pos += String.valueOf(model.getDives().get(i).getLng() * (-1)) + "° ";
 			pos += "W";
 		}
+		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 
+				(model.getDives().get(i).getLng() == null || model.getDives().get(i).getLng() == 0))
+			pos = "";
 		return (pos);
 	}
 	
@@ -651,8 +652,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        mPager.setAdapter(mPagerAdapter);
 			        mPager.setPageMargin(margin + offset);
 			        mPager.setOffscreenPageLimit(2);
-			        mPager.setCurrentItem(AC.getPageIndex());
-			        
+			        if (AC.getPageIndex() >= mModel.getDives().size())
+			        {
+			        	mPager.setCurrentItem(mModel.getDives().size() - 1);
+			        	AC.setPageIndex(mModel.getDives().size() - 1);
+			        }
+			        else
+			        	mPager.setCurrentItem(AC.getPageIndex());
 			        mPager.setOnTouchListener(new OnTouchListener() {
 						@Override
 						public boolean onTouch(View v, MotionEvent event) {
@@ -856,11 +862,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					        	TrackingBarPosition childPos = new TrackingBarPosition( 
 					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX()
 					        			+ mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
-					        			+ (
-						        				(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX()
+					        			+ ((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX()
 						        		+ mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
 						        		mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
-						        		(mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight()));
+						        		(mScreenSetup.getScreenHeight()));
 						        mTrackingBarPosition.add(childPos);
 //						        System.out.println(index);
 						        //mTrackingBarPosition.get(index).getx()
@@ -1248,7 +1253,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				}
 				
 			}
-			Log.d(DEBUG_TAG, "onScroll: " + event1.toString()+event2.toString());
+			//Log.d(DEBUG_TAG, "onScroll: " + event1.toString()+event2.toString());
 			return true;
 		}
     }
