@@ -330,7 +330,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //
 //	}
 	
-	//@TargetApi(Build.VERSION_CODES.)
+	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public void goToMenuV3(View view)
 	{
 		PopupMenu popup = new PopupMenu(this, view);
@@ -355,7 +355,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(newDiveActivity);
 		    	    return true;
 		        case R.id.report_bug:
-		        	UserVoice.launchContactUs(DivesActivity.this);
+		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+		        	{
+		        		UserVoice.launchContactUs(DivesActivity.this);
+		        	}
+		        	else
+		        	{
+		        		Intent intent = new Intent(Intent.ACTION_SEND);
+		        		intent.setType("text/plain");
+		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+		        		startActivity(Intent.createChooser(intent, "Send Email"));
+		        	}
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
@@ -408,7 +418,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	    startActivity(newDiveActivity);
 	    	    return true;
 	    	case R.id.report_bug:
-	        	UserVoice.launchContactUs(DivesActivity.this);
+	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	        	{
+	        		UserVoice.launchContactUs(DivesActivity.this);
+	        	}
+	        	else
+	        	{
+	        		Intent intent = new Intent(Intent.ACTION_SEND);
+	        		intent.setType("text/plain");
+	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+	        		startActivity(Intent.createChooser(intent, "Send Email"));
+	        	}
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();
@@ -631,9 +651,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				else
 				{
 					mNbPages = mModel.getDives().size();
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getPageIndex(), mModel));
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 					//Pager size setting
 					mPager = (ViewPager) findViewById(R.id.pager);
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight() - mScreenSetup.getDiveListWhiteSpace4() - - mScreenSetup.getDiveListWhiteSpace3());
@@ -667,6 +684,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        }
 			        else
 			        	mPager.setCurrentItem(AC.getPageIndex());
+			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getPageIndex(), mModel));
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 			        mPager.setOnTouchListener(new OnTouchListener() {
 						@Override
 						public boolean onTouch(View v, MotionEvent event) {

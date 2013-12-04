@@ -1,5 +1,10 @@
 package com.diveboard.mobile;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.diveboard.mobile.SignUpActivity.LoginTask;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
@@ -194,9 +199,10 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 */
 	public void attemptLogin() {
 		if (mAuthTask != null) {
+			System.out.println("ya");
 			return;
 		}
-
+		System.out.println("yo");
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
@@ -213,7 +219,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 4) {
+		} else if (mPassword.length() < 5 || mPassword.length() > 20) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -292,9 +298,9 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+	public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 		@Override
-		protected Integer doInBackground(Void... params) {
+		protected JSONObject doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 //			DiveboardModel model = new DiveboardModel(getApplicationContext());
 			
@@ -304,26 +310,61 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected void onPostExecute(final Integer success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success != -1) {
-				mEmailView.setText("");
-				mPasswordView.setText("");
-				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
-			    startActivity(editDiveActivity);
+		protected void onPostExecute(final JSONObject json) {
+			if (json != null)
+			{
+				System.out.println(json.toString());
+				mAuthTask = null;
+				showProgress(false);
+				try {
+					Boolean success = json.getBoolean("success");
+					if (success == true)
+					{
+						showProgress(false);
+						mEmailView.setText("");
+						mPasswordView.setText("");
+						Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+					    startActivity(editDiveActivity);
+					}
+					else
+					{
+						String str = (String)json.getString("error");
+						Toast toast = Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+						showProgress(false);
+//						JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
+//						for (int i = 0; i < jsonArray.length(); i++)
+//						{
+//							String error = ((JSONObject)jsonArray.get(i)).getString("error");
+//							String params = ((JSONObject)jsonArray.get(i)).getString("params");
+//							if (params.contentEquals("password"))
+//							{
+//								mPasswordView.setError(error);
+//								mPasswordView.requestFocus();
+//							}
+//							else if (params.contentEquals("email"))
+//							{
+//								mEmailView.setError(error);
+//								mEmailView.requestFocus();
+//							}
+//						}
+//						String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
+//						String params = json.getString("params");
+//						System.out.println(error + " " + params);
+						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-//			else if (success == 0 ){
-//				mPasswordView
-//						.setError(getString(R.string.error_incorrect_password));
-//				mPasswordView.requestFocus();
-//			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), "Network error!", Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
+				showProgress(false);
 			}
 		}
 
@@ -333,6 +374,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			showProgress(false);
 		}
 	}
+	
 	
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate

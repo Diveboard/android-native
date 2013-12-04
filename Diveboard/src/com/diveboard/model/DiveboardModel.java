@@ -223,7 +223,7 @@ public class					DiveboardModel
 		return (null);
 	}
 	
-	public JSONObject					doFbLogin(final String fb_id, final String fb_token)
+	public int					doFbLogin(final String fb_id, final String fb_token)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -248,11 +248,11 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
-				JSONObject status = new JSONObject(result);
+				//JSONObject status = new JSONObject(result);
 				// Analyze data
 				boolean success = json.getBoolean("success");
 				if (success == false)
-					return (status);
+					return (-1);
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
@@ -290,27 +290,27 @@ public class					DiveboardModel
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				DiveboardModel.savedPictureList = new ArrayList<String>();
 				_initSavedPictures();
-				return (status);
+				return (_userId);
 			}
 			catch (UnsupportedEncodingException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (null);
+				return (-1);
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (null);
+				return (-1);
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (null);
+				return (-1);
 			}
 		}
-		return (null);
+		return (-1);
 	}
 	
 	public void					doLogout()

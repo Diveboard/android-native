@@ -11,11 +11,13 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.View;
@@ -24,7 +26,9 @@ import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 /**
@@ -197,10 +201,15 @@ public class SignUpActivity extends FragmentActivity {
 
 		// Check for a check terms.
 		if (!mTermsView.isChecked()) {
-			mTermsView.setError(getString(R.string.error_check_required));
+			((ImageView)findViewById(R.id.error)).setVisibility(View.VISIBLE);
+			//Drawable err_indiactor = getResources().getDrawable(R.drawable.error);
+			//mTermsView.setCompoundDrawablesWithIntrinsicBounds(null, null, err_indiactor, null);
+			//mTermsView.setError(getString(R.string.error_check_required));
 			focusView = mTermsView;
 			cancel = true;
 		}
+		else
+			((ImageView)findViewById(R.id.error)).setVisibility(View.INVISIBLE);
 		
 		// Check for a valid Nickname.
 		if (TextUtils.isEmpty(mNickname)) {
@@ -334,59 +343,70 @@ public class SignUpActivity extends FragmentActivity {
 
 		@Override
 		protected void onPostExecute(final JSONObject json) {
-			System.out.println(json.toString());
-			mAuthTask = null;
-			showProgress(false);
-			try {
-				Boolean success = json.getBoolean("success");
-				if (success == true)
-				{
-					showProgress(true);
-					mLoginTask = new LoginTask();
-					mLoginTask.execute((Void) null);
-				}
-				else
-				{
-					JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
-					for (int i = 0; i < jsonArray.length(); i++)
+			if (json != null)
+			{
+				System.out.println(json.toString());
+				mAuthTask = null;
+				showProgress(false);
+				try {
+					Boolean success = json.getBoolean("success");
+					if (success == true)
 					{
-						String error = ((JSONObject)jsonArray.get(i)).getString("error");
-						String params = ((JSONObject)jsonArray.get(i)).getString("params");
-						if (params.contentEquals("nickname"))
-						{
-							mNicknameView.setError(error);
-							mNicknameView.requestFocus();
-						}
-						else if (params.contentEquals("vanity_url"))
-						{
-							mURLView.setError(error);
-							mURLView.requestFocus();
-						}
-						else if (params.contentEquals("password_check"))
-						{
-							mConfirmPasswordView.setError(error);
-							mConfirmPasswordView.requestFocus();
-						}
-						else if (params.contentEquals("password"))
-						{
-							mPasswordView.setError(error);
-							mPasswordView.requestFocus();
-						}
-						else if (params.contentEquals("email"))
-						{
-							mEmailView.setError(error);
-							mEmailView.requestFocus();
-						}
+						showProgress(true);
+						mLoginTask = new LoginTask();
+						mLoginTask.execute((Void) null);
 					}
-//					String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
-//					String params = json.getString("params");
-//					System.out.println(error + " " + params);
-					
+					else
+					{
+						JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
+						for (int i = 0; i < jsonArray.length(); i++)
+						{
+							String error = ((JSONObject)jsonArray.get(i)).getString("error");
+							String params = ((JSONObject)jsonArray.get(i)).getString("params");
+							if (params.contentEquals("nickname"))
+							{
+								mNicknameView.setError(error);
+								mNicknameView.requestFocus();
+							}
+							else if (params.contentEquals("vanity_url"))
+							{
+								mURLView.setError(error);
+								mURLView.requestFocus();
+							}
+							else if (params.contentEquals("password_check"))
+							{
+								mConfirmPasswordView.setError(error);
+								mConfirmPasswordView.requestFocus();
+							}
+							else if (params.contentEquals("password"))
+							{
+								mPasswordView.setError(error);
+								mPasswordView.requestFocus();
+							}
+							else if (params.contentEquals("email"))
+							{
+								mEmailView.setError(error);
+								mEmailView.requestFocus();
+							}
+						}
+//						String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
+//						String params = json.getString("params");
+//						System.out.println(error + " " + params);
+						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (JSONException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+			else
+			{
+				Toast toast = Toast.makeText(getApplicationContext(), "Network error!", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				showProgress(false);
+			}
+			
 		}
 
 		@Override
@@ -400,18 +420,18 @@ public class SignUpActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class LoginTask extends AsyncTask<Void, Void, Integer> {
+	public class LoginTask extends AsyncTask<Void, Void, JSONObject> {
 		@Override
-		protected Integer doInBackground(Void... params) {
+		protected JSONObject doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			return AC.getModel().doLogin(mEmail, mPassword);
 		}
 
 		@Override
-		protected void onPostExecute(final Integer success) {
+		protected void onPostExecute(final JSONObject success) {
 			mLoginTask = null;
 			showProgress(false);
-			if (success != -1)
+			if (success != null)
 			{
 				Intent editDiveActivity = new Intent(SignUpActivity.this, DivesActivity.class);
 			    startActivity(editDiveActivity);
