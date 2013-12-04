@@ -37,7 +37,8 @@ public class TabNewNotesActivity extends Activity
 	@Override
 	protected void onPause()
 	{
-		mDive.setNotes(mNotes.getText().toString());
+		if (mDive != null)
+			mDive.setNotes(mNotes.getText().toString());
 		super.onPause();
 	}
 	

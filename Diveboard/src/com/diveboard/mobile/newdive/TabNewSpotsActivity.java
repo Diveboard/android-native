@@ -68,6 +68,20 @@ public class					TabNewSpotsActivity extends Activity
 		AC.handleLowMemory();
 	}
 	
+	@Override
+	public void onBackPressed()
+	{
+		Bundle bundle = new Bundle();
+		
+		// put
+		Intent intent = new Intent();
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		super.onBackPressed();
+		mDive = null;
+		((ApplicationController)getApplicationContext()).setTempDive(null);
+	};
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
