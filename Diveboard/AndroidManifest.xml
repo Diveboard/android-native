@@ -17,7 +17,7 @@
 
     <uses-sdk
         android:minSdkVersion="8"
-        android:targetSdkVersion="18" />
+        android:targetSdkVersion="19" />
 
     <application
         android:name="com.diveboard.mobile.ApplicationController"
@@ -152,6 +152,10 @@
         <activity
             android:name="com.diveboard.mobile.newdive.TabNewSpotsActivity"
             android:label="@string/title_activity_new_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.GraphImageActivity"
+            android:label="@string/title_activity_graph_image" >
         </activity>
     </application>
 

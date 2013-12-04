@@ -73,7 +73,7 @@ public class GalleryCarouselActivity extends FragmentActivity {
         //Collections.addAll(items, urls);		
 		mPager = (GalleryViewPager) findViewById(R.id.pager);
 		//mNbPages = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size();
-		mPagerAdapter = new FilePagerAdapter(this, items);
+		mPagerAdapter = new FilePagerAdapter(getApplicationContext(), items);
 		//mPagerAdapter = new GalleryCarouselPagerAdapter(getSupportFragmentManager(), mModel.getDives());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(AC.getCarouselIndex());

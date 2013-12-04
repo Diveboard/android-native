@@ -159,7 +159,8 @@
 			        android:layout_height="wrap_content"
 			        android:scaleType="fitXY"
 			        android:paddingLeft="0dp"
-			        android:paddingRight="5dp"/>
+			        android:paddingRight="5dp"
+			        android:onClick="openGraph"/>
 			    <LinearLayout
 			        android:gravity="center"
 			        android:orientation="horizontal"

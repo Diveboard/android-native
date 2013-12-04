@@ -177,7 +177,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 1)
 		{
-			//AC.setPageIndex(0);
+			AC.setPageIndex(AC.getPageIndex() + 1);
+			AC.setDataReady(false);
+			AC.setRefresh(0);
+			finish();
+			startActivity(getIntent());
+		}
+		else if (AC.getRefresh() == 3)
+		{
 			AC.setDataReady(false);
 			AC.setRefresh(0);
 			finish();
@@ -186,7 +193,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	}
 	
 	@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		// Set the action bar
@@ -323,6 +330,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //
 //	}
 	
+	//@TargetApi(Build.VERSION_CODES.)
 	public void goToMenuV3(View view)
 	{
 		PopupMenu popup = new PopupMenu(this, view);
@@ -623,7 +631,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				else
 				{
 					mNbPages = mModel.getDives().size();
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getPageIndex(), mModel));
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 					//Pager size setting
@@ -860,10 +868,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					        for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
 					        {
 					        	TrackingBarPosition childPos = new TrackingBarPosition( 
-					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX()
-					        			+ mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
-					        			+ ((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX()
-						        		+ mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
+					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
+					        			((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
 						        		mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
 						        		(mScreenSetup.getScreenHeight()));
 						        mTrackingBarPosition.add(childPos);

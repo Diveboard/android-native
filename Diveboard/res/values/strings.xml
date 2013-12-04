@@ -71,5 +71,6 @@
     <string name="null_select">-</string>
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_graph_image">GraphImageActivity</string>
 
 </resources>

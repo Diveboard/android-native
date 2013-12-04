@@ -69,7 +69,14 @@ public class DiveDetailsMainActivity extends Activity {
 			i.setData(Uri.parse(url));
 			startActivity(i);
 		}
-		
+	}
+	
+	public void openGraph(View view)
+	{
+		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		Intent graphImageActivity = new Intent(this, GraphImageActivity.class);
+		graphImageActivity.putExtra("index", AC.getPageIndex());
+	    startActivity(graphImageActivity);
 	}
 	
 	@Override

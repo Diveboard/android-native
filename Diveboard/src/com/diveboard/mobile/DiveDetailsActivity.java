@@ -62,7 +62,7 @@ public class DiveDetailsActivity extends TabActivity {
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 2)
 		{
-			AC.setRefresh(1);
+			AC.setRefresh(3);
 			finish();
 			startActivity(getIntent());
 		}

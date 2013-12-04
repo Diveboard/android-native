@@ -263,6 +263,7 @@ public class					DiveboardModel
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
+				_preference = new UserPreference(_context, _userId);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
