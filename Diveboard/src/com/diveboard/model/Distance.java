@@ -9,6 +9,17 @@ public class					Distance
 	{
 		_value = value;
 		_unit = Units.getDistanceUnit();
+		if (_unit == Units.Distance.FT)
+			_value = Converter.convert(_value, Units.Distance.FT, Units.Distance.KM);
+	}
+	
+	public						Distance(Double value, Units.Distance unit)
+	{
+		_value = value;
+		_unit = Units.getDistanceUnit();
+		if (unit == Units.Distance.FT)
+			_value = Converter.convert(_value, Units.Distance.FT, Units.Distance.KM);
+		System.out.println("New Distance : " + _value + "m");
 	}
 	
 	public Double				getDistance()

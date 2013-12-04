@@ -218,24 +218,24 @@ public class					DataManager
 			System.out.println("ADD DIVE");
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
-			json.put("maxdepth", dive.getMaxdepth().getDistance().toString());
+			json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
 			json.put("duration", dive.getDuration());
 			json.put("trip_name", dive.getTripName());
 			if (dive.getAltitude() != null)
-				json.put("altitude", dive.getAltitude().getDistance().toString());
+				json.put("altitude", dive.getAltitude().getDistance(Units.Distance.KM).toString());
 			if (dive.getVisibility() != null)
 				json.put("visibility", dive.getVisibility());
 			if (dive.getCurrent() != null)
 				json.put("current", dive.getCurrent());
 			if (dive.getTempSurface() != null)
-				json.put("temp_surface", dive.getTempSurface().getTemperature().toString());
+				json.put("temp_surface", dive.getTempSurface().getTemperature(Units.Temperature.C).toString());
 			if (dive.getTempBottom() != null)
-			json.put("temp_bottom", dive.getTempBottom().getTemperature().toString());
+			json.put("temp_bottom", dive.getTempBottom().getTemperature(Units.Temperature.C).toString());
 			if (dive.getWater() != null)
 				json.put("water", dive.getWater());
 			json.put("notes", dive.getNotes());
 			if (dive.getWeights() != null)
-				json.put("weights", dive.getWeights().getWeight().toString());
+				json.put("weights", dive.getWeights().getWeight(Units.Weight.KG).toString());
 			json.put("user_id", _model.getUser().getId());
 			if (dive.getSpot() != null)
 			{

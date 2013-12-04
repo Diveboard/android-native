@@ -4,6 +4,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.app.Activity;
 import android.graphics.Typeface;

@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -106,7 +107,7 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 				{
 					dbl = 0.0;
 				}
-				Distance new_depth = new Distance(dbl);
+				Distance new_depth = new Distance(dbl, Units.getDistanceUnit());
 				mDive.setMaxdepth(new_depth);
 				mListener.onMaxDepthEditComplete(NewMaxDepthDialogFragment.this);
 				dismiss();
@@ -131,7 +132,7 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 			{
 				dbl = 0.0;
 			}
-			Distance new_depth = new Distance(dbl);
+			Distance new_depth = new Distance(dbl, Units.getDistanceUnit());
 			mDive.setMaxdepth(new_depth);
 			mListener.onMaxDepthEditComplete(NewMaxDepthDialogFragment.this);
 			dismiss();

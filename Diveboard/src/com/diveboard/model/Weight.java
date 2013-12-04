@@ -9,6 +9,16 @@ public class					Weight
 	{
 		_value = value;
 		_unit = Units.getWeightUnit();
+		if (_unit == Units.Weight.LBS)
+			_value = Converter.convert(_value, Units.Weight.LBS, Units.Weight.KG);
+	}
+	
+	public						Weight(Double value, Units.Weight unit)
+	{
+		_value = value;
+		_unit = Units.getWeightUnit();
+		if (unit == Units.Weight.LBS)
+			_value = Converter.convert(_value, Units.Weight.LBS, Units.Weight.KG);
 	}
 	
 	public Double				getWeight()
