@@ -86,6 +86,8 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
 			((TextView)findViewById(R.id.dive_note)).setText("No Note for this dive");
+		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
+			((TextView)findViewById(R.id.dive_url)).setText("");
 		((TextView)findViewById(R.id.dive_url)).setPaintFlags(((TextView)findViewById(R.id.dive_url)).getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 		((TextView)findViewById(R.id.dive_note)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_note)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
