@@ -133,7 +133,7 @@ public class					DiveboardModel
 		return false;
 	}
 	
-	public int					doLogin(final String login, final String password)
+	public JSONObject					doLogin(final String login, final String password)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -158,10 +158,11 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
+				JSONObject status = new JSONObject(result);
 				// Analyze data
 				boolean success = json.getBoolean("success");
 				if (success == false)
-					return (-1);
+					return (status);
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
@@ -199,30 +200,30 @@ public class					DiveboardModel
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				DiveboardModel.savedPictureList = new ArrayList<String>();
 				_initSavedPictures();
-				return (_userId);
+				return (status);
 			}
 			catch (UnsupportedEncodingException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 		}
-		return (-1);
+		return (null);
 	}
 	
-	public int					doFbLogin(final String fb_id, final String fb_token)
+	public JSONObject					doFbLogin(final String fb_id, final String fb_token)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -247,10 +248,11 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
+				JSONObject status = new JSONObject(result);
 				// Analyze data
 				boolean success = json.getBoolean("success");
 				if (success == false)
-					return (-1);
+					return (status);
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
@@ -288,27 +290,27 @@ public class					DiveboardModel
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				DiveboardModel.savedPictureList = new ArrayList<String>();
 				_initSavedPictures();
-				return (_userId);
+				return (status);
 			}
 			catch (UnsupportedEncodingException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 		}
-		return (-1);
+		return (null);
 	}
 	
 	public void					doLogout()

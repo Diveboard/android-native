@@ -547,6 +547,7 @@ public class					DataManager
 		private void					_refreshNewDiveEditList(int id, JSONObject json) throws JSONException
 		{
 			ArrayList<Dive> dives = _model.getDives();
+			System.out.println("REFRESH : " + json);
 			JSONObject new_dive = json.getJSONObject("result");
 			//for (int i = dives.size() - 1; i >= 0; i--)
 			for (int i = 0, size = dives.size(); i < size; i++)
