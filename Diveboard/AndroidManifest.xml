@@ -33,16 +33,19 @@
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyActYnLGFI7NCJ4AKPCQ0wjHrbCVKYaDX0" />
-<!--         <meta-data
+        <!--
+             <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI" /> -->
+            android:value="AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI" />
+        -->
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>

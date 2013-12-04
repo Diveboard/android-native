@@ -62,10 +62,14 @@ public class DiveDetailsMainActivity extends Activity {
 	
 	public void goToURL(View view)
 	{
-		String url = mDive.getFullpermalink().toString();
-		Intent i = new Intent(Intent.ACTION_VIEW);
-		i.setData(Uri.parse(url));
-		startActivity(i);
+		if (mDive.getFullpermalink() != null)
+		{
+			String url = mDive.getFullpermalink().toString();
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
+		}
+		
 	}
 	
 	@Override

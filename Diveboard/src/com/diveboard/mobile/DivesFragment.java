@@ -131,7 +131,7 @@ public class DivesFragment extends Fragment {
 	        RelativeLayout.LayoutParams fragment_profile_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxWidth(), mScreenSetup.getDiveListProfileBoxHeight());
 	        RelativeLayout.LayoutParams user_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxHeight(), mScreenSetup.getDiveListProfileBoxHeight());
 	        fragment_profile_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-	        fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
+	        //fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
