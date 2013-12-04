@@ -57,6 +57,7 @@ public class DiveDetailsMainActivity extends Activity {
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(AC.getPageIndex()));
+		AC.setRefresh(3);
 		finish();
 	}
 	

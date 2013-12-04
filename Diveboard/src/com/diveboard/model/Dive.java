@@ -81,7 +81,6 @@ public class					Dive implements IModel
 		if (c.get(Calendar.DATE) < 10)
 			_date += "0";
 		_date += Integer.toString(c.get(Calendar.DATE));
-		System.out.println("New Dive date : " + _date);
 		_timeIn = _date + "T";
 		if (c.get(Calendar.HOUR_OF_DAY) < 10)
 			_timeIn += "0";
@@ -89,6 +88,13 @@ public class					Dive implements IModel
 		if (c.get(Calendar.MINUTE) < 10)
 			_timeIn += "0";
 		_timeIn += Integer.toString(c.get(Calendar.MINUTE)) + ":00Z";
+		_time = "";
+		if (c.get(Calendar.HOUR_OF_DAY) < 10)
+			_time += "0";
+		_time += Integer.toString(c.get(Calendar.HOUR_OF_DAY)) + ":";
+		if (c.get(Calendar.MINUTE) < 10)
+			_time += "0";
+		_time += Integer.toString(c.get(Calendar.MINUTE));
 		_maxdepth = new Distance(0.0, Units.Distance.KM);
 		_duration = 0;
 		_tripName = null;

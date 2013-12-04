@@ -218,6 +218,7 @@ public class					DataManager
 			System.out.println("ADD DIVE");
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
+			json.put("time", dive.getTime());
 			json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
 			json.put("duration", dive.getDuration());
 			json.put("trip_name", dive.getTripName());
