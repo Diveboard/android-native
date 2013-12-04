@@ -50,6 +50,7 @@ public class					Dive implements IModel
 	private Picture				_thumbnailImageUrl;
 	private Picture				_thumbnailProfileUrl;
 	private Picture				_profile;
+	private Picture				_profileV3;
 	private String				_time;
 	private String				_timeIn;
 	private String				_tripName;
@@ -226,6 +227,7 @@ public class					Dive implements IModel
 		else
 			_pictures = null;
 		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
+		_profileV3 = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v003", Integer.toString(_id));
 		_shopName = (json.isNull("shop_name")) ? null : json.getString("shop_name");
 		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
 	}
@@ -801,6 +803,14 @@ public class					Dive implements IModel
 
 	public void setProfile(Picture _profile) {
 		this._profile = _profile;
+	}
+	
+	public Picture getProfileV3() {
+		return _profileV3;
+	}
+
+	public void setProfileV3(Picture _profile) {
+		this._profileV3 = _profile;
 	}
 
 	public String getShopName() {

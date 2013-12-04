@@ -574,6 +574,8 @@ public class					DiveboardModel
 			{
 				if (dives.get(i).getProfile() != null)
 					dives.get(i).getProfile().deletePicture(_context);
+				if (dives.get(i).getProfileV3() != null)
+					dives.get(i).getProfileV3().deletePicture(_context);
 			}
 			_enable_overwrite = false;
 			_applyEdit();
