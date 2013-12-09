@@ -19,7 +19,6 @@ public class					Distance
 		_unit = Units.getDistanceUnit();
 		if (unit == Units.Distance.FT)
 			_value = Converter.convert(_value, Units.Distance.FT, Units.Distance.KM);
-		System.out.println("New Distance : " + _value + "m");
 	}
 	
 	public Double				getDistance()

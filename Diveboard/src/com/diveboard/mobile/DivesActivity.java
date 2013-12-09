@@ -998,7 +998,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 						{
 							public void run()
 							{
-								mModel.refreshData();
+								//mModel.refreshData();
 							}
 						}).start();
 			        }

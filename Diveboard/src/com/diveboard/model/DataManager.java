@@ -42,6 +42,8 @@ public class					DataManager
 	private int										_userId;
 	private String									_token;
 	private DiveboardModel							_model;
+	private ArrayList<DiveDeleteListener>			_diveDeleteListeners = new ArrayList<DiveDeleteListener>();
+	private ArrayList<DiveCreateListener>			_diveCreateListeners = new ArrayList<DiveCreateListener>();
 	
 	/*
 	 * Method DataManager
@@ -199,13 +201,20 @@ public class					DataManager
 			if (object.getClass() == Dive.class)
 			{
 				if (((Dive)object).getId() < 0 && (((Dive)object).getEditList() == null || ((Dive)object).getEditList().size() == 0))
+				{
 					_addDive(object);
+					commit();
+					for (DiveCreateListener listener : _diveCreateListeners)
+						listener.onDiveCreateComplete();
+				}
 				else
+				{
 					_saveDive(object);
+					commit();
+				}
 			}
 			((IModel)object).clearEditList();
 		}
-		commit();
 	}
 	
 	private void				_addDive(Object object)
@@ -539,6 +548,8 @@ public class					DataManager
 			catch (IOException e) {
 				e.printStackTrace();
 			}
+			for (DiveDeleteListener listener : _diveDeleteListeners)
+				listener.onDiveDeleteComplete();
 		}
 		
 		/*
@@ -585,39 +596,16 @@ public class					DataManager
 				}
 			}
 			_cacheEditList();
-			//for (int i = dives.size() - 1; i >= 0; i--)
-//			for (int i = 0, size = dives.size(); i < size; i++)
-//			{
-//				//if (dives.get(i).getId() == -1)
-//				if (dives.get(i).getId() == id)
-//				{
-//					Dive dive = new Dive(new_dive);
-//					//Apply the changes on the mode dive list
-//					_model.getDives().set(i, dive);
-//					//Apply the changes on the edit list (update new id)
-//					for (int j = 0, size2 = _editList.size(); j < size2; j++)
-//					{
-//						String[] elem_tag = _editList.get(j).first.split(":");
-//						System.out.println("CHECKING : " + elem_tag[1] + " = " + id);
-//						if (Integer.parseInt(elem_tag[1]) == id)
-//						{
-//							System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
-//							JSONObject temp_obj;
-//							try
-//							{
-//								temp_obj = new JSONObject(_editList.get(j).second);
-//								temp_obj.put("id", dive.getId());
-//								_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + dive.getId(), temp_obj.toString()));
-//							}
-//							catch (JSONException e) {
-//								e.printStackTrace();
-//							}
-//						}
-//					}
-//					_cacheEditList();
-//					break ;
-//				}
-//			}
 		}
+	}
+	
+	public void					setOnDiveDeleteComplete(DiveDeleteListener listener)
+	{
+		_diveDeleteListeners.add(listener);
+	}
+
+	public void					setOnDiveCreateComplete(DiveCreateListener listener)
+	{
+		_diveCreateListeners.add(listener);
 	}
 }

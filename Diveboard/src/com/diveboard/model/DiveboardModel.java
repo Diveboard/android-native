@@ -37,7 +37,7 @@ public class					DiveboardModel
 	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
 	private DataManager			_cache;
-	private ArrayList<DataRefreshListener>	_listeners = new ArrayList<DataRefreshListener>();
+	private ArrayList<DataRefreshListener>	_dataRefreshListeners = new ArrayList<DataRefreshListener>();
 	
 	private String				_temp_user_json;
 	private String				_temp_dives_json;
@@ -385,8 +385,9 @@ public class					DiveboardModel
 			}
 		}
 		// Fire refresh complete event
-		for (DataRefreshListener listener : _listeners)
+		for (DataRefreshListener listener : _dataRefreshListeners)
 			listener.onDataRefreshComplete();
+		System.out.println("Data refreshed");
 		_cache.commitEditOnline();
 	}
 	
@@ -418,7 +419,6 @@ public class					DiveboardModel
 		ArrayList<Dive> dives = new ArrayList<Dive>();
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
-			System.err.println("CREATING DIVE " + jarray.getJSONObject(i));
 			Dive dive = new Dive(jarray.getJSONObject(i));
 			dives.add(dive);
 		}
@@ -555,7 +555,7 @@ public class					DiveboardModel
 	
 	public void					setOnDataRefreshComplete(DataRefreshListener listener)
 	{
-		_listeners.add(listener);
+		_dataRefreshListeners.add(listener);
 	}
 	
 	public void					overwriteData() throws IOException
@@ -889,6 +889,7 @@ public class					DiveboardModel
 	
 	private void					_initSavedPictures()
 	{
+		System.out.println("INIT SAVED PICTURE");
 		File file = new File(_context.getFilesDir() + "_saved_pictures");
 		if (file.exists())
 		{

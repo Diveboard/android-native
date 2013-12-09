@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
@@ -109,6 +110,12 @@ public class TabNewNotesActivity extends Activity
 					mDive.clearEditList();
 				}
 				dives.add(0, mDive);
+				((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
+					@Override
+					public void onDiveCreateComplete() {
+						finish();
+					}
+				});
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);
 //				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);

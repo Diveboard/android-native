@@ -38,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
 
 import android.support.v4.app.DialogFragment;
@@ -236,13 +237,18 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					mDive.clearEditList();
 				}
 				dives.add(0, mDive);
+				((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
+					@Override
+					public void onDiveCreateComplete() {
+						finish();
+					}
+				});
 				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 				((ApplicationController)getApplicationContext()).setRefresh(1);
 //				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
 //				toast.setGravity(Gravity.CENTER, 0, 0);
 //				toast.show();
 				((ApplicationController)getApplicationContext()).setTempDive(null);
-				finish();
 			}
 		});
 	    
