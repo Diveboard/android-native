@@ -185,7 +185,6 @@
 					    android:layout_marginLeft="10dp"/>
 				</LinearLayout>
 				<LinearLayout
-				    android:layout_toRightOf="@id/footer_info"
 				    android:layout_alignParentRight="true"
 				    android:orientation="vertical"
 				    android:layout_height="match_parent"

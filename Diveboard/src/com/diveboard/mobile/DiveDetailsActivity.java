@@ -6,6 +6,7 @@ import java.lang.ref.WeakReference;
 import com.diveboard.mobile.editdive.TabEditSpotsActivity;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -66,6 +67,18 @@ public class DiveDetailsActivity extends TabActivity {
 			finish();
 			startActivity(getIntent());
 		}
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 //	@Override

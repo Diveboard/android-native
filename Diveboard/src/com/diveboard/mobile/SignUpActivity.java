@@ -4,6 +4,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -84,6 +86,18 @@ public class SignUpActivity extends FragmentActivity {
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 
 	@Override
@@ -173,9 +187,9 @@ public class SignUpActivity extends FragmentActivity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
-			return;
-		}
+//		if (mAuthTask != null) {
+//			return;
+//		}
 
 		// Reset errors.
 		mEmailView.setError(null);
@@ -401,7 +415,7 @@ public class SignUpActivity extends FragmentActivity {
 			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Network error!", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to Diveboard. Please check your network connectivity.", Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 				showProgress(false);

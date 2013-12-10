@@ -48,6 +48,7 @@ import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Pair;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -75,6 +76,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	private Dive				mDive;
 	private int					mIndex;
 	private OptionAdapter		mOptionAdapter;
+	private boolean				mError = false;
 	
 	@Override
 	public void onBackPressed()
@@ -243,12 +245,32 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 						finish();
 					}
 				});
-				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
-				((ApplicationController)getApplicationContext()).setRefresh(1);
-//				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
-//				toast.setGravity(Gravity.CENTER, 0, 0);
-//				toast.show();
-				((ApplicationController)getApplicationContext()).setTempDive(null);
+				if (mDive.getMaxdepth() != null && mDive.getDuration() != null)
+					mError = false;
+				if (mDive.getMaxdepth() == null)
+				{
+					View view = optionList.getChildAt(2);
+					((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+					((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+					mError = true;
+				}
+				if (mDive.getDuration() == null)
+				{
+					View view = optionList.getChildAt(3);
+					((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+					((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+					mError = true;
+				}
+				if (mError == false)
+				{
+					((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
+					((ApplicationController)getApplicationContext()).setRefresh(1);
+//					Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
+//					toast.setGravity(Gravity.CENTER, 0, 0);
+//					toast.show();
+					((ApplicationController)getApplicationContext()).setTempDive(null);
+					finish();
+				}
 			}
 		});
 	    
@@ -258,9 +280,14 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		String[] time_in = mDive.getTimeIn().split("T");
 		String[] time = time_in[1].split(":");
 		elem.add(new EditOption("Time in : ", time[0] + ":" + time[1]));
-		elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName()));
-		elem.add(new EditOption("Duration : ", Integer.toString(mDive.getDuration()) + " min"));
-		
+		if (mDive.getMaxdepth() != null)
+			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName()));
+		else
+			elem.add(new EditOption("Max depth : ", ""));
+		if (mDive.getDuration() != null)
+			elem.add(new EditOption("Duration : ", Integer.toString(mDive.getDuration()) + " min"));
+		else
+			elem.add(new EditOption("Duration : ", ""));
 		//elem.add(new EditOption("Safety stops : ", "not implemented"));
 		if (mDive.getWeights() != null)
 			elem.add(new EditOption("Weights : ", Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName()));
@@ -403,6 +430,28 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+		new Thread(new Runnable() {
+	        public void run() {
+	        	try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            ((TextView)optionList.getChildAt(3).findViewById(R.id.optTitle)).post(new Runnable() {
+	                public void run() {
+	                	if (mDive.getDuration() == null)
+	                	{
+	                		View view = optionList.getChildAt(3);
+	                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+		                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
+		        			mError = true;
+	                	}
+	                	
+	                }
+	            });
+	        }
+	    }).start();
 	}
 
 	@Override
@@ -411,6 +460,28 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(mDive.getDuration()) + " min");
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+		new Thread(new Runnable() {
+	        public void run() {
+	        	try {
+					Thread.sleep(10);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+	            ((TextView)optionList.getChildAt(2).findViewById(R.id.optTitle)).post(new Runnable() {
+	                public void run() {
+	                	if (mDive.getMaxdepth() == null)
+	                	{
+	                		View view = optionList.getChildAt(2);
+	                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+		                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
+		        			mError = true;
+	                	}
+	                	
+	                }
+	            });
+	        }
+	    }).start();
 	}
 
 	@Override

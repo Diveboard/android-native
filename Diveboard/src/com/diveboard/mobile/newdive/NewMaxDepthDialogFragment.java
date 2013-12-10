@@ -67,7 +67,8 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		
 		mMaxDepth = (EditText) view.findViewById(R.id.max_depth);
 		mMaxDepth.setTypeface(faceR);
-		mMaxDepth.setText(Double.toString(mDive.getMaxdepth().getDistance()));
+		if (mDive.getMaxdepth() != null)
+			mMaxDepth.setText(Double.toString(mDive.getMaxdepth().getDistance()));
 		mMaxDepth.setSelection(mMaxDepth.getText().length());
 		mMaxDepth.requestFocus();
 		
@@ -76,8 +77,13 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		
 		TextView max_depth_label = (TextView) view.findViewById(R.id.max_depth_label);
 		max_depth_label.setTypeface(faceR);
-		max_depth_label.setText(mDive.getMaxdepth().getSmallName());
-		
+		if (mDive.getMaxdepth() != null)
+			max_depth_label.setText(mDive.getMaxdepth().getSmallName());
+		else
+		{
+			Distance distance = new Distance(0.0);
+			max_depth_label.setText(distance.getSmallName());
+		}
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));

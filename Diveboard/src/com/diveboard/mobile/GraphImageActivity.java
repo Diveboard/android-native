@@ -8,6 +8,7 @@ import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
 
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -38,6 +39,18 @@ public class GraphImageActivity extends FragmentActivity {
         mPager.setCurrentItem(0);
         mPager.setOffscreenPageLimit(2);
         //mPager.setPageTransformer(true, new DepthPageTransformer());
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	@Override

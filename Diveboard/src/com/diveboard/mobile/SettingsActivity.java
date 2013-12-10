@@ -30,6 +30,7 @@ import org.json.JSONException;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
 import com.diveboard.model.UserPreference;
+import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -64,6 +65,18 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 	
 	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
+	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
@@ -93,51 +106,11 @@ public class SettingsActivity extends PreferenceActivity {
 		// Add 'general' preferences.
 		addPreferencesFromResource(R.xml.pref_general);
 
-		PreferenceCategory applicationInfo = new PreferenceCategory(this);
-		applicationInfo.setTitle(getResources().getString(R.string.misc_category));
-		
-		getPreferenceScreen().addPreference(applicationInfo);
-		
-		Preference remainingPictures = new Preference(this);
-		remainingPictures.setEnabled(true);
-		remainingPictures.setKey("remaining");
-		remainingPictures.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + AC.getModel().getPictureCount());
-		remainingPictures.setOnPreferenceClickListener(new OnPreferenceClickListener()
-		{
-			@Override
-			public boolean onPreferenceClick(Preference arg0)
-			{
-				Preference remaining = (Preference) findPreference("remaining");
-				remaining.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getPictureCount());
-				return true;
-			}
-		});
-		//remainingPictures.setSummary(getResources().getString(R.string.remaining_pictures_summary) + " " + AC.getModel().getPictureCount());
-		
-		getPreferenceScreen().addPreference(remainingPictures);
-		
-		Preference remainingRequest = new Preference(this);
-		remainingRequest.setEnabled(true);
-		remainingRequest.setKey("remaining_req");
-		remainingRequest.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
-		remainingRequest.setOnPreferenceClickListener(new OnPreferenceClickListener()
-		{
-			@Override
-			public boolean onPreferenceClick(Preference arg0)
-			{
-				Preference remaining = (Preference) findPreference("remaining_req");
-				remaining.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
-				return true;
-			}
-		});
-		
-		getPreferenceScreen().addPreference(remainingRequest);
 		
 		PreferenceCategory userSettings = new PreferenceCategory(this);
 		userSettings.setTitle(getResources().getString(R.string.user_settings_category));
 		
 		getPreferenceScreen().addPreference(userSettings);
-		
 		mUnitSetting = new ListPreference(this);
 		//mUnitSetting.setEnabled(false);
 		mUnitSetting.setTitle(getResources().getString(R.string.unit_setting_title));
@@ -245,6 +218,47 @@ public class SettingsActivity extends PreferenceActivity {
 //		bindPreferenceSummaryToValue(findPreference("example_list"));
 //		bindPreferenceSummaryToValue(findPreference("notifications_new_message_ringtone"));
 //		bindPreferenceSummaryToValue(findPreference("sync_frequency"));
+			PreferenceCategory applicationInfo = new PreferenceCategory(this);
+			applicationInfo.setTitle(getResources().getString(R.string.misc_category));
+			
+			getPreferenceScreen().addPreference(applicationInfo);
+			
+			Preference remainingPictures = new Preference(this);
+			remainingPictures.setEnabled(true);
+			remainingPictures.setKey("remaining");
+			remainingPictures.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + AC.getModel().getPictureCount());
+			remainingPictures.setOnPreferenceClickListener(new OnPreferenceClickListener()
+			{
+				@Override
+				public boolean onPreferenceClick(Preference arg0)
+				{
+					Preference remaining = (Preference) findPreference("remaining");
+					remaining.setTitle(getResources().getString(R.string.remaining_pictures_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getPictureCount());
+					return true;
+				}
+			});
+			//remainingPictures.setSummary(getResources().getString(R.string.remaining_pictures_summary) + " " + AC.getModel().getPictureCount());
+			
+			getPreferenceScreen().addPreference(remainingPictures);
+			
+			Preference remainingRequest = new Preference(this);
+			remainingRequest.setEnabled(true);
+			remainingRequest.setKey("remaining_req");
+			remainingRequest.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
+			remainingRequest.setOnPreferenceClickListener(new OnPreferenceClickListener()
+			{
+				@Override
+				public boolean onPreferenceClick(Preference arg0)
+				{
+					Preference remaining = (Preference) findPreference("remaining_req");
+					remaining.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
+					return true;
+				}
+			});
+			
+			getPreferenceScreen().addPreference(remainingRequest);
+			
+			
 	}
 
 //	/** {@inheritDoc} */

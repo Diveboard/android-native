@@ -6,6 +6,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -30,6 +31,18 @@ public class					NewDiveActivity extends TabActivity
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	/** Called when the activity is first created. */

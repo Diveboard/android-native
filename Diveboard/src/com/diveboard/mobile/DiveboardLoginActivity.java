@@ -8,6 +8,7 @@ import com.diveboard.mobile.SignUpActivity.LoginTask;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
@@ -185,6 +186,18 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					}
 				});
 	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
 
 	public void goToFBLogin(View view)
 	{
@@ -198,10 +211,10 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
-			System.out.println("ya");
-			return;
-		}
+//		if (mAuthTask != null) {
+//			System.out.println("ya");
+//			return;
+//		}
 		System.out.println("yo");
 		// Reset errors.
 		mEmailView.setError(null);
@@ -314,7 +327,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			if (json != null)
 			{
 				System.out.println(json.toString());
-				mAuthTask = null;
+				//mAuthTask = null;
 				showProgress(false);
 				try {
 					Boolean success = json.getBoolean("success");
@@ -329,8 +342,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					else
 					{
 						String str = (String)json.getString("error");
-						Toast toast = Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT);
-						toast.setGravity(Gravity.CENTER, 0, 0);
+						Toast toast = Toast.makeText(getApplicationContext(), "Sorry, wrong login or password.", Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.BOTTOM, 0, 200);
 						toast.show();
 						showProgress(false);
 //						JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
@@ -361,8 +374,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Network error!", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
+				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to Diveboard. Please check your network connectivity.", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
 				showProgress(false);
 			}
@@ -408,7 +421,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			else
 			{
 				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
 			}
 		}

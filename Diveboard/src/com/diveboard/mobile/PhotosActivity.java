@@ -1,5 +1,7 @@
 package com.diveboard.mobile;
 
+import com.google.analytics.tracking.android.EasyTracker;
+
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
@@ -25,6 +27,18 @@ public class PhotosActivity extends Activity {
 		TextView tv = ((TextView)findViewById(R.id.activity_in_progress));
 		tv.setTypeface(face);
 		
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 
 }

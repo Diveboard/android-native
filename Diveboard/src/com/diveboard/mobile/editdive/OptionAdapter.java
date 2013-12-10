@@ -27,6 +27,7 @@ public class					OptionAdapter extends BaseAdapter
 	LayoutInflater				inflater;
 	Context						mContext;
 	Dive						mDive;
+	View						mConvertView;
 	
 	public						OptionAdapter(Context context, List<EditOption> option_list, Dive dive)
 	{
@@ -75,6 +76,7 @@ public class					OptionAdapter extends BaseAdapter
 			
 			holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
 			holder.optValue.setText(option.get(position).getValue());
+			mConvertView = convertView;
 			return convertView;
 		}
 		else if (option.get(position).getType() == 1)
@@ -145,6 +147,14 @@ public class					OptionAdapter extends BaseAdapter
 		return null;
 	}
 	
+	public View getConvertView() {
+		return mConvertView;
+	}
+
+	public void setConvertView(View mConvertView) {
+		this.mConvertView = mConvertView;
+	}
+
 	private class				ViewHolder
 	{
 		TextView				optTitle;

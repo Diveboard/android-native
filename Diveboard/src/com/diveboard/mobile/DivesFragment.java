@@ -89,10 +89,13 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceB);
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
-        mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
+		if (AC.getModel().getUser().getNickname() != null)
+		{
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
+		}
+		mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
         mFragmentProfileInfo = (LinearLayout)rootView.findViewById(R.id.profile_info);
         RelativeLayout.LayoutParams fragment_profile_info_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         fragment_profile_info_params.setMargins(mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0, 0);

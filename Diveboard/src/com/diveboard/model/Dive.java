@@ -24,7 +24,7 @@ public class					Dive implements IModel
 	private ArrayList<DiveGear>	_diveGears = new ArrayList<DiveGear>();
 	// dive shop
 	private ArrayList<String>	_divetype;
-	private int					_duration;
+	private Integer				_duration;
 	private Boolean				_favorite;
 	// flavour
 	private String				_fullpermalink;
@@ -95,8 +95,8 @@ public class					Dive implements IModel
 		if (c.get(Calendar.MINUTE) < 10)
 			_time += "0";
 		_time += Integer.toString(c.get(Calendar.MINUTE));
-		_maxdepth = new Distance(0.0, Units.Distance.KM);
-		_duration = 0;
+		_maxdepth = null;
+		_duration = null;
 		_tripName = null;
 		_altitude = null;
 		_visibility = null;
@@ -356,7 +356,7 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-	public int getDuration() {
+	public Integer getDuration() {
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
 			if (_editList.get(i).first.contentEquals("duration"))

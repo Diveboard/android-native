@@ -22,11 +22,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
 
 public class					NewVisibilityDialogFragment extends DialogFragment implements OnEditorActionListener
@@ -37,7 +40,7 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
     }
 	
 	private Dive				mDive;
-	private Spinner				mVisibility;
+	private ListView				mVisibility;
 	private EditVisibilityDialogListener	mListener;
 	
 	@Override
@@ -70,7 +73,7 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_visibility_title));
 		
-		mVisibility = (Spinner) view.findViewById(R.id.visibility);
+		mVisibility = (ListView) view.findViewById(R.id.visibility);
 		List<String> list = new ArrayList<String>();
 		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.bad_visibility));
@@ -81,48 +84,65 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mVisibility.setAdapter(dataAdapter);
-		if (mDive.getVisibility() == null)
-			mVisibility.setSelection(0);
-		else if (mDive.getVisibility().compareTo("bad") == 0)
-			mVisibility.setSelection(1);
-		else if (mDive.getVisibility().compareTo("average") == 0)
-			mVisibility.setSelection(2);
-		else if (mDive.getVisibility().compareTo("good") == 0)
-			mVisibility.setSelection(3);
-		else if (mDive.getVisibility().compareTo("excellent") == 0)
-			mVisibility.setSelection(4);
-		
-		Button cancel = (Button) view.findViewById(R.id.cancel);
-		cancel.setTypeface(faceR);
-		cancel.setText(getResources().getString(R.string.cancel));
-		cancel.setOnClickListener(new OnClickListener()
-        {
+		mVisibility.setOnItemClickListener(new OnItemClickListener() {
+
 			@Override
-			public void onClick(View v)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+			if (position == 0)
+				mDive.setVisibility(null);
+			else
 			{
-				dismiss();
+				String[] visibility = ((String)mVisibility.getItemAtPosition(position)).split(" ");
+				mDive.setVisibility(visibility[0].toLowerCase());
+			}
+			mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
+			dismiss();
+				
 			}
 		});
-		
-		Button save = (Button) view.findViewById(R.id.save);
-		save.setTypeface(faceR);
-		save.setText(getResources().getString(R.string.save));
-		save.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v)
-			{
-				if (mVisibility.getSelectedItemPosition() == 0)
-					mDive.setVisibility(null);
-				else
-				{
-					String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-					mDive.setVisibility(visibility[0].toLowerCase());
-				}
-				mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
-				dismiss();
-			}
-		});
+//		if (mDive.getVisibility() == null)
+//			mVisibility.setSelection(0);
+//		else if (mDive.getVisibility().compareTo("bad") == 0)
+//			mVisibility.setSelection(1);
+//		else if (mDive.getVisibility().compareTo("average") == 0)
+//			mVisibility.setSelection(2);
+//		else if (mDive.getVisibility().compareTo("good") == 0)
+//			mVisibility.setSelection(3);
+//		else if (mDive.getVisibility().compareTo("excellent") == 0)
+//			mVisibility.setSelection(4);
+//		
+//		Button cancel = (Button) view.findViewById(R.id.cancel);
+//		cancel.setTypeface(faceR);
+//		cancel.setText(getResources().getString(R.string.cancel));
+//		cancel.setOnClickListener(new OnClickListener()
+//        {
+//			@Override
+//			public void onClick(View v)
+//			{
+//				dismiss();
+//			}
+//		});
+//		
+//		Button save = (Button) view.findViewById(R.id.save);
+//		save.setTypeface(faceR);
+//		save.setText(getResources().getString(R.string.save));
+//		save.setOnClickListener(new OnClickListener()
+//        {
+//			@Override
+//			public void onClick(View v)
+//			{
+//				if (mVisibility.getSelectedItemPosition() == 0)
+//					mDive.setVisibility(null);
+//				else
+//				{
+//					String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
+//					mDive.setVisibility(visibility[0].toLowerCase());
+//				}
+//				mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
+//				dismiss();
+//			}
+//		});
 		
         faceR = null;
 		return view;

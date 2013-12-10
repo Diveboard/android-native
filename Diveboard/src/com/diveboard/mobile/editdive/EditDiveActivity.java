@@ -2,6 +2,7 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.app.TabActivity;
 import android.content.Context;
@@ -28,6 +29,18 @@ public class					EditDiveActivity extends TabActivity
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	/** Called when the activity is first created. */

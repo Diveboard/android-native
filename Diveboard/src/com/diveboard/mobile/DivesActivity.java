@@ -90,6 +90,7 @@ import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.facebook.*;
 import com.facebook.model.*;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.UserVoice;
 
 
@@ -177,7 +178,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		AC.handleLowMemory();
 		if (AC.getRefresh() == 1)
 		{
-			AC.setPageIndex(AC.getPageIndex() + 1);
+//			AC.setPageIndex(AC.getPageIndex() + 1);
+			AC.setPageIndex(0);
 			AC.setDataReady(false);
 			AC.setRefresh(0);
 			finish();
@@ -190,6 +192,18 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			finish();
 			startActivity(getIntent());
 		}
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	@Override
@@ -330,7 +344,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //
 //	}
 	
-	@TargetApi(Build.VERSION_CODES.KITKAT)
 	public void goToMenuV3(View view)
 	{
 		PopupMenu popup = new PopupMenu(this, view);
@@ -354,6 +367,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 		    	    startActivity(newDiveActivity);
 		    	    return true;
+				case R.id.menu_settings:
+		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+		    	    startActivity(settingsActivity);
+		    	    return true;
 		        case R.id.report_bug:
 		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
 		        	{
@@ -369,10 +386,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
-		            return true;
-		        case R.id.menu_settings:
-		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-		    	    startActivity(settingsActivity);
 		            return true;
 		        default:
 		            return false;
@@ -391,7 +404,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		unregisterForContextMenu(view);
 	}
 	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void openMenu(View view)
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -417,6 +430,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 	    	    startActivity(newDiveActivity);
 	    	    return true;
+	    	case R.id.menu_settings:
+	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+	    	    startActivity(settingsActivity);
+	            return true;
 	    	case R.id.report_bug:
 	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
 	        	{
@@ -433,10 +450,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	case R.id.menu_logout:
 	        	logout();
 	            return true;
-	    	case R.id.menu_settings:
-	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	    	    startActivity(settingsActivity);
-	            return true;
+	    	
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
@@ -618,7 +632,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    public void onGlobalLayout() { 
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		      //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
+		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
 				int offset = 0;
@@ -810,7 +824,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				                    {
 				                        //System.out.println("UP" + event.toString());
 				                    	System.out.println("UP");
-				                    	mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
+				                    	if (position_stroke == 1)
+				                    	{
+				                    		ApplicationController AC = ((ApplicationController)getApplicationContext());
+				                    		AC.setPageIndex(0);
+				                    		mPager.setCurrentItem(0, true);
+				                    	}
+				                    	else
+				                    		mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
 				                    	//System.out.println("false");
 				                        mIsScrolling  = false;
 				                    };
@@ -888,17 +909,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					        for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
 					        {
 					        	TrackingBarPosition childPos = new TrackingBarPosition( 
-					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
-					        			((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
+					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
+					        			((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
 						        		mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
 						        		(mScreenSetup.getScreenHeight()));
 						        mTrackingBarPosition.add(childPos);
 //						        System.out.println(index);
 						        //mTrackingBarPosition.get(index).getx()
-//						        System.out.println(mTrackingBarPosition.get(index).getx());
-//						        System.out.println(mTrackingBarPosition.get(index).getX());
-//						        System.out.println(mTrackingBarPosition.get(index).gety());
-//						        System.out.println(mTrackingBarPosition.get(index).getY());
+						        System.out.println(mTrackingBarPosition.get(index).getx());
+						        System.out.println(mTrackingBarPosition.get(index).getX());
+						        System.out.println(mTrackingBarPosition.get(index).gety());
+						        System.out.println(mTrackingBarPosition.get(index).getY());
 //						        System.out.println(((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100);
 //								System.out.println(mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListWhiteSpace4() - mScreenSetup.getDiveListWhiteSpace4() - mScreenSetup.getDiveListSeekBarHeight());
 //								System.out.println((((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getX() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100));
@@ -1276,6 +1297,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        		position_stroke = stroke_selected;
 	        		//System.out.println("position stroke = " + position_stroke);
 	        		upperStroke(position_stroke);
+	        		((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
 				}
 				
 			}

@@ -12,6 +12,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
@@ -43,6 +44,18 @@ public class GalleryCarouselActivity extends FragmentActivity {
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	@Override
