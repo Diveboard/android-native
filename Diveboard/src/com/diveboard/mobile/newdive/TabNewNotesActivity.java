@@ -7,6 +7,8 @@ import org.json.JSONObject;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
@@ -16,6 +18,8 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -27,7 +31,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TabNewNotesActivity extends Activity
+public class TabNewNotesActivity extends FragmentActivity implements EditConfirmDialogListener
 {
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
@@ -54,6 +58,22 @@ public class TabNewNotesActivity extends Activity
 	@Override
 	public void onBackPressed()
 	{
+		if (mDive.getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
 		Bundle bundle = new Bundle();
 		
 		// put
@@ -63,7 +83,7 @@ public class TabNewNotesActivity extends Activity
 		super.onBackPressed();
 		mDive = null;
 		((ApplicationController)getApplicationContext()).setTempDive(null);
-	};
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -134,4 +154,9 @@ public class TabNewNotesActivity extends Activity
 	    mFaceR = null;
 	    mFaceB = null;
     }
+
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog) {
+		clearEditList();
+	}
 }

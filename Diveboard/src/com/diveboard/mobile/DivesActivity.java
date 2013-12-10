@@ -473,17 +473,22 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public void goToGalleryCarousel(View view)
 	{
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-		if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
-		{
-			Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
-			galleryCarousel.putExtra("index", mPager.getCurrentItem());
-			startActivity(galleryCarousel);
-		}
-		else
-		{
-			Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
-			diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
-			startActivity(diveDetailsActivity);
+		try {
+			if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0 && AC.getModel().getDives().get(AC.getPageIndex()).getPictures().get(0).getPicture(getApplicationContext()) != null)
+			{
+				Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
+				galleryCarousel.putExtra("index", mPager.getCurrentItem());
+				startActivity(galleryCarousel);
+			}
+			else
+			{
+				Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
+				diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+				startActivity(diveDetailsActivity);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	

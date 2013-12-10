@@ -5,6 +5,7 @@ import com.diveboard.mobile.DiveboardLoginActivity;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.editdive.EditAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditCurrentDialogFragment.EditCurrentDialogListener;
 import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListener;
 import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
@@ -47,7 +48,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 																						   EditVisibilityDialogListener,
 																						   EditCurrentDialogListener,
 																						   EditAltitudeDialogListener,
-																						   EditWaterDialogListener
+																						   EditWaterDialogListener,
+																						   EditConfirmDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -57,15 +59,31 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	@Override
 	public void onBackPressed()
 	{
+		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
+		super.onBackPressed();
 		Bundle bundle = new Bundle();
 		
 		// put
 		Intent intent = new Intent();
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
-		super.onBackPressed();
 		mModel.getDives().get(mIndex).clearEditList();
-	};
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -462,6 +480,12 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			((EditOption)mOptionAdapter.getItem(4)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+	}
+	
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog)
+	{
+		clearEditList();
 	}
 
 	@Override

@@ -41,6 +41,7 @@
     <string name="bottom_temp_hint">Bottom Temp.</string>
     <string name="weights_hint">Weights</string>
     <string name="edit_weights_title">Weights</string>
+    <string name="edit_confirm_title">Exit without save?</string>
     <string name="bad_visibility">Bad (under 5m / 15ft)</string>
     <string name="average_visibility">Average (5-10m / 15-30ft)</string>
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>

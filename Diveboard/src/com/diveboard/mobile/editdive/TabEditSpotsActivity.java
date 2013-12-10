@@ -11,6 +11,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.DiveDetailsActivity;
 import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Spot;
@@ -25,6 +26,8 @@ import android.content.res.Configuration;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -45,7 +48,7 @@ import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView.OnEditorActionListener;
 
-public class					TabEditSpotsActivity extends Activity
+public class					TabEditSpotsActivity extends FragmentActivity implements EditConfirmDialogListener
 {
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
@@ -56,6 +59,35 @@ public class					TabEditSpotsActivity extends Activity
 	private JSONObject					mSelectedObject = null;
 	private JSONArray					mArray;
 	private Boolean						mHasChanged = false;
+	
+	@Override
+	public void onBackPressed()
+	{
+		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
+		super.onBackPressed();
+		Bundle bundle = new Bundle();
+		
+		// put
+		Intent intent = new Intent();
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		mModel.getDives().get(mIndex).clearEditList();
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -309,4 +341,9 @@ public class					TabEditSpotsActivity extends Activity
 		}
     	
     }
+
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog) {
+		clearEditList();
+	}
 }

@@ -1,7 +1,6 @@
 package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveboardLoginActivity;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
@@ -17,6 +16,8 @@ import com.diveboard.mobile.newdive.NewDurationDialogFragment;
 import com.diveboard.mobile.newdive.NewDurationDialogFragment.EditDurationDialogListener;
 import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment;
 import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditOption;
 import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment;
 import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
@@ -70,7 +71,8 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 																						  EditSurfaceTempDialogListener,
 																						  EditBottomTempDialogListener,
 																						  EditAltitudeDialogListener,
-																						  EditWaterDialogListener
+																						  EditWaterDialogListener,
+																						  EditConfirmDialogListener
 {
 	private ListView			optionList;
 	private Dive				mDive;
@@ -81,6 +83,22 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	@Override
 	public void onBackPressed()
 	{
+		if (mDive.getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
 		Bundle bundle = new Bundle();
 		
 		// put
@@ -90,7 +108,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		super.onBackPressed();
 		mDive = null;
 		((ApplicationController)getApplicationContext()).setTempDive(null);
-	};
+	}
 	
 	@Override
 	protected void onResume()
@@ -573,5 +591,11 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			((EditOption)mOptionAdapter.getItem(12)).setValue(mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+	}
+	
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog)
+	{
+		clearEditList();
 	}
 }
