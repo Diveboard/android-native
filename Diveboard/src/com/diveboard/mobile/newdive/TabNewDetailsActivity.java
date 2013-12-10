@@ -249,17 +249,25 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					mError = false;
 				if (mDive.getMaxdepth() == null)
 				{
-					View view = optionList.getChildAt(2);
-					((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-					((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-					mError = true;
+					if (2 - optionList.getFirstVisiblePosition() >= 0)
+					{
+						View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
+						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+						mError = true;
+					}
+					
 				}
 				if (mDive.getDuration() == null)
 				{
-					View view = optionList.getChildAt(3);
-					((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-					((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-					mError = true;
+					if (3 - optionList.getFirstVisiblePosition() >= 0)
+					{
+						View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
+						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+						mError = true;
+					}
+					
 				}
 				if (mError == false)
 				{
@@ -438,18 +446,21 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	            ((TextView)optionList.getChildAt(3).findViewById(R.id.optTitle)).post(new Runnable() {
-	                public void run() {
-	                	if (mDive.getDuration() == null)
-	                	{
-	                		View view = optionList.getChildAt(3);
-	                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-		                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
-		        			mError = true;
-	                	}
-	                	
-	                }
-	            });
+	        	if (3 - optionList.getFirstVisiblePosition() >= 0)
+	        	{
+	        		((TextView)optionList.getChildAt(3 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
+		                public void run() {
+		                	if (mDive.getDuration() == null)
+		                	{
+		                		View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
+		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+			                	((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+			        			mError = true;
+		                	}
+		                	
+		                }
+		            });
+	        	}
 	        }
 	    }).start();
 	}
@@ -468,18 +479,22 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	            ((TextView)optionList.getChildAt(2).findViewById(R.id.optTitle)).post(new Runnable() {
-	                public void run() {
-	                	if (mDive.getMaxdepth() == null)
-	                	{
-	                		View view = optionList.getChildAt(2);
-	                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-		                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
-		        			mError = true;
-	                	}
-	                	
-	                }
-	            });
+	        	if (2 - optionList.getFirstVisiblePosition() >= 0)
+	        	{
+	        		((TextView)optionList.getChildAt(2 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
+		                public void run() {
+		                	if (mDive.getMaxdepth() == null)
+		                	{
+		                		View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
+		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
+			                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
+			        			mError = true;
+		                	}
+		                	
+		                }
+		            });
+	        	}
+	            
 	        }
 	    }).start();
 	}
