@@ -44,6 +44,7 @@ public class					DataManager
 	private DiveboardModel							_model;
 	private ArrayList<DiveDeleteListener>			_diveDeleteListeners = new ArrayList<DiveDeleteListener>();
 	private ArrayList<DiveCreateListener>			_diveCreateListeners = new ArrayList<DiveCreateListener>();
+	private Thread									_dataRetrieveThread = null;
 	
 	/*
 	 * Method DataManager
@@ -533,6 +534,23 @@ public class					DataManager
 				else
 					break ;
 			}
+	        if (_dataRetrieveThread == null)
+	        {
+	        	_dataRetrieveThread = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						try {
+							Thread.sleep(60000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						System.out.println("Refresh Thread");
+						_model.refreshData();
+					}
+				});
+	        	_dataRetrieveThread.start();
+	        }
 		}
 		
 		private void					_deleteDive(AndroidHttpClient client, String elemtag)

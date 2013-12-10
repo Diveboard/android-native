@@ -494,7 +494,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		                }
 		            });
 	        	}
-	            
 	        }
 	    }).start();
 	}
