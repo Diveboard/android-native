@@ -668,6 +668,12 @@ public class					DiveboardModel
 	 */
 	public void					preloadPictures()
 	{
+		ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		//NetworkInfo mobileNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		
+		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+			return ;
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
 			_refreshPictureList();
