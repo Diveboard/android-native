@@ -1020,13 +1020,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 							}
 				        	
 				        });
-				        new Thread(new Runnable()
-						{
-							public void run()
-							{
-								mModel.refreshData();
-							}
-						}).start();
+				        mModel.refreshData();
+//				        new Thread(new Runnable()
+//						{
+//							public void run()
+//							{
+//								mModel.refreshData();
+//							}
+//						}).start();
 			        }
 				}
 		    } 

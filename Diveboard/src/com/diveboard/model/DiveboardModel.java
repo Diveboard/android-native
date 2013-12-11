@@ -56,6 +56,7 @@ public class					DiveboardModel
 	private LoadPictureThread	_pictureThread2 = null;
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
+	private RefreshDataThread	_refreshDataThread = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -315,6 +316,9 @@ public class					DiveboardModel
 	
 	public void					doLogout()
 	{
+		if (_refreshDataThread != null)
+			_refreshDataThread.cancel();
+		
 		File file = new File(_context.getFilesDir() + "_logged_id");
 		file.delete();
 		
@@ -356,39 +360,75 @@ public class					DiveboardModel
 		else
 			_applyEdit();
 	}
+	
 	public void					refreshData()
 	{
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
+		if (_refreshDataThread == null)
 		{
-			// Online Mode
-			// Load data online
-			try
+			_refreshDataThread = new RefreshDataThread();
+			_refreshDataThread.start();
+		}
+	}
+	
+	private class					RefreshDataThread extends Thread
+	{
+		Boolean						_run;
+		
+		public						RefreshDataThread()
+		{
+			_run = true;
+		}
+		
+		public void					cancel()
+		{
+			_run = false;
+		}
+		
+		@Override
+		public void run()
+		{
+			while (_run)
 			{
-				if (_user == null)
-					_loadOnlineData(false);
-				else
+				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+				
+				// Test connectivity
+				if (networkInfo != null && networkInfo.isConnected())
 				{
-					_loadOnlineData(true);
-					_applyEdit();
+					// Online Mode
+					// Load data online
+					try
+					{
+						if (_user == null)
+							_loadOnlineData(false);
+						else
+						{
+							_loadOnlineData(true);
+							_applyEdit();
+						}
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				// Fire refresh complete event
+				for (DataRefreshListener listener : _dataRefreshListeners)
+					listener.onDataRefreshComplete();
+				System.out.println("Data refreshed");
+				_cache.commitEditOnline();
+				try {
+					Thread.sleep(180000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
 			}
-			catch (IOException e)
-			{
-				e.printStackTrace();
-			}
-			catch (JSONException e)
-			{
-				e.printStackTrace();
-			}
 		}
-		// Fire refresh complete event
-		for (DataRefreshListener listener : _dataRefreshListeners)
-			listener.onDataRefreshComplete();
-		System.out.println("Data refreshed");
-		_cache.commitEditOnline();
+		
 	}
 	
 	/*
