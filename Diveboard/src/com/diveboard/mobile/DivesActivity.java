@@ -176,21 +176,35 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+		AC.setCurrentTab(0);
 		if (AC.getRefresh() == 1)
 		{
-//			AC.setPageIndex(AC.getPageIndex() + 1);
+////			AC.setPageIndex(AC.getPageIndex() + 1);
+//			AC.setPageIndex(0);
+//			AC.setDataReady(false);
+//			AC.setRefresh(0);
+//			finish();
+//			startActivity(getIntent());
+			
+			AC.setRefresh(0);
 			AC.setPageIndex(0);
 			AC.setDataReady(false);
-			AC.setRefresh(0);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
 			finish();
-			startActivity(getIntent());
 		}
 		else if (AC.getRefresh() == 3)
 		{
-			AC.setDataReady(false);
+//			AC.setDataReady(false);
+//			AC.setRefresh(0);
+//			finish();
+//			startActivity(getIntent());
+			
 			AC.setRefresh(0);
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
 			finish();
-			startActivity(getIntent());
 		}
 	}
 	

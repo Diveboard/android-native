@@ -18,6 +18,7 @@ public class ApplicationController extends Application {
 	private int mCarouselIndex = 0;
 	private Dive mtempDive = null;
 	private int mRefresh = 0;
+	private int mCurrentTab = 0;
 	
 	public Boolean handleLowMemory()
 	{
@@ -110,5 +111,13 @@ public class ApplicationController extends Application {
 
 	public void setRefresh(int mRefresh) {
 		this.mRefresh = mRefresh;
+	}
+
+	public int getCurrentTab() {
+		return mCurrentTab;
+	}
+
+	public void setCurrentTab(int mCurrentTab) {
+		this.mCurrentTab = mCurrentTab;
 	}
 }
