@@ -109,6 +109,8 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
     {
         super.onCreate(savedInstanceState);
         ApplicationController AC = (ApplicationController)getApplicationContext();
+        if (AC.handleLowMemory() == true)
+			return ;
 	    setContentView(R.layout.tab_edit_spots);
 	    mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");

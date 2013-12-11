@@ -64,6 +64,8 @@ public class GalleryCarouselActivity extends FragmentActivity {
 		// Set the action bar
 		setContentView(R.layout.activity_gallery_carousel);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		int position = getIntent().getIntExtra("position", 0);
+		AC.setCarouselIndex(position);
 		if (AC.handleLowMemory() == true)
 			return ;
 		mModel = AC.getModel();

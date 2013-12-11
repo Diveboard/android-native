@@ -85,11 +85,21 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		mModel.getDives().get(mIndex).clearEditList();
 	}
 	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.handleLowMemory() == true)
+			return ;
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 		mIndex = getIntent().getIntExtra("index", -1);
 		

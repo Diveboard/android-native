@@ -157,20 +157,18 @@ public class DiveDetailsActivity extends TabActivity {
 						}
 						else if (mTabHost.getCurrentTab() == 1)
 						{
-							((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
+							
 							ApplicationController AC = (ApplicationController)getApplicationContext();
 							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
 									&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
 							{
-								Intent galleryCarousel = new Intent(DiveDetailsActivity.this, GalleryCarouselActivity.class);
-								galleryCarousel.putExtra("index", AC.getPageIndex());
-								startActivity(galleryCarousel);
-								mTabHost.setCurrentTab(0);
+								((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.GONE);
 							}
 							else
 							{
-								((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_grey));
+								((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
 							}
+							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_photos_grey));
 						}
 //						else if (mTabHost.getCurrentTab() == 2)
 //							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));

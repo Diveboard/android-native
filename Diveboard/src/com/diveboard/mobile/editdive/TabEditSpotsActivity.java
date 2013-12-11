@@ -89,11 +89,21 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		mModel.getDives().get(mIndex).clearEditList();
 	}
 	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         ApplicationController AC = (ApplicationController)getApplicationContext();
+        if (AC.handleLowMemory() == true)
+			return ;
 	    setContentView(R.layout.tab_edit_spots);
 	    mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");

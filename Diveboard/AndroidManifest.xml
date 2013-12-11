@@ -126,10 +126,6 @@
             android:label="@string/title_activity_new_dive" >
         </activity>
         <activity
-            android:name="com.diveboard.mobile.EmptyActivity"
-            android:label="@string/title_activity_empty" >
-        </activity>
-        <activity
             android:name="com.diveboard.mobile.PhotosActivity"
             android:label="@string/title_activity_photos" >
         </activity>
