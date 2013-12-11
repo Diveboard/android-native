@@ -38,6 +38,7 @@ public class TabNewNotesActivity extends FragmentActivity implements EditConfirm
 	private Dive						mDive;
 	private int							mIndex;
 	private EditText					mNotes;
+	private boolean						mError = false;
 	
 	@Override
 	protected void onPause()
@@ -113,36 +114,45 @@ public class TabNewNotesActivity extends FragmentActivity implements EditConfirm
 				mDive.setNotes(mNotes.getText().toString());
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				ArrayList<Pair<String, String>> editList = mDive.getEditList();
-				if (editList != null && editList.size() > 0)
+				if (mDive.getMaxdepth() == null || mDive.getDuration() == null)
+					mError = true;
+				else
+					mError = false;
+				if (mError == false)
 				{
-					JSONObject edit = new JSONObject(); 
-					for (int i = 0, size = editList.size(); i < size; i++)
+					if (editList != null && editList.size() > 0)
+					{
+						JSONObject edit = new JSONObject(); 
+						for (int i = 0, size = editList.size(); i < size; i++)
+							try {
+								edit.put(editList.get(i).first, editList.get(i).second);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
 						try {
-							edit.put(editList.get(i).first, editList.get(i).second);
+							mDive.applyEdit(edit);
 						} catch (JSONException e) {
 							e.printStackTrace();
 						}
-					try {
-						mDive.applyEdit(edit);
-					} catch (JSONException e) {
-						e.printStackTrace();
+						mDive.clearEditList();
 					}
-					mDive.clearEditList();
+					dives.add(0, mDive);
+					((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
+						@Override
+						public void onDiveCreateComplete() {
+							finish();
+						}
+					});
+					((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
+					((ApplicationController)getApplicationContext()).setRefresh(1);
+					((ApplicationController)getApplicationContext()).setTempDive(null);
 				}
-				dives.add(0, mDive);
-				((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
-					@Override
-					public void onDiveCreateComplete() {
-						finish();
-					}
-				});
-				((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
-				((ApplicationController)getApplicationContext()).setRefresh(1);
-//				Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
-//				toast.setGravity(Gravity.CENTER, 0, 0);
-//				toast.show();
-				((ApplicationController)getApplicationContext()).setTempDive(null);
-				finish();
+				else
+				{
+					Toast toast = Toast.makeText(getApplicationContext(), "Max Depth or Duration fields are missing", Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
 			}
 		});
 	    

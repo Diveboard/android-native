@@ -685,6 +685,15 @@ public class					DiveboardModel
 		}
 	}
 	
+	public void					pausePreloadPictures()
+	{
+		System.out.println("PAUSE PRELOAD");
+//		if (_pictureThread1 != null)
+//			_pictureThread1.pause();
+//		if (_pictureThread2 != null)
+//			_pictureThread2.pause();
+	}
+	
 	private void				_refreshPictureList()
 	{
 		System.out.println("Refresh PICTURES");
@@ -726,6 +735,16 @@ public class					DiveboardModel
 			_increment = increment;
 			_run = true;
 			_locknb = locknb;
+		}
+		
+		public void				pause()
+		{
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		
 		public void				cancel()

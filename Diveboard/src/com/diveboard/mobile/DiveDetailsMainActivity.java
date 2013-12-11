@@ -57,7 +57,6 @@ public class DiveDetailsMainActivity extends Activity {
 	public void goToDeleteDive(View view)
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
-		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(AC.getPageIndex()));
 		AC.setRefresh(3);
 		AC.getModel().getDataManager().setOnDiveDeleteComplete(new DiveDeleteListener() {
 			@Override
@@ -65,6 +64,7 @@ public class DiveDetailsMainActivity extends Activity {
 				finish();
 			}
 		});
+		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(AC.getPageIndex()));
 	}
 	
 	public void goToURL(View view)

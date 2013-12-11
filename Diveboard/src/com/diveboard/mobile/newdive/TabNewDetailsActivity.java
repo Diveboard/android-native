@@ -240,30 +240,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			{
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				ArrayList<Pair<String, String>> editList = mDive.getEditList();
-				if (editList != null && editList.size() > 0)
-				{
-					JSONObject edit = new JSONObject(); 
-					for (int i = 0, size = editList.size(); i < size; i++)
-						try {
-							edit.put(editList.get(i).first, editList.get(i).second);
-						} catch (JSONException e) {
-							e.printStackTrace();
-						}
-					try {
-						mDive.applyEdit(edit);
-					} catch (JSONException e) {
-						e.printStackTrace();
-					}
-					mDive.clearEditList();
-				}
-				dives.add(0, mDive);
-				((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
-					@Override
-					public void onDiveCreateComplete() {
-						finish();
-					}
-				});
-				if (mDive.getMaxdepth() != null && mDive.getDuration() != null)
+				if (mDive.getMaxdepth() == null || mDive.getDuration() == null)
+					mError = true;
+				else
 					mError = false;
 				if (mDive.getMaxdepth() == null)
 				{
@@ -272,7 +251,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 						View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
 						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-						mError = true;
 					}
 					
 				}
@@ -283,19 +261,47 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 						View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
 						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-						mError = true;
 					}
 					
 				}
 				if (mError == false)
 				{
+					if (editList != null && editList.size() > 0)
+					{
+						JSONObject edit = new JSONObject(); 
+						for (int i = 0, size = editList.size(); i < size; i++)
+							try {
+								edit.put(editList.get(i).first, editList.get(i).second);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+						try {
+							mDive.applyEdit(edit);
+						} catch (JSONException e) {
+							e.printStackTrace();
+						}
+						mDive.clearEditList();
+					}
+					dives.add(0, mDive);
+					((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
+						@Override
+						public void onDiveCreateComplete() {
+							finish();
+						}
+					});
 					((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
 					((ApplicationController)getApplicationContext()).setRefresh(1);
 //					Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
 //					toast.setGravity(Gravity.CENTER, 0, 0);
 //					toast.show();
 					((ApplicationController)getApplicationContext()).setTempDive(null);
-					finish();
+//					finish();
+				}
+				else
+				{
+					Toast toast = Toast.makeText(getApplicationContext(), "Max Depth or Duration fields are missing", Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
 				}
 			}
 		});

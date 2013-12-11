@@ -205,8 +205,6 @@ public class					DataManager
 				{
 					_addDive(object);
 					commit();
-					for (DiveCreateListener listener : _diveCreateListeners)
-						listener.onDiveCreateComplete();
 				}
 				else
 				{
@@ -347,7 +345,6 @@ public class					DataManager
 		Thread commitOnline = new Thread(new CommitOnlineThread());
 		commitOnline.start();
 	}
-	
 	
 	// Apply modifications on Cache List
 	private void						_applyEditCache(String elemtag, JSONObject result_obj)
@@ -508,6 +505,9 @@ public class					DataManager
 									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
 								_applyEditCache(elem.first, json.getJSONObject("result"));
+								// Fire dive created event
+								for (DiveCreateListener listener : _diveCreateListeners)
+									listener.onDiveCreateComplete();
 							}
 							catch (UnsupportedEncodingException e) 
 							{
@@ -532,7 +532,12 @@ public class					DataManager
 					}
 				}
 				else
+				{
+					// Fire dive created event
+					for (DiveCreateListener listener : _diveCreateListeners)
+						listener.onDiveCreateComplete();
 					break ;
+				}
 			}
 	        if (_dataRetrieveThread == null)
 	        {
