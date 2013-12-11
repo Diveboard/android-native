@@ -92,7 +92,7 @@ public class					Picture
 	public synchronized boolean		loadPicture(final Context context, final Size size) throws IOException
 	{
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		ApplicationController AC = (ApplicationController)context;
+		//ApplicationController AC = (ApplicationController)context;
 		//NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
