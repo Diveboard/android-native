@@ -481,7 +481,6 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			                	((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
 			        			mError = true;
 		                	}
-		                	
 		                }
 		            });
 	        	}
