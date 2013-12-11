@@ -8,6 +8,7 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import android.R.id;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.Bitmap.Config;
@@ -129,6 +131,7 @@ public class DiveDetailsActivity extends TabActivity {
 					@Override
 					public void onTabChanged(String tabId) {
 						TabWidget tab_widget = mTabHost.getTabWidget();
+						ApplicationController AC = (ApplicationController)getApplicationContext();
 						for (int i = 0; i < tab_widget.getTabCount(); i++)
 						{
 							if (i == 0)
@@ -152,13 +155,21 @@ public class DiveDetailsActivity extends TabActivity {
 						((TextView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsText)).setTypeface(mFaceB);
 						if (mTabHost.getCurrentTab() == 0)
 						{
+							AC.setCurrentTab(0);
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_details_grey));
 							((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.VISIBLE);
 						}
 						else if (mTabHost.getCurrentTab() == 1)
 						{
 							
-							ApplicationController AC = (ApplicationController)getApplicationContext();
+							AC.setCurrentTab(1);
+							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
+									&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							{
+								((FrameLayout)findViewById(id.tabcontent)).setBackgroundColor(Color.TRANSPARENT);
+							}
+							else
+								((FrameLayout)findViewById(id.tabcontent)).setBackgroundColor(Color.WHITE);
 							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
 									&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
 							{
@@ -174,7 +185,7 @@ public class DiveDetailsActivity extends TabActivity {
 //							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_species_grey));
 						else if (mTabHost.getCurrentTab() == 2)
 						{
-							ApplicationController AC = (ApplicationController)getApplicationContext();
+							AC.setCurrentTab(2);
 							((ImageView)(mTabHost.getCurrentTabView()).findViewById(R.id.tabsIcon)).setImageDrawable(getResources().getDrawable(R.drawable.ic_map_grey));
 							if ((AC.getModel().getDives().get(AC.getPageIndex()).getLat() == null || AC.getModel().getDives().get(AC.getPageIndex()).getLng() == null)
 									|| AC.getModel().getDives().get(AC.getPageIndex()).getLat() == 0 && AC.getModel().getDives().get(AC.getPageIndex()).getLng() == 0)
@@ -182,8 +193,7 @@ public class DiveDetailsActivity extends TabActivity {
 							else
 								((LinearLayout)findViewById(R.id.white_banner)).setVisibility(View.GONE);
 						}
-						if (mTabHost.getCurrentTab() == 0)
-							((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
+						((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 					}
 				});
 				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getTripName() == null)
@@ -209,6 +219,7 @@ public class DiveDetailsActivity extends TabActivity {
 				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() == null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() == null)
 					((TextView)findViewById(R.id.place_name)).setVisibility(View.GONE);
 				((ScrollView)findViewById(R.id.scroll)).smoothScrollTo(0, 0);
+				mTabHost.setCurrentTab(AC.getCurrentTab());
 				DownloadImageTask task = new DownloadImageTask();
 				task.execute(AC.getPageIndex());
 		    }
