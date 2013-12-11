@@ -367,6 +367,11 @@ public class					DiveboardModel
 		{
 			_refreshDataThread = new RefreshDataThread();
 			_refreshDataThread.start();
+			try {
+				_refreshDataThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 	}
 	

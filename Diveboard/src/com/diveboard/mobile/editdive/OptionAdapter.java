@@ -123,14 +123,14 @@ public class					OptionAdapter extends BaseAdapter
 				holder.optTitle.setTypeface(faceB);
 				holder.optSwitch = (Switch) convertView.findViewById(R.id.optSwitch);
 				holder.optSwitch.setTypeface(faceR);
-				holder.optSwitch.setTextOff("Public");
-				holder.optSwitch.setTextOn("Private");
+				holder.optSwitch.setTextOff("Private");
+				holder.optSwitch.setTextOn("Public");
 				holder.optSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
 					@Override
 					public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
 					{
-						int privacy = (isChecked == true) ? 1 : 0;
+						int privacy = (isChecked == true) ? 0 : 1;
 						mDive.setPrivacy(privacy);
 					}
 				});
@@ -138,9 +138,9 @@ public class					OptionAdapter extends BaseAdapter
 				
 				holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
 				if (option.get(position).getValue().equals("Public"))
-					holder.optSwitch.setChecked(false);
-				else
 					holder.optSwitch.setChecked(true);
+				else
+					holder.optSwitch.setChecked(false);
 				return convertView;
 			}
 		}
