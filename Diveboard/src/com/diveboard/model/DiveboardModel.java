@@ -387,8 +387,8 @@ public class					DiveboardModel
 		@Override
 		public void run()
 		{
-			while (_run)
-			{
+//			while (_run)
+//			{
 				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 				
 				// Test connectivity
@@ -420,13 +420,13 @@ public class					DiveboardModel
 					listener.onDataRefreshComplete();
 				System.out.println("Data refreshed");
 				_cache.commitEditOnline();
-				try {
-					Thread.sleep(180000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//				try {
+//					Thread.sleep(180000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 		}
 		
 	}
