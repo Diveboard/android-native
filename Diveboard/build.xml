@@ -89,4 +89,70 @@
     <!-- version-tag: 1 -->
     <import file="${sdk.dir}/tools/ant/build.xml" />
 
+    <target name="build_debug">
+        <antcall target="clean" />
+        <antcall target="loadDebugProperties" />
+        <antcall target="debug" />
+    </target>
+    
+    <target name="build_release">
+        <antcall target="clean" />
+        <antcall target="loadReleaseProperties" />
+        <antcall target="release" />
+    </target>
+    
+    <target name="loadDebugProperties">
+        <copy
+            encoding="utf-8"
+            file="config/AppConfig.java"
+            overwrite="true"
+            todir="src/com/diveboard/config" >
+ 
+            <filterset filtersfile="config/config.debug.properties" />
+        </copy>
+ 
+        <copy
+            encoding="utf-8"
+            file="config/AndroidManifestDebug.xml"
+            overwrite="true"
+            tofile="AndroidManifest.xml" >
+        </copy>
+        
+        <copy
+            encoding="utf-8"
+            file="config/analyticsDebug.xml"
+            overwrite="true"
+            tofile="res/values/analytics.xml" >
+        </copy>
+        
+        <tstamp />
+    </target>
+    
+    <target name="loadReleaseProperties">
+        <copy
+            encoding="utf-8"
+            file="config/AppConfig.java"
+            overwrite="true"
+            todir="src/com/diveboard/config" >
+ 
+            <filterset filtersfile="config/config.release.properties" />
+        </copy>
+ 
+        <copy
+            encoding="utf-8"
+            file="config/AndroidManifestRelease.xml"
+            overwrite="true"
+            tofile="AndroidManifest.xml" >
+        </copy>
+        
+        <copy
+            encoding="utf-8"
+            file="config/analyticsRelease.xml"
+            overwrite="true"
+            tofile="res/values/analytics.xml" >
+        </copy>
+        
+        <tstamp />
+    </target>
+    
 </project>
