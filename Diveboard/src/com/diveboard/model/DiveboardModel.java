@@ -143,7 +143,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_email");
+			HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/login_email");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("email", login));
@@ -169,7 +169,7 @@ public class					DiveboardModel
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
 				// Get user ID
-				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				HttpGet getRequest = new HttpGet("http://www.diveboard.com/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
@@ -233,7 +233,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_fb");
+			HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/login_fb");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("fbid", fb_id));
@@ -259,7 +259,7 @@ public class					DiveboardModel
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
 				// Get user ID
-				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				HttpGet getRequest = new HttpGet("http://www.diveboard.com/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
@@ -482,7 +482,7 @@ public class					DiveboardModel
 	{
 		// Load user information
 		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
-		HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/V2/user/" + Integer.toString(_userId));
+		HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/V2/user/" + Integer.toString(_userId));
 		ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
 		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
@@ -510,7 +510,7 @@ public class					DiveboardModel
 			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
 		dive_str = dive_str.concat("%5D");
-		postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str));
+		postRequest = new HttpPost("http://www.diveboard.com/api/V2/dive?arg=".concat(dive_str));
 		args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
 		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
@@ -906,7 +906,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/register_email");
+			HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/register_email");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
 			args.add(new BasicNameValuePair("email", email));
@@ -1014,7 +1014,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_text");
+			HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/search_spot_text");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("term", term));
@@ -1054,7 +1054,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_coord");
+			HttpPost postRequest = new HttpPost("http://www.diveboard.com/api/search_spot_coord");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("lat_min", lat_min));

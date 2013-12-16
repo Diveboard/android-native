@@ -2,8 +2,8 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
-    <string name="app_id">367340190067848</string>
-<!--     <string name="app_id">193803977296892</string> -->
+<!--     <string name="app_id">367340190067848</string> -->
+    <string name="app_id">193803977296892</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
