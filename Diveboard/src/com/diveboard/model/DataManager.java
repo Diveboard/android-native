@@ -21,6 +21,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.diveboard.config.AppConfig;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
@@ -456,7 +458,7 @@ public class					DataManager
 							String[] info = elem.first.split(":");
 							if (info[0].compareTo("Dive") == 0)
 							{
-								postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
+								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive");
 							}
 							else if (info[0].equals("Dive_delete"))
 							{
@@ -561,7 +563,8 @@ public class					DataManager
 		private void					_deleteDive(AndroidHttpClient client, String elemtag)
 		{
 			String[]					info = elemtag.split(":");
-			HttpDelete deleteRequest = new HttpDelete("http://stage.diveboard.com/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
+
+			HttpDelete deleteRequest = new HttpDelete(AppConfig.SERVER_URL + "/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
 			try
 			{
 				client.execute(deleteRequest);
