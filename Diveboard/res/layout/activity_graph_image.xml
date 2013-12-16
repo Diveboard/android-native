@@ -4,10 +4,24 @@
     android:layout_height="match_parent"
     android:gravity="center_horizontal"
     android:background="#000000">
+    <RelativeLayout
+        android:id="+@id/loading_rl"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:layout_centerInParent="true"
+        android:gravity="center"
+        android:visibility="invisible">
+        <ProgressBar
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+    </RelativeLayout>
 	<ru.truba.touchgallery.GalleryWidget.GalleryViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/white"/>
+        android:background="@color/white"
+        android:visibility="visible"/>
 </RelativeLayout>
