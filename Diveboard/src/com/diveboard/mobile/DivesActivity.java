@@ -842,7 +842,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				                if(event.getAction() == MotionEvent.ACTION_UP) {
 				                    {
 				                        //System.out.println("UP" + event.toString());
-				                    	System.out.println("UP");
+				                    	//System.out.println("UP");
 				                    	if (position_stroke == 1)
 				                    	{
 				                    		ApplicationController AC = ((ApplicationController)getApplicationContext());
@@ -1258,7 +1258,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		//System.out.println("x = " + x + ", y = " + y);
 		for (int i = 0; i < mTrackingBarPosition.size(); i++)
 		{
-			//System.out.println(mTrackingBarPosition.get(i).getx() + " " + mTrackingBarPosition.get(i).getX() + " " + mTrackingBarPosition.get(i).gety() + " " + mTrackingBarPosition.get(i).getY());
+			//System.out.println("YOOOOOOOO x = " + x + ", y = " + y + "    " + mTrackingBarPosition.get(i).getx() + " " + mTrackingBarPosition.get(i).getX() + " " + mTrackingBarPosition.get(i).gety() + " " + mTrackingBarPosition.get(i).getY());
 			if (x >= mTrackingBarPosition.get(i).getx() && x <= mTrackingBarPosition.get(i).getX() &&
 					y >= mTrackingBarPosition.get(i).gety() && y <= mTrackingBarPosition.get(i).getY())
 				return i + 1;
@@ -1270,7 +1270,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
         @Override
 		public boolean onSingleTapUp(MotionEvent e) {
-			System.out.println("UP");
+			//System.out.println("UP");
         	//System.out.println("false");
 			return super.onSingleTapUp(e);
 //			mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke), true);
@@ -1283,7 +1283,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         @Override
         public boolean onDown(MotionEvent event) { 
         	//Log.d(DEBUG_TAG, "onDown: " + event.toString());
-        	//System.out.println(event.getX());
+        	//System.out.println("on down");
         	int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
         	//System.out.println("Stroke selected = " + stroke_selected);
         	if (stroke_selected == 0)

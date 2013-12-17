@@ -45,11 +45,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 public class PhotosActivity extends Activity {
+
 	private DiveboardModel mModel;
 	private int mPhotoPos = 0;
 	private DownloadImageTask mDownloadImageTask;
 	private ImageView mImageView;
 	private List<Picture> mItems;
+	private Size mSizePicture;
 
 	@Override
 	protected void onResume()
@@ -92,17 +94,26 @@ public class PhotosActivity extends Activity {
 							int nbPicture;
 							screenWidth = getParent().findViewById(R.id.root).getMeasuredWidth();
 							screenheight = getParent().findViewById(R.id.root).getMeasuredHeight();
-
 							if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 							{
-								nbPicture = 3;
+								nbPicture = 3;	
 							}
 							else
 							{
-
 								double temp = ((double)screenWidth / (double)screenheight);
 								nbPicture = (int) (temp * 3.0);
 								System.out.println(screenWidth + " " + screenheight + " " + nbPicture);
+							}
+							System.out.println("taille = " + screenWidth / nbPicture);
+							if (screenWidth / nbPicture > 240)
+							{
+								System.out.println("MEDIUM");
+								mSizePicture = Size.MEDIUM; // medium
+							}
+							else
+							{
+								System.out.println("SMALL");
+								mSizePicture = Size.SMALL; // small
 							}
 							while (i < mItems.size())
 							{
@@ -211,42 +222,42 @@ public class PhotosActivity extends Activity {
 		//		}
 	}
 
-	private class ImageThread extends Thread
-	{
-		private Picture mPicture;
-		private Context mContext;
-		private Bitmap mBitmap;
-		public ImageThread(Context context, Picture picture, Bitmap bitmap)
-		{
-			mPicture = picture;
-			mContext = context;
-			setBitmap(bitmap);
-		}
-
-		@Override
-		public void run() {
-			try {
-				setBitmap(mPicture.getPicture(mContext, Size.MEDIUM));
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		}
-
-		public Bitmap getBitmap() {
-			return mBitmap;
-		}
-
-		public void setBitmap(Bitmap mBitmap) {
-			this.mBitmap = mBitmap;
-		}
-	}
+//	private class ImageThread extends Thread
+//	{
+//		private Picture mPicture;
+//		private Context mContext;
+//		private Bitmap mBitmap;
+//		public ImageThread(Context context, Picture picture, Bitmap bitmap)
+//		{
+//			mPicture = picture;
+//			mContext = context;
+//			setBitmap(bitmap);
+//		}
+//
+//		@Override
+//		public void run() {
+//			try {
+//				setBitmap(mPicture.getPicture(mContext, mSizePicture));
+//				try {
+//					Thread.sleep(2000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			} catch (IOException e) {
+//				// TODO Auto-generated catch block
+//				e.printStackTrace();
+//			}
+//		}
+//
+//		public Bitmap getBitmap() {
+//			return mBitmap;
+//		}
+//
+//		public void setBitmap(Bitmap mBitmap) {
+//			this.mBitmap = mBitmap;
+//		}
+//	}
 
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
@@ -273,7 +284,7 @@ public class PhotosActivity extends Activity {
 			try {
 				if (mContext != null)
 				{
-					return mListPictures.get(mPosition).getPicture(mContext, Size.MEDIUM);
+					return mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
 				}
 
 			} catch (IOException e) {
@@ -299,6 +310,7 @@ public class PhotosActivity extends Activity {
 					{
 						mDownloadImageTask = new DownloadImageTask(mArrayPair, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), mPosition + 1);
 						mDownloadImageTask.execute();
+						System.out.println("position = " + mPosition);
 					}
 				}
 			}
@@ -430,6 +442,13 @@ public class PhotosActivity extends Activity {
 	//		}
 	//	}
 
+	@Override
+	protected void onDestroy() {
+		if (mDownloadImageTask != null)
+			mDownloadImageTask.cancel(true);
+		super.onDestroy();
+	}
+	
 	@Override
 	public void onStart() {
 		super.onStart();
