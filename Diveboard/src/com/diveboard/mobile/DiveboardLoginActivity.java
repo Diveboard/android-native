@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.SignUpActivity.LoginTask;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
@@ -78,7 +79,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	protected void onResume()
 	{
 		super.onResume();
-		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, "9ba91668");
+		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, AppConfig.BUGSENSE_ID);
 //		Config config = new Config("yoursite.uservoice.com");
 		Config config = new Config("diveboard.uservoice.com");
 //		config.setTopicId(9579);

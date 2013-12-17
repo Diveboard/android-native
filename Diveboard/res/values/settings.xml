@@ -13,4 +13,5 @@
         <item>Metric</item>
     </string-array>
     <string translatable="false" name="remaining_requests_title">Pending Requests</string>
+    <string translatable="false" name="version_title">Application Version</string>
 </resources>

@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -258,7 +260,17 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			getPreferenceScreen().addPreference(remainingRequest);
 			
-			
+			Preference version = new Preference(this);
+			version.setEnabled(false);
+			version.setKey("version");
+			PackageInfo pInfo;
+			try {
+				pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
+				version.setTitle(getResources().getString(R.string.version_title) + ": " + pInfo.versionName);
+				getPreferenceScreen().addPreference(version);
+			} catch (NameNotFoundException e) {
+				e.printStackTrace();
+			}
 	}
 
 //	/** {@inheritDoc} */
