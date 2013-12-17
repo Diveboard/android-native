@@ -75,5 +75,7 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_graph_image">GraphImageActivity</string>
-
+    <string name="delete_confirm_title">Delete dive</string>
+    <string name="delete_confirm_message">You are about to delete this dive. This cannot be recovered. Are you sure ?</string>
+    <string name="delete_button">Delete</string>
 </resources>

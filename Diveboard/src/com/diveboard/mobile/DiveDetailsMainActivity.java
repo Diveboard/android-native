@@ -3,6 +3,8 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveDeleteListener;
@@ -19,6 +21,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.Bitmap.Config;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -29,7 +33,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
-public class DiveDetailsMainActivity extends Activity {
+public class DiveDetailsMainActivity extends FragmentActivity implements DeleteConfirmDialogListener
+{
 	public final static int FONT_SIZE = 13;
 	private Dive mDive;
 	private DownloadImageTask mDownloadImageTask;
@@ -54,7 +59,7 @@ public class DiveDetailsMainActivity extends Activity {
 	    startActivity(editDiveActivity);
 	}
 	
-	public void goToDeleteDive(View view)
+	public void goToDeleteDive()
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		AC.setRefresh(3);
@@ -116,6 +121,16 @@ public class DiveDetailsMainActivity extends Activity {
 		((TextView)findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.deleteDiveButton)).setTypeface(faceR);
+		((Button)findViewById(R.id.deleteDiveButton)).setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
+		    	Bundle args = new Bundle();
+		    	dialog.show(getSupportFragmentManager(), "DeleteConfirmDialogFragment");
+			}
+		});
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.goToEditButton)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_shop)).setTypeface(faceB);
@@ -131,7 +146,7 @@ public class DiveDetailsMainActivity extends Activity {
 			mShopLogo = ((ImageView)findViewById(R.id.shop_image));
 			mDownloadShopLogoTask = new DownloadShopLogoTask(mShopLogo);
 			mDownloadShopLogoTask.execute();
-		}	
+		}
 		else
 		{
 			((TextView)findViewById(R.id.shop_name)).setText("No shop");
@@ -369,6 +384,12 @@ public class DiveDetailsMainActivity extends Activity {
 		protected void onCancelled() {
 			mDownloadImageTask = null;
 		}
+	}
+
+	@Override
+	public void onDeleteConfirm(DialogFragment dialog)
+	{
+		goToDeleteDive();
 	}
 
 }
