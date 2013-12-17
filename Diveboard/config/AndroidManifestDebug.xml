@@ -24,7 +24,7 @@
         android:allowBackup="true"
         android:debuggable="true"
         android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name"
+        android:label="Diveboard-Debug"
         android:largeHeap="true"
         android:theme="@style/AppTheme" >
         <meta-data
@@ -38,7 +38,7 @@
             android:value="@string/fb_app_id_debug" />
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
-            android:label="@string/title_activity_login"
+            android:label="Diveboard-Debug"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden" >
             <intent-filter>
