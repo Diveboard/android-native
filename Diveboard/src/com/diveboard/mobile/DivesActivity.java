@@ -2,11 +2,7 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.List;
-
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
@@ -18,18 +14,12 @@ import com.diveboard.model.ScreenSetup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -42,54 +32,31 @@ import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.support.v4.view.GestureDetectorCompat;
-import android.view.GestureDetector.SimpleOnGestureListener;
-import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
-import android.view.GestureDetector.OnDoubleTapListener;
-import android.view.GestureDetector.OnGestureListener;
-import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.SeekBar;
-import android.widget.Toast;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.facebook.*;
-import com.facebook.model.*;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.UserVoice;
 
@@ -192,6 +159,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			AC.getModel().stopPreloadPictures();
 			AC.setModel(null);
 			finish();
+			return ;
 		}
 		else if (AC.getRefresh() == 3)
 		{
@@ -205,6 +173,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			AC.getModel().stopPreloadPictures();
 			AC.setModel(null);
 			finish();
+			return ;
 		}
 	}
 	
@@ -386,7 +355,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(settingsActivity);
 		    	    return true;
 		        case R.id.report_bug:
-		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
 		        	{
 		        		UserVoice.launchContactUs(DivesActivity.this);
 		        	}
@@ -744,7 +713,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //						            return true;      
 //						        default : 
 //						            return false;
-//						    }    
+//						    }
 							return false;
 						}
 					});
@@ -1015,26 +984,24 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 						}
 			        });*/
 			        
-			        if (AC.isDataRefreshed() != true)
+			        if (ApplicationController.mDataRefreshed != true)
 			        {
-			        	AC.setDataRefreshed(true);
+			        	ApplicationController.mDataRefreshed = true;
 				        mModel.setOnDataRefreshComplete(new DataRefreshListener()
 				        {
-		
 							@Override
 							public void onDataRefreshComplete() {
-								//System.out.println("Data refresh complete");
+								System.out.println("Data refresh complete");
 								try {
 									mModel.overwriteData();
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								
 							}
 				        	
 				        });
-				        mModel.refreshData();
+				        mModel.refreshData(false);
 //				        new Thread(new Runnable()
 //						{
 //							public void run()
@@ -1044,7 +1011,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //						}).start();
 			        }
 				}
-		    } 
+		    }
 		});
 	}
 

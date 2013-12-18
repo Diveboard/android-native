@@ -78,4 +78,5 @@
     <string name="delete_confirm_title">Delete dive</string>
     <string name="delete_confirm_message">You are about to delete this dive. This cannot be recovered. Are you sure ?</string>
     <string name="delete_button">Delete</string>
+    <string name="wait_message">Please wait</string>
 </resources>

@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
+import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Dive;
@@ -62,6 +63,8 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	public void goToDeleteDive()
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		WaitDialogFragment dialog = new WaitDialogFragment();
+		dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 		AC.setRefresh(3);
 		AC.getModel().getDataManager().setOnDiveDeleteComplete(new DiveDeleteListener() {
 			@Override

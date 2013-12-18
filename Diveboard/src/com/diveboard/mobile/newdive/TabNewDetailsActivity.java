@@ -2,6 +2,7 @@ package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.newdive.NewBottomTempDialogFragment;
@@ -266,6 +267,8 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 				}
 				if (mError == false)
 				{
+					WaitDialogFragment dialog = new WaitDialogFragment();
+					dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 					if (editList != null && editList.size() > 0)
 					{
 						JSONObject edit = new JSONObject(); 

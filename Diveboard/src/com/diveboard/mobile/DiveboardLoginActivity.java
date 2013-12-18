@@ -1,12 +1,9 @@
 package com.diveboard.mobile;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.SignUpActivity.LoginTask;
-import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
@@ -16,7 +13,6 @@ import com.uservoice.uservoicesdk.UserVoice;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -26,11 +22,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
-import android.view.Window;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -74,20 +66,36 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-
+	
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
 		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, AppConfig.BUGSENSE_ID);
 //		Config config = new Config("yoursite.uservoice.com");
-		Config config = new Config("diveboard.uservoice.com");
+		//Config config = new Config("diveboard.uservoice.com");
 //		config.setTopicId(9579);
-		UserVoice.init(config, this);
-		config.setShowForum(false);
-	    config.setShowContactUs(true);
-	    config.setShowPostIdea(false);
-	    config.setShowKnowledgeBase(false);
+		//UserVoice.init(config, this);
+        new Thread(new Runnable()
+		{
+			public void run()
+			{
+				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+				{
+					Config config = new Config("diveboard.uservoice.com");
+					UserVoice.init(config, DiveboardLoginActivity.this);
+					config.setShowForum(false);
+				    config.setShowContactUs(true);
+				    config.setShowPostIdea(false);
+				    config.setShowKnowledgeBase(false);
+					ApplicationController.UserVoiceReady = true;
+				}
+			}
+		}).start();
+//		config.setShowForum(false);
+//	    config.setShowContactUs(true);
+//	    config.setShowPostIdea(false);
+//	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
 		AC.setDataRefreshed(false);

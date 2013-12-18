@@ -7,6 +7,7 @@ import org.json.JSONObject;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.Dive;
@@ -120,6 +121,8 @@ public class TabNewNotesActivity extends FragmentActivity implements EditConfirm
 					mError = false;
 				if (mError == false)
 				{
+					WaitDialogFragment dialog = new WaitDialogFragment();
+					dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 					if (editList != null && editList.size() > 0)
 					{
 						JSONObject edit = new JSONObject(); 

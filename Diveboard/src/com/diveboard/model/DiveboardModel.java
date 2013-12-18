@@ -364,16 +364,35 @@ public class					DiveboardModel
 			_applyEdit();
 	}
 	
-	public void					refreshData()
+	public synchronized void	refreshData()
 	{
 		if (_refreshDataThread == null)
 		{
 			_refreshDataThread = new RefreshDataThread();
 			_refreshDataThread.start();
+			// Wait synchronously for data refresh end
 			try {
 				_refreshDataThread.join();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void					refreshData(boolean sync)
+	{
+		if (_refreshDataThread == null)
+		{
+			_refreshDataThread = new RefreshDataThread();
+			_refreshDataThread.start();
+			// Wait synchronously for data refresh end
+			if (sync == true)
+			{
+				try {
+					_refreshDataThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
 		}
 	}
@@ -617,19 +636,20 @@ public class					DiveboardModel
 //			_user = (User) _temp_user.clone();
 //			_temp_user = null;
 		}
-		if (_user != null)
-		{
-			ArrayList<Dive> dives = _user.getDives();
-			for (int i = 0, len = dives.size(); i < len; i++)
-			{
-				if (dives.get(i).getProfile() != null)
-					dives.get(i).getProfile().deletePicture(_context);
-				if (dives.get(i).getProfileV3() != null)
-					dives.get(i).getProfileV3().deletePicture(_context);
-			}
-			_enable_overwrite = false;
-			_applyEdit();
-		}
+//		if (_user != null)
+//		{
+//			ArrayList<Dive> dives = _user.getDives();
+//			for (int i = 0, len = dives.size(); i < len; i++)
+//			{
+//				if (dives.get(i).getProfile() != null)
+//					dives.get(i).getProfile().deletePicture(_context);
+//				if (dives.get(i).getProfileV3() != null)
+//					dives.get(i).getProfileV3().deletePicture(_context);
+//			}
+//			_enable_overwrite = false;
+//			_applyEdit();
+//		}
+		_enable_overwrite = false;
 	}
 	
 	public DataManager			getDataManager()

@@ -183,7 +183,7 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
-		System.out.println("Saving picture: " + file.getAbsolutePath());
+		//System.out.println("Saving picture: " + file.getAbsolutePath());
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file
@@ -192,7 +192,7 @@ public class					Picture
 			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
 				file.delete();
 		}
-		System.out.println("Saving picture complete : " + file.getAbsolutePath());
+		//System.out.println("Saving picture complete : " + file.getAbsolutePath());
 		_updateSaveList(context, url);
 	}
 	

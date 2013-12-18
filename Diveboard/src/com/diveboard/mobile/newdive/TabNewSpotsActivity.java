@@ -11,6 +11,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.DiveDetailsActivity;
 import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.Dive;
@@ -147,6 +148,8 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 					mError = false;
 				if (mError == false)
 				{
+					WaitDialogFragment dialog = new WaitDialogFragment();
+					dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 					if (editList != null && editList.size() > 0)
 					{
 						JSONObject edit = new JSONObject(); 

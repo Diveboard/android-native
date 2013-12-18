@@ -13,7 +13,8 @@ public class ApplicationController extends Application {
 	private static ApplicationController singleton;
 	private DiveboardModel mModel = null;
 	private boolean mDataReady = false;
-	private boolean mDataRefreshed = false;
+	public static boolean mDataRefreshed = false;
+	public static boolean UserVoiceReady = false;
 	private int mPageIndex = 0;
 	private int mCarouselIndex = 0;
 	private Dive mtempDive = null;
