@@ -3,9 +3,8 @@ package com.diveboard.mobile;
 import java.util.ArrayList;
 import java.util.List;
 
-import ru.truba.touchgallery.GalleryWidget.FilePagerAdapter;
-import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
-
+import com.diveboard.GalleryWidget.FilePagerAdapter;
+import com.diveboard.GalleryWidget.GalleryViewPager;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.google.analytics.tracking.android.EasyTracker;

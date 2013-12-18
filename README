@@ -1,0 +1,21 @@
+#################################
+##   Diveboard Android Build   ##
+#################################
+
+   Prerequisites
+===================
+You must ensure that the following packages are installed:
+    - Ant
+    - Android SDK
+
+They must be set inside the environment PATH variable in order to be used by
+the script.
+
+   Usage
+===========
+Two scripts are available at the root directory:
+    - build_debug: for building the debug APK version.
+    - build_release: for building an unsigned release APK version.
+
+Execute the corresponding script, the APK will be then generated
+at the root directory.

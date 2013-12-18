@@ -1,0 +1,11 @@
+cd Diveboard/dependencies/FacebookSDK;
+android update project --path . --target android-19;
+cd ../google-play-services_lib;
+android update project --path . --target android-19;
+cd ../UserVoiceSDK;
+android update project --path . --target android-19;
+cd ../../;
+android update project --path . --target android-19;
+ant build_debug;
+cp bin/Diveboard-debug.apk ..;
+ant clean;

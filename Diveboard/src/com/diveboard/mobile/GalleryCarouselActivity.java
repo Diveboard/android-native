@@ -1,34 +1,17 @@
 package com.diveboard.mobile;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import ru.truba.touchgallery.GalleryWidget.FilePagerAdapter;
-import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
+import com.diveboard.GalleryWidget.FilePagerAdapter;
+import com.diveboard.GalleryWidget.GalleryViewPager;
 
-import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
-import com.diveboard.model.ScreenSetup;
 import com.google.analytics.tracking.android.EasyTracker;
 
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.TypedValue;
-import android.view.Window;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class GalleryCarouselActivity extends FragmentActivity {
 	private GalleryViewPager mPager;
