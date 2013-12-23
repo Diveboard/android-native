@@ -23,6 +23,7 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.AttributeSet;
 import android.widget.ImageView.ScaleType;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -62,13 +63,13 @@ public class UrlTouchImageView extends RelativeLayout {
         this.addView(mImageView);
         mImageView.setVisibility(GONE);
 
-        mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
-        params = new LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT);
-        params.addRule(RelativeLayout.CENTER_VERTICAL);
-        params.setMargins(30, 0, 30, 0);
+        mProgressBar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleLarge);
+        params = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+        params.addRule(RelativeLayout.CENTER_IN_PARENT);
+        params.setMargins(0, 0, 0, 16);
         mProgressBar.setLayoutParams(params);
-        mProgressBar.setIndeterminate(false);
-        mProgressBar.setMax(100);
+        //mProgressBar.setIndeterminate(false);
+        //mProgressBar.setMax(100);
         this.addView(mProgressBar);
     }
 
@@ -125,10 +126,10 @@ public class UrlTouchImageView extends RelativeLayout {
             mProgressBar.setVisibility(GONE);
         }
 
-		@Override
-		protected void onProgressUpdate(Integer... values)
-		{
-			mProgressBar.setProgress(values[0]);
-		}
+//		@Override
+//		protected void onProgressUpdate(Integer... values)
+//		{
+//			mProgressBar.setProgress(values[0]);
+//		}
     }
 }

@@ -113,10 +113,10 @@ public class FileTouchImageView extends UrlTouchImageView
             mProgressBar.setVisibility(GONE);
         }
 
-		@Override
-		protected void onProgressUpdate(Integer... values)
-		{
-			mProgressBar.setProgress(values[0]);
-		}
+//		@Override
+//		protected void onProgressUpdate(Integer... values)
+//		{
+//			mProgressBar.setProgress(values[0]);
+//		}
     }
 }

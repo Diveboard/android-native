@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
         />
     </RelativeLayout>
-	<ru.truba.touchgallery.GalleryWidget.GalleryViewPager
+	<com.diveboard.GalleryWidget.GalleryViewPager
         xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/pager"
         android:layout_width="match_parent"
