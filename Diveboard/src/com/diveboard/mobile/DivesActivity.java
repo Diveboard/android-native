@@ -137,6 +137,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private TextView mLoadDataStatusMessageView;
 	// Model to display
 	private DiveboardModel mModel;
+	private DownloadImageTask mBackgroundImageTask = null;
 	
 	@Override
 	protected void onResume()
@@ -666,8 +667,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					mScreen = (RelativeLayout)findViewById(R.id.screen);
 					mBackground1 = (ImageView)findViewById(R.id.background1);
 					mBackground2 = (ImageView)findViewById(R.id.background2);
-					DownloadImageTask task = new DownloadImageTask();
-					task.execute(AC.getPageIndex());
+					mBackgroundImageTask = new DownloadImageTask();
+					mBackgroundImageTask.execute(AC.getPageIndex());
 					//Pager setting
 					
 			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
@@ -951,8 +952,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-								DownloadImageTask task = new DownloadImageTask();
-								task.execute(mPager.getCurrentItem());
+								if (mBackgroundImageTask != null)
+									mBackgroundImageTask.cancel(true);
+								mBackgroundImageTask = new DownloadImageTask();
+								mBackgroundImageTask.execute(mPager.getCurrentItem());
 								
 							}
 						}
@@ -1064,11 +1067,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			{
 				try
 				{
+					Thread.sleep(1000);
+					if (isCancelled())
+						return null;
 					return ImageHelper.fastblur(result, 30);
 				}
 				catch (OutOfMemoryError e)
 				{
 					return null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
