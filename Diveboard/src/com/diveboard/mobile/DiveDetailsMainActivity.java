@@ -56,7 +56,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		Intent editDiveActivity = new Intent(this, EditDiveActivity.class);
-		editDiveActivity.putExtra("index", AC.getPageIndex());
+		editDiveActivity.putExtra("index", getIntent().getIntExtra("index", 0));
 	    startActivity(editDiveActivity);
 	}
 	
@@ -72,7 +72,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 				finish();
 			}
 		});
-		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(AC.getPageIndex()));
+		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)));
 	}
 	
 	public void goToURL(View view)
@@ -90,7 +90,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		Intent graphImageActivity = new Intent(this, GraphImageActivity.class);
-		graphImageActivity.putExtra("index", AC.getPageIndex());
+		graphImageActivity.putExtra("index", getIntent().getIntExtra("index", 0));
 	    startActivity(graphImageActivity);
 	}
 	

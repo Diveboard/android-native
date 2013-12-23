@@ -70,8 +70,8 @@ public class PhotosActivity extends Activity {
 		if (AC.handleLowMemory() == true)
 			return ;
 		mModel = AC.getModel();
-		if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
-				&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+		if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
+				&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
 		{
 			mItems = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures();
 			new Thread(new Runnable() {
@@ -136,8 +136,8 @@ public class PhotosActivity extends Activity {
 									//								imageView.setVisibility(View.VISIBLE);
 									//								imageView.animate().setDuration(shortAnimTime).alpha(1);
 									ApplicationController AC = (ApplicationController)getApplicationContext();
-									if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
-											&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+									if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
+											&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
 									{
 										Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mItems.get(i));
 										arrayPair.add(pair);
@@ -148,12 +148,12 @@ public class PhotosActivity extends Activity {
 										@Override
 										public void onClick(View v) {
 											ApplicationController AC = (ApplicationController)getApplicationContext();
-											if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
-													&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+											if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
+													&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
 											{
 												//Toast.makeText(PhotosActivity.this, "" + position, Toast.LENGTH_SHORT).show();
 												Intent galleryCarousel = new Intent(getApplicationContext(), GalleryCarouselActivity.class);
-												galleryCarousel.putExtra("index", AC.getPageIndex());
+												galleryCarousel.putExtra("index", getIntent().getIntExtra("index", 0));
 												galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
 												startActivity(galleryCarousel);
 											}	
@@ -174,8 +174,8 @@ public class PhotosActivity extends Activity {
 								tableLayout.addView(row);
 							}
 							ApplicationController AC = (ApplicationController)getApplicationContext();
-							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures() != null
-									&& AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
+									&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
 							{
 								mDownloadImageTask = new DownloadImageTask(arrayPair, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), 0);
 								mDownloadImageTask.execute();

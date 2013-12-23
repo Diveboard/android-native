@@ -15,7 +15,7 @@ public class ApplicationController extends Application {
 	private boolean mDataReady = false;
 	public static boolean mDataRefreshed = false;
 	public static boolean UserVoiceReady = false;
-	private int mPageIndex = 0;
+	private int mPageIndex;
 	private int mCarouselIndex = 0;
 	private Dive mtempDive = null;
 	private int mRefresh = 0;

@@ -441,17 +441,20 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    }
 	}
 	
-	public void goToEditDive(View view)
-	{	
-		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
-		editDiveActivity.putExtra("index", mPager.getCurrentItem());
-	    startActivity(editDiveActivity);
-	}
+//	public void goToEditDive(View view)
+//	{	
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
+//		editDiveActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+//	    startActivity(editDiveActivity);
+//	}
 	
 	public void goToDiveDetails(View view)
 	{
+		ApplicationController AC = (ApplicationController)getApplicationContext();
 		Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
-		diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+		//System.out.println(AC.getPageIndex());
+		diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 		startActivity(diveDetailsActivity);
 	}
 	
@@ -459,16 +462,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	{
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		try {
-			if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0 && AC.getModel().getDives().get(AC.getPageIndex()).getPictures().get(0).getPicture(getApplicationContext()) != null)
+			if (AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().size() != 0 && AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().get(0).getPicture(getApplicationContext()) != null)
 			{
 				Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
-				galleryCarousel.putExtra("index", mPager.getCurrentItem());
+				galleryCarousel.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 				startActivity(galleryCarousel);
 			}
 			else
 			{
 				Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
-				diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+				diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 				startActivity(diveDetailsActivity);
 			}
 		} catch (IOException e) {
@@ -621,6 +624,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    @Override 
 		    public void onGlobalLayout() { 
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
+		    	AC.setPageIndex(mModel.getDives().size() - 1);
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
@@ -668,7 +672,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					mBackground1 = (ImageView)findViewById(R.id.background1);
 					mBackground2 = (ImageView)findViewById(R.id.background2);
 					mBackgroundImageTask = new DownloadImageTask();
-					mBackgroundImageTask.execute(AC.getPageIndex());
+					mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 					//Pager setting
 					
 			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
@@ -688,7 +692,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        }
 			        else
 			        	mPager.setCurrentItem(AC.getPageIndex());
-			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getPageIndex(), mModel));
+			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 			        mPager.setOnTouchListener(new OnTouchListener() {
@@ -949,13 +953,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								mSeekBar.setEnabled(true);*/
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 								if (mBackgroundImageTask != null)
 									mBackgroundImageTask.cancel(true);
 								mBackgroundImageTask = new DownloadImageTask();
-								mBackgroundImageTask.execute(mPager.getCurrentItem());
+								mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 								
 							}
 						}
@@ -1213,7 +1217,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
+            return new DivesFragment(mDives.get(mDives.size() - position - 1), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
         }
 
         @Override

@@ -138,7 +138,7 @@ public class DivesFragment extends Fragment {
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
-	        profile_task.execute(AC.getPageIndex());	
+	        profile_task.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);	
 		}
 		else // Landscape mode
 		{
@@ -176,7 +176,7 @@ public class DivesFragment extends Fragment {
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
-	        profile_task.execute(AC.getPageIndex());
+	        profile_task.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 		}
 		//Set the banner content
 		if (mDive.getTripName() != null)
@@ -335,16 +335,16 @@ public class DivesFragment extends Fragment {
 						@Override
 						public void onClick(View v) {
 							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-							if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
+							if (AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().size() != 0)
 							{
 								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
-								galleryCarousel.putExtra("index", AC.getPageIndex());
+								galleryCarousel.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 								startActivity(galleryCarousel);
 							}
 							else
 							{
 								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
-								diveDetailsActivity.putExtra("index", AC.getPageIndex());
+								diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 								startActivity(diveDetailsActivity);
 							}
 						}
