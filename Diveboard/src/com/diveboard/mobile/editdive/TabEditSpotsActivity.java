@@ -43,6 +43,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
@@ -213,6 +214,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
     	((TextView)findViewById(R.id.no_spot)).setVisibility(View.GONE);
     	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(0, 0);
+		((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
     	SpotsTask spots_task = new SpotsTask();
 	    spots_task.execute(((TextView)findViewById(R.id.search_bar)).getText().toString());
 	    ((TextView)findViewById(R.id.search_bar)).setText("");
@@ -228,6 +230,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		
 		protected void onPostExecute(JSONObject result)
 		{
+			((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.GONE);
 			try {
 				if (result != null && result.getBoolean("success") == true)
 				{
