@@ -80,16 +80,16 @@ public class DiveboardLoginActivity extends FragmentActivity {
 //		{
 //			public void run()
 //			{
-				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-				{
-					Config config = new Config("diveboard.uservoice.com");
-					UserVoice.init(config, DiveboardLoginActivity.this);
-					config.setShowForum(false);
-				    config.setShowContactUs(true);
-				    config.setShowPostIdea(false);
-				    config.setShowKnowledgeBase(false);
-					ApplicationController.UserVoiceReady = true;
-				}
+//				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+//				{
+//					Config config = new Config("diveboard.uservoice.com");
+//					UserVoice.init(config, DiveboardLoginActivity.this);
+//					config.setShowForum(false);
+//				    config.setShowContactUs(true);
+//				    config.setShowPostIdea(false);
+//				    config.setShowKnowledgeBase(false);
+//					ApplicationController.UserVoiceReady = true;
+//				}
 //			}
 //		}).start();
 //		config.setShowForum(false);

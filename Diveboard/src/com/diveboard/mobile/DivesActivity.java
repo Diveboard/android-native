@@ -59,6 +59,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 import com.facebook.*;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
 
@@ -359,7 +360,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        case R.id.report_bug:
 		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
 		        	{
+	        			WaitDialogFragment dialog = new WaitDialogFragment();
+	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+						Config config = new Config("diveboard.uservoice.com");
+						UserVoice.init(config, DivesActivity.this);
+						config.setShowForum(false);
+					    config.setShowContactUs(true);
+					    config.setShowPostIdea(false);
+					    config.setShowKnowledgeBase(false);
+						ApplicationController.UserVoiceReady = true;
 		        		UserVoice.launchContactUs(DivesActivity.this);
+		        		dialog.dismiss();
 		        	}
 		        	else
 		        	{
@@ -422,7 +433,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	case R.id.report_bug:
 	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
 	        	{
+    				WaitDialogFragment dialog = new WaitDialogFragment();
+    				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+					Config config = new Config("diveboard.uservoice.com");
+					UserVoice.init(config, DivesActivity.this);
+					config.setShowForum(false);
+				    config.setShowContactUs(true);
+				    config.setShowPostIdea(false);
+				    config.setShowKnowledgeBase(false);
+					ApplicationController.UserVoiceReady = true;
 	        		UserVoice.launchContactUs(DivesActivity.this);
+	        		dialog.dismiss();
 	        	}
 	        	else
 	        	{
