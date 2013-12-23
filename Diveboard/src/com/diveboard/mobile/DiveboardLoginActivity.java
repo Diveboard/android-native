@@ -76,10 +76,10 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		//Config config = new Config("diveboard.uservoice.com");
 //		config.setTopicId(9579);
 		//UserVoice.init(config, this);
-        new Thread(new Runnable()
-		{
-			public void run()
-			{
+//        new Thread(new Runnable()
+//		{
+//			public void run()
+//			{
 				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
 				{
 					Config config = new Config("diveboard.uservoice.com");
@@ -90,8 +90,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 				    config.setShowKnowledgeBase(false);
 					ApplicationController.UserVoiceReady = true;
 				}
-			}
-		}).start();
+//			}
+//		}).start();
 //		config.setShowForum(false);
 //	    config.setShowContactUs(true);
 //	    config.setShowPostIdea(false);

@@ -36,6 +36,7 @@ import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
+import android.view.KeyEvent;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -1291,5 +1292,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			//Log.d(DEBUG_TAG, "onScroll: " + event1.toString()+event2.toString());
 			return true;
 		}
+    }
+    
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+        switch(keycode) {
+            case KeyEvent.KEYCODE_MENU:
+            	openMenu(findViewById(R.id.load_data_form));
+                return true;
+        }
+
+        return super.onKeyDown(keycode, e);
     }
 }
