@@ -17,6 +17,7 @@ import com.diveboard.mobile.newdive.NewDurationDialogFragment;
 import com.diveboard.mobile.newdive.NewDurationDialogFragment.EditDurationDialogListener;
 import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment;
 import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.newdive.NewSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditOption;
@@ -73,7 +74,8 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 																						  EditBottomTempDialogListener,
 																						  EditAltitudeDialogListener,
 																						  EditWaterDialogListener,
-																						  EditConfirmDialogListener
+																						  EditConfirmDialogListener,
+																						  EditSafetyStopsDialogListener
 {
 	private ListView			optionList;
 	private Dive				mDive;
@@ -221,6 +223,12 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
     	dialog.show(getSupportFragmentManager(), "NewWaterDialogFragment");
     }
     
+    private void				_editSafetyStops()
+    {
+    	NewSafetyStopsDialogFragment dialog = new NewSafetyStopsDialogFragment();
+    	dialog.show(getSupportFragmentManager(), "NewSafetyStopsDialogFragment");
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -257,9 +265,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 				}
 				if (mDive.getDuration() == null)
 				{
-					if (3 - optionList.getFirstVisiblePosition() >= 0)
+					if (4 - optionList.getFirstVisiblePosition() >= 0)
 					{
-						View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
+						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
 						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 					}
@@ -319,6 +327,15 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName()));
 		else
 			elem.add(new EditOption("Max depth : ", ""));
+		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
+		String safetydetails = "";
+		for (int i = 0, length = safetystop.size(); i < length; i++)
+		{
+			if (i != 0)
+				safetydetails += ", ";
+			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+		}
+		elem.add(new EditOption("Safety Stops : ", safetydetails));
 		if (mDive.getDuration() != null)
 			elem.add(new EditOption("Duration : ", Integer.toString(mDive.getDuration()) + " min"));
 		else
@@ -383,33 +400,36 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 						_editMaxDepth();
 						break ;
 					case 3:
-						_editDuration();
+						_editSafetyStops();
 						break ;
 					case 4:
-						_editWeights();
+						_editDuration();
 						break ;
 					case 5:
-						_editDiveNumberDialog();
+						_editWeights();
 						break ;
 					case 6:
-						_editTripNameDialog();
+						_editDiveNumberDialog();
 						break ;
 					case 7:
-						_editVisibility();
+						_editTripNameDialog();
 						break ;
 					case 8:
-						_editCurrent();
+						_editVisibility();
 						break ;
 					case 9:
-						_editSurfaceTemp();
+						_editCurrent();
 						break ;
 					case 10:
-						_editBottomTemp();
+						_editSurfaceTemp();
 						break ;
 					case 11:
-						_editAltitude();
+						_editBottomTemp();
 						break ;
 					case 12:
+						_editAltitude();
+						break ;
+					case 13:
 						_editWater();
 						break ;
 				}
@@ -420,7 +440,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	@Override
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
-		((EditOption)mOptionAdapter.getItem(6)).setValue(mDive.getTripName());
+		((EditOption)mOptionAdapter.getItem(7)).setValue(mDive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -429,9 +449,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onDiveNumberEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getNumber() != null)
-			((EditOption)mOptionAdapter.getItem(5)).setValue(mDive.getNumber().toString());
+			((EditOption)mOptionAdapter.getItem(6)).setValue(mDive.getNumber().toString());
 		else
-			((EditOption)mOptionAdapter.getItem(5)).setValue("");
+			((EditOption)mOptionAdapter.getItem(6)).setValue("");
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -473,13 +493,13 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	        	if (3 - optionList.getFirstVisiblePosition() >= 0)
+	        	if (4 - optionList.getFirstVisiblePosition() >= 0)
 	        	{
-	        		((TextView)optionList.getChildAt(3 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
+	        		((TextView)optionList.getChildAt(4 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
 		                public void run() {
 		                	if (mDive.getDuration() == null)
 		                	{
-		                		View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
+		                		View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
 		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 			                	((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
 			        			mError = true;
@@ -494,7 +514,7 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	@Override
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
-		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(mDive.getDuration()) + " min");
+		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(mDive.getDuration()) + " min");
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 		new Thread(new Runnable() {
@@ -528,9 +548,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onSurfaceTempEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getTempSurface() == null)
-			((EditOption)mOptionAdapter.getItem(9)).setValue("");
+			((EditOption)mOptionAdapter.getItem(10)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(9)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
+			((EditOption)mOptionAdapter.getItem(10)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -539,9 +559,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onBottomTempEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getTempBottom() == null)
-			((EditOption)mOptionAdapter.getItem(10)).setValue("");
+			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(10)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
+			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -550,9 +570,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onWeightsEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getWeights() == null)
-			((EditOption)mOptionAdapter.getItem(4)).setValue("");
+			((EditOption)mOptionAdapter.getItem(5)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(4)).setValue(Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName());
+			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -561,9 +581,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onVisibilityEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getVisibility() == null)
-			((EditOption)mOptionAdapter.getItem(7)).setValue("");
+			((EditOption)mOptionAdapter.getItem(8)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(7)).setValue(mDive.getVisibility().substring(0, 1).toUpperCase() + mDive.getVisibility().substring(1));
+			((EditOption)mOptionAdapter.getItem(8)).setValue(mDive.getVisibility().substring(0, 1).toUpperCase() + mDive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -572,9 +592,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onCurrentEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getCurrent() == null)
-			((EditOption)mOptionAdapter.getItem(8)).setValue("");
+			((EditOption)mOptionAdapter.getItem(9)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(8)).setValue(mDive.getCurrent().substring(0, 1).toUpperCase() + mDive.getCurrent().substring(1));
+			((EditOption)mOptionAdapter.getItem(9)).setValue(mDive.getCurrent().substring(0, 1).toUpperCase() + mDive.getCurrent().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -583,9 +603,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onAltitudeEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getAltitude() == null)
-			((EditOption)mOptionAdapter.getItem(11)).setValue("");
+			((EditOption)mOptionAdapter.getItem(12)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getAltitude().getDistance()) + " " + mDive.getAltitude().getSmallName());
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getAltitude().getDistance()) + " " + mDive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -594,9 +614,9 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onWaterEditComplete(DialogFragment dialog)
 	{
 		if (mDive.getWater() == null)
-			((EditOption)mOptionAdapter.getItem(12)).setValue("");
+			((EditOption)mOptionAdapter.getItem(13)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(12)).setValue(mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1));
+			((EditOption)mOptionAdapter.getItem(13)).setValue(mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -605,5 +625,20 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	public void onConfirmEditComplete(DialogFragment dialog)
 	{
 		clearEditList();
+	}
+
+	@Override
+	public void onSafetyStopsEditComplete(DialogFragment dialog)
+	{
+		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
+		String safetydetails = "";
+		for (int i = 0, length = safetystop.size(); i < length; i++)
+		{
+			if (i != 0)
+				safetydetails += ", ";
+			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+		}
+		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		mOptionAdapter.notifyDataSetChanged();
 	}
 }

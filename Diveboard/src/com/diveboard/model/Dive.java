@@ -39,7 +39,6 @@ public class					Dive implements IModel
 	private String				_permalink;
 	private Integer				_privacy;
 	// public_notes
-	private String				_safetystops;
 	private String				_shakenId;
 	private Shop				_shop;
 	private Integer				_shopId;
@@ -69,6 +68,7 @@ public class					Dive implements IModel
 	private ArrayList<Pair<String, String>>	_editList = new ArrayList<Pair<String, String>>();
 	private String				_shopName;
 	private Picture				_shopPicture;
+	private ArrayList<Pair<Integer, Integer>>	_safetyStops = new ArrayList<Pair<Integer, Integer>>();
 	
 	public						Dive()
 	{
@@ -162,7 +162,6 @@ public class					Dive implements IModel
 		_permalink = (json.isNull("permalink")) ? null : json.getString("permalink");
 		_privacy = (json.isNull("privacy")) ? null : json.getInt("privacy");
 		// public_notes
-		_safetystops = (json.isNull("safetystops")) ? null : json.getString("safetystops");
 		_shakenId = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
 		_shopId = (json.isNull("shop_id")) ? null : json.getInt("shop_id");
 		// species
@@ -236,6 +235,8 @@ public class					Dive implements IModel
 		_profileV3 = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v003", Integer.toString(_id));
 		_shopName = (json.isNull("shop_name")) ? null : json.getString("shop_name");
 		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
+		if (!json.isNull("safetystops"))
+			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -290,6 +291,35 @@ public class					Dive implements IModel
 			_time = json.getString("time");
 		if (!json.isNull("privacy"))
 			_privacy = json.getInt("privacy");
+		if (!json.isNull("safetystops"))
+			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
+	}
+	
+	private ArrayList<Pair<Integer, Integer>>	_parseSafetyStops(String safetystring)
+	{
+		ArrayList<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
+		safetystring = safetystring.subSequence(1, safetystring.length() - 1).toString();
+		String[] list = safetystring.split("\"");
+		boolean first = true;
+		int first_elem = 0;
+		for (int i = 0, length = list.length; i < length; i++)
+		{
+			if (list[i].matches("[0-9]+"))
+			{
+				if (first == true)
+				{
+					first_elem = Integer.parseInt(list[i]);
+					first = false;
+				}
+				else
+				{
+					Pair<Integer, Integer> elem = new Pair<Integer, Integer>(first_elem, Integer.parseInt(list[i]));
+					result.add(elem);
+					first = true;
+				}
+			}
+		}
+		return result;
 	}
 	
 	public Distance getAltitude() {
@@ -482,12 +512,28 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-	public String getSafetystops() {
-		return _safetystops;
+	public ArrayList<Pair<Integer, Integer>> getSafetyStops() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("safetystops"))
+				return (_parseSafetyStops(_editList.get(i).second));
+		}
+		return _safetyStops;
 	}
 
-	public void setSafetystops(String _safetystops) {
-		this._safetystops = _safetystops;
+	public void setSafetyStops(ArrayList<Pair<Integer, Integer>> safetystops) {
+		//this._safetyStops = _safetystops;
+		String safetystring = "[";
+		
+		for (int i = 0, length = safetystops.size(); i < length; i++)
+		{
+			if (i != 0)
+				safetystring += ",";
+			safetystring += "[\"" + safetystops.get(i).first + "\",\"" + safetystops.get(i).second + "\"]";
+		}
+		safetystring += "]";
+		Pair<String, String> new_elem = new Pair<String, String>("safetystops", safetystring);
+		_editList.add(new_elem);
 	}
 
 	public String getShakenId() {
