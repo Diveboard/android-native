@@ -115,6 +115,7 @@ public class					Dive implements IModel
 			e.printStackTrace();
 		}
 		_privacy = 0;
+		_divetype = new ArrayList<String>();
 	}
 	
 	public						Dive(JSONObject json) throws JSONException

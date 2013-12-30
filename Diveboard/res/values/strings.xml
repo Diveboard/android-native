@@ -81,4 +81,15 @@
     <string name="wait_message">Please wait</string>
     <string name="edit_safetystops_title">Safety Stops</string>
     <string name="add_safetystops_button">Add Safety Stop</string>
+    <string name="edit_divetype_title">Diving Type</string>
+    <string name="recreational_type">Recreational</string>
+    <string name="training_type">Training</string>
+    <string name="nightdive_type">Night Dive</string>
+    <string name="deepdive_type">Deep Dive</string>
+    <string name="drift_type">Drift</string>
+    <string name="wreck_type">Wreck</string>
+    <string name="cave_type">Cave</string>
+    <string name="reef_type">Reef</string>
+    <string name="photo_type">Photo</string>
+    <string name="research_type">Research</string>
 </resources>
