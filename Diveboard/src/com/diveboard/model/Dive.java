@@ -238,6 +238,14 @@ public class					Dive implements IModel
 		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
 		if (!json.isNull("safetystops"))
 			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
+		if (!json.isNull("divetype"))
+		{
+			jarray = new JSONArray(json.getString("divetype"));
+			ArrayList<String> new_elem = new ArrayList<String>();
+			for (int i = 0, length = jarray.length(); i < length; i++)
+				new_elem.add(jarray.getString(i));
+			_divetype = new_elem;
+		}
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -294,6 +302,14 @@ public class					Dive implements IModel
 			_privacy = json.getInt("privacy");
 		if (!json.isNull("safetystops"))
 			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
+		if (!json.isNull("divetype"))
+		{
+			JSONArray jarray = new JSONArray(json.getString("divetype"));
+			ArrayList<String> new_elem = new ArrayList<String>();
+			for (int i = 0, length = jarray.length(); i < length; i++)
+				new_elem.add(jarray.getString(i));
+			_divetype = new_elem;
+		}
 	}
 	
 	private ArrayList<Pair<Integer, Integer>>	_parseSafetyStops(String safetystring)
@@ -843,11 +859,36 @@ public class					Dive implements IModel
 	}
 
 	public ArrayList<String> getDivetype() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("divetype"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<String> result = new ArrayList<String>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+						result.add(jarray.getString(j));
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return _divetype;
 	}
 
-	public void setDivetype(ArrayList<String> _divetype) {
-		this._divetype = _divetype;
+	public void setDivetype(ArrayList<String> divetype) {
+		//this._divetype = _divetype;
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		
+		for (int i = 0, length = divetype.size(); i < length; i++)
+			jarray.put(divetype.get(i));
+		new_elem = new Pair<String, String>("divetype", jarray.toString());
+		_editList.add(new_elem);
 	}
 
 	public Picture getProfile() {

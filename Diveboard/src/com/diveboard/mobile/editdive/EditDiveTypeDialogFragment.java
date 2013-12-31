@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.util.SparseBooleanArray;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +32,7 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 	private ListView				mDiveType;
 	private EditDiveTypeDialogListener	mListener;
 	private Typeface			mFaceR;
+	private List<String>		mList;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -63,21 +65,21 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 		title.setText(getResources().getString(R.string.edit_divetype_title));
 		
 		mDiveType = (ListView) view.findViewById(R.id.visibility);
-		List<String> list = new ArrayList<String>();
-		list.add(getResources().getString(R.string.recreational_type));
-		list.add(getResources().getString(R.string.training_type));
-		list.add(getResources().getString(R.string.nightdive_type));
-		list.add(getResources().getString(R.string.deepdive_type));
-		list.add(getResources().getString(R.string.drift_type));
-		list.add(getResources().getString(R.string.wreck_type));
-		list.add(getResources().getString(R.string.cave_type));
-		list.add(getResources().getString(R.string.reef_type));
-		list.add(getResources().getString(R.string.photo_type));
-		list.add(getResources().getString(R.string.research_type));
+		mList = new ArrayList<String>();
+		mList.add(getResources().getString(R.string.recreational_type));
+		mList.add(getResources().getString(R.string.training_type));
+		mList.add(getResources().getString(R.string.nightdive_type));
+		mList.add(getResources().getString(R.string.deepdive_type));
+		mList.add(getResources().getString(R.string.drift_type));
+		mList.add(getResources().getString(R.string.wreck_type));
+		mList.add(getResources().getString(R.string.cave_type));
+		mList.add(getResources().getString(R.string.reef_type));
+		mList.add(getResources().getString(R.string.photo_type));
+		mList.add(getResources().getString(R.string.research_type));
 		//dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mDiveType.setChoiceMode(ListView.CHOICE_MODE_MULTIPLE);
-		mDiveType.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, list)
+		mDiveType.setAdapter(new ArrayAdapter<String>(getActivity().getApplicationContext(), android.R.layout.simple_list_item_multiple_choice, mList)
 				{
 					@Override
 				    public View getView(int position, View convertView, ViewGroup parent)
@@ -93,9 +95,9 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 		for (int i = 0, length = divelist.size(); i < length; i++)
 		{
 			String elem = divelist.get(i);
-			for (int j = 0, length2 = list.size(); j < length2; j++)
+			for (int j = 0, length2 = mList.size(); j < length2; j++)
 			{
-				if (list.get(j).toLowerCase().equals(elem))
+				if (mList.get(j).toLowerCase().equals(elem))
 				{
 					mDiveType.setItemChecked(j, true);
 					break ;
@@ -123,38 +125,18 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-//				Integer duration;
-//				
-//				try
-//				{
-//					duration = Integer.parseInt(mDuration.getText().toString());
-//				}
-//				catch (NumberFormatException e)
-//				{
-//					duration = 0;
-//				}
-//				mModel.getDives().get(getArguments().getInt("index")).setDuration(duration);
-//				mListener.onDurationEditComplete(EditDurationDialogFragment.this);
-//				dismiss();
+				ArrayList<String> result = new ArrayList<String>();
+				SparseBooleanArray checked = mDiveType.getCheckedItemPositions();
+				for (int i = 0, len = mList.size(); i < len; i++)
+				{
+					if (checked.get(i) == true)
+						result.add(mList.get(i).toLowerCase());
+				}				
+				mModel.getDives().get(getArguments().getInt("index")).setDivetype(result);
+				mListener.onDiveTypeEditComplete(EditDiveTypeDialogFragment.this);
+				dismiss();
 			}
 		});
-		//mVisibility.setOnItemClickListener(new OnItemClickListener() {
-
-//			@Override
-//			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
-//					long id) {
-//			if (position == 0)
-//				mModel.getDives().get(getArguments().getInt("index")).setVisibility(null);
-//			else
-//			{
-//				String[] visibility = ((String)mVisibility.getItemAtPosition(position)).split(" ");
-//				mModel.getDives().get(getArguments().getInt("index")).setVisibility(visibility[0].toLowerCase());
-//			}
-//			mListener.onDiveTypeEditComplete(EditDiveTypeDialogFragment.this);
-//			dismiss();
-//				
-//			}
-//		});
 		
 		mFaceR = null;
 		return view;

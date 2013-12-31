@@ -612,6 +612,16 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	@Override
 	public void onDiveTypeEditComplete(DialogFragment dialog)
 	{
-		// TODO Auto-generated method stub
+		Dive dive = mModel.getDives().get(mIndex);
+		ArrayList<String> divetype = dive.getDivetype();
+		String divetype_string = "";
+		for (int i = 0, length = divetype.size(); i < length; i++)
+		{
+			if (i != 0)
+				divetype_string += ", ";
+			divetype_string += divetype.get(i);
+		}
+		((EditOption)mOptionAdapter.getItem(8)).setValue(divetype_string);
+		mOptionAdapter.notifyDataSetChanged();
 	}
 }

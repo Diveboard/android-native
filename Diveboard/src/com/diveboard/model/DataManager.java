@@ -257,6 +257,18 @@ public class					DataManager
 			if (dive.getNumber() != null)
 				json.put("number", dive.getNumber());
 			json.put("privacy", Integer.toString(dive.getPrivacy()));
+			if (dive.getDivetype() != null)
+			{
+				System.out.println("Enter DiveType");
+				JSONArray jarray = new JSONArray();
+				ArrayList<String> elem = dive.getDivetype();
+				for (int i = 0, length = elem.size(); i < length; i++)
+				{
+					System.out.println("elem : " + elem.get(i));
+					jarray.put(elem.get(i));
+				}
+				json.put("divetype", jarray);
+			}
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);
@@ -280,6 +292,8 @@ public class					DataManager
 				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				else if (edit_list.get(i).first.equals("divetype"))
+					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else
 				{
 					if (edit_list.get(i).second == null)
