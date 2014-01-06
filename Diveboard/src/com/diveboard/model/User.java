@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import android.util.Pair;
 
+//cookie name sudo:id user;
+
 /*
  * Class User
  * Model for User
@@ -32,6 +34,7 @@ public class					User implements IModel, Cloneable
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private String										_countryName;
 	private Units										_unitPreferences;
+	private Integer										_admin_rights;
 
 	public						User(final JSONObject json) throws JSONException
 	{
@@ -80,6 +83,7 @@ public class					User implements IModel, Cloneable
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
+		_admin_rights = (json.isNull("admin_rights")) ? null : json.getInt("admin_rights");
 //		if (unitPreferences != null)
 //		{
 //			JSONObject unit = new JSONObject(unitPreferences);
@@ -253,5 +257,9 @@ public class					User implements IModel, Cloneable
 
 	public void setUnitPreferences(Units _unitPreferences) {
 		this._unitPreferences = _unitPreferences;
+	}
+
+	public Integer getAdminRights() {
+		return _admin_rights;
 	}
 }

@@ -92,4 +92,6 @@
     <string name="reef_type">Reef</string>
     <string name="photo_type">Photo</string>
     <string name="research_type">Research</string>
+    <string name="admin_category">Admin</string>
+    <string name="sudo_hint">User Id</string>
 </resources>

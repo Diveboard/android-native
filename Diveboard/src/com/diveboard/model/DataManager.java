@@ -13,15 +13,22 @@ import java.util.Iterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -452,6 +459,19 @@ public class					DataManager
 		{
 			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 			HttpPost postRequest;
+			HttpContext localContext = null;
+			HttpResponse response;
+			
+			if (ApplicationController.SudoId != 0)
+			{
+				CookieStore cookieStore = new BasicCookieStore();
+				localContext = new BasicHttpContext();
+				BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+				cookie.setDomain(".diveboard.com");
+				cookie.setPath("/");
+				cookieStore.addCookie(cookie);
+				localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			}
 			
 			System.out.println("SEND ONLINE ----------------------------------");
 			while (_editList.size() != 0)
@@ -506,7 +526,10 @@ public class					DataManager
 								// Set parameters
 								postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 								// Execute request
-								HttpResponse response = client.execute(postRequest);
+								if (ApplicationController.SudoId == 0)
+									response = client.execute(postRequest);
+								else
+									response = client.execute(postRequest, localContext);
 								// Get response
 								HttpEntity entity = response.getEntity();
 								String result = ContentExtractor.getASCII(entity);
@@ -520,7 +543,8 @@ public class					DataManager
 									// New Dive segment
 									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
-								_applyEditCache(elem.first, json.getJSONObject("result"));
+								if (ApplicationController.SudoId == 0)
+									_applyEditCache(elem.first, json.getJSONObject("result"));
 								// Fire dive created event
 								for (DiveCreateListener listener : _diveCreateListeners)
 									listener.onDiveCreateComplete();
@@ -579,10 +603,27 @@ public class					DataManager
 			String[]					info = elemtag.split(":");
 
 			HttpDelete deleteRequest = new HttpDelete(AppConfig.SERVER_URL + "/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
+			HttpContext localContext = null;
+			
+			if (ApplicationController.SudoId != 0)
+			{
+				CookieStore cookieStore = new BasicCookieStore();
+				localContext = new BasicHttpContext();
+				BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+				cookie.setDomain(".diveboard.com");
+				cookie.setPath("/");
+				cookieStore.addCookie(cookie);
+				localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			}
+			
 			try
 			{
-				client.execute(deleteRequest);
-				_applyEditCache(elemtag, null);
+				if (ApplicationController.SudoId == 0)
+					client.execute(deleteRequest);
+				else
+					client.execute(deleteRequest, localContext);
+				if (ApplicationController.SudoId == 0)
+					_applyEditCache(elemtag, null);
 				client.close();
 			}
 			catch (IOException e) {

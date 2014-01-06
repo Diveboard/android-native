@@ -20,6 +20,7 @@ public class ApplicationController extends Application {
 	private Dive mtempDive = null;
 	private int mRefresh = 0;
 	private int mCurrentTab = 0;
+	public static int SudoId = 0;
 	
 	public Boolean handleLowMemory()
 	{

@@ -12,15 +12,23 @@ import java.util.concurrent.Semaphore;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.cookie.Cookie;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -337,6 +345,8 @@ public class					DiveboardModel
 		stopPreloadPictures();
 		DiveboardModel.pictureList = null;
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
+		
+		ApplicationController.SudoId = 0;
 	}
 	
 	/*
@@ -345,23 +355,44 @@ public class					DiveboardModel
 	 */
 	public void					loadData()
 	{
-		// Offline Mode
-		try
+		// Sudo Mode
+		if (ApplicationController.SudoId != 0)
 		{
-			_loadOfflineData();
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + ApplicationController.SudoId);
+			try {
+				HttpResponse response = client.execute(getRequest);
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				client.close();
+				_loadUser(result, false);
+				_loadOnlineData(false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
-		if (_user == null)
-			refreshData();
 		else
-			_applyEdit();
+		{
+			// Offline Mode
+			try
+			{
+				_loadOfflineData();
+			}
+			catch (IOException e)
+			{
+				e.printStackTrace();
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+			if (_user == null)
+				refreshData();
+			else
+				_applyEdit();
+		}
 	}
 	
 	public synchronized void	refreshData()
@@ -502,20 +533,42 @@ public class					DiveboardModel
 	private void				_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
 	{
 		// Load user information
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
-		HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/" + Integer.toString(_userId));
+		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+		HttpPost postRequest;
+		HttpContext localContext = null;
+		if (ApplicationController.SudoId == 0)
+			postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/" + Integer.toString(_userId));
+		else
+		{
+			postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/" + ApplicationController.SudoId);
+			CookieStore cookieStore = new BasicCookieStore();
+			localContext = new BasicHttpContext();
+			BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+			cookie.setDomain(".diveboard.com");
+			cookie.setPath("/");
+			cookieStore.addCookie(cookie);
+			localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			//client.execute(postRequest, localContext);
+		}
 		ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
 		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-		HttpResponse response = client.execute(postRequest);
+		HttpResponse response;
+		if (ApplicationController.SudoId == 0)
+			response = client.execute(postRequest);
+		else
+			response = client.execute(postRequest, localContext);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
-		if (!temp_mode)
-			_cache.saveCache(_userId, "user", result);
-		else
-			_temp_user_json = result;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.saveCache(_userId, "user", result);
+			else
+				_temp_user_json = result;
+		}
 		_loadUser(result, temp_mode);
 		
 		// Load dive information
@@ -538,18 +591,27 @@ public class					DiveboardModel
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		args.add(new BasicNameValuePair("arg", dive_str));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-		response = client.execute(postRequest);
+		if (ApplicationController.SudoId == 0)
+			response = client.execute(postRequest);
+		else
+			response = client.execute(postRequest, localContext);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
-		if (!temp_mode)
-			_cache.saveCache(_userId, "dives", result);
-		else
-			_temp_dives_json = result;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.saveCache(_userId, "dives", result);
+			else
+				_temp_dives_json = result;
+		}
 		_loadDives(result, temp_mode);
-		if (!temp_mode)
-			_cache.commitCache();
-		else
-			_enable_overwrite = true;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.commitCache();
+			else
+				_enable_overwrite = true;
+		}
 		client.close();
 	}
 	
@@ -1051,7 +1113,7 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lng", lng));
 			try
 			{
-				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 				// Execute request
 				HttpResponse response = client.execute(postRequest);
 				// Get response

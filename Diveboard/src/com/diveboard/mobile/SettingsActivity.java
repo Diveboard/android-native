@@ -13,6 +13,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.preference.CheckBoxPreference;
+import android.preference.DialogPreference;
 import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
@@ -29,6 +30,7 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import com.diveboard.mobile.newdive.NewDiveTypeDialogFragment;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
 import com.diveboard.model.UserPreference;
@@ -271,8 +273,57 @@ public class SettingsActivity extends PreferenceActivity {
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
 			}
-	}
+			
+			if (mModel.getUser().getAdminRights() != null && mModel.getUser().getAdminRights() >= 4)
+			{
+				PreferenceCategory adminPanel = new PreferenceCategory(this);
+				adminPanel.setTitle(getResources().getString(R.string.admin_category));
+				
+				getPreferenceScreen().addPreference(adminPanel);
+				
+				DialogPreference sudo = new SudoDialog(this, null);
+				sudo.setKey("sudo");
+				sudo.setTitle("Access Sudo");
+				sudo.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						ApplicationController AC = ((ApplicationController)getApplicationContext());
+						AC.setRefresh(4);
+						ApplicationController.SudoId = Integer.parseInt(newValue.toString());
+						finish();
+						return false;
+					}
+				});
 
+				getPreferenceScreen().addPreference(sudo);
+			}
+			
+			if (ApplicationController.SudoId != 0)
+			{
+				PreferenceCategory adminPanel = new PreferenceCategory(this);
+				adminPanel.setTitle(getResources().getString(R.string.admin_category));
+				
+				getPreferenceScreen().addPreference(adminPanel);
+				
+				Preference unSudo = new Preference(this);
+				unSudo.setEnabled(true);
+				unSudo.setKey("unsudo");
+				unSudo.setTitle("Exit Sudo");
+				unSudo.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+					@Override
+					public boolean onPreferenceClick(Preference preference) {
+						ApplicationController AC = ((ApplicationController)getApplicationContext());
+						AC.setRefresh(4);
+						ApplicationController.SudoId = 0;
+						finish();
+						return false;
+					}
+				});
+				
+				getPreferenceScreen().addPreference(unSudo);
+			}
+	}
+	
 //	/** {@inheritDoc} */
 //	@Override
 //	public boolean onIsMultiPane() {

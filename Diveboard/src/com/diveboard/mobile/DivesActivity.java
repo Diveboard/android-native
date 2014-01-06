@@ -178,6 +178,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			finish();
 			return ;
 		}
+		else if (AC.getRefresh() == 4)
+		{
+			AC.setRefresh(0);
+			AC.setPageIndex(0);
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
+			finish();
+			return ;
+		}
 	}
 	
 	@Override
