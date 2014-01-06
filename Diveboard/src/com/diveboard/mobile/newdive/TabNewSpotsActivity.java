@@ -250,7 +250,7 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 		imm.toggleSoftInput(0, 0);
     	SpotsTask spots_task = new SpotsTask();
 	    spots_task.execute(((TextView)findViewById(R.id.search_bar)).getText().toString());
-	    ((TextView)findViewById(R.id.search_bar)).setText("");
+	    //((TextView)findViewById(R.id.search_bar)).setText("");
     }
     
     private class SpotsTask extends AsyncTask<String, Void, JSONObject>

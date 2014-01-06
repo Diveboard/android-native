@@ -217,7 +217,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
     	SpotsTask spots_task = new SpotsTask();
 	    spots_task.execute(((TextView)findViewById(R.id.search_bar)).getText().toString());
-	    ((TextView)findViewById(R.id.search_bar)).setText("");
+	    //((TextView)findViewById(R.id.search_bar)).setText("");
     }
     
     private class SpotsTask extends AsyncTask<String, Void, JSONObject>
