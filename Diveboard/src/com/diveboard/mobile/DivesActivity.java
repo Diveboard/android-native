@@ -1032,7 +1032,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 							public void onDataRefreshComplete() {
 								System.out.println("Data refresh complete");
 								try {
-									mModel.overwriteData();
+									if (ApplicationController.SudoId == 0)
+										mModel.overwriteData();
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
