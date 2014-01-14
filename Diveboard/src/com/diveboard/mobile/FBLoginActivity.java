@@ -1,5 +1,8 @@
 package com.diveboard.mobile;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -50,6 +53,17 @@ public class FBLoginActivity extends Activity {
 		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
+	private static Session openActiveSession(Activity activity, boolean allowLoginUI, Session.StatusCallback callback, List<String> permissions) {
+	    Session.OpenRequest openRequest = new Session.OpenRequest(activity).setPermissions(permissions).setCallback(callback);
+	    Session session = new Session.Builder(activity).build();
+	    if (SessionState.CREATED_TOKEN_LOADED.equals(session.getState()) || allowLoginUI) {
+	        Session.setActiveSession(session);
+	        session.openForRead(openRequest);
+	        return session;
+	    }
+	    return null;
+	}
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -58,7 +72,9 @@ public class FBLoginActivity extends Activity {
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 		// start Facebook Login
 		mSession = new Session(this);
-	    Session.openActiveSession(this, true, new Session.StatusCallback() {
+		List<String> permissions = new ArrayList<String>();
+		permissions.add("email");
+	    openActiveSession(this, true, new Session.StatusCallback() {
 
 	      // callback when session changes state
 	      @Override
@@ -81,6 +97,7 @@ public class FBLoginActivity extends Activity {
 	              if (user != null) {
 //	                TextView welcome = (TextView) findViewById(R.id.welcome);
 //	                welcome.setText("Hello " + user.getName() + "!");
+	            	System.out.println(user.getProperty("email").toString());
 	                mId = user.getId();
 	                mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 	                showProgress(true);
@@ -92,7 +109,7 @@ public class FBLoginActivity extends Activity {
 	          
 	        }
 	      }
-	    });
+	    }, permissions);
 	  }
 
 	public void logout(View view)
