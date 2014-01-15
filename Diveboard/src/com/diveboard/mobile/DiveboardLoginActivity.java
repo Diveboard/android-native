@@ -4,7 +4,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
+import com.diveboard.model.DatabaseUpdater;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SpotDbHelper;
+import com.diveboard.model.TestDb;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
@@ -136,6 +139,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
@@ -200,6 +204,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	public void onStart() {
 		super.onStart();
 		EasyTracker.getInstance(this).activityStart(this);
+		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
+		dbUpdater.launchUpdate();
 	}
 
 	@Override

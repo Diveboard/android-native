@@ -1,6 +1,7 @@
 package com.diveboard.model;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -17,7 +18,6 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
-import org.apache.http.cookie.Cookie;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
@@ -35,6 +35,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Pair;
+import android.database.Cursor;
+import android.database.sqlite.*;
 
 /*
  * Class DiveboardModel
@@ -936,6 +938,10 @@ public class					DiveboardModel
 					{
 						e.printStackTrace();
 					}
+					catch (IndexOutOfBoundsException e)
+					{
+						e.printStackTrace();
+					}
 					synchronized (_pictureCount)
 					{
 						_pictureCount--;
@@ -969,6 +975,10 @@ public class					DiveboardModel
 						pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 					}
 					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					catch (IndexOutOfBoundsException e)
 					{
 						e.printStackTrace();
 					}
@@ -1094,6 +1104,30 @@ public class					DiveboardModel
 		}
 	}
 	
+	private JSONObject					_offlineSearchSpotText(final String term, final String lat, final String lng)
+	{
+		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
+		String DB_NAME = "spots.db";
+		File file_db = new File(DB_PATH + DB_NAME);
+		if (!file_db.exists())
+			return null;
+		SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+		String[] strarr = term.split(" ");
+		String match_str = "";
+		for (int i = 0, length = strarr.length; i < length; i++)
+		{
+			if (i != 0)
+				match_str += " ";
+			match_str += strarr[i] + "*";
+		}
+		Cursor c = mDataBase.query("spots_fts", new String[] {"docid", "name"}, "name MATCH '" + match_str + "'", null, null, null, null);
+		while (c.moveToNext())
+		{
+			System.out.println("Result: " + c.getInt(0) + " - " + c.getString(1));
+		}
+		return null;
+	}
+	
 	public JSONObject					searchSpotText(final String term, final String lat, final String lng)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
@@ -1120,6 +1154,7 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
+				System.out.println(json);
 				client.close();
 				return (json);
 			}
@@ -1131,6 +1166,18 @@ public class					DiveboardModel
 				e.printStackTrace();
 			}
 		}
+		else
+			return _offlineSearchSpotText(term, lat, lng);
+		return null;
+	}
+	
+	private JSONObject					_offlineSearchSpotCoord(final String lat_min, final String lng_min, final String lat_max, final String lng_max)
+	{
+		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
+		String DB_NAME = "spots.db";
+		File file_db = new File(DB_PATH + DB_NAME);
+		if (!file_db.exists())
+			return null;
 		return null;
 	}
 	
@@ -1170,6 +1217,8 @@ public class					DiveboardModel
 				e.printStackTrace();
 			}
 		}
+		else
+			return _offlineSearchSpotCoord(lat_min, lng_min, lat_max, lng_max);
 		return null;
 	}
 	

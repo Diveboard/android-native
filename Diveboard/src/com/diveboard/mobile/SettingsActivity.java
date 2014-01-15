@@ -26,6 +26,9 @@ import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.text.TextUtils;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import org.json.JSONException;
@@ -262,13 +265,41 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			getPreferenceScreen().addPreference(remainingRequest);
 			
+			Preference db_version = new Preference(this);
+			db_version.setEnabled(true);
+			db_version.setKey("db_version");
+			db_version.setTitle(getResources().getString(R.string.db_version_title));
+			File file_db = new File(this.getFilesDir() + "_db_update_date");
+			if (file_db.exists())
+			{
+				try {
+					FileInputStream fileInputStream = this.openFileInput(file_db.getName());
+					StringBuffer fileContent = new StringBuffer("");
+					byte[] buffer = new byte[1];
+					while (fileInputStream.read(buffer) != -1)
+						fileContent.append(new String(buffer));
+					String date = fileContent.toString();
+					fileInputStream.close();
+					db_version.setSummary("Latest update: " + date);
+					getPreferenceScreen().addPreference(db_version);
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+			}
+			else
+			{
+				db_version.setSummary("Never updated");
+				getPreferenceScreen().addPreference(db_version);
+			}
+			
 			Preference version = new Preference(this);
-			version.setEnabled(false);
-			version.setKey("version");
+			version.setEnabled(true);
+			version.setKey("app_version");
 			PackageInfo pInfo;
 			try {
 				pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
-				version.setTitle(getResources().getString(R.string.version_title) + ": " + pInfo.versionName);
+				version.setTitle(getResources().getString(R.string.version_title));
+				version.setSummary(pInfo.versionName);
 				getPreferenceScreen().addPreference(version);
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();
