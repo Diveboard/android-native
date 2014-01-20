@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 
 import org.apache.http.HttpEntity;
@@ -1121,11 +1122,125 @@ public class					DiveboardModel
 			match_str += strarr[i] + "*";
 		}
 		Cursor c = mDataBase.query("spots_fts", new String[] {"docid", "name"}, "name MATCH '" + match_str + "'", null, null, null, null);
+		if (c.getCount() == 0)
+			return null;
+		String id_list = "";
 		while (c.moveToNext())
 		{
-			System.out.println("Result: " + c.getInt(0) + " - " + c.getString(1));
+			if (c.isFirst() == false)
+				id_list += " OR ";
+			id_list += "id = " + c.getInt(0); 
+		}
+		c.close();
+		c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng"}, id_list, null, null, null, null);
+		JSONObject result = new JSONObject();
+		try {
+			result.put("success", true);
+			JSONArray jarray = new JSONArray();
+			if (lat != null && lng != null)
+			{
+				Double _lat = Double.parseDouble(lat);
+				Double _lng = Double.parseDouble(lng);
+				ArrayList<SpotContainer> spotList = new ArrayList<SpotContainer>();
+				while (c.moveToNext())
+				{
+					SpotContainer new_elem = new SpotContainer();
+					new_elem.setId(c.getInt(0));
+					new_elem.setName(c.getString(1));
+					new_elem.setLocationName(c.getString(2));
+					new_elem.setCountryName(c.getString(3));
+					new_elem.setLat(c.getDouble(4));
+					new_elem.setLng(c.getDouble(5));
+					new_elem.setDistance(_calculateDistance(_lat, _lng, c.getDouble(4), c.getDouble(5)));
+					spotList.add(new_elem);
+				}
+				SpotContainer[] spotArray = spotList.toArray(new SpotContainer[spotList.size()]);
+				Arrays.sort(spotArray);
+				for (int i = 0, length = spotArray.length; i < length; i++)
+				{
+					JSONObject new_elem = new JSONObject();
+					new_elem.put("id", spotArray[i].getId());
+					new_elem.put("name", spotArray[i].getName());
+					new_elem.put("location_name", spotArray[i].getLocationName());
+					new_elem.put("country_name", spotArray[i].getCountryName());
+					new_elem.put("lat", spotArray[i].getLat());
+					new_elem.put("lng", spotArray[i].getLng());
+					jarray.put(new_elem);
+				}
+			}
+			else
+			{
+				while (c.moveToNext())
+				{
+					JSONObject new_elem = new JSONObject();
+					new_elem.put("id", c.getInt(0));
+					new_elem.put("name", c.getString(1));
+					new_elem.put("location_name", c.getString(2));
+					new_elem.put("country_name", c.getString(3));
+					new_elem.put("lat", c.getDouble(4));
+					new_elem.put("lng", c.getDouble(5));
+					jarray.put(new_elem);
+				}
+			}
+			result.put("spots", jarray);
+			return result;
+		} catch (JSONException e) {
+			e.printStackTrace();
 		}
 		return null;
+	}
+	
+	private class						SpotContainer implements Comparable
+	{
+		private Integer					_id;
+		private String					_name;
+		private String					_location_name;
+		private String					_country_name;
+		private Double					_lat;
+		private Double					_lng;
+		private Double					_distance = 0.0;
+		
+		public void						setId(Integer id) { this._id = id; }
+		public Integer					getId() { return this._id; }
+		public void						setName(String name) { this._name = name; }
+		public String					getName() { return this._name; }
+		public void						setLocationName(String location_name) { this._location_name = location_name; }
+		public String					getLocationName() { return this._location_name; }
+		public void						setCountryName(String country_name) { this._country_name = country_name; }
+		public String					getCountryName() { return this._country_name; }
+		public void						setLat(Double lat) { this._lat = lat; }
+		public Double					getLat() { return this._lat; }
+		public void						setLng(Double lng) { this._lng = lng; }
+		public Double					getLng() { return this._lng; }
+		public void						setDistance(Double distance) { this._distance = distance; }
+		public Double					getDistance() { return this._distance; }
+		
+		@Override
+		public int compareTo(Object another) {
+			SpotContainer other = (SpotContainer) another;
+			if (this._distance > other.getDistance())
+				return 1;
+			else if (this._distance < other.getDistance())
+				return -1;
+			return 0;
+		}
+	}
+	
+	private Double						_calculateDistance(Double lat_a, Double lng_a, Double lat_b, Double lng_b)
+	{
+		Double a = Math.PI / 180;
+		Double lat1 = lat_a * a;
+		Double lat2 = lat_b * a;
+		Double lng1 = lng_a * a;
+		Double lng2 = lng_b * a;
+		
+		Double t1 = Math.sin(lat1) * Math.sin(lat2);
+		Double t2 = Math.cos(lat1) * Math.cos(lat2);
+		Double t3 = Math.cos(lng1 - lng2);
+		Double t4 = t2 * t3;
+		Double t5 = t1 + t4;
+		Double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
+		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
 	}
 	
 	public JSONObject					searchSpotText(final String term, final String lat, final String lng)
