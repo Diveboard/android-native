@@ -45,7 +45,7 @@ public class					DatabaseUpdater
 			if (wifiNetwork.isConnected() == false)
 				return ;
 			try {
-				URL url = new URL("http://91.121.192.158/design/test/spots.db.gz");
+				URL url = new URL("http://stage.diveboard.com/assets/mobilespots.db.gz");
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
 				InputStream mInput = url.openConnection().getInputStream();
 				GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(mInput));

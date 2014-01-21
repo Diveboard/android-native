@@ -6,8 +6,6 @@ import org.json.JSONObject;
 import com.diveboard.config.AppConfig;
 import com.diveboard.model.DatabaseUpdater;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SpotDbHelper;
-import com.diveboard.model.TestDb;
 import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;

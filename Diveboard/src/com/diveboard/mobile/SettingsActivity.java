@@ -202,6 +202,31 @@ public class SettingsActivity extends PreferenceActivity {
 			//phoneNetworkDownload.setEnabled(false);
 			
 			getPreferenceScreen().addPreference(phoneNetworkDownload);
+			
+			DialogPreference connectionTimeout = new CoTimeoutDialog(this, null);
+			connectionTimeout.setTitle("Connection Timeout");
+			connectionTimeout.setSummary(DiveboardModel._coTimeout + "ms");
+			connectionTimeout.setKey("cotime");
+			connectionTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					preference.setSummary(DiveboardModel._coTimeout + "ms");
+					return false;
+				}
+			});
+			getPreferenceScreen().addPreference(connectionTimeout);
+			DialogPreference socketTimeout = new SoTimeoutDialog(this, null);
+			socketTimeout.setTitle("Socket Timeout");
+			socketTimeout.setSummary(DiveboardModel._soTimeout + "ms");
+			socketTimeout.setKey("sotime");
+			socketTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+				@Override
+				public boolean onPreferenceChange(Preference preference, Object newValue) {
+					preference.setSummary(DiveboardModel._soTimeout + "ms");
+					return false;
+				}
+			});
+			getPreferenceScreen().addPreference(socketTimeout);
 //		}
 		
 		// Add 'notifications' preferences, and a corresponding header.

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.Semaphore;
@@ -19,9 +20,14 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
@@ -36,6 +42,8 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Pair;
+import android.view.Gravity;
+import android.widget.Toast;
 import android.database.Cursor;
 import android.database.sqlite.*;
 
@@ -71,6 +79,10 @@ public class					DiveboardModel
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
 	private RefreshDataThread	_refreshDataThread = null;
+	public static Integer		_coTimeout = 30000;
+	public static Integer		_soTimeout = 30000;
+	public static boolean 		_cotimedout = false;
+	public static boolean 		_sotimedout = false;
 	
 	/*
 	 * Method DiveboardModel
@@ -1105,83 +1117,89 @@ public class					DiveboardModel
 		}
 	}
 	
-	private JSONObject					_offlineSearchSpotText(final String term, final String lat, final String lng)
+	private JSONObject					_offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
 	{
+//		lat = "-41.298734";
+//		lng = "174.781237";
+//		latSW = "39.92476837932741";
+//		lngSW = "-13.183000099999958";
+//		latNE = "59.095806348000615";
+//		lngNE = "16.17246865000004";
+		if (lng != null)
+		{
+			Double lng_d = Double.parseDouble(lng);
+			lng_d = lng_d - Math.floor((lng_d + 180.0) / 360.0) * 360.0;
+			lng = lng_d.toString();
+		}
 		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
 		String DB_NAME = "spots.db";
 		File file_db = new File(DB_PATH + DB_NAME);
 		if (!file_db.exists())
 			return null;
 		SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-		String[] strarr = term.split(" ");
-		String match_str = "";
-		for (int i = 0, length = strarr.length; i < length; i++)
+		String condition_str = "";
+		if (term != null)
 		{
-			if (i != 0)
-				match_str += " ";
-			match_str += strarr[i] + "*";
+			String[] strarr = term.split(" ");
+			String match_str = "";
+			for (int i = 0, length = strarr.length; i < length; i++)
+			{
+				if (i != 0)
+					match_str += " ";
+				match_str += strarr[i] + "*";
+			}
+			if (condition_str.length() == 0)
+				condition_str += "spots_fts.name MATCH '" + match_str + "'";
+			else
+				condition_str += " AND spots_fts.name MATCH '" + match_str + "'";
+			
 		}
-		Cursor c = mDataBase.query("spots_fts", new String[] {"docid", "name"}, "name MATCH '" + match_str + "'", null, null, null, null);
-		if (c.getCount() == 0)
-			return null;
-		String id_list = "";
-		while (c.moveToNext())
+		if (latSW != null && latNE != null && lngSW != null && lngNE != null)
 		{
-			if (c.isFirst() == false)
-				id_list += " OR ";
-			id_list += "id = " + c.getInt(0); 
+			if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
+			{
+				if (condition_str.length() == 0)
+					condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+				else
+					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+			}
+			if (condition_str.length() == 0)
+				condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+			else
+				condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
 		}
-		c.close();
-		c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng"}, id_list, null, null, null, null);
+		if (condition_str.length() == 0)
+			condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+		else
+			condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+		if (lat != null && lng != null)
+		{
+			Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
+			condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
+		}
 		JSONObject result = new JSONObject();
 		try {
 			result.put("success", true);
 			JSONArray jarray = new JSONArray();
-			if (lat != null && lng != null)
-			{
-				Double _lat = Double.parseDouble(lat);
-				Double _lng = Double.parseDouble(lng);
-				ArrayList<SpotContainer> spotList = new ArrayList<SpotContainer>();
-				while (c.moveToNext())
-				{
-					SpotContainer new_elem = new SpotContainer();
-					new_elem.setId(c.getInt(0));
-					new_elem.setName(c.getString(1));
-					new_elem.setLocationName(c.getString(2));
-					new_elem.setCountryName(c.getString(3));
-					new_elem.setLat(c.getDouble(4));
-					new_elem.setLng(c.getDouble(5));
-					new_elem.setDistance(_calculateDistance(_lat, _lng, c.getDouble(4), c.getDouble(5)));
-					spotList.add(new_elem);
-				}
-				SpotContainer[] spotArray = spotList.toArray(new SpotContainer[spotList.size()]);
-				Arrays.sort(spotArray);
-				for (int i = 0, length = spotArray.length; i < length; i++)
-				{
-					JSONObject new_elem = new JSONObject();
-					new_elem.put("id", spotArray[i].getId());
-					new_elem.put("name", spotArray[i].getName());
-					new_elem.put("location_name", spotArray[i].getLocationName());
-					new_elem.put("country_name", spotArray[i].getCountryName());
-					new_elem.put("lat", spotArray[i].getLat());
-					new_elem.put("lng", spotArray[i].getLng());
-					jarray.put(new_elem);
-				}
-			}
+			Cursor c;
+			if (term == null)
+				c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
 			else
+				c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
+			if (c.getCount() == 0)
+				return null;
+			while (c.moveToNext())
 			{
-				while (c.moveToNext())
-				{
-					JSONObject new_elem = new JSONObject();
-					new_elem.put("id", c.getInt(0));
-					new_elem.put("name", c.getString(1));
-					new_elem.put("location_name", c.getString(2));
-					new_elem.put("country_name", c.getString(3));
-					new_elem.put("lat", c.getDouble(4));
-					new_elem.put("lng", c.getDouble(5));
-					jarray.put(new_elem);
-				}
+				JSONObject new_elem = new JSONObject();
+				new_elem.put("id", c.getInt(0));
+				new_elem.put("name", c.getString(1));
+				new_elem.put("location_name", c.getString(2));
+				new_elem.put("country_name", c.getString(3));
+				new_elem.put("lat", c.getDouble(4));
+				new_elem.put("lng", c.getDouble(5));
+				jarray.put(new_elem);
 			}
+			
 			result.put("spots", jarray);
 			return result;
 		} catch (JSONException e) {
@@ -1190,67 +1208,72 @@ public class					DiveboardModel
 		return null;
 	}
 	
-	private class						SpotContainer implements Comparable
-	{
-		private Integer					_id;
-		private String					_name;
-		private String					_location_name;
-		private String					_country_name;
-		private Double					_lat;
-		private Double					_lng;
-		private Double					_distance = 0.0;
-		
-		public void						setId(Integer id) { this._id = id; }
-		public Integer					getId() { return this._id; }
-		public void						setName(String name) { this._name = name; }
-		public String					getName() { return this._name; }
-		public void						setLocationName(String location_name) { this._location_name = location_name; }
-		public String					getLocationName() { return this._location_name; }
-		public void						setCountryName(String country_name) { this._country_name = country_name; }
-		public String					getCountryName() { return this._country_name; }
-		public void						setLat(Double lat) { this._lat = lat; }
-		public Double					getLat() { return this._lat; }
-		public void						setLng(Double lng) { this._lng = lng; }
-		public Double					getLng() { return this._lng; }
-		public void						setDistance(Double distance) { this._distance = distance; }
-		public Double					getDistance() { return this._distance; }
-		
-		@Override
-		public int compareTo(Object another) {
-			SpotContainer other = (SpotContainer) another;
-			if (this._distance > other.getDistance())
-				return 1;
-			else if (this._distance < other.getDistance())
-				return -1;
-			return 0;
-		}
-	}
+//	private class						SpotContainer implements Comparable
+//	{
+//		private Integer					_id;
+//		private String					_name;
+//		private String					_location_name;
+//		private String					_country_name;
+//		private Double					_lat;
+//		private Double					_lng;
+//		private Double					_distance = 0.0;
+//		
+//		public void						setId(Integer id) { this._id = id; }
+//		public Integer					getId() { return this._id; }
+//		public void						setName(String name) { this._name = name; }
+//		public String					getName() { return this._name; }
+//		public void						setLocationName(String location_name) { this._location_name = location_name; }
+//		public String					getLocationName() { return this._location_name; }
+//		public void						setCountryName(String country_name) { this._country_name = country_name; }
+//		public String					getCountryName() { return this._country_name; }
+//		public void						setLat(Double lat) { this._lat = lat; }
+//		public Double					getLat() { return this._lat; }
+//		public void						setLng(Double lng) { this._lng = lng; }
+//		public Double					getLng() { return this._lng; }
+//		public void						setDistance(Double distance) { this._distance = distance; }
+//		public Double					getDistance() { return this._distance; }
+//		
+//		@Override
+//		public int compareTo(Object another) {
+//			SpotContainer other = (SpotContainer) another;
+//			if (this._distance > other.getDistance())
+//				return 1;
+//			else if (this._distance < other.getDistance())
+//				return -1;
+//			return 0;
+//		}
+//	}
 	
-	private Double						_calculateDistance(Double lat_a, Double lng_a, Double lat_b, Double lng_b)
-	{
-		Double a = Math.PI / 180;
-		Double lat1 = lat_a * a;
-		Double lat2 = lat_b * a;
-		Double lng1 = lng_a * a;
-		Double lng2 = lng_b * a;
-		
-		Double t1 = Math.sin(lat1) * Math.sin(lat2);
-		Double t2 = Math.cos(lat1) * Math.cos(lat2);
-		Double t3 = Math.cos(lng1 - lng2);
-		Double t4 = t2 * t3;
-		Double t5 = t1 + t4;
-		Double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
-		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
-	}
+//	private Double						_calculateDistance(Double lat_a, Double lng_a, Double lat_b, Double lng_b)
+//	{
+//		Double a = Math.PI / 180;
+//		Double lat1 = lat_a * a;
+//		Double lat2 = lat_b * a;
+//		Double lng1 = lng_a * a;
+//		Double lng2 = lng_b * a;
+//		
+//		Double t1 = Math.sin(lat1) * Math.sin(lat2);
+//		Double t2 = Math.cos(lat1) * Math.cos(lat2);
+//		Double t3 = Math.cos(lng1 - lng2);
+//		Double t4 = t2 * t3;
+//		Double t5 = t1 + t4;
+//		Double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
+//		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
+//	}
 	
-	public JSONObject					searchSpotText(final String term, final String lat, final String lng)
+	public JSONObject					searchSpotText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected() && term != null)
 		{
 			// Creating web client
-			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpParams httpParameters = new BasicHttpParams();
+			int timeoutConnection = DiveboardModel._coTimeout;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			int timeoutSocket = DiveboardModel._soTimeout;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 			// Initiate POST request
 			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_spot_text");
 			// Adding parameters
@@ -1260,6 +1283,14 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lat", lat));
 			if (lng != null)
 				args.add(new BasicNameValuePair("lng", lng));
+			if (latSW != null)
+				args.add(new BasicNameValuePair("latSW", latSW));
+			if (latNE != null)
+				args.add(new BasicNameValuePair("latNE", latNE));
+			if (lngSW != null)
+				args.add(new BasicNameValuePair("lngSW", lngSW));
+			if (lngNE != null)
+				args.add(new BasicNameValuePair("lngNE", lngNE));
 			try
 			{
 				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
@@ -1269,20 +1300,28 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
-				System.out.println(json);
-				client.close();
+//				System.out.println(json);
+//				client.close();
 				return (json);
 			}
 			catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (ConnectTimeoutException e) {
+				DiveboardModel._cotimedout = true;
+				return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (SocketTimeoutException e) {
+				DiveboardModel._sotimedout = true;
+				return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
 		else
-			return _offlineSearchSpotText(term, lat, lng);
+			return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 		return null;
 	}
 	
