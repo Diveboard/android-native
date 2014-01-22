@@ -56,6 +56,7 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.ImageView.ScaleType;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -280,12 +281,25 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		protected JSONObject doInBackground(String... query)
 		{
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			return AC.getModel().searchSpotText(query[0], null, null);
+			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
 		}
 		
 		protected void onPostExecute(JSONObject result)
 		{
-			
+			if (DiveboardModel._cotimedout == true)
+			{
+				Toast toast = Toast.makeText(getApplicationContext(), "Connection Timeout", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				DiveboardModel._cotimedout = false;
+			}
+			else if (DiveboardModel._sotimedout == true)
+			{
+				Toast toast = Toast.makeText(getApplicationContext(), "Socket Timeout", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				DiveboardModel._sotimedout = false;
+			}
 			((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.GONE);
 			try {
 				if (result != null && result.getBoolean("success") == true)
