@@ -61,7 +61,8 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.editdive.EditDiveActivity"
-            android:label="@string/title_activity_edit_dive" >
+            android:label="@string/title_activity_edit_dive"
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditDetailsActivity"

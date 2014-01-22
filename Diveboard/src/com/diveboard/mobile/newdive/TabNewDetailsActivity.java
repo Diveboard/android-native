@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -331,8 +332,17 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		String[] time_in = mDive.getTimeIn().split("T");
 		String[] time = time_in[1].split(":");
 		elem.add(new EditOption("Time in : ", time[0] + ":" + time[1]));
+//		if (mDive.getMaxdepth() != null)
+//			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName()));
+//		else
+//			elem.add(new EditOption("Max depth : ", ""));
+		String maxdepth_unit = "";
+		if (mDive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+		else
+			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
 		if (mDive.getMaxdepth() != null)
-			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName()));
+			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth()) + " " + maxdepth_unit));
 		else
 			elem.add(new EditOption("Max depth : ", ""));
 		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
@@ -349,8 +359,19 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		else
 			elem.add(new EditOption("Duration : ", ""));
 		//elem.add(new EditOption("Safety stops : ", "not implemented"));
+//		if (mDive.getWeights() != null)
+//			elem.add(new EditOption("Weights : ", Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName()));
+//		else
+//			elem.add(new EditOption("Weights : ", ""));
 		if (mDive.getWeights() != null)
-			elem.add(new EditOption("Weights : ", Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName()));
+		{
+			String weights_unit = "";
+			if (mDive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (mDive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+			elem.add(new EditOption("Weights : ", Double.toString(mDive.getWeights()) + " " + weights_unit));
+		}
 		else
 			elem.add(new EditOption("Weights : ", ""));
 		if (mDive.getNumber() != null)
@@ -378,11 +399,27 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		else
 			elem.add(new EditOption("Current : ", ""));
 		if (mDive.getTempSurface() != null)
-			elem.add(new EditOption("Surface temperature : ", Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName()));
+		{
+//			elem.add(new EditOption("Surface temperature : ", Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName()));
+			String tempsurface_unit = "";
+			if (mDive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Surface temperature : ", Double.toString(mDive.getTempSurface()) + " °" + tempsurface_unit));
+		}
 		else
 			elem.add(new EditOption("Surface temperature : ", ""));
 		if (mDive.getTempBottom() != null)
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName()));
+		{
+			//elem.add(new EditOption("Bottom temperature : ", Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName()));
+			String tempbotton_unit = "";
+			if (mDive.getTempBottomUnit() == null)
+				tempbotton_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbotton_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(mDive.getTempBottom()) + " °" + tempbotton_unit));
+		}
 		else
 			elem.add(new EditOption("Bottom temperature : ", ""));
 		if (mDive.getAltitude() != null)
@@ -502,7 +539,13 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	@Override
 	public void onMaxDepthEditComplete(DialogFragment dialog)
 	{
-		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName());
+		//((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getSmallName());
+		String maxdepth_unit = "";
+		if (mDive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+		else
+			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft"; 
+		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(mDive.getMaxdepth()) + " " + maxdepth_unit);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 		new Thread(new Runnable() {
@@ -570,7 +613,15 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		if (mDive.getTempSurface() == null)
 			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
+		{
+//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
+			String tempsurface_unit = "";
+			if (mDive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface()) + " °" + tempsurface_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -581,7 +632,15 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		if (mDive.getTempBottom() == null)
 			((EditOption)mOptionAdapter.getItem(12)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
+		{
+//			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
+			String tempbottom_unit = "";
+			if (mDive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom()) + " °" + tempbottom_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -592,7 +651,15 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 		if (mDive.getWeights() == null)
 			((EditOption)mOptionAdapter.getItem(5)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName());
+		{
+//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName());
+			String weights_unit = "";
+			if (mDive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (mDive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights()) + " " + weights_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}

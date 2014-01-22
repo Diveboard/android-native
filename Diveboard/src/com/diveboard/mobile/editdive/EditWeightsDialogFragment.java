@@ -18,8 +18,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -33,6 +35,7 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 	private DiveboardModel		mModel;
 	private EditText			mWeights;
 	private EditWeightsDialogListener	mListener;
+	private Spinner				weights_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -66,8 +69,12 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		
 		mWeights = (EditText) view.findViewById(R.id.weights);
 		mWeights.setTypeface(faceR);
+//		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
+//			mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights().getWeight()));
+//		else
+//			mWeights.setText("");
 		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
-			mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights().getWeight()));
+			mWeights.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getWeights()));
 		else
 			mWeights.setText("");
 		mWeights.requestFocus();
@@ -75,15 +82,46 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mWeights.setOnEditorActionListener(this);
         
-		TextView weights_label = (TextView) view.findViewById(R.id.weights_label);
-		weights_label.setTypeface(faceR);
-		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
-			weights_label.setText(mModel.getDives().get(getArguments().getInt("index")).getWeights().getSmallName());
+//		TextView weights_label = (TextView) view.findViewById(R.id.weights_label);
+//		weights_label.setTypeface(faceR);
+//		if (mModel.getDives().get(getArguments().getInt("index")).getWeights() != null)
+//			weights_label.setText(mModel.getDives().get(getArguments().getInt("index")).getWeights().getSmallName());
+//		else
+//		{
+//			Weight temp_weight = new Weight(0.0);
+//			weights_label.setText(temp_weight.getSmallName());
+//		}
+		weights_label = (Spinner) view.findViewById(R.id.weights_label);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
+		if (mModel.getDives().get(getArguments().getInt("index")).getWeightsUnit() == null)
+		{
+			if (Units.getWeightUnit() == Units.Weight.KG)
+			{
+				adapter.add("kg");
+				adapter.add("lbs");
+			}
+			else
+			{
+				adapter.add("lbs");
+				adapter.add("kg");
+			}
+		}
 		else
 		{
-			Weight temp_weight = new Weight(0.0);
-			weights_label.setText(temp_weight.getSmallName());
+			if (mModel.getDives().get(getArguments().getInt("index")).getWeightsUnit().compareTo("kg") == 0)
+			{
+				adapter.add("kg");
+				adapter.add("lbs");
+			}
+			else
+			{
+				adapter.add("lbs");
+				adapter.add("kg");
+			}
 		}
+		weights_label.setAdapter(adapter);
+		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -106,7 +144,9 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 			{
 				try
 				{
-					mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+					//mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+					mModel.getDives().get(getArguments().getInt("index")).setWeights(Double.parseDouble(mWeights.getText().toString()));
+					mModel.getDives().get(getArguments().getInt("index")).setWeightsUnit((String) weights_label.getSelectedItem());
 				}
 				catch (NumberFormatException e)
 				{
@@ -128,7 +168,9 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		{
 			try
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+//				mModel.getDives().get(getArguments().getInt("index")).setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				mModel.getDives().get(getArguments().getInt("index")).setWeights(Double.parseDouble(mWeights.getText().toString()));
+				mModel.getDives().get(getArguments().getInt("index")).setWeightsUnit((String) weights_label.getSelectedItem());
 			}
 			catch (NumberFormatException e)
 			{

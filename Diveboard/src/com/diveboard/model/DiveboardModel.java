@@ -81,8 +81,10 @@ public class					DiveboardModel
 	private RefreshDataThread	_refreshDataThread = null;
 	public static Integer		_coTimeout = 30000;
 	public static Integer		_soTimeout = 30000;
+	public static Integer		_searchTimeout = 30000;
 	public static boolean 		_cotimedout = false;
 	public static boolean 		_sotimedout = false;
+	public static boolean 		_searchtimedout = false;
 	
 	/*
 	 * Method DiveboardModel
@@ -1117,7 +1119,7 @@ public class					DiveboardModel
 		}
 	}
 	
-	private JSONObject					_offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
+	public JSONObject					offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
 	{
 //		lat = "-41.298734";
 //		lng = "174.781237";
@@ -1310,10 +1312,10 @@ public class					DiveboardModel
 				e.printStackTrace();
 			} catch (ConnectTimeoutException e) {
 				DiveboardModel._cotimedout = true;
-				return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (SocketTimeoutException e) {
 				DiveboardModel._sotimedout = true;
-				return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -1321,7 +1323,7 @@ public class					DiveboardModel
 			}
 		}
 		else
-			return _offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 		return null;
 	}
 	

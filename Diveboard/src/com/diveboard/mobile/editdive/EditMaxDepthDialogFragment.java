@@ -1,5 +1,7 @@
 package com.diveboard.mobile.editdive;
 
+import java.util.ArrayList;
+
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
@@ -18,8 +20,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -33,6 +37,7 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 	private DiveboardModel		mModel;
 	private EditText			mMaxDepth;
 	private EditMaxDepthDialogListener	mListener;
+	private Spinner				max_depth_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -66,16 +71,47 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 		
 		mMaxDepth = (EditText) view.findViewById(R.id.max_depth);
 		mMaxDepth.setTypeface(faceR);
-		mMaxDepth.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth().getDistance()));
+		//mMaxDepth.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth().getDistance()));
+		mMaxDepth.setText(Double.toString(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth()));
 		mMaxDepth.setSelection(mMaxDepth.getText().length());
 		mMaxDepth.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mMaxDepth.setOnEditorActionListener(this);
 		
-		TextView max_depth_label = (TextView) view.findViewById(R.id.max_depth_label);
-		max_depth_label.setTypeface(faceR);
-		max_depth_label.setText(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth().getSmallName());
+		max_depth_label = (Spinner) view.findViewById(R.id.max_depth_label);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		String maxdepth_unit = mModel.getDives().get(getArguments().getInt("index")).getMaxdepthUnit();
+		if (maxdepth_unit == null)
+		{
+			if (Units.getDistanceUnit() == Units.Distance.KM)
+			{
+				adapter.add("m");
+				adapter.add("ft");
+			}
+			else
+			{
+				adapter.add("ft");
+				adapter.add("m");
+			}
+		}
+		else
+		{
+			if (maxdepth_unit.compareTo("m") == 0)
+			{
+				adapter.add("m");
+				adapter.add("ft");
+			}
+			else
+			{
+				adapter.add("ft");
+				adapter.add("m");
+			}
+		}
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
+		max_depth_label.setAdapter(adapter);
+//		max_depth_label.setTypeface(faceR);
+//		max_depth_label.setText(mModel.getDives().get(getArguments().getInt("index")).getMaxdepth().getSmallName());
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -106,8 +142,10 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 				{
 					dbl = 0.0;
 				}
-				Distance new_depth = new Distance(dbl);
-				mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(new_depth);
+//				Distance new_depth = new Distance(dbl);
+//				mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(new_depth);
+				mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(dbl);
+				mModel.getDives().get(getArguments().getInt("index")).setMaxdepthUnit((String) max_depth_label.getSelectedItem());
 				mListener.onMaxDepthEditComplete(EditMaxDepthDialogFragment.this);
 				dismiss();
 			}
@@ -131,8 +169,10 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 			{
 				dbl = 0.0;
 			}
-			Distance new_depth = new Distance(dbl);
-			mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(new_depth);
+//			Distance new_depth = new Distance(dbl);
+//			mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(new_depth);
+			mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(dbl);
+			mModel.getDives().get(getArguments().getInt("index")).setMaxdepthUnit((String) max_depth_label.getSelectedItem());
 			mListener.onMaxDepthEditComplete(EditMaxDepthDialogFragment.this);
 			dismiss();
 			return true;

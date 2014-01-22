@@ -62,7 +62,7 @@
         <activity
             android:name="com.diveboard.mobile.editdive.EditDiveActivity"
             android:label="@string/title_activity_edit_dive"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditDetailsActivity"
@@ -107,8 +107,7 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.newdive.TabNewDetailsActivity"
-            android:label="@string/title_activity_new_dive" 
-            >
+            android:label="@string/title_activity_new_dive" >
         </activity>
         <activity
             android:name="com.diveboard.mobile.PhotosActivity"

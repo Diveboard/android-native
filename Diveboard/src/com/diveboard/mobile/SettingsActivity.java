@@ -33,6 +33,7 @@ import java.util.List;
 
 import org.json.JSONException;
 
+import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.newdive.NewDiveTypeDialogFragment;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
@@ -203,30 +204,45 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			getPreferenceScreen().addPreference(phoneNetworkDownload);
 			
-			DialogPreference connectionTimeout = new CoTimeoutDialog(this, null);
-			connectionTimeout.setTitle("Connection Timeout");
-			connectionTimeout.setSummary(DiveboardModel._coTimeout + "ms");
-			connectionTimeout.setKey("cotime");
-			connectionTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					preference.setSummary(DiveboardModel._coTimeout + "ms");
-					return false;
-				}
-			});
-			getPreferenceScreen().addPreference(connectionTimeout);
-			DialogPreference socketTimeout = new SoTimeoutDialog(this, null);
-			socketTimeout.setTitle("Socket Timeout");
-			socketTimeout.setSummary(DiveboardModel._soTimeout + "ms");
-			socketTimeout.setKey("sotime");
-			socketTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
-				@Override
-				public boolean onPreferenceChange(Preference preference, Object newValue) {
-					preference.setSummary(DiveboardModel._soTimeout + "ms");
-					return false;
-				}
-			});
-			getPreferenceScreen().addPreference(socketTimeout);
+			if (AppConfig.DEBUG_MODE == 1)
+			{
+				DialogPreference searchTimeout = new SearchTimeoutDialog(this, null);
+				searchTimeout.setTitle("General Search Timeout");
+				searchTimeout.setSummary(DiveboardModel._searchTimeout + "ms");
+				searchTimeout.setKey("searchtime");
+				searchTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						preference.setSummary(DiveboardModel._searchTimeout + "ms");
+						return false;
+					}
+				});
+				getPreferenceScreen().addPreference(searchTimeout);
+				DialogPreference connectionTimeout = new CoTimeoutDialog(this, null);
+				connectionTimeout.setTitle("Connection Timeout");
+				connectionTimeout.setSummary(DiveboardModel._coTimeout + "ms");
+				connectionTimeout.setKey("cotime");
+				connectionTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						preference.setSummary(DiveboardModel._coTimeout + "ms");
+						return false;
+					}
+				});
+				getPreferenceScreen().addPreference(connectionTimeout);
+				DialogPreference socketTimeout = new SoTimeoutDialog(this, null);
+				socketTimeout.setTitle("Socket Timeout");
+				socketTimeout.setSummary(DiveboardModel._soTimeout + "ms");
+				socketTimeout.setKey("sotime");
+				socketTimeout.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
+					@Override
+					public boolean onPreferenceChange(Preference preference, Object newValue) {
+						preference.setSummary(DiveboardModel._soTimeout + "ms");
+						return false;
+					}
+				});
+				getPreferenceScreen().addPreference(socketTimeout);
+			}
 //		}
 		
 		// Add 'notifications' preferences, and a corresponding header.
@@ -324,7 +340,10 @@ public class SettingsActivity extends PreferenceActivity {
 			try {
 				pInfo = getPackageManager().getPackageInfo(getPackageName(), 0);
 				version.setTitle(getResources().getString(R.string.version_title));
-				version.setSummary(pInfo.versionName);
+				if (AppConfig.DEBUG_MODE == 1)
+					version.setSummary(pInfo.versionName + " Debug Build");
+				else
+					version.setSummary(pInfo.versionName);
 				getPreferenceScreen().addPreference(version);
 			} catch (NameNotFoundException e) {
 				e.printStackTrace();

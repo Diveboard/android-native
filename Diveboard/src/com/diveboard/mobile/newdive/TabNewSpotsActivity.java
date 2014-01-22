@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.DiveDetailsActivity;
 import com.diveboard.mobile.GalleryCarouselActivity;
@@ -255,26 +256,79 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
     
     private class SpotsTask extends AsyncTask<String, Void, JSONObject>
 	{
+    	private JSONObject	result;
+    	private boolean		searchDone = false;
+    	
+    	private class SearchTimer extends Thread
+    	{
+    		private String query;
+    		
+    		public SearchTimer(String query)
+    		{
+    			this.query = query;
+    		}
+    		
+    		@Override
+    		public void run()
+    		{
+    			ApplicationController AC = (ApplicationController)getApplicationContext();
+    			result = AC.getModel().searchSpotText(query, null, null, null, null, null, null);
+    			searchDone = true;
+    		}
+    	}
+    	
 		protected JSONObject doInBackground(String... query)
 		{
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
+			SearchTimer task = new SearchTimer(query[0]);
+			task.start();
+			try {
+				task.join(DiveboardModel._searchTimeout);
+				if (searchDone == false)
+				{
+					DiveboardModel._searchtimedout = true;
+					return AC.getModel().offlineSearchSpotText(query[0], null, null, null, null, null, null);
+				}
+				return result;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+//			ApplicationController AC = (ApplicationController)getApplicationContext();
+//			
+//			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
 		}
 		
 		protected void onPostExecute(JSONObject result)
 		{
+			if (DiveboardModel._searchtimedout == true)
+			{
+				if (AppConfig.DEBUG_MODE == 1)
+				{
+					Toast toast = Toast.makeText(getApplicationContext(), "Spot Search Timeout", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				DiveboardModel._searchtimedout = false;
+			}
 			if (DiveboardModel._cotimedout == true)
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Connection Timeout", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
+				if (AppConfig.DEBUG_MODE == 1)
+				{
+					Toast toast = Toast.makeText(getApplicationContext(), "Connection Timeout", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
 				DiveboardModel._cotimedout = false;
 			}
 			else if (DiveboardModel._sotimedout == true)
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Socket Timeout", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
-				toast.show();
+				if (AppConfig.DEBUG_MODE == 1)
+				{
+					Toast toast = Toast.makeText(getApplicationContext(), "Socket Timeout", Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
 				DiveboardModel._sotimedout = false;
 			}
 			

@@ -236,7 +236,10 @@ public class					DataManager
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
 			json.put("time", dive.getTime());
-			json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
+			//json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
+			json.put("maxdepth_value", dive.getMaxdepth().toString());
+			if (dive.getMaxdepthUnit() != null)
+				json.put("maxdepth_unit", dive.getMaxdepthUnit());
 			json.put("duration", dive.getDuration());
 			json.put("trip_name", dive.getTripName());
 			if (dive.getAltitude() != null)
@@ -245,15 +248,27 @@ public class					DataManager
 				json.put("visibility", dive.getVisibility());
 			if (dive.getCurrent() != null)
 				json.put("current", dive.getCurrent());
+//			if (dive.getTempSurface() != null)
+//				json.put("temp_surface", dive.getTempSurface().getTemperature(Units.Temperature.C).toString());
 			if (dive.getTempSurface() != null)
-				json.put("temp_surface", dive.getTempSurface().getTemperature(Units.Temperature.C).toString());
+				json.put("temp_surface_value", dive.getTempSurface());
+			if (dive.getTempSurfaceUnit() != null)
+				json.put("temp_surface_unit", dive.getTempSurfaceUnit());
+//			if (dive.getTempBottom() != null)
+//				json.put("temp_bottom", dive.getTempBottom().getTemperature(Units.Temperature.C).toString());
 			if (dive.getTempBottom() != null)
-			json.put("temp_bottom", dive.getTempBottom().getTemperature(Units.Temperature.C).toString());
+				json.put("temp_bottom_value", dive.getTempBottom());
+			if (dive.getTempBottomUnit() != null)
+				json.put("temp_bottom_unit", dive.getTempBottomUnit());
 			if (dive.getWater() != null)
 				json.put("water", dive.getWater());
 			json.put("notes", dive.getNotes());
+//			if (dive.getWeights() != null)
+//				json.put("weights", dive.getWeights().getWeight(Units.Weight.KG).toString());
 			if (dive.getWeights() != null)
-				json.put("weights", dive.getWeights().getWeight(Units.Weight.KG).toString());
+				json.put("weights_value", dive.getWeights().toString());
+			if (dive.getWeightsUnit() != null)
+				json.put("weights_unit", dive.getWeightsUnit());
 			json.put("user_id", _model.getUser().getId());
 			if (dive.getSpot() != null)
 			{

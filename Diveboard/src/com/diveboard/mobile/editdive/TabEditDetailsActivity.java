@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
@@ -280,7 +281,13 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		String[] time_in = dive.getTimeIn().split("T");
 		String[] time = time_in[1].split(":");
 		elem.add(new EditOption("Time in : ", time[0] + ":" + time[1]));
-		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
+		//elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
+		String maxdepth_unit = "";
+		if (dive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+		else
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
+		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
 		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
@@ -292,8 +299,19 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		elem.add(new EditOption("Safety Stops : ", safetydetails));
 		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
 		//elem.add(new EditOption("Safety stops : ", "not implemented"));
+//		if (dive.getWeights() != null)
+//			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
+//		else
+//			elem.add(new EditOption("Weights : ", ""));
 		if (dive.getWeights() != null)
-			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
+		{
+			String weights_unit = "";
+			if (dive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs"; 
+			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights()) + " " + weights_unit));
+		}
 		else
 			elem.add(new EditOption("Weights : ", ""));
 		if (dive.getNumber() != null)
@@ -321,11 +339,27 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			elem.add(new EditOption("Current : ", ""));
 		if (dive.getTempSurface() != null)
-			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
+		{
+			//elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
+			String tempsurface_unit = "";
+			if (dive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit));
+		}
 		else
 			elem.add(new EditOption("Surface temperature : ", ""));
 		if (dive.getTempBottom() != null)
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
+		{
+//			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
+			String tempbottom_unit = "";
+			if (dive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit));
+		}
 		else
 			elem.add(new EditOption("Bottom temperature : ", ""));
 		if (dive.getAltitude() != null)
@@ -489,7 +523,13 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onMaxDepthEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		//((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		String maxdepth_unit = "";
+		if (dive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+		else
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
+		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -508,9 +548,17 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getTempSurface() == null)
-			((EditOption)mOptionAdapter.getItem(10)).setValue("");
+			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(10)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+		{
+//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+			String tempsurface_unit = "";
+			if (dive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -520,9 +568,16 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getTempBottom() == null)
-			((EditOption)mOptionAdapter.getItem(11)).setValue("");
+			((EditOption)mOptionAdapter.getItem(12)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName());
+		{
+			String tempbottom_unit = "";
+			if (dive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -534,7 +589,15 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		if (dive.getWeights() == null)
 			((EditOption)mOptionAdapter.getItem(5)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+		{
+//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+			String weights_unit = "";
+			if (dive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights()) + " " + weights_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}

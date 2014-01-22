@@ -33,7 +33,7 @@
 	        android:hint="@string/weights_hint"
 	        android:background="@drawable/tab_body_background" />
         
-        <TextView
+        <Spinner
             android:id="@+id/weights_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
