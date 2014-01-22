@@ -3,14 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical" >
-
+    android:orientation="vertical">
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:background="@drawable/tab_body_background">
-        
          <TextView
             android:id="@+id/title"
             android:layout_width="0dp"
@@ -19,7 +17,6 @@
             android:paddingLeft="15dp"
             android:textSize="20sp"
             android:textColor="@color/dark_grey"/>
-
          <Button
              android:id="@+id/save_button"
              android:layout_width="wrap_content"
@@ -28,53 +25,71 @@
              android:textColor="@color/white"
              android:padding="15dp"
              android:textSize="15sp" />
-        
     </LinearLayout>
-
-<!--         <EditText
-            android:id="@+id/notes"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:inputType="textMultiLine"
-            android:gravity="top"
-            android:padding="10dp"
-            android:background="@drawable/tab_body_background"
-            android:textColor="@color/dark_grey" >
-
-            <requestFocus />
-        </EditText> -->
-        <LinearLayout
-            android:orientation="horizontal"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@drawable/tab_body_background"
-            android:gravity="center">
+            
+    <ScrollView
+        android:layout_width="match_parent"
+	    android:layout_height="match_parent">
+<!-- 		<fragment
+	        android:id="@+id/mapfragment"
+	        android:layout_width="match_parent"
+	        android:layout_height="200dp"
+	        android:name="com.google.android.gms.maps.SupportMapFragment"/> -->
+	
+	<LinearLayout
+	    android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+		<fragment
+	        android:id="@+id/mapfragment"
+	        android:layout_width="match_parent"
+	        android:layout_height="200dp"
+	        android:name="com.google.android.gms.maps.SupportMapFragment"/>
+	    <LinearLayout
+	        android:orientation="horizontal"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
+	        android:background="@drawable/tab_body_background"
+	        android:gravity="center">
 			<LinearLayout
-	            android:orientation="horizontal"
-	        	android:layout_width="0dp"
-	        	android:layout_height="40dp"
-	        	android:layout_weight="1"
-	        	android:gravity="center">
-	            <TextView
+		        android:orientation="horizontal"
+		      	android:layout_width="0dp"
+		      	android:layout_height="40dp"
+		      	android:layout_weight="1"
+		      	android:gravity="center">
+	          	<TextView
 				    android:id="@+id/current_spot_title"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:textColor="@color/dark_grey"
 				    android:text="Current spot: "/>
-	            <TextView
+		       	<TextView
 				    android:id="@+id/current_spot"
 				    android:layout_width="wrap_content"
 				    android:layout_height="wrap_content"
 				    android:textColor="@color/dark_grey"/>
-	         </LinearLayout>
-	         <ImageView
-	             android:id="@+id/remove_button"
-	             android:layout_width="wrap_content"
-	             android:layout_height="wrap_content"
-	             android:src="@drawable/ic_close"
-	             android:layout_marginRight="10dp"/>
-        </LinearLayout>
-		
+	       </LinearLayout>
+	       <ImageView
+	           android:id="@+id/remove_button"
+	           android:layout_width="wrap_content"
+	           android:layout_height="wrap_content"
+	           android:src="@drawable/ic_close"
+	           android:layout_marginRight="10dp" />
+	    </LinearLayout>
+		<LinearLayout
+		    android:orientation="horizontal"
+		    android:layout_width="match_parent"
+		    android:layout_height="40dp"
+		    android:background="@drawable/tab_body_background"
+		    android:visibility="gone">
+	 		<EditText 
+			    android:id="@+id/search_bar2"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:hint="@string/search_hint"
+			    android:inputType="text"
+			    android:imeOptions="actionSearch"/>
+		</LinearLayout>		
 		<LinearLayout
 		    android:orientation="horizontal"
 		    android:layout_width="match_parent"
@@ -86,31 +101,33 @@
 			    android:layout_height="wrap_content"
 			    android:hint="@string/search_hint"
 			    android:inputType="text"
-			    android:imeOptions="actionSearch"/>
-<!-- 	 		<Button
-	 		    android:id="@+id/ok_search"
-	 		    android:layout_width="0dp"
-	 		    android:layout_height="wrap_content"
-	 		    android:layout_weight="0.2"
-	 		    android:text="OK"
-	 		    android:onClick="doMySearch"/> -->
- 		</LinearLayout>
- 		<TextView
- 		    android:gravity="center"
- 		    android:id="@+id/no_spot"
- 		    android:text="No spot found"
- 		    android:layout_width="match_parent"
- 		    android:layout_height="match_parent"
- 		    android:visibility="gone"/>
- 		<ProgressBar 
- 		    android:id="@+id/progressBar"
- 		    android:layout_width="wrap_content"
- 		    android:layout_height="wrap_content"
- 		    android:visibility="gone"
- 		    android:layout_gravity="center"/>
-		<ListView
-		    android:id="@+id/list_view"
-		    android:background="@color/white"
+			    android:imeOptions="actionSearch"
+			    style="@style/myEditText"/>
+		</LinearLayout>
+		<TextView
+		    android:gravity="center"
+		    android:id="@+id/no_spot"
+		    android:text="No spot found"
 		    android:layout_width="match_parent"
-		    android:layout_height="match_parent"/>
+		    android:layout_height="match_parent"
+		    android:visibility="gone"/>
+		<ProgressBar 
+		    android:id="@+id/progressBar"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+		    android:visibility="gone"
+		    android:layout_gravity="center"/>
+		<LinearLayout
+		    android:layout_width="match_parent"
+		    android:layout_height="match_parent"
+		    android:orientation="vertical">
+			<ListView
+			    android:id="@+id/list_view"
+			    android:background="@color/white"
+			    android:layout_width="match_parent"
+			    android:layout_height="wrap_content"
+			    android:visibility="visible"/>
+		</LinearLayout>
 	</LinearLayout>
+	</ScrollView>
+</LinearLayout>

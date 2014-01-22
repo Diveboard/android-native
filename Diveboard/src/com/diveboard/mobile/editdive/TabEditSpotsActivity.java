@@ -15,6 +15,13 @@ import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialog
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Spot;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 import android.app.Activity;
 import android.app.ListActivity;
@@ -27,12 +34,15 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentManager;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.view.ViewGroup;
@@ -60,6 +70,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 	private JSONObject					mSelectedObject = null;
 	private JSONArray					mArray;
 	private Boolean						mHasChanged = false;
+	private GoogleMap					mMap;
 	
 	@Override
 	public void onBackPressed()
@@ -189,6 +200,49 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 	            return handled;
 			}
 	    });
+//	    editText.setOnFocusChangeListener(new OnFocusChangeListener() {
+//	    	@Override
+//	    	public void onFocusChange(View v, boolean hasFocus) {
+//	    	    if(hasFocus){
+//	    	    	System.out.println("Has Focus");
+//	    	    	((ListView)findViewById(R.id.list_view)).setVisibility(View.GONE);
+//	    	    }else {
+//	    	    	System.out.println("Lost Focus");
+//	    	    	((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
+//	    	    }
+//	    	   }
+//	    	});
+		if (mMap == null) {
+			FragmentManager fm = getSupportFragmentManager();
+	        Fragment fragment = fm.findFragmentById(R.id.mapfragment);
+	        SupportMapFragment support = (SupportMapFragment)fragment;
+	        mMap = support.getMap();
+	        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+	        // Check if we were successful in obtaining the map.
+	        if (mMap != null) {
+	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	            // The Map is verified. It is now safe to manipulate the map
+	        }
+	        else
+	        	System.out.println("Map non safe");
+	        mMap.getUiSettings().setAllGesturesEnabled(true);
+			mMap.getUiSettings().setMyLocationButtonEnabled(true);
+			mMap.getUiSettings().setZoomControlsEnabled(true);
+			mMap.getUiSettings().setZoomGesturesEnabled(true);
+			
+			mMap.getUiSettings().setRotateGesturesEnabled(true);
+			mMap.getUiSettings().setScrollGesturesEnabled(true);
+			mMap.getUiSettings().setCompassEnabled(true);
+			Marker marker = mMap.addMarker(new MarkerOptions()
+			.position(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng())));
+			//.icon(BitmapDescriptorFactory.fromResource(R.drawable.circle)));
+			System.out.println(AC.getModel().getDives().get(mIndex).getSpot().getId());
+			Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
+			if (zoom == null)
+				zoom = 10;
+			if (AC.getModel().getDives().get(mIndex).getLat() != null && AC.getModel().getDives().get(mIndex).getLng() != null)
+				mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(AC.getModel().getDives().get(mIndex).getLat(), AC.getModel().getDives().get(mIndex).getLng()), zoom));
+		}
     }
     
 //    public void setCurrentSpot(View view)
@@ -215,6 +269,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
     	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.toggleSoftInput(0, 0);
 		((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+		((EditText)findViewById(R.id.search_bar2)).requestFocus();
     	SpotsTask spots_task = new SpotsTask();
 	    spots_task.execute(((TextView)findViewById(R.id.search_bar)).getText().toString());
 	    //((TextView)findViewById(R.id.search_bar)).setText("");
@@ -230,11 +285,13 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		
 		protected void onPostExecute(JSONObject result)
 		{
+			
 			((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.GONE);
 			try {
 				if (result != null && result.getBoolean("success") == true)
 				{
 					try {
+						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
 						mArray = result.getJSONArray("spots");
 						ListView lv = ((ListView)findViewById(R.id.list_view));
 						List<Spot> listSpots = new ArrayList<Spot>();
@@ -249,6 +306,12 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 						}
 						else
 						{
+							for (int i = 0; i < listSpots.size(); i++)
+							{
+								mMap.addMarker(new MarkerOptions()
+								.position(new LatLng(listSpots.get(i).getLat(), listSpots.get(i).getLng()))
+								.title(listSpots.get(i).getName()));
+							}
 							System.out.println(result.toString());
 							SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
 							lv.setAdapter(adapter);
