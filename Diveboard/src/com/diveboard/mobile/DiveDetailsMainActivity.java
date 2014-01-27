@@ -377,6 +377,8 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NullPointerException e) {
+				return null;
 			}
 			return null;
 		}

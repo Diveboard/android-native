@@ -956,6 +956,7 @@ public class					DiveboardModel
 					catch (IndexOutOfBoundsException e)
 					{
 						e.printStackTrace();
+						return ;
 					}
 					synchronized (_pictureCount)
 					{
@@ -996,6 +997,7 @@ public class					DiveboardModel
 					catch (IndexOutOfBoundsException e)
 					{
 						e.printStackTrace();
+						return ;
 					}
 					synchronized (_pictureCount)
 					{
@@ -1295,6 +1297,7 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lngNE", lngNE));
 			try
 			{
+				args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
 				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 				// Execute request
 				HttpResponse response = client.execute(postRequest);
