@@ -26,6 +26,8 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -358,10 +360,11 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 				System.out.println(mDive.getSpot().getId());
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(mDive.getSpot().getLat(), mDive.getSpot().getLng()))
+				.title(mDive.getSpot().getName())
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 				System.out.println(mDive.getSpot().getId());
 				Integer zoom = mDive.getSpot().getZoom();
-				if (zoom == null)
+				if (zoom == null || zoom > mZoom)
 					zoom = mZoom;
 				if (mDive.getSpot().getLat() != null && mDive.getSpot().getLng() != null)
 					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mDive.getSpot().getLat(), mDive.getSpot().getLng()), zoom));
@@ -370,6 +373,7 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 			{
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(0, 0))
+				.title(mDive.getSpot().getName())
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 			}
@@ -569,7 +573,7 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 				{
 					try {
 						mArray = result.getJSONArray("spots");
-						ListView lv = ((ListView)findViewById(R.id.list_view));
+						final ListView lv = ((ListView)findViewById(R.id.list_view));
 						List<Spot> listSpots = new ArrayList<Spot>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
@@ -586,11 +590,19 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 							{
 								Marker marker = mMap.addMarker(new MarkerOptions()
 								.position(new LatLng(listSpots.get(i).getLat(), listSpots.get(i).getLng()))
-								.title(listSpots.get(i).getName())
+								.title(i + ": " + listSpots.get(i).getName())
 								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 								mListMarkers.add(marker);
 							}
-							
+							mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+								
+								@Override
+								public boolean onMarkerClick(Marker marker) {
+									System.out.println(Integer.valueOf(marker.getId().replace("m", "")) - 1);
+									lv.smoothScrollToPosition(Integer.valueOf(marker.getId().replace("m", "")) - 1);
+									return false;
+								}
+							});
 							System.out.println(result.toString());
 							SpotAdapter adapter = new SpotAdapter(TabNewSpotsActivity.this, listSpots);
 							//Zoom out to show markers
@@ -601,7 +613,21 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 							LatLngBounds bounds = builder.build();
 							int padding = 100; // offset from edges of the map in pixels
 							CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-							mMap.animateCamera(cu);
+							mMap.animateCamera(cu, new CancelableCallback(){
+
+								@Override
+								public void onCancel() {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onFinish() {
+									if (mMap.getCameraPosition().zoom > mZoom)
+										mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
+								}
+								
+							});
 							lv.setAdapter(adapter);
 							lv.setOnItemClickListener(new OnItemClickListener()
 							{
@@ -628,7 +654,7 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 										System.out.println(mDive.getSpot().toString());
 										mMyMarker.remove();
 										Integer zoom = mDive.getSpot().getZoom();
-										if (zoom == null)
+										if (zoom == null || zoom > mZoom)
 											zoom = mZoom;
 										Spot spot = mDive.getSpot();
 										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
@@ -714,7 +740,7 @@ public class					TabNewSpotsActivity extends FragmentActivity implements EditCon
 			}
 
 			//holder.id.setText(Integer.toString(mSpotsList.get(position).getId()));
-			holder.name.setText(mSpotsList.get(position).getName());
+			holder.name.setText(position + ": " + mSpotsList.get(position).getName());
 			holder.name.setTypeface(mFaceR);
 			holder.location_country.setText(mSpotsList.get(position).getLocationName() + ", " + mSpotsList.get(position).getCountryName());
 			holder.location_country.setTypeface(mFaceR);

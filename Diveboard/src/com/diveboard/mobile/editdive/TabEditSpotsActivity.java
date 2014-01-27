@@ -1,6 +1,5 @@
 package com.diveboard.mobile.editdive;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -8,34 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveDetailsActivity;
-import com.diveboard.mobile.GalleryCarouselActivity;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.Picture;
-import com.diveboard.model.Spot;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
-
-import android.app.Activity;
-import android.app.ListActivity;
-import android.app.SearchManager;
-import android.app.TabActivity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Configuration;
-import android.database.DataSetObserver;
 import android.graphics.Typeface;
 import android.location.Location;
 import android.location.LocationListener;
@@ -52,26 +25,39 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.View.OnTouchListener;
+import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.ImageView.ScaleType;
 import android.widget.TextView.OnEditorActionListener;
+import android.widget.Toast;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Spot;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 
 public class					TabEditSpotsActivity extends FragmentActivity implements EditConfirmDialogListener
 {
@@ -273,10 +259,11 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 				
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(AC.getModel().getDives().get(mIndex).getSpot().getLat(), AC.getModel().getDives().get(mIndex).getSpot().getLng()))
+				.title(AC.getModel().getDives().get(mIndex).getSpot().getName())
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 				System.out.println(AC.getModel().getDives().get(mIndex).getSpot().getId());
 				Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
-				if (zoom == null)
+				if (zoom == null || zoom > mZoom)
 					zoom = mZoom;
 				if (AC.getModel().getDives().get(mIndex).getSpot().getLat() != null && AC.getModel().getDives().get(mIndex).getSpot().getLng() != null)
 					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(AC.getModel().getDives().get(mIndex).getSpot().getLat(), AC.getModel().getDives().get(mIndex).getSpot().getLng()), zoom));
@@ -285,6 +272,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 			{
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(0, 0))
+				.title(AC.getModel().getDives().get(mIndex).getSpot().getName())
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 			}
@@ -471,7 +459,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 					try {
 						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
 						mArray = result.getJSONArray("spots");
-						ListView lv = ((ListView)findViewById(R.id.list_view));
+						final ListView lv = ((ListView)findViewById(R.id.list_view));
 						List<Spot> listSpots = new ArrayList<Spot>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
@@ -489,11 +477,19 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 							{
 								Marker marker = mMap.addMarker(new MarkerOptions()
 								.position(new LatLng(listSpots.get(i).getLat(), listSpots.get(i).getLng()))
-								.title(listSpots.get(i).getName())
+								.title(i + ": " + listSpots.get(i).getName())
 								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 								mListMarkers.add(marker);
 							}
-							
+							mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
+								
+								@Override
+								public boolean onMarkerClick(Marker marker) {
+									System.out.println(Integer.valueOf(marker.getId().replace("m", "")) - 1);
+									lv.smoothScrollToPosition(Integer.valueOf(marker.getId().replace("m", "")) - 1);
+									return false;
+								}
+							});
 							SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
 							//Zoom out to show markers
 							LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -503,13 +499,28 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 							LatLngBounds bounds = builder.build();
 							int padding = 100; // offset from edges of the map in pixels
 							CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-							mMap.animateCamera(cu);
+							mMap.animateCamera(cu, new CancelableCallback(){
+
+								@Override
+								public void onCancel() {
+									// TODO Auto-generated method stub
+									
+								}
+
+								@Override
+								public void onFinish() {
+									if (mMap.getCameraPosition().zoom > mZoom)
+										mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
+								}
+								
+							});
 							lv.setAdapter(adapter);
 							lv.setOnItemClickListener(new OnItemClickListener()
 							{
 								@Override
 								public void onItemClick(AdapterView<?> parent,
 										View view, int position, long id) {
+									System.out.println("ZOOM = " + mMap.getCameraPosition().zoom);
 									removeMarkers();
 									ApplicationController AC = (ApplicationController)getApplicationContext();
 									
@@ -530,7 +541,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 										
 										mMyMarker.remove();
 										Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
-										if (zoom == null)
+										if (zoom == null || zoom > mZoom)
 											zoom = mZoom;
 										Spot spot = mModel.getDives().get(mIndex).getSpot();
 										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
@@ -616,7 +627,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 			}
 
 			//holder.id.setText(Integer.toString(mSpotsList.get(position).getId()));
-			holder.name.setText(mSpotsList.get(position).getName());
+			holder.name.setText(position + ": " + mSpotsList.get(position).getName());
 			holder.name.setTypeface(mFaceR);
 			holder.location_country.setText(mSpotsList.get(position).getLocationName() + ", " + mSpotsList.get(position).getCountryName());
 			holder.location_country.setTypeface(mFaceR);
