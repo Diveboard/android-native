@@ -14,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -72,7 +73,11 @@ public class					EditDiveActivity extends TabActivity
 	    intent = new Intent(this,TabEditSpotsActivity.class);
 	    intent.putExtra("index", mIndex);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
-	    
+//	    mTabHost.setOnTabChangedListener(new OnTabChangeListener(){    
+//	        public void onTabChanged(String tabID) {    
+//	        	mTabHost.requestFocus();
+//	        }   
+//	    }); 
 	    
 //	    intent = new Intent(this,TabEditSpotsActivity.class);
 //	    intent.putExtra("index", mIndex);

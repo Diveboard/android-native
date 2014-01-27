@@ -128,7 +128,10 @@ public class TabNewNotesActivity extends FragmentActivity implements EditConfirm
 						JSONObject edit = new JSONObject(); 
 						for (int i = 0, size = editList.size(); i < size; i++)
 							try {
-								edit.put(editList.get(i).first, editList.get(i).second);
+								if (editList.get(i).first.equals("spot"))
+									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+								else
+									edit.put(editList.get(i).first, editList.get(i).second);
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}

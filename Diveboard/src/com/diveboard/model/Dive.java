@@ -323,7 +323,9 @@ public class					Dive implements IModel
 			_notes = json.getString("notes");
 		if (!json.isNull("spot"))
 		{
+			System.out.println("JSON = " + json);
 			_spot = new Spot(json.getJSONObject("spot"));
+			//_spot = new Spot(new JSONObject(json.getString("spot").replace("\\\")));
 			_lng = _spot.getLng();
 			_lat = _spot.getLat();
 			_spotId = _spot.getId();

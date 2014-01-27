@@ -302,7 +302,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(settingsActivity);
 		    	    return true;
 		        case R.id.report_bug:
-		        	//if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
+		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
 		        	{
 	        			WaitDialogFragment dialog = new WaitDialogFragment();
 	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
@@ -316,13 +316,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        		UserVoice.launchContactUs(DivesActivity.this);
 		        		dialog.dismiss();
 		        	}
-//		        	else
-//		        	{
-//		        		Intent intent = new Intent(Intent.ACTION_SEND);
-//		        		intent.setType("text/plain");
-//		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-//		        		startActivity(Intent.createChooser(intent, "Send Email"));
-//		        	}
+		        	else
+		        	{
+		        		Intent intent = new Intent(Intent.ACTION_SEND);
+		        		intent.setType("text/plain");
+		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+		        		startActivity(Intent.createChooser(intent, "Send Email"));
+		        	}
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
@@ -525,7 +525,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	/**
 	 * Footer text
 	 */
-	public static String getPositon(int i, DiveboardModel model)
+	public static String getPosition(int i, DiveboardModel model)
 	{
 		String pos = "";
 		if (model.getDives().get(i).getLat() == null)
@@ -650,7 +650,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        }
 			        else
 			        	mPager.setCurrentItem(AC.getPageIndex());
-			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
+			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 			        mPager.setOnTouchListener(new OnTouchListener() {
@@ -809,7 +809,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 								if (mBackgroundImageTask != null)

@@ -26,7 +26,7 @@
     </style>
 
     <style name="myEditText" parent="@android:style/Widget.EditText">
-	    <item name="android:textColor">@color/blue</item>
 	    <item name="android:gravity">center</item>
+	    
 	</style>
 </resources>
