@@ -5,10 +5,12 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
 import com.diveboard.model.Units;
+import com.diveboard.model.Utils;
 
 import android.os.AsyncTask;
 import android.os.Build;
@@ -209,11 +211,20 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		String maxdepth_unit = "";
-		if (mDive.getMaxdepthUnit() == null)
-			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
-		else
-			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth()) + " " + maxdepth_unit);
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		Double maxdepth_value = 0.0;
+		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null)
+		{
+			if (Units.getDistanceUnit() == Units.Distance.KM)
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
+			else
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
+		}
+//		if (mDive.getMaxdepthUnit() == null)
+//			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+//		else
+//			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(maxdepth_value + " " + maxdepth_unit);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//Threads for the pictures

@@ -7,10 +7,12 @@ import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveDeleteListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Units;
+import com.diveboard.model.Utils;
 
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -165,11 +167,21 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 		((TextView) findViewById(R.id.max_depth)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		//((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		String maxdepth_unit = "";
-		if (mDive.getMaxdepthUnit() == null)
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		
+		/*if (mDive.getMaxdepthUnit() == null)
 			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
 		else
-			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET"; 
-		((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth()) + " " + maxdepth_unit);
+			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";*/
+		Double maxdepth_value = 0.0;
+		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null)
+		{
+			if (Units.getDistanceUnit() == Units.Distance.KM)
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
+			else
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
+		}
+		((TextView) findViewById(R.id.max_depth)).setText(maxdepth_value + " " + maxdepth_unit);
 		((TextView) findViewById(R.id.max_depth)).setTypeface(faceR);
 		mDownloadGraphTask = new DownloadGraphTask(((ImageView)findViewById(R.id.graph)));
 		mDownloadGraphTask.execute();
@@ -219,11 +231,20 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 		{
 //			temp = "SURF " + mDive.getTempSurface().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
 			String tempsurface_unit = "";
-			if (mDive.getTempSurfaceUnit() == null)
+			/*if (mDive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
-				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			temp = "SURF " + mDive.getTempSurface() + "°" + tempsurface_unit;
+				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";*/
+			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			Double tempsurface_value = 0.0;
+			if (mDive.getTempSurface() != null && mDive.getTempSurfaceUnit() != null)
+			{
+				if (Units.getTemperatureUnit() == Units.Temperature.C)
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? mDive.getTempSurface() : Utils.round(Converter.convert(mDive.getTempSurface(), Units.Temperature.F, Units.Temperature.C), 2);
+				else
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo("F") == 0) ? mDive.getTempSurface() : Utils.round(Converter.convert(mDive.getTempSurface(), Units.Temperature.C, Units.Temperature.F), 2);
+			}
+			temp = "SURF " + tempsurface_value + "°" + tempsurface_unit;
 		}
 		else
 			temp = "-";
@@ -232,11 +253,22 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 		{
 //			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempBottom().getSmallName();
 			String tempbottom_unit = "";
+			/*
 			if (mDive.getTempBottomUnit() == null)
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
 				tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			temp += "BOTTOM " + mDive.getTempBottom() + "°" + tempbottom_unit;
+				*/
+			tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			Double tempbottom_value = 0.0;
+			if (mDive.getTempBottom() != null && mDive.getTempBottomUnit() != null)
+			{
+				if (Units.getTemperatureUnit() == Units.Temperature.C)
+					tempbottom_value = (mDive.getTempBottomUnit().compareTo("C") == 0) ? mDive.getTempBottom() : Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.F, Units.Temperature.C), 2);
+				else
+					tempbottom_value = (mDive.getTempBottomUnit().compareTo("F") == 0) ? mDive.getTempBottom() : Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.C, Units.Temperature.F), 2);	
+			}
+			temp += "BOTTOM " + tempbottom_value + "°" + tempbottom_unit;
 		}
 		else
 			temp += "-";

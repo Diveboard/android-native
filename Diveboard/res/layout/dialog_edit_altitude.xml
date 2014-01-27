@@ -25,7 +25,7 @@
 	        android:id="@+id/altitude"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:inputType="numberDecimal"
+	        android:inputType="numberDecimal|numberSigned"
 	        android:gravity="center"
 	        android:textSize="30sp"
 	        android:paddingTop="10dp"
