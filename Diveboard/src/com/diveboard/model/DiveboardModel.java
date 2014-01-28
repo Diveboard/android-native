@@ -1,29 +1,51 @@
 package com.diveboard.model;
 
 import java.io.File;
+
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.SocketTimeoutException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
+
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Pair;
+import android.view.Gravity;
+import android.widget.Toast;
+import android.database.Cursor;
+import android.database.sqlite.*;
 
 /*
  * Class DiveboardModel
@@ -37,7 +59,7 @@ public class					DiveboardModel
 	private	User				_user = null;
 	private ConnectivityManager	_connMgr;
 	private DataManager			_cache;
-	private ArrayList<DataRefreshListener>	_listeners = new ArrayList<DataRefreshListener>();
+	private ArrayList<DataRefreshListener>	_dataRefreshListeners = new ArrayList<DataRefreshListener>();
 	
 	private String				_temp_user_json;
 	private String				_temp_dives_json;
@@ -46,6 +68,7 @@ public class					DiveboardModel
 	private boolean				_connected = false;
 	private String				_token;
 	private String				_unitPreferences;
+	private UserPreference		_preference;
 	
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static ArrayList<String>	savedPictureList;
@@ -55,6 +78,13 @@ public class					DiveboardModel
 	private LoadPictureThread	_pictureThread2 = null;
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
+	private RefreshDataThread	_refreshDataThread = null;
+	public static Integer		_coTimeout = 15000;
+	public static Integer		_soTimeout = 15000;
+	public static Integer		_searchTimeout = 15000;
+	public static boolean 		_cotimedout = false;
+	public static boolean 		_sotimedout = false;
+	public static boolean 		_searchtimedout = false;
 	
 	/*
 	 * Method DiveboardModel
@@ -86,7 +116,7 @@ public class					DiveboardModel
 	{
 		File file_id = new File(_context.getFilesDir() + "_logged_id");
 		File file_token = new File(_context.getFilesDir() + "_logged_token");
-		File unit_preferences = new File(_context.getFilesDir() + "_unit_preferences");
+//		File unit_preferences = new File(_context.getFilesDir() + "_unit_preferences");
 		if (file_id.exists() && file_token.exists())
 		{
 			try
@@ -97,6 +127,7 @@ public class					DiveboardModel
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
 				_userId = Integer.parseInt(fileContent.toString());
+				_preference = new UserPreference(_context, _userId);
 				fileInputStream.close();
 				
 				fileInputStream = _context.openFileInput(file_token.getName());
@@ -107,13 +138,13 @@ public class					DiveboardModel
 				_token = fileContent.toString();
 				fileInputStream.close();
 				
-				fileInputStream = _context.openFileInput(unit_preferences.getName());
-				fileContent = new StringBuffer("");
-				buffer = new byte[1];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
-				_unitPreferences = fileContent.toString();
-				fileInputStream.close();
+//				fileInputStream = _context.openFileInput(unit_preferences.getName());
+//				fileContent = new StringBuffer("");
+//				buffer = new byte[1];
+//				while (fileInputStream.read(buffer) != -1)
+//					fileContent.append(new String(buffer));
+//				_unitPreferences = fileContent.toString();
+//				fileInputStream.close();
 				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
@@ -131,7 +162,7 @@ public class					DiveboardModel
 		return false;
 	}
 	
-	public int					doLogin(final String login, final String password)
+	public JSONObject					doLogin(final String login, final String password)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -140,12 +171,12 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_email");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/login_email");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("email", login));
 			args.add(new BasicNameValuePair("password", password));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -156,22 +187,24 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
+				JSONObject status = new JSONObject(result);
 				// Analyze data
 				boolean success = json.getBoolean("success");
 				if (success == false)
-					return (-1);
+					return (status);
 				// Initialize user account
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
 				// Get user ID
-				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
+				_preference = new UserPreference(_context, _userId);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
@@ -187,36 +220,36 @@ public class					DiveboardModel
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
 				
-				file = new File(_context.getFilesDir() + "_unit_preferences");
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(_unitPreferences.getBytes());
+//				file = new File(_context.getFilesDir() + "_unit_preferences");
+//				file.createNewFile();
+//				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+//				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				DiveboardModel.savedPictureList = new ArrayList<String>();
 				_initSavedPictures();
-				return (_userId);
+				return (status);
 			}
 			catch (UnsupportedEncodingException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 			catch (IOException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			} catch (JSONException e)
 			{
 				e.printStackTrace();
 				client.close();
-				return (-1);
+				return (null);
 			}
 		}
-		return (-1);
+		return (null);
 	}
 	
 	public int					doFbLogin(final String fb_id, final String fb_token)
@@ -228,12 +261,12 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/login_fb");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/login_fb");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("fbid", fb_id));
 			args.add(new BasicNameValuePair("fbtoken", fb_token));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -244,6 +277,7 @@ public class					DiveboardModel
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
+				//JSONObject status = new JSONObject(result);
 				// Analyze data
 				boolean success = json.getBoolean("success");
 				if (success == false)
@@ -253,13 +287,14 @@ public class					DiveboardModel
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
 				// Get user ID
-				HttpGet getRequest = new HttpGet("http://stage.diveboard.com/api/V2/user/" + _shakenId);
+				HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
 				entity = response.getEntity();
 				result = ContentExtractor.getASCII(entity);
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
+				_preference = new UserPreference(_context, _userId);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
@@ -275,10 +310,10 @@ public class					DiveboardModel
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
 				
-				file = new File(_context.getFilesDir() + "_unit_preferences");
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(_unitPreferences.getBytes());
+//				file = new File(_context.getFilesDir() + "_unit_preferences");
+//				file.createNewFile();
+//				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+//				outputStream.write(_unitPreferences.getBytes());
 				
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
@@ -309,6 +344,9 @@ public class					DiveboardModel
 	
 	public void					doLogout()
 	{
+		if (_refreshDataThread != null)
+			_refreshDataThread.cancel();
+		
 		File file = new File(_context.getFilesDir() + "_logged_id");
 		file.delete();
 		
@@ -324,6 +362,8 @@ public class					DiveboardModel
 		stopPreloadPictures();
 		DiveboardModel.pictureList = null;
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
+		
+		ApplicationController.SudoId = 0;
 	}
 	
 	/*
@@ -332,42 +372,30 @@ public class					DiveboardModel
 	 */
 	public void					loadData()
 	{
-		// Offline Mode
-		try
+		// Sudo Mode
+		if (ApplicationController.SudoId != 0)
 		{
-			_loadOfflineData();
+			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + ApplicationController.SudoId);
+			try {
+				HttpResponse response = client.execute(getRequest);
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				client.close();
+				_loadUser(result, false);
+				_loadOnlineData(false);
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
 		}
-		catch (IOException e)
-		{
-			e.printStackTrace();
-		}
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
-		if (_user == null)
-			refreshData();
 		else
-			_applyEdit();
-	}
-	public void					refreshData()
-	{
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
 		{
-			// Online Mode
-			// Load data online
+			// Offline Mode
 			try
 			{
-				if (_user == null)
-					_loadOnlineData(false);
-				else
-				{
-					_loadOnlineData(true);
-					_applyEdit();
-				}
+				_loadOfflineData();
 			}
 			catch (IOException e)
 			{
@@ -377,11 +405,104 @@ public class					DiveboardModel
 			{
 				e.printStackTrace();
 			}
+			if (_user == null)
+				refreshData();
+			else
+				_applyEdit();
 		}
-		// Fire refresh complete event
-		for (DataRefreshListener listener : _listeners)
-			listener.onDataRefreshComplete();
-		_cache.commitEditOnline();
+	}
+	
+	public synchronized void	refreshData()
+	{
+		if (_refreshDataThread == null)
+		{
+			_refreshDataThread = new RefreshDataThread();
+			_refreshDataThread.start();
+			// Wait synchronously for data refresh end
+			try {
+				_refreshDataThread.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	public void					refreshData(boolean sync)
+	{
+		if (_refreshDataThread == null)
+		{
+			_refreshDataThread = new RefreshDataThread();
+			_refreshDataThread.start();
+			// Wait synchronously for data refresh end
+			if (sync == true)
+			{
+				try {
+					_refreshDataThread.join();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	private class					RefreshDataThread extends Thread
+	{
+		Boolean						_run;
+		
+		public						RefreshDataThread()
+		{
+			_run = true;
+		}
+		
+		public void					cancel()
+		{
+			_run = false;
+		}
+		
+		@Override
+		public void run()
+		{
+//			while (_run)
+//			{
+				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+				
+				// Test connectivity
+				if (networkInfo != null && networkInfo.isConnected())
+				{
+					// Online Mode
+					// Load data online
+					try
+					{
+						if (_user == null)
+							_loadOnlineData(false);
+						else
+						{
+							_loadOnlineData(true);
+							_applyEdit();
+						}
+					}
+					catch (IOException e)
+					{
+						e.printStackTrace();
+					}
+					catch (JSONException e)
+					{
+						e.printStackTrace();
+					}
+				}
+				// Fire refresh complete event
+				for (DataRefreshListener listener : _dataRefreshListeners)
+					listener.onDataRefreshComplete();
+				System.out.println("Data refreshed");
+				_cache.commitEditOnline();
+//				try {
+//					Thread.sleep(180000);
+//				} catch (InterruptedException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
+		}
 	}
 	
 	/*
@@ -393,9 +514,12 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
 		if (!temp_mode)
-			_user = new User(json, _unitPreferences);
+		{
+//			_preference.setUnits(json.getJSONObject("units"));
+			_user = new User(json);
+		}
 		else
-			_temp_user = new User(json, _unitPreferences);
+			_temp_user = new User(json);
 	}
 	
 	/*
@@ -426,20 +550,42 @@ public class					DiveboardModel
 	private void				_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
 	{
 		// Load user information
-		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");	
-		HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/V2/user/" + Integer.toString(_userId));
+		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+		HttpPost postRequest;
+		HttpContext localContext = null;
+		if (ApplicationController.SudoId == 0)
+			postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/" + Integer.toString(_userId));
+		else
+		{
+			postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/" + ApplicationController.SudoId);
+			CookieStore cookieStore = new BasicCookieStore();
+			localContext = new BasicHttpContext();
+			BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+			cookie.setDomain(".diveboard.com");
+			cookie.setPath("/");
+			cookieStore.addCookie(cookie);
+			localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			//client.execute(postRequest, localContext);
+		}
 		ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
-		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-		HttpResponse response = client.execute(postRequest);
+		HttpResponse response;
+		if (ApplicationController.SudoId == 0)
+			response = client.execute(postRequest);
+		else
+			response = client.execute(postRequest, localContext);
 		HttpEntity entity = response.getEntity();
 		String result = ContentExtractor.getASCII(entity);
-		if (!temp_mode)
-			_cache.saveCache(_userId, "user", result);
-		else
-			_temp_user_json = result;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.saveCache(_userId, "user", result);
+			else
+				_temp_user_json = result;
+		}
 		_loadUser(result, temp_mode);
 		
 		// Load dive information
@@ -455,25 +601,34 @@ public class					DiveboardModel
 			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
 		dive_str = dive_str.concat("%5D");
-		postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive?arg=".concat(dive_str));
+		postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive?arg=".concat(dive_str));
 		args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
-		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		args.add(new BasicNameValuePair("arg", dive_str));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-		response = client.execute(postRequest);
+		if (ApplicationController.SudoId == 0)
+			response = client.execute(postRequest);
+		else
+			response = client.execute(postRequest, localContext);
 		entity = response.getEntity();
 		result = ContentExtractor.getASCII(entity);
-		if (!temp_mode)
-			_cache.saveCache(_userId, "dives", result);
-		else
-			_temp_dives_json = result;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.saveCache(_userId, "dives", result);
+			else
+				_temp_dives_json = result;
+		}
 		_loadDives(result, temp_mode);
-		if (!temp_mode)
-			_cache.commitCache();
-		else
-			_enable_overwrite = true;
+		if (ApplicationController.SudoId == 0)
+		{
+			if (!temp_mode)
+				_cache.commitCache();
+			else
+				_enable_overwrite = true;
+		}
 		client.close();
 	}
 	
@@ -545,7 +700,7 @@ public class					DiveboardModel
 	
 	public void					setOnDataRefreshComplete(DataRefreshListener listener)
 	{
-		_listeners.add(listener);
+		_dataRefreshListeners.add(listener);
 	}
 	
 	public void					overwriteData() throws IOException
@@ -555,11 +710,25 @@ public class					DiveboardModel
 			_cache.saveCache(_userId, "user", _temp_user_json);
 			_cache.saveCache(_userId, "dives", _temp_dives_json);
 			_cache.commitCache();
-			_user = (User) _temp_user.clone();
-			_temp_user = null;
+			
+			// Copy new User into model;
+//			_user = (User) _temp_user.clone();
+//			_temp_user = null;
 		}
+//		if (_user != null)
+//		{
+//			ArrayList<Dive> dives = _user.getDives();
+//			for (int i = 0, len = dives.size(); i < len; i++)
+//			{
+//				if (dives.get(i).getProfile() != null)
+//					dives.get(i).getProfile().deletePicture(_context);
+//				if (dives.get(i).getProfileV3() != null)
+//					dives.get(i).getProfileV3().deletePicture(_context);
+//			}
+//			_enable_overwrite = false;
+//			_applyEdit();
+//		}
 		_enable_overwrite = false;
-		_applyEdit();
 	}
 	
 	public DataManager			getDataManager()
@@ -574,9 +743,12 @@ public class					DiveboardModel
 		{
 			for (int i = 0, length = edit_list.size(); i < length; i++)
 			{
+				System.out.println("EDIT ITEM : " + edit_list.get(i).first);
 				String[] info = edit_list.get(i).first.split(":");
 				if (info[0].compareTo("Dive") == 0)
 					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
+				else if (info[0].equals("Dive_delete"))
+					_applyDeleteDive(Integer.parseInt(info[1]));
 			}
 		}
 		catch (NumberFormatException e)
@@ -589,24 +761,50 @@ public class					DiveboardModel
 		}
 	}
 	
+	private void				_applyDeleteDive(final int id)
+	{
+		ArrayList<Dive>			dives = getDives();
+		
+		for (int i = 0, size = dives.size(); i < size; i++)
+			if (dives.get(i).getId() == id)
+			{
+				dives.remove(i);
+				break ;
+			}
+	}
+	
 	private void				_applyEditDive(final int id, final String json) throws JSONException
 	{
 		ArrayList<Dive> dives = getDives();
+		boolean exist = false;
+		int i = 0;
 		
 		// Create Dive if new dive type
-		if (id == -1)
-			dives.add(0, new Dive(new JSONObject(json)));
+		System.out.println("APPLY EDIT " + id + " : " + json);
+		for (int size = dives.size(); i < size; i++)
+			if (dives.get(i).getId() == id)
+			{
+				exist = true;
+				break ;
+			}
+		//if (id == -1)
+		if (exist == false)
+		{
+			Dive new_dive = new Dive(new JSONObject(json));
+			new_dive.setId(id);
+			dives.add(0, new_dive);
+		}
 		else
 		{
 			// Apply edit if edit type
-			for (int i = 0, length = dives.size(); i < length; i++)
-			{
-				if (dives.get(i).getId() == id)
-				{
+//			for (int i = 0, length = dives.size(); i < length; i++)
+//			{
+//				if (dives.get(i).getId() == id)
+//				{
 					dives.get(i).applyEdit(new JSONObject(json));
-					break ;
-				}
-			}
+//					break ;
+//				}
+//			}
 		}
 	}
 	
@@ -616,6 +814,12 @@ public class					DiveboardModel
 	 */
 	public void					preloadPictures()
 	{
+		ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		//NetworkInfo mobileNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+		
+		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+			return ;
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
 			_refreshPictureList();
@@ -625,6 +829,15 @@ public class					DiveboardModel
 			_pictureThread1.start();
 			_pictureThread2.start();
 		}
+	}
+	
+	public void					pausePreloadPictures()
+	{
+		System.out.println("PAUSE PRELOAD");
+//		if (_pictureThread1 != null)
+//			_pictureThread1.pause();
+//		if (_pictureThread2 != null)
+//			_pictureThread2.pause();
 	}
 	
 	private void				_refreshPictureList()
@@ -670,6 +883,16 @@ public class					DiveboardModel
 			_locknb = locknb;
 		}
 		
+		public void				pause()
+		{
+			try {
+				Thread.sleep(10000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
 		public void				cancel()
 		{
 			_run = false;
@@ -678,10 +901,14 @@ public class					DiveboardModel
 		@Override
 		public void run()
 		{
+			ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			
 			if (_increment > 0)
 			{
 				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0 && _run; i += _increment)
 				{
+					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					try
 					{
 						if (_locknb == 1)
@@ -689,16 +916,16 @@ public class					DiveboardModel
 							synchronized (_lock1)
 							{
 								System.out.println("Loading pictures " + i);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
@@ -707,16 +934,16 @@ public class					DiveboardModel
 						{
 							synchronized (_lock2)
 							{
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run)
+								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
@@ -725,6 +952,11 @@ public class					DiveboardModel
 					catch (IOException e)
 					{
 						e.printStackTrace();
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						e.printStackTrace();
+						return ;
 					}
 					synchronized (_pictureCount)
 					{
@@ -741,25 +973,31 @@ public class					DiveboardModel
 			{
 				for (int i = _start; i >= 0 && _pictureCount > 0 && _run; i += _increment)
 				{
+					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					System.out.println("Loading pictures " + i);
 					try
 					{
-						if (!_run)
+						if (!_run || !wifiNetwork.isConnected())
 							break ;
 						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-						if (!_run)
+						if (!_run || !wifiNetwork.isConnected())
 							break ;
 						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-						if (!_run)
+						if (!_run || !wifiNetwork.isConnected())
 							break ;
 						pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-						if (!_run)
+						if (!_run || !wifiNetwork.isConnected())
 							break ;
 						pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 					}
 					catch (IOException e)
 					{
 						e.printStackTrace();
+					}
+					catch (IndexOutOfBoundsException e)
+					{
+						e.printStackTrace();
+						return ;
 					}
 					synchronized (_pictureCount)
 					{
@@ -784,7 +1022,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/register_email");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/register_email");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
 			args.add(new BasicNameValuePair("email", email));
@@ -793,7 +1031,7 @@ public class					DiveboardModel
 			args.add(new BasicNameValuePair("nickname", nickname));
 			args.add(new BasicNameValuePair("password_check", confirm_password));
 			args.add(new BasicNameValuePair("accept_newsletter_email", (loop == true) ? "true" : "false"));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -837,6 +1075,7 @@ public class					DiveboardModel
 	
 	private void					_initSavedPictures()
 	{
+		System.out.println("INIT SAVED PICTURE");
 		File file = new File(_context.getFilesDir() + "_saved_pictures");
 		if (file.exists())
 		{
@@ -882,16 +1121,169 @@ public class					DiveboardModel
 		}
 	}
 	
-	public JSONObject					searchSpotText(final String term, final String lat, final String lng)
+	public JSONObject					offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
+	{
+//		lat = "-41.298734";
+//		lng = "174.781237";
+//		latSW = "39.92476837932741";
+//		lngSW = "-13.183000099999958";
+//		latNE = "59.095806348000615";
+//		lngNE = "16.17246865000004";
+		if (lng != null)
+		{
+			Double lng_d = Double.parseDouble(lng);
+			lng_d = lng_d - Math.floor((lng_d + 180.0) / 360.0) * 360.0;
+			lng = lng_d.toString();
+		}
+		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
+		String DB_NAME = "spots.db";
+		File file_db = new File(DB_PATH + DB_NAME);
+		if (!file_db.exists())
+			return null;
+		SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+		String condition_str = "";
+		if (term != null)
+		{
+			String[] strarr = term.split(" ");
+			String match_str = "";
+			for (int i = 0, length = strarr.length; i < length; i++)
+			{
+				if (i != 0)
+					match_str += " ";
+				match_str += strarr[i] + "*";
+			}
+			if (condition_str.length() == 0)
+				condition_str += "spots_fts.name MATCH '" + match_str + "'";
+			else
+				condition_str += " AND spots_fts.name MATCH '" + match_str + "'";
+			
+		}
+		if (latSW != null && latNE != null && lngSW != null && lngNE != null)
+		{
+			if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
+			{
+				if (condition_str.length() == 0)
+					condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+				else
+					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+			}
+			if (condition_str.length() == 0)
+				condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+			else
+				condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+		}
+		if (condition_str.length() == 0)
+			condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+		else
+			condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+		if (lat != null && lng != null)
+		{
+			Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
+			condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
+		}
+		JSONObject result = new JSONObject();
+		try {
+			result.put("success", true);
+			JSONArray jarray = new JSONArray();
+			Cursor c;
+			if (term == null)
+			{
+				System.out.println();
+				c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
+			}
+			else
+				c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
+			if (c.getCount() == 0)
+				return null;
+			while (c.moveToNext())
+			{
+				JSONObject new_elem = new JSONObject();
+				new_elem.put("id", c.getInt(0));
+				new_elem.put("name", c.getString(1));
+				new_elem.put("location_name", c.getString(2));
+				new_elem.put("country_name", c.getString(3));
+				new_elem.put("lat", c.getDouble(4));
+				new_elem.put("lng", c.getDouble(5));
+				jarray.put(new_elem);
+			}
+			
+			result.put("spots", jarray);
+			return result;
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
+	
+//	private class						SpotContainer implements Comparable
+//	{
+//		private Integer					_id;
+//		private String					_name;
+//		private String					_location_name;
+//		private String					_country_name;
+//		private Double					_lat;
+//		private Double					_lng;
+//		private Double					_distance = 0.0;
+//		
+//		public void						setId(Integer id) { this._id = id; }
+//		public Integer					getId() { return this._id; }
+//		public void						setName(String name) { this._name = name; }
+//		public String					getName() { return this._name; }
+//		public void						setLocationName(String location_name) { this._location_name = location_name; }
+//		public String					getLocationName() { return this._location_name; }
+//		public void						setCountryName(String country_name) { this._country_name = country_name; }
+//		public String					getCountryName() { return this._country_name; }
+//		public void						setLat(Double lat) { this._lat = lat; }
+//		public Double					getLat() { return this._lat; }
+//		public void						setLng(Double lng) { this._lng = lng; }
+//		public Double					getLng() { return this._lng; }
+//		public void						setDistance(Double distance) { this._distance = distance; }
+//		public Double					getDistance() { return this._distance; }
+//		
+//		@Override
+//		public int compareTo(Object another) {
+//			SpotContainer other = (SpotContainer) another;
+//			if (this._distance > other.getDistance())
+//				return 1;
+//			else if (this._distance < other.getDistance())
+//				return -1;
+//			return 0;
+//		}
+//	}
+	
+//	private Double						_calculateDistance(Double lat_a, Double lng_a, Double lat_b, Double lng_b)
+//	{
+//		Double a = Math.PI / 180;
+//		Double lat1 = lat_a * a;
+//		Double lat2 = lat_b * a;
+//		Double lng1 = lng_a * a;
+//		Double lng2 = lng_b * a;
+//		
+//		Double t1 = Math.sin(lat1) * Math.sin(lat2);
+//		Double t2 = Math.cos(lat1) * Math.cos(lat2);
+//		Double t3 = Math.cos(lng1 - lng2);
+//		Double t4 = t2 * t3;
+//		Double t5 = t1 + t4;
+//		Double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
+//		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
+//	}
+	
+	public JSONObject					searchSpotText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected() && term != null)
+		if (networkInfo != null && networkInfo.isConnected())
 		{
+			System.out.println("ENTRE");
 			// Creating web client
-			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+			HttpParams httpParameters = new BasicHttpParams();
+			int timeoutConnection = DiveboardModel._coTimeout;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			int timeoutSocket = DiveboardModel._soTimeout;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_text");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_spot_text");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("term", term));
@@ -899,26 +1291,56 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lat", lat));
 			if (lng != null)
 				args.add(new BasicNameValuePair("lng", lng));
+			if (latSW != null)
+				args.add(new BasicNameValuePair("latSW", latSW));
+			if (latNE != null)
+				args.add(new BasicNameValuePair("latNE", latNE));
+			if (lngSW != null)
+				args.add(new BasicNameValuePair("lngSW", lngSW));
+			if (lngNE != null)
+				args.add(new BasicNameValuePair("lngNE", lngNE));
 			try
 			{
-				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 				// Execute request
 				HttpResponse response = client.execute(postRequest);
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
 				JSONObject json = new JSONObject(result);
-				client.close();
+//				System.out.println(json);
+//				client.close();
 				return (json);
 			}
 			catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
-				e.printStackTrace();
 			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (ConnectTimeoutException e) {
+				DiveboardModel._cotimedout = true;
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (SocketTimeoutException e) {
+				DiveboardModel._sotimedout = true;
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
 				e.printStackTrace();
 			}
 		}
+		else
+			return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+		return null;
+	}
+	
+	private JSONObject					_offlineSearchSpotCoord(final String lat_min, final String lng_min, final String lat_max, final String lng_max)
+	{
+		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
+		String DB_NAME = "spots.db";
+		File file_db = new File(DB_PATH + DB_NAME);
+		if (!file_db.exists())
+			return null;
 		return null;
 	}
 	
@@ -931,7 +1353,7 @@ public class					DiveboardModel
 			// Creating web client
 			AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost("http://stage.diveboard.com/api/search_spot_coord");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_spot_coord");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("lat_min", lat_min));
@@ -958,6 +1380,13 @@ public class					DiveboardModel
 				e.printStackTrace();
 			}
 		}
+		else
+			return _offlineSearchSpotCoord(lat_min, lng_min, lat_max, lng_max);
 		return null;
+	}
+	
+	public UserPreference					getPreference()
+	{
+		return _preference;
 	}
 }

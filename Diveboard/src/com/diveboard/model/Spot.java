@@ -33,7 +33,10 @@ public class					Spot implements IModel
 		_shakenId = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
 		_name = (json.isNull("name")) ? null : json.getString("name");
 		_lat = (json.isNull("lat")) ? null : json.getDouble("lat");
-		_lng = (json.isNull("lng")) ? null : json.getDouble("lng");
+		if (!json.isNull("long"))
+			_lng = (json.isNull("long")) ? null : json.getDouble("long");
+		else
+			_lng = (json.isNull("lng")) ? null : json.getDouble("lng");
 		_zoom = (json.isNull("zoom")) ? null : json.getInt("zoom");
 		_locationId = (json.isNull("location_id")) ? null : json.getInt("location_id");
 		_locationName = (json.isNull("location_name")) ? null : json.getString("location_name");
@@ -72,7 +75,7 @@ public class					Spot implements IModel
 		this._name = _name;
 	}
 
-	public double getLat() {
+	public Double getLat() {
 		return _lat;
 	}
 
@@ -80,7 +83,7 @@ public class					Spot implements IModel
 		this._lat = _lat;
 	}
 
-	public double getLng() {
+	public Double getLng() {
 		return _lng;
 	}
 
@@ -88,7 +91,7 @@ public class					Spot implements IModel
 		this._lng = _lng;
 	}
 
-	public int getZoom() {
+	public Integer getZoom() {
 		return _zoom;
 	}
 

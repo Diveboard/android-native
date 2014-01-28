@@ -2,12 +2,17 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
+import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.model.DiveboardModel;
 
 import android.app.Activity;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.MotionEvent;
 import android.view.View;
@@ -17,7 +22,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class TabEditNotesActivity extends Activity
+public class TabEditNotesActivity extends FragmentActivity implements EditConfirmDialogListener
 {
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
@@ -25,11 +30,57 @@ public class TabEditNotesActivity extends Activity
 	private int							mIndex;
 	private EditText					mNotes;
 	
+	@Override
+	public void onBackPressed()
+	{
+		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
+		super.onBackPressed();
+		Bundle bundle = new Bundle();
+		
+		// put
+		Intent intent = new Intent();
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		mModel.getDives().get(mIndex).clearEditList();
+	}
+	
+	@Override
+	protected void onPause()
+	{
+		mModel.getDives().get(mIndex).setNotes(mNotes.getText().toString());
+		super.onPause();	
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
+	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
         ApplicationController AC = (ApplicationController)getApplicationContext();
+        if (AC.handleLowMemory() == true)
+			return ;
 	    setContentView(R.layout.tab_edit_notes);
 	    mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
@@ -63,4 +114,9 @@ public class TabEditNotesActivity extends Activity
 	    mFaceR = null;
 	    mFaceB = null;
     }
+
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog) {
+		clearEditList();
+	}
 }

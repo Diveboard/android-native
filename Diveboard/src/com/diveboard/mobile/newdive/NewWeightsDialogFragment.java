@@ -19,8 +19,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -34,6 +36,7 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 	private Dive				mDive;
 	private EditText			mWeights;
 	private EditWeightsDialogListener	mListener;
+	private Spinner				weights_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -67,24 +70,59 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 		
 		mWeights = (EditText) view.findViewById(R.id.weights);
 		mWeights.setTypeface(faceR);
+//		if (mDive.getWeights() != null)
+//			mWeights.setText(Double.toString(mDive.getWeights().getWeight()));
+//		else
+//			mWeights.setText("");
 		if (mDive.getWeights() != null)
-			mWeights.setText(Double.toString(mDive.getWeights().getWeight()));
+			mWeights.setText(Double.toString(mDive.getWeights()));
 		else
-			mWeights.setText("0.0");
+			mWeights.setText("");
 		mWeights.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mWeights.setOnEditorActionListener(this);
         
-		TextView weights_label = (TextView) view.findViewById(R.id.weights_label);
-		weights_label.setTypeface(faceR);
-		if (mDive.getWeights() != null)
-			weights_label.setText(mDive.getWeights().getSmallName());
+//		TextView weights_label = (TextView) view.findViewById(R.id.weights_label);
+//		weights_label.setTypeface(faceR);
+//		if (mDive.getWeights() != null)
+//			weights_label.setText(mDive.getWeights().getSmallName());
+//		else
+//		{
+//			Weight temp_weight = new Weight(0.0);
+//			weights_label.setText(temp_weight.getSmallName());
+//		}
+		weights_label = (Spinner) view.findViewById(R.id.weights_label);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
+		if (mDive.getWeightsUnit() == null)
+		{
+			if (Units.getWeightUnit() == Units.Weight.KG)
+			{
+				adapter.add("kg");
+				adapter.add("lbs");
+			}
+			else
+			{
+				adapter.add("lbs");
+				adapter.add("kg");
+			}
+		}
 		else
 		{
-			Weight temp_weight = new Weight(0.0);
-			weights_label.setText(temp_weight.getSmallName());
+			if (mDive.getWeightsUnit().compareTo("kg") == 0)
+			{
+				adapter.add("kg");
+				adapter.add("lbs");
+			}
+			else
+			{
+				adapter.add("lbs");
+				adapter.add("kg");
+			}
 		}
+		weights_label.setAdapter(adapter);
+		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
 		cancel.setText(getResources().getString(R.string.cancel));
@@ -105,7 +143,16 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 			@Override
 			public void onClick(View v)
 			{
-				mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				try
+				{
+//					mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+					mDive.setWeights(Double.parseDouble(mWeights.getText().toString()));
+					mDive.setWeightsUnit((String) weights_label.getSelectedItem());
+				}
+				catch (NumberFormatException e)
+				{
+					mDive.setWeights(null);
+				}
 				mListener.onWeightsEditComplete(NewWeightsDialogFragment.this);
 				dismiss();
 			}
@@ -120,7 +167,16 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+			try
+			{
+//				mDive.setWeights(new Weight(Double.parseDouble(mWeights.getText().toString())));
+				mDive.setWeights(Double.parseDouble(mWeights.getText().toString()));
+				mDive.setWeightsUnit((String) weights_label.getSelectedItem());
+			}
+			catch (NumberFormatException e)
+			{
+				mDive.setWeights(null);
+			}
 			mListener.onWeightsEditComplete(NewWeightsDialogFragment.this);
 			dismiss();
 			return true;

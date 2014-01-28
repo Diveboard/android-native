@@ -1,33 +1,17 @@
 package com.diveboard.mobile;
 
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
-import ru.truba.touchgallery.GalleryWidget.FilePagerAdapter;
-import ru.truba.touchgallery.GalleryWidget.GalleryViewPager;
+import com.diveboard.GalleryWidget.FilePagerAdapter;
+import com.diveboard.GalleryWidget.GalleryViewPager;
 
-import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
-import com.diveboard.model.ScreenSetup;
+import com.google.analytics.tracking.android.EasyTracker;
 
-import android.graphics.Bitmap;
-import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.support.v4.view.PagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.TypedValue;
-import android.view.Window;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
 public class GalleryCarouselActivity extends FragmentActivity {
 	private GalleryViewPager mPager;
@@ -46,11 +30,25 @@ public class GalleryCarouselActivity extends FragmentActivity {
 	}
 	
 	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
+	@Override
 	protected void onCreate(Bundle arg0) {
 		super.onCreate(arg0);
 		// Set the action bar
 		setContentView(R.layout.activity_gallery_carousel);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		int position = getIntent().getIntExtra("position", 0);
+		AC.setCarouselIndex(position);
 		if (AC.handleLowMemory() == true)
 			return ;
 		mModel = AC.getModel();
@@ -73,7 +71,7 @@ public class GalleryCarouselActivity extends FragmentActivity {
         //Collections.addAll(items, urls);		
 		mPager = (GalleryViewPager) findViewById(R.id.pager);
 		//mNbPages = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size();
-		mPagerAdapter = new FilePagerAdapter(this, items);
+		mPagerAdapter = new FilePagerAdapter(getApplicationContext(), items);
 		//mPagerAdapter = new GalleryCarouselPagerAdapter(getSupportFragmentManager(), mModel.getDives());
         mPager.setAdapter(mPagerAdapter);
         mPager.setCurrentItem(AC.getCarouselIndex());

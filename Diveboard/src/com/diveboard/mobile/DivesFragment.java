@@ -5,15 +5,19 @@ import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
+import com.diveboard.model.Units;
+import com.diveboard.model.Utils;
 
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -36,6 +40,7 @@ import android.widget.TextView;
 /**
  * The fragment that displays the "fragment_dives.xml" layout
  */
+@SuppressLint("ValidFragment")
 public class DivesFragment extends Fragment {
 	private Dive mDive;
 	private Bitmap mRoundedLayer;
@@ -87,10 +92,13 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceB);
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
-		((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
-        mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
+		if (AC.getModel().getUser().getNickname() != null)
+		{
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setText(AC.getModel().getUser().getNickname());
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTypeface(faceR);
+			((TextView) mFragmentProfile.findViewById(R.id.user_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 35 / 100));
+		}
+		mUserImage = (ImageView)mFragmentProfile.findViewById(R.id.profile_image);
         mFragmentProfileInfo = (LinearLayout)rootView.findViewById(R.id.profile_info);
         RelativeLayout.LayoutParams fragment_profile_info_params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
         fragment_profile_info_params.setMargins(mScreenSetup.getDiveListFragmentWhitespace2(), 0, 0, 0);
@@ -129,11 +137,11 @@ public class DivesFragment extends Fragment {
 	        RelativeLayout.LayoutParams fragment_profile_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxWidth(), mScreenSetup.getDiveListProfileBoxHeight());
 	        RelativeLayout.LayoutParams user_image_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListProfileBoxHeight(), mScreenSetup.getDiveListProfileBoxHeight());
 	        fragment_profile_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-	        fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
+	        //fragment_profile_params.setMargins(0, 0, 0, mScreenSetup.getDiveListSeekBarHeight() + mScreenSetup.getDiveListWhiteSpace3() + mScreenSetup.getDiveListWhiteSpace4());
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
-	        profile_task.execute(AC.getPageIndex());	
+	        profile_task.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);	
 		}
 		else // Landscape mode
 		{
@@ -171,7 +179,7 @@ public class DivesFragment extends Fragment {
 	        mFragmentProfile.setLayoutParams(fragment_profile_params);
 	        mUserImage.setLayoutParams(user_image_params);
 	        DownloadProfileImageTask profile_task = new DownloadProfileImageTask();
-	        profile_task.execute(AC.getPageIndex());
+	        profile_task.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 		}
 		//Set the banner content
 		if (mDive.getTripName() != null)
@@ -186,7 +194,7 @@ public class DivesFragment extends Fragment {
 		else
 			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
 		//Set the title details content
-		if (mDive.getSpot() != null)
+		if (mDive.getSpot() != null && mDive.getSpot().getId() != 1)
 		{
 			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
 			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
@@ -201,7 +209,22 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		//((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		String maxdepth_unit = "";
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		Double maxdepth_value = 0.0;
+		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null)
+		{
+			if (Units.getDistanceUnit() == Units.Distance.KM)
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
+			else
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
+		}
+//		if (mDive.getMaxdepthUnit() == null)
+//			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+//		else
+//			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(maxdepth_value + " " + maxdepth_unit);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//Threads for the pictures
@@ -325,6 +348,25 @@ public class DivesFragment extends Fragment {
 				if (result != null && imageView != null)
 				{	
 					imageView.setImageBitmap(result);
+					imageView.setOnClickListener(new OnClickListener() {
+						
+						@Override
+						public void onClick(View v) {
+							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+							if (AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().size() != 0)
+							{
+								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
+								galleryCarousel.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+								startActivity(galleryCarousel);
+							}
+							else
+							{
+								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+								diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+								startActivity(diveDetailsActivity);
+							}
+						}
+					});
 				}
 			}
 		}
@@ -383,32 +425,36 @@ public class DivesFragment extends Fragment {
 				{
 					((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).addView(result.get(i));
 					//System.out.println(result.size());
-					if (getActivity() != null && (result.size() == 0 || getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE))
-					{
-						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
-								diveDetailsActivity.putExtra("index", AC.getPageIndex());
-								startActivity(diveDetailsActivity);
-							}
-						});
-					}
-					else
-					{
-						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
-						{
-							@Override
-							public void onClick(View v) {
-								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
-								galleryCarousel.putExtra("index", AC.getPageIndex());
-								startActivity(galleryCarousel);
-							}
-						});
-					}
+//					ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//					Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+//					diveDetailsActivity.putExtra("index", AC.getPageIndex());
+//					startActivity(diveDetailsActivity);
+//					if (getActivity() != null && (result.size() == 0 || getActivity().getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE))
+//					{
+//						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								Intent diveDetailsActivity = new Intent(getActivity(), DiveDetailsActivity.class);
+//								diveDetailsActivity.putExtra("index", AC.getPageIndex());
+//								startActivity(diveDetailsActivity);
+//							}
+//						});
+//					}
+//					else
+//					{
+//						((RelativeLayout)mFragment.findViewById(R.id.fragment_picture_circle_radius)).setOnClickListener(new OnClickListener()
+//						{
+//							@Override
+//							public void onClick(View v) {
+//								ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
+//								Intent galleryCarousel = new Intent(getActivity(), GalleryCarouselActivity.class);
+//								galleryCarousel.putExtra("index", AC.getPageIndex());
+//								startActivity(galleryCarousel);
+//							}
+//						});
+//					}
 				}
 			}
 		}

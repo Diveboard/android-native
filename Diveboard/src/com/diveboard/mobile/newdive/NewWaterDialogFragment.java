@@ -22,11 +22,14 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
 
 public class					NewWaterDialogFragment extends DialogFragment implements OnEditorActionListener
@@ -37,7 +40,7 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
     }
 	
 	private Dive				mDive;
-	private Spinner				mWater;
+	private ListView				mWater;
 	private EditWaterDialogListener	mListener;
 	
 	@Override
@@ -70,43 +73,32 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_water_title));
 		
-		mWater = (Spinner) view.findViewById(R.id.water);
+		mWater = (ListView) view.findViewById(R.id.water);
 		List<String> list = new ArrayList<String>();
+		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.salt_water));
 		list.add(getResources().getString(R.string.fresh_water));
 		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mWater.setAdapter(dataAdapter);
-		if (mDive.getWater() == null || mDive.getWater().compareTo("fresh") == 0)
-			mWater.setSelection(1);
+		mWater.setOnItemClickListener(new OnItemClickListener() {
 
-		Button cancel = (Button) view.findViewById(R.id.cancel);
-		cancel.setTypeface(faceR);
-		cancel.setText(getResources().getString(R.string.cancel));
-		cancel.setOnClickListener(new OnClickListener()
-        {
 			@Override
-			public void onClick(View v)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+			if (position == 0)
+				mDive.setWater(null);
+			else
 			{
-				dismiss();
+				String[] water = ((String)mWater.getItemAtPosition(position)).split(" ");
+				mDive.setWater(water[0].toLowerCase());
+			}
+			mListener.onWaterEditComplete(NewWaterDialogFragment.this);
+			dismiss();
+				
 			}
 		});
-		
-		Button save = (Button) view.findViewById(R.id.save);
-		save.setTypeface(faceR);
-		save.setText(getResources().getString(R.string.save));
-		save.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v)
-			{
-				mDive.setWater(((String)mWater.getSelectedItem()).toLowerCase());
-				mListener.onWaterEditComplete(NewWaterDialogFragment.this);
-				dismiss();
-			}
-		});
-		
         faceR = null;
 		return view;
 	}
@@ -116,7 +108,10 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mDive.setWater(((String)mWater.getSelectedItem()).toLowerCase());
+			if (mWater.getSelectedItemPosition() == 0)
+				mDive.setWater(null);
+			else
+				mDive.setWater(((String)mWater.getSelectedItem()).toLowerCase());
 			mListener.onWaterEditComplete(NewWaterDialogFragment.this);
 			dismiss();
 			return true;

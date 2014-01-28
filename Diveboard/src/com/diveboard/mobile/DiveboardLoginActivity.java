@@ -1,15 +1,19 @@
 package com.diveboard.mobile;
 
-import com.diveboard.mobile.editdive.EditDiveActivity;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.model.DatabaseUpdater;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
+import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
@@ -19,16 +23,13 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
 import android.view.Gravity;
-import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.View;
-import android.view.Window;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import com.bugsense.trace.BugSenseHandler;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -66,20 +67,36 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
-
+	
 	@Override
 	protected void onResume()
 	{
 		super.onResume();
-		System.out.println("onResume");
+		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, AppConfig.BUGSENSE_ID);
 //		Config config = new Config("yoursite.uservoice.com");
-		Config config = new Config("diveboard.uservoice.com");
+		//Config config = new Config("diveboard.uservoice.com");
 //		config.setTopicId(9579);
-		UserVoice.init(config, this);
-		config.setShowForum(false);
-	    config.setShowContactUs(true);
-	    config.setShowPostIdea(false);
-	    config.setShowKnowledgeBase(false);
+		//UserVoice.init(config, this);
+//        new Thread(new Runnable()
+//		{
+//			public void run()
+//			{
+//				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+//				{
+//					Config config = new Config("diveboard.uservoice.com");
+//					UserVoice.init(config, DiveboardLoginActivity.this);
+//					config.setShowForum(false);
+//				    config.setShowContactUs(true);
+//				    config.setShowPostIdea(false);
+//				    config.setShowKnowledgeBase(false);
+//					ApplicationController.UserVoiceReady = true;
+//				}
+//			}
+//		}).start();
+//		config.setShowForum(false);
+//	    config.setShowContactUs(true);
+//	    config.setShowPostIdea(false);
+//	    config.setShowKnowledgeBase(false);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
 		AC.setDataRefreshed(false);
@@ -97,18 +114,17 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	
 	public void goToPascalDives(View view)
 	{
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		//DiveboardModel model = new DiveboardModel(getApplicationContext());
-		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
-		AC.setModel(model);
-		mPascalTask = new PascalLoginTask();
-		mPascalTask.execute((Void) null);
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		//DiveboardModel model = new DiveboardModel(getApplicationContext());
+//		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
+//		AC.setModel(model);
+//		mPascalTask = new PascalLoginTask();
+//		mPascalTask.execute((Void) null);
 	}
 	
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 	  super.onActivityResult(requestCode, resultCode, data);
-	  System.out.println("onActivityResult");
 	  Session.getActiveSession().onActivityResult(this, requestCode, resultCode, data);
 	}
 	
@@ -121,6 +137,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
@@ -180,6 +197,20 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					}
 				});
 	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
+		dbUpdater.launchUpdate();
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
 
 	public void goToFBLogin(View view)
 	{
@@ -193,10 +224,11 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * errors are presented and no actual login attempt is made.
 	 */
 	public void attemptLogin() {
-		if (mAuthTask != null) {
-			return;
-		}
-
+//		if (mAuthTask != null) {
+//			System.out.println("ya");
+//			return;
+//		}
+		System.out.println("yo");
 		// Reset errors.
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
@@ -213,7 +245,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			mPasswordView.setError(getString(R.string.error_field_required));
 			focusView = mPasswordView;
 			cancel = true;
-		} else if (mPassword.length() < 4) {
+		} else if (mPassword.length() < 5 || mPassword.length() > 20) {
 			mPasswordView.setError(getString(R.string.error_invalid_password));
 			focusView = mPasswordView;
 			cancel = true;
@@ -292,9 +324,9 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	 * Represents an asynchronous login/registration task used to authenticate
 	 * the user.
 	 */
-	public class UserLoginTask extends AsyncTask<Void, Void, Integer> {
+	public class UserLoginTask extends AsyncTask<Void, Void, JSONObject> {
 		@Override
-		protected Integer doInBackground(Void... params) {
+		protected JSONObject doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 //			DiveboardModel model = new DiveboardModel(getApplicationContext());
 			
@@ -304,26 +336,61 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		}
 
 		@Override
-		protected void onPostExecute(final Integer success) {
-			mAuthTask = null;
-			showProgress(false);
-
-			if (success != -1) {
-				mEmailView.setText("");
-				mPasswordView.setText("");
-				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
-			    startActivity(editDiveActivity);
+		protected void onPostExecute(final JSONObject json) {
+			if (json != null)
+			{
+				System.out.println(json.toString());
+				//mAuthTask = null;
+				showProgress(false);
+				try {
+					Boolean success = json.getBoolean("success");
+					if (success == true)
+					{
+						showProgress(false);
+						mEmailView.setText("");
+						mPasswordView.setText("");
+						Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+					    startActivity(editDiveActivity);
+					}
+					else
+					{
+						String str = (String)json.getString("error");
+						Toast toast = Toast.makeText(getApplicationContext(), "Sorry, wrong login or password.", Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.BOTTOM, 0, 200);
+						toast.show();
+						showProgress(false);
+//						JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
+//						for (int i = 0; i < jsonArray.length(); i++)
+//						{
+//							String error = ((JSONObject)jsonArray.get(i)).getString("error");
+//							String params = ((JSONObject)jsonArray.get(i)).getString("params");
+//							if (params.contentEquals("password"))
+//							{
+//								mPasswordView.setError(error);
+//								mPasswordView.requestFocus();
+//							}
+//							else if (params.contentEquals("email"))
+//							{
+//								mEmailView.setError(error);
+//								mEmailView.requestFocus();
+//							}
+//						}
+//						String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
+//						String params = json.getString("params");
+//						System.out.println(error + " " + params);
+						
+					}
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
-//			else if (success == 0 ){
-//				mPasswordView
-//						.setError(getString(R.string.error_incorrect_password));
-//				mPasswordView.requestFocus();
-//			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
+				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to Diveboard. Please check your network connectivity.", Toast.LENGTH_SHORT);
+				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
+				showProgress(false);
 			}
 		}
 
@@ -333,6 +400,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			showProgress(false);
 		}
 	}
+	
 	
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
@@ -366,7 +434,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			else
 			{
 				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
-				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
 			}
 		}

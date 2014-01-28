@@ -22,9 +22,12 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -37,7 +40,7 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
     }
 	
 	private Dive				mDive;
-	private Spinner				mCurrent;
+	private ListView				mCurrent;
 	private EditCurrentDialogListener	mListener;
 	
 	@Override
@@ -70,8 +73,9 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_current_title));
 		
-		mCurrent = (Spinner) view.findViewById(R.id.current);
+		mCurrent = (ListView) view.findViewById(R.id.current);
 		List<String> list = new ArrayList<String>();
+		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.none_current));
 		list.add(getResources().getString(R.string.light_current));
 		list.add(getResources().getString(R.string.medium_current));
@@ -81,44 +85,76 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mCurrent.setAdapter(dataAdapter);
-		if (mDive.getCurrent() != null)
-		{
-			if (mDive.getCurrent().compareTo("light") == 0)
-				mCurrent.setSelection(1);
-			else if (mDive.getCurrent().compareTo("medium") == 0)
-				mCurrent.setSelection(2);
-			else if (mDive.getCurrent().compareTo("strong") == 0)
-				mCurrent.setSelection(3);
-			else if (mDive.getCurrent().compareTo("extreme") == 0)
-				mCurrent.setSelection(4);
-		}
-		
-		Button cancel = (Button) view.findViewById(R.id.cancel);
-		cancel.setTypeface(faceR);
-		cancel.setText(getResources().getString(R.string.cancel));
-		cancel.setOnClickListener(new OnClickListener()
-        {
+		mCurrent.setOnItemClickListener(new OnItemClickListener() {
+
 			@Override
-			public void onClick(View v)
+			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
+					long id) {
+			if (position == 0)
+				mDive.setCurrent(null);
+			else
 			{
-				dismiss();
-			}
-		});
-		
-		Button save = (Button) view.findViewById(R.id.save);
-		save.setTypeface(faceR);
-		save.setText(getResources().getString(R.string.save));
-		save.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v)
-			{
-				String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+				String[] current = ((String)mCurrent.getItemAtPosition(position)).split(" ");
 				mDive.setCurrent(current[0].toLowerCase());
-				mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
-				dismiss();
+			}
+			mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
+			dismiss();
+				
 			}
 		});
+//		if (mDive.getCurrent() == null)
+//			mCurrent.setSelection(0);
+//		else if (mDive.getCurrent().compareTo("none") == 0)
+//			mCurrent.setSelection(1);
+//		else if (mDive.getCurrent().compareTo("light") == 0)
+//			mCurrent.setSelection(2);
+//		else if (mDive.getCurrent().compareTo("medium") == 0)
+//			mCurrent.setSelection(3);
+//		else if (mDive.getCurrent().compareTo("strong") == 0)
+//			mCurrent.setSelection(4);
+//		else if (mDive.getCurrent().compareTo("extreme") == 0)
+//			mCurrent.setSelection(5);
+//		
+//		if (mCurrent.getSelectedItemPosition() == 0)
+//			mDive.setCurrent(null);
+//		else
+//		{
+//			String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+//			mDive.setCurrent(current[0].toLowerCase());
+//		}
+//		mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
+//		dismiss();
+//		Button cancel = (Button) view.findViewById(R.id.cancel);
+//		cancel.setTypeface(faceR);
+//		cancel.setText(getResources().getString(R.string.cancel));
+//		cancel.setOnClickListener(new OnClickListener()
+//        {
+//			@Override
+//			public void onClick(View v)
+//			{
+//				dismiss();
+//			}
+//		});
+//		
+//		Button save = (Button) view.findViewById(R.id.save);
+//		save.setTypeface(faceR);
+//		save.setText(getResources().getString(R.string.save));
+//		save.setOnClickListener(new OnClickListener()
+//        {
+//			@Override
+//			public void onClick(View v)
+//			{
+//				if (mCurrent.getSelectedItemPosition() == 0)
+//					mDive.setCurrent(null);
+//				else
+//				{
+//					String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+//					mDive.setCurrent(current[0].toLowerCase());
+//				}
+//				mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
+//				dismiss();
+//			}
+//		});
 		
         faceR = null;
 		return view;
@@ -129,8 +165,13 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
-			mDive.setCurrent(current[0].toLowerCase());
+			if (mCurrent.getSelectedItemPosition() == 0)
+				mDive.setCurrent(null);
+			else
+			{
+				String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
+				mDive.setCurrent(current[0].toLowerCase());
+			}
 			mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
 			dismiss();
 			return true;

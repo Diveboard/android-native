@@ -9,6 +9,8 @@ import org.json.JSONObject;
 
 import android.util.Pair;
 
+//cookie name sudo:id user;
+
 /*
  * Class User
  * Model for User
@@ -32,8 +34,9 @@ public class					User implements IModel, Cloneable
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private String										_countryName;
 	private Units										_unitPreferences;
+	private Integer										_admin_rights;
 
-	public						User(final JSONObject json, final String unitPreferences) throws JSONException
+	public						User(final JSONObject json) throws JSONException
 	{
 		_id = json.getInt("id");
 		_shaken_id = json.getString("shaken_id");
@@ -79,11 +82,13 @@ public class					User implements IModel, Cloneable
 			_userGears = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
-		if (unitPreferences != null)
-		{
-			JSONObject unit = new JSONObject(unitPreferences);
-			_unitPreferences = new Units(unit);
-		}
+		_unitPreferences = new Units(UserPreference.getUnits());
+		_admin_rights = (json.isNull("admin_rights")) ? null : json.getInt("admin_rights");
+//		if (unitPreferences != null)
+//		{
+//			JSONObject unit = new JSONObject(unitPreferences);
+//			_unitPreferences = new Units(unit);
+//		}
 	}
 
 	public int getId() {
@@ -244,5 +249,17 @@ public class					User implements IModel, Cloneable
 
 	public void setCountryName(String _countryName) {
 		this._countryName = _countryName;
+	}
+
+	public Units getUnitPreferences() {
+		return _unitPreferences;
+	}
+
+	public void setUnitPreferences(Units _unitPreferences) {
+		this._unitPreferences = _unitPreferences;
+	}
+
+	public Integer getAdminRights() {
+		return _admin_rights;
 	}
 }

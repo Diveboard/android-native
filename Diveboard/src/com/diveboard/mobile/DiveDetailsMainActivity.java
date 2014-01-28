@@ -3,10 +3,18 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
+import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveDeleteListener;
 import com.diveboard.model.Picture;
+import com.diveboard.model.Units;
+import com.diveboard.model.Utils;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -17,6 +25,8 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.graphics.Bitmap.Config;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -27,7 +37,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.ImageView.ScaleType;
 
-public class DiveDetailsMainActivity extends Activity {
+public class DiveDetailsMainActivity extends FragmentActivity implements DeleteConfirmDialogListener
+{
 	public final static int FONT_SIZE = 13;
 	private Dive mDive;
 	private DownloadImageTask mDownloadImageTask;
@@ -48,8 +59,42 @@ public class DiveDetailsMainActivity extends Activity {
 	{
 		ApplicationController AC = ((ApplicationController)getApplicationContext());
 		Intent editDiveActivity = new Intent(this, EditDiveActivity.class);
-		editDiveActivity.putExtra("index", AC.getPageIndex());
+		editDiveActivity.putExtra("index", getIntent().getIntExtra("index", 0));
 	    startActivity(editDiveActivity);
+	}
+	
+	public void goToDeleteDive()
+	{
+		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		WaitDialogFragment dialog = new WaitDialogFragment();
+		dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+		AC.setRefresh(3);
+		AC.getModel().getDataManager().setOnDiveDeleteComplete(new DiveDeleteListener() {
+			@Override
+			public void onDiveDeleteComplete() {
+				finish();
+			}
+		});
+		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)));
+	}
+	
+	public void goToURL(View view)
+	{
+		if (mDive.getFullpermalink() != null)
+		{
+			String url = mDive.getFullpermalink().toString();
+			Intent i = new Intent(Intent.ACTION_VIEW);
+			i.setData(Uri.parse(url));
+			startActivity(i);
+		}
+	}
+	
+	public void openGraph(View view)
+	{
+		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		Intent graphImageActivity = new Intent(this, GraphImageActivity.class);
+		graphImageActivity.putExtra("index", getIntent().getIntExtra("index", 0));
+	    startActivity(graphImageActivity);
 	}
 	
 	@Override
@@ -66,6 +111,9 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
 			((TextView)findViewById(R.id.dive_note)).setText("No Note for this dive");
+		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
+			((TextView)findViewById(R.id.dive_url)).setText("");
+		((TextView)findViewById(R.id.dive_url)).setPaintFlags(((TextView)findViewById(R.id.dive_url)).getPaintFlags() |   Paint.UNDERLINE_TEXT_FLAG);
 		((TextView)findViewById(R.id.dive_note)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_note)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView)findViewById(R.id.logged_by)).setText(AC.getModel().getUser().getNickname());
@@ -77,8 +125,18 @@ public class DiveDetailsMainActivity extends Activity {
 			((TextView)findViewById(R.id.user_country)).setText("");
 		((TextView)findViewById(R.id.user_country)).setTypeface(faceR);
 		((TextView)findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-//		((Button)findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-//		((Button)findViewById(R.id.deleteDiveButton)).setTypeface(faceR);
+		((Button)findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button)findViewById(R.id.deleteDiveButton)).setTypeface(faceR);
+		((Button)findViewById(R.id.deleteDiveButton)).setOnClickListener(new OnClickListener()
+		{
+			@Override
+			public void onClick(View v)
+			{
+				DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
+		    	Bundle args = new Bundle();
+		    	dialog.show(getSupportFragmentManager(), "DeleteConfirmDialogFragment");
+			}
+		});
 		((Button)findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button)findViewById(R.id.goToEditButton)).setTypeface(faceR);
 		((TextView)findViewById(R.id.dive_shop)).setTypeface(faceB);
@@ -94,7 +152,7 @@ public class DiveDetailsMainActivity extends Activity {
 			mShopLogo = ((ImageView)findViewById(R.id.shop_image));
 			mDownloadShopLogoTask = new DownloadShopLogoTask(mShopLogo);
 			mDownloadShopLogoTask.execute();
-		}	
+		}
 		else
 		{
 			((TextView)findViewById(R.id.shop_name)).setText("No shop");
@@ -107,7 +165,23 @@ public class DiveDetailsMainActivity extends Activity {
 		((TextView) findViewById(R.id.max_depth_title)).setText("MAX DEPTH: ");
 		((TextView) findViewById(R.id.max_depth_title)).setTypeface(faceB);
 		((TextView) findViewById(R.id.max_depth)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		//((TextView) findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
+		String maxdepth_unit = "";
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		
+		/*if (mDive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		else
+			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";*/
+		Double maxdepth_value = 0.0;
+		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null)
+		{
+			if (Units.getDistanceUnit() == Units.Distance.KM)
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
+			else
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
+		}
+		((TextView) findViewById(R.id.max_depth)).setText(maxdepth_value + " " + maxdepth_unit);
 		((TextView) findViewById(R.id.max_depth)).setTypeface(faceR);
 		mDownloadGraphTask = new DownloadGraphTask(((ImageView)findViewById(R.id.graph)));
 		mDownloadGraphTask.execute();
@@ -154,12 +228,48 @@ public class DiveDetailsMainActivity extends Activity {
 		
 		String temp;
 		if (mDive.getTempSurface() != null)
-			temp = "SURF " + mDive.getTempSurface().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
+		{
+//			temp = "SURF " + mDive.getTempSurface().getTemperature() + "°" + mDive.getTempSurface().getSmallName();
+			String tempsurface_unit = "";
+			/*if (mDive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";*/
+			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			Double tempsurface_value = 0.0;
+			if (mDive.getTempSurface() != null && mDive.getTempSurfaceUnit() != null)
+			{
+				if (Units.getTemperatureUnit() == Units.Temperature.C)
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? mDive.getTempSurface() : Utils.round(Converter.convert(mDive.getTempSurface(), Units.Temperature.F, Units.Temperature.C), 2);
+				else
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo("F") == 0) ? mDive.getTempSurface() : Utils.round(Converter.convert(mDive.getTempSurface(), Units.Temperature.C, Units.Temperature.F), 2);
+			}
+			temp = "SURF " + tempsurface_value + "°" + tempsurface_unit;
+		}
 		else
 			temp = "-";
 		temp += " | ";
 		if (mDive.getTempBottom() != null)
-			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempBottom().getSmallName();
+		{
+//			temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°" + mDive.getTempBottom().getSmallName();
+			String tempbottom_unit = "";
+			/*
+			if (mDive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+				*/
+			tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			Double tempbottom_value = 0.0;
+			if (mDive.getTempBottom() != null && mDive.getTempBottomUnit() != null)
+			{
+				if (Units.getTemperatureUnit() == Units.Temperature.C)
+					tempbottom_value = (mDive.getTempBottomUnit().compareTo("C") == 0) ? mDive.getTempBottom() : Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.F, Units.Temperature.C), 2);
+				else
+					tempbottom_value = (mDive.getTempBottomUnit().compareTo("F") == 0) ? mDive.getTempBottom() : Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.C, Units.Temperature.F), 2);	
+			}
+			temp += "BOTTOM " + tempbottom_value + "°" + tempbottom_unit;
+		}
 		else
 			temp += "-";
 		if (temp.contentEquals("- | -"))
@@ -175,11 +285,14 @@ public class DiveDetailsMainActivity extends Activity {
 		}
 		
 		String type = "";
-		for (int i = 0; i < mDive.getDivetype().size(); i++)
-		{	
-			if (mDive.getDivetype().get(i) != null)
-				type += Character.toUpperCase(mDive.getDivetype().get(i).charAt(0)) + mDive.getDivetype().get(i).substring(1) + ", ";
-		}
+		if (mDive.getDivetype() == null)
+			type = "";
+		else
+			for (int i = 0; i < mDive.getDivetype().size(); i++)
+			{	
+				if (mDive.getDivetype().get(i) != null)
+					type += Character.toUpperCase(mDive.getDivetype().get(i).charAt(0)) + mDive.getDivetype().get(i).substring(1) + ", ";
+			}
 		if (type != "")
 			type = (String) type.subSequence(0, type.length() - 2);
 		else
@@ -257,13 +370,15 @@ public class DiveDetailsMainActivity extends Activity {
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				if (DiveDetailsMainActivity.this != null)
+				if (DiveDetailsMainActivity.this != null && mDive.getProfile() != null)
 				{
 					return mDive.getProfile().getPicture(getApplicationContext());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (NullPointerException e) {
+				return null;
 			}
 			return null;
 		}
@@ -329,6 +444,12 @@ public class DiveDetailsMainActivity extends Activity {
 		protected void onCancelled() {
 			mDownloadImageTask = null;
 		}
+	}
+
+	@Override
+	public void onDeleteConfirm(DialogFragment dialog)
+	{
+		goToDeleteDive();
 	}
 
 }

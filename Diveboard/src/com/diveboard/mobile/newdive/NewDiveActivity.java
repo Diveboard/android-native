@@ -1,8 +1,12 @@
 package com.diveboard.mobile.newdive;
 
+import java.util.ArrayList;
+
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
 import android.app.Activity;
@@ -29,6 +33,18 @@ public class					NewDiveActivity extends TabActivity
 		AC.handleLowMemory();
 	}
 	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
 	/** Called when the activity is first created. */
 	@Override
 	public void onCreate(Bundle savedInstanceState)
@@ -37,8 +53,22 @@ public class					NewDiveActivity extends TabActivity
 	    
 	    setContentView(R.layout.activity_edit_dive);
 	    
-	    Dive new_dive = new Dive();
-	    ((ApplicationController)getApplicationContext()).setTempDive(new_dive);
+	    if (((ApplicationController)getApplicationContext()).getTempDive() == null)
+	    {
+	    	DiveboardModel model = ((ApplicationController)getApplicationContext()).getModel();
+	    	ArrayList<Dive> dives = model.getDives();
+	    	int id = 0;
+	    	for (int i = 0, size = dives.size(); i < size; i++)
+	    	{
+	    		if (dives.get(i).getId() < id)
+	    			id = dives.get(i).getId();
+	    	}
+	    	id--;
+	    	Dive new_dive = new Dive();
+	    	System.out.println("New dive id: " + id);
+	    	new_dive.setId(id);
+	    	((ApplicationController)getApplicationContext()).setTempDive(new_dive);
+	    }
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
 	    

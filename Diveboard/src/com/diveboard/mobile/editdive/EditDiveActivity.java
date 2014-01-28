@@ -2,6 +2,7 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.google.analytics.tracking.android.EasyTracker;
 
 import android.app.TabActivity;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.widget.TabHost;
+import android.widget.TabHost.OnTabChangeListener;
 import android.widget.TabHost.TabSpec;
 import android.widget.TextView;
 
@@ -28,6 +30,18 @@ public class					EditDiveActivity extends TabActivity
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+	}
+	
+	@Override
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
 	/** Called when the activity is first created. */
@@ -59,7 +73,11 @@ public class					EditDiveActivity extends TabActivity
 	    intent = new Intent(this,TabEditSpotsActivity.class);
 	    intent.putExtra("index", mIndex);
 	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
-	    
+//	    mTabHost.setOnTabChangedListener(new OnTabChangeListener(){    
+//	        public void onTabChanged(String tabID) {    
+//	        	mTabHost.requestFocus();
+//	        }   
+//	    }); 
 	    
 //	    intent = new Intent(this,TabEditSpotsActivity.class);
 //	    intent.putExtra("index", mIndex);

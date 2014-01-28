@@ -29,11 +29,11 @@
 	        android:textSize="30sp"
 	        android:paddingTop="10dp"
 	        android:paddingBottom="10dp"
-	        android:inputType="numberDecimal"
+	        android:inputType="numberDecimal|numberSigned"
 	        android:hint="@string/surface_temp_hint"
 	        android:background="@drawable/tab_body_background" />
         
-        <TextView
+        <Spinner
             android:id="@+id/temp_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

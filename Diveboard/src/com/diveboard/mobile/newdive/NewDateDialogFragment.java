@@ -62,7 +62,7 @@ public class					NewDateDialogFragment extends DialogFragment
 		mDate = (DatePicker) view.findViewById(R.id.date);
 		String[] date_array = mDive.getDate().split("-");
 		
-		mDate.updateDate(Integer.parseInt(date_array[0]), Integer.parseInt(date_array[1]), Integer.parseInt(date_array[2]));
+		mDate.updateDate(Integer.parseInt(date_array[0]), Integer.parseInt(date_array[1]) - 1, Integer.parseInt(date_array[2]));
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -85,10 +85,10 @@ public class					NewDateDialogFragment extends DialogFragment
 			public void onClick(View v)
 			{
 				String date = Integer.toString(mDate.getYear()) + "-";
-				if (mDate.getMonth() < 10)
+				if (mDate.getMonth() + 1 < 10)
 					date += "0";
-				date += Integer.toString(mDate.getMonth()) + "-";
-				if (mDate.getDayOfMonth() < 10)
+				date += Integer.toString(mDate.getMonth() + 1) + "-";
+				if (mDate.getDayOfMonth() + 1 < 10)
 					date += "0";
 				date += Integer.toString(mDate.getDayOfMonth());
 				mDive.setDate(date);

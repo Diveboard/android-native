@@ -65,7 +65,7 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
 		mDiveNumber.setTypeface(faceR);
 		if (mModel.getDives().get(getArguments().getInt("index")).getNumber() == null)
-			mDiveNumber.setText("0");
+			mDiveNumber.setText("");
 		else
 			mDiveNumber.setText(Integer.toString(mModel.getDives().get(getArguments().getInt("index")).getNumber()));
 		mDiveNumber.requestFocus();
@@ -93,7 +93,10 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 			@Override
 			public void onClick(View v)
 			{
-				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+				if (mDiveNumber.getText().toString().equals(""))
+					mModel.getDives().get(getArguments().getInt("index")).setNumber(null);
+				else
+					mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
 				mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
 				dismiss();
 			}
@@ -108,7 +111,10 @@ public class					EditDiveNumberDialogFragment extends DialogFragment implements 
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+			if (mDiveNumber.getText().toString().equals(""))
+				mModel.getDives().get(getArguments().getInt("index")).setNumber(null);
+			else
+				mModel.getDives().get(getArguments().getInt("index")).setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
 			mListener.onDiveNumberEditComplete(EditDiveNumberDialogFragment.this);
 			dismiss();
 			return true;

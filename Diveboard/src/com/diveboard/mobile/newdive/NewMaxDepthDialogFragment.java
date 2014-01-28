@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -18,8 +19,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -33,6 +36,7 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 	private Dive				mDive;
 	private EditText			mMaxDepth;
 	private EditMaxDepthDialogListener	mListener;
+	private Spinner				max_depth_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -66,15 +70,39 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		
 		mMaxDepth = (EditText) view.findViewById(R.id.max_depth);
 		mMaxDepth.setTypeface(faceR);
-		mMaxDepth.setText(Double.toString(mDive.getMaxdepth().getDistance()));
+//		if (mDive.getMaxdepth() != null)
+//			mMaxDepth.setText(Double.toString(mDive.getMaxdepth().getDistance()));
+		if (mDive.getMaxdepth() != null)
+			mMaxDepth.setText(Double.toString(mDive.getMaxdepth()));
+		mMaxDepth.setSelection(mMaxDepth.getText().length());
 		mMaxDepth.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mMaxDepth.setOnEditorActionListener(this);
 		
-		TextView max_depth_label = (TextView) view.findViewById(R.id.max_depth_label);
-		max_depth_label.setTypeface(faceR);
-		max_depth_label.setText(mDive.getMaxdepth().getSmallName());
+//		TextView max_depth_label = (TextView) view.findViewById(R.id.max_depth_label);
+//		max_depth_label.setTypeface(faceR);
+//		if (mDive.getMaxdepth() != null)
+//			max_depth_label.setText(mDive.getMaxdepth().getSmallName());
+//		else
+//		{
+//			Distance distance = new Distance(0.0);
+//			max_depth_label.setText(distance.getSmallName());
+//		}
+		max_depth_label = (Spinner) view.findViewById(R.id.max_depth_label);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
+		if (Units.getDistanceUnit() == Units.Distance.KM)
+		{
+			adapter.add("m");
+			adapter.add("ft");
+		}
+		else
+		{
+			adapter.add("ft");
+			adapter.add("m");
+		}
+		max_depth_label.setAdapter(adapter);
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -105,8 +133,9 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 				{
 					dbl = 0.0;
 				}
-				Distance new_depth = new Distance(dbl);
-				mDive.setMaxdepth(new_depth);
+				//Distance new_depth = new Distance(dbl, Units.getDistanceUnit());
+				mDive.setMaxdepth(dbl);
+				mDive.setMaxdepthUnit((String) max_depth_label.getSelectedItem());
 				mListener.onMaxDepthEditComplete(NewMaxDepthDialogFragment.this);
 				dismiss();
 			}
@@ -130,8 +159,9 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 			{
 				dbl = 0.0;
 			}
-			Distance new_depth = new Distance(dbl);
-			mDive.setMaxdepth(new_depth);
+			//Distance new_depth = new Distance(dbl, Units.getDistanceUnit());
+			mDive.setMaxdepth(dbl);
+			mDive.setMaxdepthUnit((String) max_depth_label.getSelectedItem());
 			mListener.onMaxDepthEditComplete(NewMaxDepthDialogFragment.this);
 			dismiss();
 			return true;

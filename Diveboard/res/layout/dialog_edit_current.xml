@@ -18,19 +18,20 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:gravity="center"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:background="@drawable/tab_body_background" >
         
-        <Spinner
+        <!-- <Spinner
 	        android:id="@+id/current"
 	        android:layout_width="wrap_content"
 	        android:layout_height="wrap_content"
-	        android:background="@drawable/spinner_select_background" />
-        
+	        android:background="@drawable/spinner_select_background" /> -->
+        <ListView
+	        android:id="@+id/current"
+	        android:layout_width="wrap_content"
+	        android:layout_height="wrap_content"/>
     </RelativeLayout>
         
-    <LinearLayout
+    <!-- <LinearLayout
         android:layout_height="wrap_content"
         android:layout_width="match_parent"
         android:orientation="horizontal" >
@@ -51,5 +52,5 @@
 	        android:layout_height="match_parent"
 	        android:textColor="@color/white"
 	        android:background="@drawable/edit_save_button_selector" />
-    </LinearLayout>    
+    </LinearLayout>  -->   
 </LinearLayout>

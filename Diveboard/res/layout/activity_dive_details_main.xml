@@ -73,18 +73,18 @@
 					        android:text="EDIT"
 					        android:layout_marginLeft="10dp"
 					        android:layout_alignParentRight="false"
-					        android:layout_weight="1"
+					        android:layout_weight="0.5"
 					        android:layout_width="0dp"
 					        android:layout_height="wrap_content">
 					    </Button>
-<!-- 					    <Button
+					    <Button
 					        android:id="@+id/deleteDiveButton"
 					        android:text="DELETE"
 					        android:layout_marginLeft="10dp"
 					        android:layout_width="0dp"
 					        android:layout_weight="0.5"
 					        android:layout_height="wrap_content">
-				    </Button> -->
+	 				    </Button>
 				    </LinearLayout>
 			   	</RelativeLayout>
 		   	</RelativeLayout>
@@ -158,7 +158,8 @@
 			        android:layout_height="wrap_content"
 			        android:scaleType="fitXY"
 			        android:paddingLeft="0dp"
-			        android:paddingRight="5dp"/>
+			        android:paddingRight="5dp"
+			        android:onClick="openGraph"/>
 			    <LinearLayout
 			        android:gravity="center"
 			        android:orientation="horizontal"
@@ -303,17 +304,40 @@
 	        android:orientation="horizontal"
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content"
+	        android:background="#FFDADBDC">
+		    <LinearLayout
+		        android:orientation="vertical"
+		        android:layout_width="match_parent"
+		        android:layout_height="wrap_content"
+		        android:background="@color/white"
+		        android:layout_marginBottom="1dp"
+		        android:padding="10dp">
+	<!-- 	        <FrameLayout -->
+	<!-- 		        android:layout_width="match_parent" -->
+	<!-- 		        android:layout_height="match_parent" -->
+	<!-- 		        android:background="@color/white" -->
+	<!-- 		        android:padding="0dp"> -->
+			        <TextView 
+			            android:id="@+id/dive_note"
+			            android:layout_width="wrap_content"
+			            android:layout_height="wrap_content"/>
+	<!-- 	        </FrameLayout> -->
+		    </LinearLayout>
+		</LinearLayout>
+		<LinearLayout
+	        android:orientation="vertical"
+	        android:layout_width="match_parent"
+	        android:layout_height="wrap_content"
 	        android:background="@color/white"
-	        android:layout_margin="10dp">
-<!-- 	        <FrameLayout -->
-<!-- 		        android:layout_width="match_parent" -->
-<!-- 		        android:layout_height="match_parent" -->
-<!-- 		        android:background="@color/white" -->
-<!-- 		        android:padding="0dp"> -->
-		        <TextView 
-		            android:id="@+id/dive_note"
+	        android:padding="10dp">
+		        <TextView
+		            android:id="@+id/dive_url"
 		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"/>
+		            android:layout_height="wrap_content"
+		            android:onClick="goToURL"
+		            android:clickable="true"
+		            android:text="View dive in browser"
+		            android:textColor="@color/blue"/>
 <!-- 	        </FrameLayout> -->
 	    </LinearLayout>
 	</LinearLayout>

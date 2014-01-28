@@ -66,7 +66,7 @@ public class					NewDiveNumberDialogFragment extends DialogFragment implements O
 		mDiveNumber = (EditText) view.findViewById(R.id.divenumber);
 		mDiveNumber.setTypeface(faceR);
 		if (mDive.getNumber() == null)
-			mDiveNumber.setText("0");
+			mDiveNumber.setText("");
 		else
 			mDiveNumber.setText(Integer.toString(mDive.getNumber()));
 		mDiveNumber.requestFocus();
@@ -94,7 +94,10 @@ public class					NewDiveNumberDialogFragment extends DialogFragment implements O
 			@Override
 			public void onClick(View v)
 			{
-				mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+				if (mDiveNumber.getText().toString().equals(""))
+					mDive.setNumber(null);
+				else
+					mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
 				mListener.onDiveNumberEditComplete(NewDiveNumberDialogFragment.this);
 				dismiss();
 			}
@@ -109,7 +112,10 @@ public class					NewDiveNumberDialogFragment extends DialogFragment implements O
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
+			if (mDiveNumber.getText().toString().equals(""))
+				mDive.setNumber(null);
+			else
+				mDive.setNumber(Integer.parseInt(mDiveNumber.getText().toString()));
 			mListener.onDiveNumberEditComplete(NewDiveNumberDialogFragment.this);
 			dismiss();
 			return true;

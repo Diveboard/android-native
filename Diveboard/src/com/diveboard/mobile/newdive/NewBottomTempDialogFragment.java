@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Temperature;
+import com.diveboard.model.Units;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -18,8 +19,10 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -33,7 +36,8 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 	private Dive				mDive;
 	private EditText			mBottomTemp;
 	private EditBottomTempDialogListener	mListener;
-	private Temperature			mTemperature;
+	private Double				mTemperature;
+	private Spinner				temp_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -68,19 +72,52 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 		mBottomTemp = (EditText) view.findViewById(R.id.temperature);
 		mBottomTemp.setTypeface(faceR);
 		if (mDive.getTempBottom() == null)
-			mTemperature = new Temperature(0.0);
+			mTemperature = 0.0;
 		else
 			mTemperature = mDive.getTempBottom();
-		mBottomTemp.setText(Double.toString(mTemperature.getTemperature()));
+		if (mDive.getTempBottom() == null)
+			mBottomTemp.setText("");
+		else
+			mBottomTemp.setText(Double.toString(mTemperature));
 		mBottomTemp.setHint(getResources().getString(R.string.bottom_temp_hint));
 		mBottomTemp.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mBottomTemp.setOnEditorActionListener(this);
 		
-		TextView temp_label = (TextView) view.findViewById(R.id.temp_label);
-		temp_label.setTypeface(faceR);
-		temp_label.setText("°" + mTemperature.getSmallName());
+//		TextView temp_label = (TextView) view.findViewById(R.id.temp_label);
+//		temp_label.setTypeface(faceR);
+//		temp_label.setText("°" + mTemperature.getSmallName());
+		temp_label = (Spinner) view.findViewById(R.id.temp_label);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
+		if (mDive.getTempBottomUnit() == null)
+		{
+			if (Units.getTemperatureUnit() == Units.Temperature.C)
+			{
+				adapter.add("°C");
+				adapter.add("°F");
+			}
+			else
+			{
+				adapter.add("°F");
+				adapter.add("°C");
+			}
+		}
+		else
+		{
+			if (mDive.getTempBottomUnit().compareTo("C") == 0)
+			{
+				adapter.add("°C");
+				adapter.add("°F");
+			}
+			else
+			{
+				adapter.add("°F");
+				adapter.add("°C");
+			}
+		}
+		temp_label.setAdapter(adapter);
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -102,17 +139,28 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 			@Override
 			public void onClick(View v)
 			{
-				Temperature temperature;
+//				Temperature temperature;
+//				
+//				try
+//				{
+//					temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+//				}
+//				catch (NumberFormatException e)
+//				{
+//					temperature = null;
+//				}
+				Double temperature;
 				
 				try
 				{
-					temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+					temperature = Double.parseDouble(mBottomTemp.getText().toString());
 				}
 				catch (NumberFormatException e)
 				{
-					temperature = new Temperature(0.0);
+					temperature = null;
 				}
 				mDive.setTempBottom(temperature);
+				mDive.setTempBottomUnit(((String) temp_label.getSelectedItem()).substring(1));
 				mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
 				dismiss();
 			}
@@ -127,17 +175,28 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 	{
 		if (EditorInfo.IME_ACTION_DONE == actionId)
 		{
-			Temperature temperature;
+//			Temperature temperature;
+//			
+//			try
+//			{
+//				temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+//			}
+//			catch (NumberFormatException e)
+//			{
+//				temperature = null;
+//			}
+			Double temperature;
 			
 			try
 			{
-				temperature = new Temperature(Double.parseDouble(mBottomTemp.getText().toString()));
+				temperature = Double.parseDouble(mBottomTemp.getText().toString());
 			}
 			catch (NumberFormatException e)
 			{
-				temperature = new Temperature(0.0);
+				temperature = null;
 			}
 			mDive.setTempBottom(temperature);
+			mDive.setTempBottomUnit(((String) temp_label.getSelectedItem()).substring(1));
 			mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
 			dismiss();
 			return true;

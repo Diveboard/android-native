@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -12,12 +13,22 @@ import java.util.Iterator;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.CookieStore;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.client.protocol.ClientContext;
+import org.apache.http.impl.client.BasicCookieStore;
+import org.apache.http.impl.cookie.BasicClientCookie;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -40,6 +51,9 @@ public class					DataManager
 	private int										_userId;
 	private String									_token;
 	private DiveboardModel							_model;
+	private ArrayList<DiveDeleteListener>			_diveDeleteListeners = new ArrayList<DiveDeleteListener>();
+	private ArrayList<DiveCreateListener>			_diveCreateListeners = new ArrayList<DiveCreateListener>();
+	private Thread									_dataRetrieveThread = null;
 	
 	/*
 	 * Method DataManager
@@ -174,7 +188,20 @@ public class					DataManager
 	
 	public void					delete(Object object)
 	{
-		
+		synchronized (_lock)
+		{
+			if (object.getClass() == Dive.class)
+				_deleteDive(object);
+		}
+		commit();
+	}
+	
+	private void				_deleteDive(Object object)
+	{
+		Dive dive = (Dive) object;
+		Pair<String, String> new_elem = new Pair<String, String>("Dive_delete:" + dive.getId(), null);
+		_editList.add(new_elem);
+		commit();
 	}
 	
 	public void					save(Object object)
@@ -183,14 +210,19 @@ public class					DataManager
 		{
 			if (object.getClass() == Dive.class)
 			{
-				if (((Dive)object).getId() == -1)
+				if (((Dive)object).getId() < 0 && (((Dive)object).getEditList() == null || ((Dive)object).getEditList().size() == 0))
+				{
 					_addDive(object);
+					commit();
+				}
 				else
+				{
 					_saveDive(object);
+					commit();
+				}
 			}
 			((IModel)object).clearEditList();
 		}
-		commit();
 	}
 	
 	private void				_addDive(Object object)
@@ -200,19 +232,43 @@ public class					DataManager
 		
 		try
 		{
+			System.out.println("ADD DIVE");
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
-			json.put("maxdepth", dive.getMaxdepth().getDistance().toString());
+			json.put("time", dive.getTime());
+			//json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
+			json.put("maxdepth_value", dive.getMaxdepth().toString());
+			if (dive.getMaxdepthUnit() != null)
+				json.put("maxdepth_unit", dive.getMaxdepthUnit());
 			json.put("duration", dive.getDuration());
 			json.put("trip_name", dive.getTripName());
-			json.put("altitude", dive.getAltitude().getDistance().toString());
-			json.put("visibility", dive.getVisibility());
-			json.put("current", dive.getCurrent());
-			json.put("temp_surface", dive.getTempSurface().getTemperature().toString());
-			json.put("temp_bottom", dive.getTempBottom().getTemperature().toString());
-			json.put("water", dive.getWater());
+			if (dive.getAltitude() != null)
+				json.put("altitude", dive.getAltitude().getDistance(Units.Distance.KM).toString());
+			if (dive.getVisibility() != null)
+				json.put("visibility", dive.getVisibility());
+			if (dive.getCurrent() != null)
+				json.put("current", dive.getCurrent());
+//			if (dive.getTempSurface() != null)
+//				json.put("temp_surface", dive.getTempSurface().getTemperature(Units.Temperature.C).toString());
+			if (dive.getTempSurface() != null)
+				json.put("temp_surface_value", dive.getTempSurface());
+			if (dive.getTempSurfaceUnit() != null)
+				json.put("temp_surface_unit", dive.getTempSurfaceUnit());
+//			if (dive.getTempBottom() != null)
+//				json.put("temp_bottom", dive.getTempBottom().getTemperature(Units.Temperature.C).toString());
+			if (dive.getTempBottom() != null)
+				json.put("temp_bottom_value", dive.getTempBottom());
+			if (dive.getTempBottomUnit() != null)
+				json.put("temp_bottom_unit", dive.getTempBottomUnit());
+			if (dive.getWater() != null)
+				json.put("water", dive.getWater());
 			json.put("notes", dive.getNotes());
-			json.put("weights", dive.getWeights().getWeight().toString());
+//			if (dive.getWeights() != null)
+//				json.put("weights", dive.getWeights().getWeight(Units.Weight.KG).toString());
+			if (dive.getWeights() != null)
+				json.put("weights_value", dive.getWeights().toString());
+			if (dive.getWeightsUnit() != null)
+				json.put("weights_unit", dive.getWeightsUnit());
 			json.put("user_id", _model.getUser().getId());
 			if (dive.getSpot() != null)
 			{
@@ -220,7 +276,23 @@ public class					DataManager
 				temp.put("id", dive.getSpot().getId());
 				json.put("spot", temp);
 			}
-			Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
+			if (dive.getNumber() != null)
+				json.put("number", dive.getNumber());
+			json.put("privacy", Integer.toString(dive.getPrivacy()));
+			if (dive.getDivetype() != null)
+			{
+				System.out.println("Enter DiveType");
+				JSONArray jarray = new JSONArray();
+				ArrayList<String> elem = dive.getDivetype();
+				for (int i = 0, length = elem.size(); i < length; i++)
+				{
+					System.out.println("elem : " + elem.get(i));
+					jarray.put(elem.get(i));
+				}
+				json.put("divetype", jarray);
+			}
+			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
+			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);
 		}
 		catch (JSONException e) {
@@ -242,8 +314,15 @@ public class					DataManager
 				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				else if (edit_list.get(i).first.equals("divetype"))
+					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else
-					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				{
+					if (edit_list.get(i).second == null)
+						obj.put(edit_list.get(i).first, JSONObject.NULL);
+					else
+						obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				}
 				dive.applyEdit(obj);
 				Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), obj.toString());
 				_editList.add(new_elem);
@@ -305,6 +384,7 @@ public class					DataManager
 		commitOnline.start();
 	}
 	
+	// Apply modifications on Cache List
 	private void						_applyEditCache(String elemtag, JSONObject result_obj)
 	{
 		String[] info = elemtag.split(":");
@@ -316,17 +396,14 @@ public class					DataManager
 			{
 				JSONObject json = new JSONObject(result);
 				JSONArray jarray = json.getJSONArray("result");
-				if (Integer.parseInt(info[1]) == -1)
+				//if (Integer.parseInt(info[1]) == -1)
+				if (Integer.parseInt(info[1]) < 0)
 				{
-					for (int i = jarray.length() - 1; i >= 0; i--)
-					{
-						JSONObject temp = jarray.getJSONObject(i);
-						if (temp.getInt("id") == -1)
-						{
-							jarray.put(i, result_obj);
-							break ;
-						}
-					}
+					JSONArray new_array = new JSONArray();
+					new_array.put(0, result_obj);
+					for (int i = 0; i < jarray.length(); i++)
+						new_array.put(i + 1, jarray.get(i));
+					json.put("result", new_array);
 				}
 				else
 				{
@@ -336,6 +413,7 @@ public class					DataManager
 						if (temp.getInt("id") == Integer.parseInt(info[1]))
 						{
 							jarray.put(i, result_obj);
+							json.put("result", jarray);
 							break ;
 						}
 					}
@@ -352,6 +430,41 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("Dive_delete"))
+		{
+			String result = get(_userId, "dives");
+			JSONObject json;
+			try
+			{
+				json = new JSONObject(result);
+				JSONArray jarray = json.getJSONArray("result");
+				for (int i = 0, length = jarray.length(); i < length; i++)
+				{
+					JSONObject temp = jarray.getJSONObject(i);
+					if (temp.getInt("id") == Integer.parseInt(info[1]))
+					{
+						ArrayList<JSONObject> list = new ArrayList<JSONObject>();
+						for (int j = 0, len = jarray.length(); j < len; j++)
+						{
+						    list.add(jarray.getJSONObject(j));
+						}
+						list.remove(i);
+						JSONArray new_jarray = new JSONArray(list);
+						
+						json.put("result", new_jarray);
+						//saveCache(_userId, "dives", new_jarray.toString());
+						saveCache(_userId, "dives", json.toString());
+						commitCache();
+						break ;
+					}
+				}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -361,6 +474,19 @@ public class					DataManager
 		{
 			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 			HttpPost postRequest;
+			HttpContext localContext = null;
+			HttpResponse response;
+			
+			if (ApplicationController.SudoId != 0)
+			{
+				CookieStore cookieStore = new BasicCookieStore();
+				localContext = new BasicHttpContext();
+				BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+				cookie.setDomain(".diveboard.com");
+				cookie.setPath("/");
+				cookieStore.addCookie(cookie);
+				localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			}
 			
 			System.out.println("SEND ONLINE ----------------------------------");
 			while (_editList.size() != 0)
@@ -371,88 +497,211 @@ public class					DataManager
 					Pair<String, String> elem;
 					synchronized (_lock)
 					{
-						System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
-						elem = _editList.get(0);
-						// Process
-						AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
-						String[] info = elem.first.split(":");
-						if (info[0].compareTo("Dive") == 0)
-							postRequest = new HttpPost("http://stage.diveboard.com/api/V2/dive");
-						else
-							postRequest = null;
-						if (postRequest == null)
-							break ;
-						try
+						if (_editList.size() != 0)
 						{
-							// Adding parameters
-							ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
-							args.add(new BasicNameValuePair("auth_token", _token));
-							args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
-							JSONObject checkObject = new JSONObject(elem.second);
-							System.out.println("BEFORE " + elem.second);
-							if (checkObject.isNull("spot") == false)
+							//System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
+							elem = _editList.get(0);
+							System.out.println("SEND ITEM : " + elem.second);
+							// Process
+							AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+							String[] info = elem.first.split(":");
+							if (info[0].compareTo("Dive") == 0)
 							{
-								JSONObject spot = checkObject.getJSONObject("spot");
-								JSONObject temp = new JSONObject();
-								temp.put("id", spot.get("id"));
-								checkObject.put("spot", temp);
-								args.add(new BasicNameValuePair("arg", checkObject.toString()));
-								System.out.println("SPOT SEND " + checkObject);
+								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive");
+							}
+							else if (info[0].equals("Dive_delete"))
+							{
+								_deleteDive(client, elem.first);
+								_editList.remove(0);
+								_cacheEditList();
+								continue ;
 							}
 							else
-								args.add(new BasicNameValuePair("arg", elem.second));
-							args.add(new BasicNameValuePair("flavour", "mobile"));
-							// Set parameters
-							postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
-							// Execute request
-							HttpResponse response = client.execute(postRequest);
-							// Get response
-							HttpEntity entity = response.getEntity();
-							String result = ContentExtractor.getASCII(entity);
-							JSONObject json = new JSONObject(result);
-							if (json.getBoolean("success") == false)
+								postRequest = null;
+							if (postRequest == null)
 								break ;
-							if (Integer.parseInt(info[1]) == -1)
+							try
 							{
-								System.out.println(result);
-								// New Dive segment
-								ArrayList<Dive> dives = _model.getDives();
-								JSONObject new_dive = json.getJSONObject("result");
-								for (int i = dives.size() - 1; i >= 0; i--)
+								// Adding parameters
+								ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
+								args.add(new BasicNameValuePair("auth_token", _token));
+								args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+								JSONObject checkObject = new JSONObject(elem.second);
+								if (checkObject.isNull("spot") == false)
 								{
-									if (dives.get(i).getId() == -1)
-									{
-										_model.getDives().get(i).setId(new_dive.getInt("id"));
-										break ;
-									}
+									JSONObject spot = checkObject.getJSONObject("spot");
+									JSONObject temp = new JSONObject();
+									temp.put("id", spot.get("id"));
+									checkObject.put("spot", temp);
+									args.add(new BasicNameValuePair("arg", checkObject.toString()));
 								}
+								else
+									args.add(new BasicNameValuePair("arg", elem.second));
+								args.add(new BasicNameValuePair("flavour", "mobile"));
+								// Set parameters
+								postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+								// Execute request
+								if (ApplicationController.SudoId == 0)
+									response = client.execute(postRequest);
+								else
+									response = client.execute(postRequest, localContext);
+								// Get response
+								HttpEntity entity = response.getEntity();
+								String result = ContentExtractor.getASCII(entity);
+								System.out.println("RESULT " + result);
+								JSONObject json = new JSONObject(result);
+								if (json.getBoolean("success") == false)
+									break ;
+								//if (Integer.parseInt(info[1]) == -1)
+								if (Integer.parseInt(info[1]) < 0)
+								{
+									// New Dive segment
+									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
+								}
+								if (ApplicationController.SudoId == 0)
+									_applyEditCache(elem.first, json.getJSONObject("result"));
+								// Fire dive created event
+								for (DiveCreateListener listener : _diveCreateListeners)
+									listener.onDiveCreateComplete();
 							}
-							_applyEditCache(elem.first, json.getJSONObject("result"));
+							catch (UnsupportedEncodingException e) 
+							{
+								e.printStackTrace();
+								break ;
+							}
+							catch (IOException e)
+							{
+								e.printStackTrace();
+								break ;
+							} catch (JSONException e)
+							{
+								e.printStackTrace();
+								break ;
+							}
+							client.close();
+							// Remove edit from cache
+							_editList.remove(0);
+							// Save edit in cache
+							_cacheEditList();
 						}
-						catch (UnsupportedEncodingException e) 
-						{
-							e.printStackTrace();
-							break ;
-						}
-						catch (IOException e)
-						{
-							e.printStackTrace();
-							break ;
-						} catch (JSONException e)
-						{
-							e.printStackTrace();
-							break ;
-						}
-						client.close();
-						// Remove edit from cache
-						_editList.remove(0);
-						// Save edit in cache
-						_cacheEditList();
 					}
 				}
 				else
+				{
+					// Fire dive created event
+					for (DiveCreateListener listener : _diveCreateListeners)
+						listener.onDiveCreateComplete();
 					break ;
+				}
 			}
+	        if (_dataRetrieveThread == null)
+	        {
+	        	_dataRetrieveThread = new Thread(new Runnable()
+				{
+					public void run()
+					{
+						try {
+							Thread.sleep(60000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						System.out.println("Refresh Thread");
+						_model.refreshData();
+					}
+				});
+	        	_dataRetrieveThread.start();
+	        }
 		}
+		
+		private void					_deleteDive(AndroidHttpClient client, String elemtag)
+		{
+			String[]					info = elemtag.split(":");
+
+			HttpDelete deleteRequest = new HttpDelete(AppConfig.SERVER_URL + "/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("xJ9GunZaNwLjP4Dz2jy3rdF") + "&flavour=mobile");
+			HttpContext localContext = null;
+			
+			if (ApplicationController.SudoId != 0)
+			{
+				CookieStore cookieStore = new BasicCookieStore();
+				localContext = new BasicHttpContext();
+				BasicClientCookie cookie = new BasicClientCookie("sudo", Integer.toString(ApplicationController.SudoId));
+				cookie.setDomain(".diveboard.com");
+				cookie.setPath("/");
+				cookieStore.addCookie(cookie);
+				localContext.setAttribute(ClientContext.COOKIE_STORE, cookieStore);
+			}
+			
+			try
+			{
+				if (ApplicationController.SudoId == 0)
+					client.execute(deleteRequest);
+				else
+					client.execute(deleteRequest, localContext);
+				if (ApplicationController.SudoId == 0)
+					_applyEditCache(elemtag, null);
+				client.close();
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+			for (DiveDeleteListener listener : _diveDeleteListeners)
+				listener.onDiveDeleteComplete();
+		}
+		
+		/*
+		 * Refresh information of edit list with new dive id
+		 */
+		private void					_refreshNewDiveEditList(int id, JSONObject json) throws JSONException
+		{
+			ArrayList<Dive> dives = _model.getDives();
+			System.out.println("REFRESH : " + json);
+			JSONObject new_dive = json.getJSONObject("result");
+			for (int i = 0, size = dives.size(); i < size; i++)
+			{
+				if (dives.get(i).getId() == id)
+				{
+					Dive dive = new Dive(new_dive);
+					//Apply the changes on the mode dive list
+					_model.getDives().set(i, dive);
+					break ;
+				}
+			}
+			//Apply the changes on the edit list (update new id)
+			for (int j = 0, size2 = _editList.size(); j < size2; j++)
+			{
+				String[] elem_tag = _editList.get(j).first.split(":");
+				System.out.println("CHECKING : " + elem_tag[1] + " = " + id);
+				if (Integer.parseInt(elem_tag[1]) == id)
+				{
+					System.out.println("REFRESH NEW DIVE: " + _editList.get(j).second);
+					JSONObject temp_obj;
+					try
+					{
+						if (_editList.get(j).second.equals("null") == false)
+						{
+							temp_obj = new JSONObject(_editList.get(j).second);
+							temp_obj.put("id", new_dive.getInt("id"));
+							_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + new_dive.getInt("id"), temp_obj.toString()));
+						}
+						else
+							_editList.set(j, new Pair<String, String>(elem_tag[0] + ":" + new_dive.getInt("id"), "null"));
+					}
+					catch (JSONException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+			_cacheEditList();
+		}
+	}
+	
+	public void					setOnDiveDeleteComplete(DiveDeleteListener listener)
+	{
+		_diveDeleteListeners.add(listener);
+	}
+
+	public void					setOnDiveCreateComplete(DiveCreateListener listener)
+	{
+		_diveCreateListeners.add(listener);
 	}
 }

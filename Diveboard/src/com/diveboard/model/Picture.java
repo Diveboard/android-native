@@ -12,6 +12,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONStringer;
 
+import com.diveboard.mobile.ApplicationController;
+
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -90,8 +92,10 @@ public class					Picture
 	public synchronized boolean		loadPicture(final Context context, final Size size) throws IOException
 	{
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		//ApplicationController AC = (ApplicationController)context;
+		//NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-		
+
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			URL url;
@@ -179,7 +183,7 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
-		System.out.println("Saving picture: " + file.getAbsolutePath());
+		//System.out.println("Saving picture: " + file.getAbsolutePath());
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file
@@ -188,12 +192,13 @@ public class					Picture
 			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
 				file.delete();
 		}
+		//System.out.println("Saving picture complete : " + file.getAbsolutePath());
 		_updateSaveList(context, url);
 	}
 	
 	private synchronized void				_updateSaveList(final Context context, String url)
 	{
-		System.out.println("UPDATE SAVE LIST");
+		//System.out.println("UPDATE SAVE LIST");
 		synchronized (DiveboardModel.savedPictureList)
 		{
 			//DiveboardModel.savedPictureList.put(url);
@@ -210,11 +215,11 @@ public class					Picture
 			try
 			{
 				DiveboardModel.savedPictureLock.acquire();
-				System.out.println("START WRITE");
+				//System.out.println("START WRITE");
 				FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_APPEND);
 				outputStream.write(url.getBytes());
 				outputStream.close();
-				System.out.println("END WRITE");
+				//System.out.println("END WRITE");
 				DiveboardModel.savedPictureLock.release();
 			}
 			catch (FileNotFoundException e)
@@ -267,12 +272,14 @@ public class					Picture
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
 		{
+			System.out.println("Picture Exists");
 			FileInputStream inputStream = context.openFileInput(file.getName());
 			_bitmap = BitmapFactory.decodeStream(inputStream);
 			if (_bitmap == null)
 				return false;
 			return true;
 		}
+		System.out.println("Picture doesn't Exists");
 		return false;
 	}
 	
@@ -311,5 +318,19 @@ public class					Picture
 				e.printStackTrace();
 			}
 		return null;
+	}
+	
+	public void					deletePicture(final Context context)
+	{
+		String[] picture_name = _urlDefault.split("/");
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
+		if (file.exists())
+		{
+			file.delete();
+		}
 	}
 }

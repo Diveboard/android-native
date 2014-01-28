@@ -2,10 +2,7 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
@@ -17,17 +14,12 @@ import com.diveboard.model.ScreenSetup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.app.Activity;
-import android.app.ListActivity;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.graphics.drawable.TransitionDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -35,53 +27,47 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.support.v4.view.GestureDetectorCompat;
 import android.text.TextUtils;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
+import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewTreeObserver;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.Window;
-import android.view.animation.AccelerateInterpolator;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
-import android.view.animation.DecelerateInterpolator;
-import android.view.animation.Interpolator;
-import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
+import android.widget.RelativeLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Scroller;
 import android.widget.SeekBar;
-import android.widget.Toast;
-import android.widget.SeekBar.OnSeekBarChangeListener;
 import android.widget.TextView;
 import com.facebook.*;
-import com.facebook.model.*;
+import com.google.analytics.tracking.android.EasyTracker;
+import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
-public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks {
+
+public class DivesActivity extends FragmentActivity implements TaskFragment.TaskCallbacks
+{
 
 	// Number of pages in Dives
 	private int mNbPages = 1;
@@ -97,6 +83,56 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private ImageView mBackground2;
 	private	 int mBackground = 1;
 	
+	//Tracking bar
+	public class TrackingBarPosition
+	{
+		int x;
+		int y;
+		int X;
+		int Y;
+		public TrackingBarPosition(int x, int X, int y, int Y)
+		{
+			this.x = x;
+			this.y = y;
+			this.X = X;
+			this.Y = Y;
+		}
+		public int getx() {
+			return x;
+		}
+		public void setx(int x) {
+			this.x = x;
+		}
+		public int gety() {
+			return y;
+		}
+		public void sety(int y) {
+			this.y = y;
+		}
+		public int getX() {
+			return X;
+		}
+		public void setX(int x) {
+			X = x;
+		}
+		public int getY() {
+			return Y;
+		}
+		public void setY(int y) {
+			Y = y;
+		}
+
+	}
+	private Integer max_strokes_possible;
+	private Double nb_dives_per_stroke;
+	private Integer nb_strokes = 0;
+	private Integer position_stroke;
+	private static final String DEBUG_TAG = "Gestures";
+    private GestureDetectorCompat mDetector;
+    private OnTouchListener mGestureListener;
+    private boolean mIsScrolling = false;
+    private ArrayList<TrackingBarPosition> mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
+	
 	// Thread for the data loading & the views associated
 	private TaskFragment mTaskFragment;
 	//private LoadDataTask mAuthTask = null;
@@ -105,6 +141,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private TextView mLoadDataStatusMessageView;
 	// Model to display
 	private DiveboardModel mModel;
+	private DownloadImageTask mBackgroundImageTask = null;
 	
 	@Override
 	protected void onResume()
@@ -112,32 +149,70 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		super.onResume();
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.handleLowMemory();
+		AC.setCurrentTab(0);
 		if (AC.getRefresh() == 1)
 		{
-			Toast toast = Toast.makeText(getApplicationContext(), "The new dive will be displayed after refreshing the page!", Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-			AC.setPageIndex(0);
 			AC.setRefresh(0);
+			AC.setPageIndex(0);
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
 			finish();
-			startActivity(getIntent());
+			return ;
+		}
+		else if (AC.getRefresh() == 3)
+		{
+			AC.setRefresh(0);
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
+			finish();
+			return ;
+		}
+		else if (AC.getRefresh() == 4)
+		{
+			AC.setRefresh(0);
+			AC.setPageIndex(0);
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
+			finish();
+			return ;
 		}
 	}
 	
 	@Override
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+	public void onStart() {
+		super.onStart();
+		EasyTracker.getInstance(this).activityStart(this);
+	}
+
+	@Override
+	public void onStop() {
+		super.onStop();
+		EasyTracker.getInstance(this).activityStop(this);
+	}
+	
+	@Override
+	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);	
 		// Set the action bar
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (AC.getModel() == null)
 			System.out.println("model null");
+		
 		setContentView(R.layout.activity_dives);
 		mLoadDataFormView = findViewById(R.id.load_data_form);
 		mLoadDataStatusView = findViewById(R.id.load_data_status);
 		mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
 		// Initialize data
 		mModel = AC.getModel();
+		// Instantiate the gesture detector with the
+        // application context and an implementation of
+        // GestureDetector.OnGestureListener
+        mDetector = new GestureDetectorCompat(this,new MyGestureListener());
+        
 		if (AC.isDataReady() == false)
 			loadData();
 		else
@@ -192,41 +267,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 //			logout();
 		}
 	}
+
 	
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {    
-//	    if (mDataLoaded == false)
-//	    {
-//	    	super.onConfigurationChanged(newConfig);
-//	    	setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
-//	    }
+
 	}
-	
-//	public void goToSettings(View view)
-//	{
-//		PopupMenu popup = new PopupMenu(this, view);
-//	    MenuInflater inflater = popup.getMenuInflater();
-//	    inflater.inflate(R.menu.settings, popup.getMenu());
-//	    popup.show();
-//	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-//	    {
-//
-//			@Override
-//			public boolean onMenuItemClick(MenuItem item) {
-//				switch (item.getItemId()) {
-//		        case R.id.menu_settings:
-//		    		Intent editDiveActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-////		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
-//		    	    startActivity(editDiveActivity);
-//		            return true;
-//		        default:
-//		            return false;
-//				}
-//			}
-//	    	
-//	    });
-//
-//	}
 	
 	public void goToMenuV3(View view)
 	{
@@ -242,23 +288,41 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				switch (item.getItemId()) {
 				case R.id.refresh:
 					ApplicationController AC = (ApplicationController)getApplicationContext();
-					AC.setPageIndex(0);
+					AC.setDataReady(false);
+					AC.getModel().stopPreloadPictures();
 					AC.setModel(null);
 					finish();
-					//AC.handleLowMemory();
 					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(newDiveActivity);
 		    	    return true;
-		        case R.id.menu_settings:
+				case R.id.menu_settings:
 		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//		    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 		    	    startActivity(settingsActivity);
-		            return true;
+		    	    return true;
 		        case R.id.report_bug:
-		        	UserVoice.launchContactUs(DivesActivity.this);
+		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
+		        	{
+	        			WaitDialogFragment dialog = new WaitDialogFragment();
+	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+						Config config = new Config("diveboard.uservoice.com");
+						UserVoice.init(config, DivesActivity.this);
+						config.setShowForum(false);
+					    config.setShowContactUs(true);
+					    config.setShowPostIdea(false);
+					    config.setShowKnowledgeBase(false);
+						ApplicationController.UserVoiceReady = true;
+		        		UserVoice.launchContactUs(DivesActivity.this);
+		        		dialog.dismiss();
+		        	}
+		        	else
+		        	{
+		        		Intent intent = new Intent(Intent.ACTION_SEND);
+		        		intent.setType("text/plain");
+		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+		        		startActivity(Intent.createChooser(intent, "Send Email"));
+		        	}
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
@@ -280,7 +344,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		unregisterForContextMenu(view);
 	}
 	
-	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void openMenu(View view)
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -297,60 +361,79 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    switch (item.getItemId()) {
 		    case R.id.refresh:
 		    	ApplicationController AC = (ApplicationController)getApplicationContext();
-		    	AC.setPageIndex(0);
+		    	AC.setDataReady(false);
+		    	AC.getModel().stopPreloadPictures();
 				AC.setModel(null);
 				finish();
-				//AC.handleLowMemory();
 				return true;
 	    	case R.id.add_dive:
 	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//	    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(newDiveActivity);
 	    	    return true;
 	    	case R.id.menu_settings:
 	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	//    		//editDiveActivity.putExtra("index", mPager.getCurrentItem());
 	    	    startActivity(settingsActivity);
 	            return true;
 	    	case R.id.report_bug:
-	        	UserVoice.launchContactUs(DivesActivity.this);
+	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	        	{
+    				WaitDialogFragment dialog = new WaitDialogFragment();
+    				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+					Config config = new Config("diveboard.uservoice.com");
+					UserVoice.init(config, DivesActivity.this);
+					config.setShowForum(false);
+				    config.setShowContactUs(true);
+				    config.setShowPostIdea(false);
+				    config.setShowKnowledgeBase(false);
+					ApplicationController.UserVoiceReady = true;
+	        		UserVoice.launchContactUs(DivesActivity.this);
+	        		dialog.dismiss();
+	        	}
+	        	else
+	        	{
+	        		Intent intent = new Intent(Intent.ACTION_SEND);
+	        		intent.setType("text/plain");
+	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+	        		startActivity(Intent.createChooser(intent, "Send Email"));
+	        	}
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();
 	            return true;
+	    	
 	        default:
 	            return super.onContextItemSelected(item);
 	    }
 	}
 	
-	public void goToEditDive(View view)
-	{	
-		Intent editDiveActivity = new Intent(DivesActivity.this, EditDiveActivity.class);
-		editDiveActivity.putExtra("index", mPager.getCurrentItem());
-	    startActivity(editDiveActivity);
-	}
-	
 	public void goToDiveDetails(View view)
 	{
+		ApplicationController AC = (ApplicationController)getApplicationContext();
 		Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
-		diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
+		//System.out.println(AC.getPageIndex());
+		diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 		startActivity(diveDetailsActivity);
 	}
 	
 	public void goToGalleryCarousel(View view)
 	{
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-		if (AC.getModel().getDives().get(AC.getPageIndex()).getPictures().size() != 0)
-		{
-			Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
-			galleryCarousel.putExtra("index", mPager.getCurrentItem());
-			startActivity(galleryCarousel);
-		}
-		else
-		{
-			Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
-			diveDetailsActivity.putExtra("index", mPager.getCurrentItem());
-			startActivity(diveDetailsActivity);
+		try {
+			if (AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().size() != 0 && AC.getModel().getDives().get(AC.getModel().getDives().size() - AC.getPageIndex() - 1).getPictures().get(0).getPicture(getApplicationContext()) != null)
+			{
+				Intent galleryCarousel = new Intent(DivesActivity.this, GalleryCarouselActivity.class);
+				galleryCarousel.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+				startActivity(galleryCarousel);
+			}
+			else
+			{
+				Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
+				diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+				startActivity(diveDetailsActivity);
+			}
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 	
@@ -442,30 +525,43 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	/**
 	 * Footer text
 	 */
-	public static String getPositon(int i, DiveboardModel model)
+	public static String getPosition(int i, DiveboardModel model)
 	{
 		String pos = "";
-		if (model.getDives().get(i).getLat() > 0)
+		if (model.getDives().get(i).getLat() == null)
+		{
+			pos += "0° ";
+			pos += "N";
+		}
+		else if (model.getDives().get(i).getLat() >= 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLat()) + "° ";
 			pos += "N";
 		}
-		else
+		else if (model.getDives().get(i).getLat() < 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (model.getDives().get(i).getLng() > 0)
+		if (model.getDives().get(i).getLng() == null)
+		{
+			pos += "0° ";
+			pos += "E";
+		}
+		else if (model.getDives().get(i).getLng() >= 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLng()) + "° ";
 			pos += "E";
 		}
-		else
+		else if (model.getDives().get(i).getLng() < 0)
 		{
 			pos += String.valueOf(model.getDives().get(i).getLng() * (-1)) + "° ";
 			pos += "W";
 		}
+		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 
+				(model.getDives().get(i).getLng() == null || model.getDives().get(i).getLng() == 0))
+			pos = "";
 		return (pos);
 	}
 	
@@ -484,9 +580,11 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 		    @Override 
 		    public void onGlobalLayout() { 
+		    	
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
+		    	AC.setPageIndex(mModel.getDives().size() - 1);
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		      //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
+		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
 				int offset = 0;
@@ -519,10 +617,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				else
 				{
 					mNbPages = mModel.getDives().size();
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(0, mModel));
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-					//We write the text for the footer
+					//Pager size setting
+					mPager = (ViewPager) findViewById(R.id.pager);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight() - mScreenSetup.getDiveListWhiteSpace4() - - mScreenSetup.getDiveListWhiteSpace3());
+					mPager.setLayoutParams(params);
 					//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 					//Each circle must be white with a transparent circle in the center
 					Bitmap bitmap = ImageHelper.getRoundedLayer(mScreenSetup);
@@ -531,10 +629,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					mScreen = (RelativeLayout)findViewById(R.id.screen);
 					mBackground1 = (ImageView)findViewById(R.id.background1);
 					mBackground2 = (ImageView)findViewById(R.id.background2);
-					DownloadImageTask task = new DownloadImageTask();
-					task.execute(AC.getPageIndex());
+					mBackgroundImageTask = new DownloadImageTask();
+					mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 					//Pager setting
-					mPager = (ViewPager) findViewById(R.id.pager);
+					
 			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
 			        if (mPagerAdapter == null)
 			        	System.out.println("mPagerAdapter == null");
@@ -545,17 +643,156 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        mPager.setAdapter(mPagerAdapter);
 			        mPager.setPageMargin(margin + offset);
 			        mPager.setOffscreenPageLimit(2);
-			        mPager.setCurrentItem(AC.getPageIndex());
-			        mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+			        if (AC.getPageIndex() >= mModel.getDives().size())
+			        {
+			        	mPager.setCurrentItem(mModel.getDives().size() - 1);
+			        	AC.setPageIndex(mModel.getDives().size() - 1);
+			        }
+			        else
+			        	mPager.setCurrentItem(AC.getPageIndex());
+			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
+			        mPager.setOnTouchListener(new OnTouchListener() {
+						@Override
+						public boolean onTouch(View v, MotionEvent event) {
+							final String DEBUG_TAG = "DivesActivity";
+							int action = MotionEventCompat.getActionMasked(event);
+							return false;
+						}
+					});
+			        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
 			        //The tracking bar is set
-			        mSeekBar = (SeekBar)findViewById(R.id.seekBar);
-			        RelativeLayout.LayoutParams seekBarParams = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
-			        seekBarParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-			        seekBarParams.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
-			        mSeekBar.setLayoutParams(seekBarParams);
-			        mSeekBar.setMax(mModel.getDives().size() - 1);
-			        mSeekBar.setProgress(AC.getPageIndex());
-			        //Events when the user changes a page
+			        //RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
+			        RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 200);
+			        tracking_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        tracking_bar_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
+			        ((RelativeLayout)findViewById(R.id.tracking_bar)).setLayoutParams(tracking_bar_params);
+			        //((RelativeLayout)findViewById(R.id.tracking_bar)).setBackgroundColor(Color.CYAN);
+			        
+			        RelativeLayout.LayoutParams left_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        left_side_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			        ((RelativeLayout)findViewById(R.id.left_side)).setLayoutParams(left_side_params);
+			        
+			        RelativeLayout.LayoutParams left_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        ((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
+			        RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        ((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
+			        ((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
+			        ((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
+			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
+			        
+			        //RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, 200);
+			        center_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        center_bar_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+			        ((RelativeLayout)findViewById(R.id.center_bar)).setLayoutParams(center_bar_params);
+			        max_strokes_possible = (mScreenSetup.getScreenWidth() * 68 / 100) / (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100);
+			        nb_dives_per_stroke = (Double.parseDouble(Integer.toString(mModel.getDives().size())) / max_strokes_possible);
+			        
+			        //System.out.println("nb_dives_per_stroke = " + nb_dives_per_stroke + "max_strokes_possible = " + max_strokes_possible);
+			        
+			        if (nb_dives_per_stroke < 1)
+			        {
+			        	nb_dives_per_stroke = (double) 1;
+			        	nb_strokes = mModel.getDives().size();
+			        }
+			        else
+			        {
+			        	nb_strokes = max_strokes_possible;
+			        }
+			        position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
+			        if (position_stroke > max_strokes_possible)
+			        	position_stroke = max_strokes_possible;
+			        int i = 1;
+			        for (; i < nb_strokes + 1; i++)
+			        {
+			        	RelativeLayout child = new RelativeLayout(DivesActivity.this);
+				        //RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, mScreenSetup.getDiveListSeekBarHeight());
+				        RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, 200);
+				        mGestureListener = new View.OnTouchListener() {
+				            public boolean onTouch(View v, MotionEvent event) {
+
+				                if (mDetector.onTouchEvent(event)) {
+				                    return true;
+				                }
+
+				                if(event.getAction() == MotionEvent.ACTION_UP) {
+				                    {
+				                    	if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getChildCount() > 1)
+				                    		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).removeViewAt(1);
+				                    	if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
+				                    		((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
+				                    	if (position_stroke == 1)
+				                    	{
+				                    		ApplicationController AC = ((ApplicationController)getApplicationContext());
+				                    		AC.setPageIndex(0);
+				                    		mPager.setCurrentItem(0, true);
+				                    	}
+				                    	else
+				                    		mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
+				                        mIsScrolling  = false;
+				                    };
+				                }
+
+				                return false;
+				            }
+				        };
+				        ((RelativeLayout)findViewById(R.id.screen)).setOnTouchListener(mGestureListener);
+				        ((RelativeLayout)findViewById(R.id.dive_footer)).setOnTouchListener(mGestureListener);
+				        child.setId(i);
+				        if (i > 1)
+				        	child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
+				        child.setLayoutParams(child_params);				        
+				        RelativeLayout child_2 = new RelativeLayout(DivesActivity.this);
+				        RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+				        child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+				        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+				        child_2.setBackgroundColor(Color.WHITE);
+				        child_2.setLayoutParams(child_2_params);
+				        if (i == position_stroke)
+				        {
+				        	child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
+					        child_2.getBackground().setAlpha(230);
+				        }
+				        else
+				        {
+					        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					        child_2.getBackground().setAlpha(125);
+				        }
+				        child.addView(child_2);
+				        ((RelativeLayout)findViewById(R.id.center_bar)).addView(child);
+			        }
+			        i++;
+			        RelativeLayout.LayoutParams right_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+			        right_side_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+			        ((RelativeLayout)findViewById(R.id.right_side)).setLayoutParams(right_side_params);
+			        new Thread(new Runnable()
+					{
+						public void run()
+						{
+							try {
+								Thread.sleep(1000);
+							} catch (InterruptedException e) {
+								// TODO Auto-generated catch block
+								e.printStackTrace();
+							}
+					        for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
+					        {
+					        	TrackingBarPosition childPos = new TrackingBarPosition( 
+					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
+					        			((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
+						        		mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
+						        		(mScreenSetup.getScreenHeight()));
+						        mTrackingBarPosition.add(childPos);
+					        }
+						}
+					}).start();
 			        mPager.setOnPageChangeListener(new OnPageChangeListener()
 			        {
 						@Override
@@ -563,16 +800,23 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 							if (arg0 == 0)
 							{
 								ApplicationController AC = ((ApplicationController)getApplicationContext());
+								lowerStroke(position_stroke);
 								AC.setPageIndex(mPager.getCurrentItem());
-								mSeekBar.setProgress(mPager.getCurrentItem());
+								position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
+								if (position_stroke > max_strokes_possible)
+									position_stroke = max_strokes_possible;
+								upperStroke(position_stroke);
+								((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPositon(mPager.getCurrentItem(), mModel));
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-								DownloadImageTask task = new DownloadImageTask();
-								task.execute(mPager.getCurrentItem());
-								mSeekBar.setEnabled(true);
+								if (mBackgroundImageTask != null)
+									mBackgroundImageTask.cancel(true);
+								mBackgroundImageTask = new DownloadImageTask();
+								mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
+								
 							}
 						}
 
@@ -583,59 +827,56 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 						@Override
 						public void onPageSelected(int arg0) {
 						}
-			        	
 			        });
-			        //Events when the user changes the seek bar
-			        mSeekBar.setOnSeekBarChangeListener(new OnSeekBarChangeListener()
+			        if (ApplicationController.mDataRefreshed != true)
 			        {
-			        	@Override
-			        	public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-			        	{
-			        	}
-
-						@Override
-						public void onStartTrackingTouch(SeekBar seekBar) {
-						}
-
-						@Override
-						public void onStopTrackingTouch(SeekBar seekBar) {
-							mPager.setCurrentItem(seekBar.getProgress(), true);
-							mSeekBar.setEnabled(false);
-						}
-			        });
-			        
-			        if (AC.isDataRefreshed() != true)
-			        {
-			        	AC.setDataRefreshed(true);
+			        	ApplicationController.mDataRefreshed = true;
 				        mModel.setOnDataRefreshComplete(new DataRefreshListener()
 				        {
-		
 							@Override
 							public void onDataRefreshComplete() {
-								//System.out.println("Data refresh complete");
+								System.out.println("Data refresh complete");
 								try {
-									mModel.overwriteData();
+									if (ApplicationController.SudoId == 0)
+										mModel.overwriteData();
 								} catch (IOException e) {
-									// TODO Auto-generated catch block
 									e.printStackTrace();
 								}
 								
 							}
 				        	
 				        });
-				        new Thread(new Runnable()
-						{
-							public void run()
-							{
-								mModel.refreshData();
-							}
-						}).start();
+				        mModel.refreshData(false);
 			        }
+
 				}
-		    } 
+		    }
 		});
 	}
 
+	public final void upperStroke(final int index)
+	{
+    	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(230);
+    	child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
+    	child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+    	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+    	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).setId(index);
+	}
+	
+	public final void lowerStroke(final int index)
+	{
+    	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(125);
+    	child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+    	child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+    	if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildCount() > 1)
+    		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).removeViewAt(1);
+    	if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
+    		((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
+	}
 	
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
 	{
@@ -664,11 +905,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			{
 				try
 				{
+					Thread.sleep(1000);
+					if (isCancelled())
+						return null;
 					return ImageHelper.fastblur(result, 30);
 				}
 				catch (OutOfMemoryError e)
 				{
 					return null;
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
 			}
 			return null;
@@ -758,34 +1004,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	}
 	
 	/**
-	 * Represents an asynchronous task used to load data
-	 */
-//	private class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
-//		
-//		@Override
-//		protected Boolean doInBackground(Void... params) {
-//			mModel.loadData();
-//			return true;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(final Boolean success) {
-//			mAuthTask = null;
-//			showProgress(false);
-//
-//			if (success) {
-//				createPages();
-//			}
-//		}
-//		
-//		@Override
-//		protected void onCancelled() {
-//			mAuthTask = null;
-//			showProgress(false);
-//		}
-//	}
-	
-	/**
 	 * Generate the dives pagesDive dive
 	 */
 	private class DivesPagerAdapter extends FragmentStatePagerAdapter
@@ -805,7 +1023,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
         @Override
         public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(position), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
+            return new DivesFragment(mDives.get(mDives.size() - position - 1), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
         }
 
         @Override
@@ -813,4 +1031,170 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
             return mNbPages;
         }
 	}
+
+    @Override 
+    public boolean onTouchEvent(MotionEvent event){ 
+        this.mDetector.onTouchEvent(event);
+        // Be sure to call the superclass implementation
+        return super.onTouchEvent(event);
+    }
+
+	public int stroke_selected(int x, int y)
+	{
+		for (int i = 0; i < mTrackingBarPosition.size(); i++)
+		{
+			if (x >= mTrackingBarPosition.get(i).getx() && x <= mTrackingBarPosition.get(i).getX() &&
+					y >= mTrackingBarPosition.get(i).gety() && y <= mTrackingBarPosition.get(i).getY())
+				return i + 1;
+		}
+		mIsScrolling = false;
+		return 0;
+	}
+    
+    public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+        @Override
+		public boolean onSingleTapUp(MotionEvent e) {
+			return super.onSingleTapUp(e);
+		}
+
+		private static final String DEBUG_TAG = "Gestures"; 
+        
+        @Override
+        public boolean onDown(MotionEvent event) { 
+        	int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
+        	if (stroke_selected == 0)
+        	{
+        		mIsScrolling = false;
+        	}
+        	else
+        	{
+        		mIsScrolling = true;
+        		lowerStroke(position_stroke);
+        		position_stroke = stroke_selected;
+        		upperStroke(position_stroke);
+//        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
+//            	rl.setBackgroundResource(R.drawable.ic_triangle);
+//            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//            	lp.addRule(RelativeLayout.ALIGN_TOP, ((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getId());
+//            	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//            	lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+//            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + 5;
+//            	rl.setLayoutParams(lp);
+//            	
+//            	BitmapDrawable bd=(BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
+//            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
+//            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
+//            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(180, 40);
+//            	bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//            	bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + 5 + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
+//            	bubble_params.leftMargin = (int)event.getX() - 90;
+//            	bubble.setLayoutParams(bubble_params);
+//            	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
+//            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
+
+        	}
+        	return true;
+        }
+
+		@Override
+		public boolean onScroll(MotionEvent event1, MotionEvent event2,
+				float distanceX, float distanceY) {
+			{
+				int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
+				if (stroke_selected != 0)
+				{
+					lowerStroke(position_stroke);
+	        		position_stroke = stroke_selected;
+	        		upperStroke(position_stroke);
+	        		((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
+	        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
+	            	rl.setBackgroundResource(R.drawable.ic_triangle);
+	            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	lp.addRule(RelativeLayout.ALIGN_TOP, ((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getId());
+	            	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	            	lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
+	            	rl.setLayoutParams(lp);
+	            	
+	            	BitmapDrawable bd=(BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
+	            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
+	            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
+	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.bubble_width), (int) getResources().getDimension(R.dimen.bubble_height));
+	            	bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+	            	bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar) + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
+	            	bubble_params.leftMargin = (int)event2.getX() - (int) getResources().getDimension(R.dimen.bubble_width) / 2;
+	            	bubble.setPadding((int) getResources().getDimension(R.dimen.space_bubble_bar) * 2, (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) getResources().getDimension(R.dimen.space_bubble_bar) * 2, (int) getResources().getDimension(R.dimen.space_bubble_bar));
+	            	bubble.setLayoutParams(bubble_params);
+	            	//bubble.setGravity(Gravity.CENTER);
+	            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+					Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+	            	TextView tv = new TextView(DivesActivity.this);
+	            	tv.setGravity(Gravity.CENTER_HORIZONTAL);
+	            	tv.setId(1000);
+	            	TextView place = new TextView(DivesActivity.this);
+	            	ApplicationController AC = ((ApplicationController)getApplicationContext());
+	            	if (position_stroke == 1)
+                	{
+	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
+	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName() != null)
+	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName());
+	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpotId() != 1 && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
+	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName());
+	            		else
+	            			place.setText("");
+	            		place.setEllipsize(TextUtils.TruncateAt.END);
+	            		place.setLines(1);
+                	}
+	            	else
+	            	{
+	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
+	            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName() != null)
+	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName());
+	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpotId() != 1 && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
+	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName());
+	            		else
+	            			place.setText("");
+	            		place.setEllipsize(TextUtils.TruncateAt.END);
+	            		place.setLines(1);
+	            	}
+	            		
+	            	//tv.setText(mModel.getDives().get(mPager.getCurrentItem()).getDate());
+	            	tv.setTextColor(Color.WHITE);
+	            	RelativeLayout.LayoutParams lp_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	lp_tv.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	tv.setLayoutParams(lp_tv);
+	            	place.setTextColor(getResources().getColor(R.color.gray_light));
+	            	RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	lp2.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	lp2.addRule(RelativeLayout.BELOW, 1000);
+	            	place.setLayoutParams(lp2);
+	            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+	            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+	            	tv.setTypeface(faceB);
+	            	place.setTypeface(faceB);
+	            	//tv.setGravity(Gravity.CENTER_HORIZONTAL);tv.setPadding(3, 3, 3, 3);
+	            	bubble.addView(tv);
+	            	bubble.addView(place);
+	            	
+	            	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
+	            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
+	            	//System.out.println(mScreenSetup.getDiveListWhiteSpace4());
+
+				}
+				
+			}
+			return true;
+		}
+    }
+    
+    @Override
+    public boolean onKeyDown(int keycode, KeyEvent e) {
+        switch(keycode) {
+            case KeyEvent.KEYCODE_MENU:
+            	openMenu(findViewById(R.id.load_data_form));
+                return true;
+        }
+
+        return super.onKeyDown(keycode, e);
+    }
 }

@@ -2,7 +2,10 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
-    <string name="app_id">367340190067848</string>
+    <string name="fb_app_id_debug">367340190067848</string>
+    <string name="fb_app_id_release">193803977296892</string>
+    <string name="maps_app_id_debug">AIzaSyActYnLGFI7NCJ4AKPCQ0wjHrbCVKYaDX0</string>
+    <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
@@ -22,7 +25,7 @@
     <string name="characters_left">Characters Left</string>
     <string name="tripname_hint">Trip name</string>
     <string name="cancel">Cancel</string>
-    <string name="save">Save</string>
+    <string name="save">Ok</string>
     <string name="divenumber_hint">Dive Number</string>
     <string name="edit_divenumber_title">Dive Number</string>
     <string name="edit_date_title">Date</string>
@@ -40,6 +43,7 @@
     <string name="bottom_temp_hint">Bottom Temp.</string>
     <string name="weights_hint">Weights</string>
     <string name="edit_weights_title">Weights</string>
+    <string name="edit_confirm_title">Exit without save?</string>
     <string name="bad_visibility">Bad (under 5m / 15ft)</string>
     <string name="average_visibility">Average (5-10m / 15-30ft)</string>
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>
@@ -49,7 +53,7 @@
     <string name="none_current">None</string>
     <string name="light_current">Light (up to 1 knot)</string>
     <string name="medium_current">Medium (up to 2 knots)</string>
-    <string name="strong_current">Strong (upt to 3 knots)</string>
+    <string name="strong_current">Strong (up to 3 knots)</string>
     <string name="extreme_current">Extreme (over 3 knots)</string>
     <string name="edit_altitude_title">Altitude</string>
     <string name="altitude_hint">Altitude</string>
@@ -62,10 +66,32 @@
     <string name="title_activity_intro">IntroActivity</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
-    <string name="add_button">ADD</string>
+    <string name="add_button">SAVE</string>
     <string name="search_hint">Search spot</string>
     <string name="title_activity_empty">EmptyActivity</string>
     <string name="activity_in_progress">No picture in dive!</string>
     <string name="title_activity_photos">PhotosActivity</string>
-
+    <string name="null_select">-</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_test">TestActivity</string>
+    <string name="title_activity_graph_image">GraphImageActivity</string>
+    <string name="delete_confirm_title">Delete dive</string>
+    <string name="delete_confirm_message">You are about to delete this dive. This cannot be recovered. Are you sure ?</string>
+    <string name="delete_button">Delete</string>
+    <string name="wait_message">Please wait</string>
+    <string name="edit_safetystops_title">Safety Stops</string>
+    <string name="add_safetystops_button">Add Safety Stop</string>
+    <string name="edit_divetype_title">Diving Type</string>
+    <string name="recreational_type">Recreational</string>
+    <string name="training_type">Training</string>
+    <string name="nightdive_type">Night Dive</string>
+    <string name="deepdive_type">Deep Dive</string>
+    <string name="drift_type">Drift</string>
+    <string name="wreck_type">Wreck</string>
+    <string name="cave_type">Cave</string>
+    <string name="reef_type">Reef</string>
+    <string name="photo_type">Photo</string>
+    <string name="research_type">Research</string>
+    <string name="admin_category">Admin</string>
+    <string name="sudo_hint">User Id</string>
 </resources>

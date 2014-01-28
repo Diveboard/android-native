@@ -2,7 +2,8 @@
     android:id="@+id/screen"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center_horizontal">
+    android:gravity="center_horizontal"
+    >
 	<RelativeLayout
         android:id="@+id/fragment_banner_height"
         android:layout_width="match_parent"
@@ -32,7 +33,7 @@
         android:layout_centerVertical="false"
         android:background="#FFFFFF"
         android:gravity="center_horizontal"
-		android:onClick="goToDiveDetails">
+        android:onClick="goToDiveDetails">
         
 		<RelativeLayout
             android:id="@+id/fragment_body"

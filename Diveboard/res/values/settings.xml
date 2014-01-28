@@ -1,16 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="misc_category">Application information</string>
-    <string name="remaining_pictures_title">Remaining Pictures</string>
-    <string name="remaining_pictures_summary">Remaining pictures to download:</string>
-    <string name="user_settings_category">User Settings</string>
-    <string name="unit_setting_title">Unit</string>
-    <string name="system_settings_category">System Settings</string>
-    <string name="phone_network_download_title">Download Method</string>
-    <string name="phone_network_download_summary">Allow pictures download over 3G/4G network</string>
-    <string-array name="unit_entries">
+    <string translatable="false" name="misc_category">Application information</string>
+    <string translatable="false" name="remaining_pictures_title">Remaining Pictures</string>
+    <string translatable="false" name="remaining_pictures_summary">Remaining pictures to download:</string>
+    <string translatable="false" name="user_settings_category">User Settings</string>
+    <string translatable="false" name="unit_setting_title">Unit</string>
+    <string translatable="false" name="system_settings_category">System Settings</string>
+    <string translatable="false" name="phone_network_download_title">Download Method</string>
+    <string translatable="false" name="phone_network_download_summary">Allow pictures download over 3G/4G network</string>
+    <string-array translatable="false" name="unit_entries">
         <item>Imperial</item>
         <item>Metric</item>
     </string-array>
-    
+    <string translatable="false" name="remaining_requests_title">Pending Requests</string>
+    <string translatable="false" name="version_title">Application Version</string>
+    <string translatable="false" name="db_version_title">Spot Database</string>
 </resources>

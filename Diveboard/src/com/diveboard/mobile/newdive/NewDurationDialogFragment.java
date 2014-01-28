@@ -65,7 +65,8 @@ public class					NewDurationDialogFragment extends DialogFragment implements OnE
 		
 		mDuration = (EditText) view.findViewById(R.id.duration);
 		mDuration.setTypeface(faceR);
-		mDuration.setText(Integer.toString(mDive.getDuration()));
+		if (mDive.getDuration() != null)
+			mDuration.setText(Integer.toString(mDive.getDuration()));
 		mDuration.requestFocus();
 		
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);

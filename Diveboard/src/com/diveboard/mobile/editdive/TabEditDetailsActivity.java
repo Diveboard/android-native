@@ -5,11 +5,14 @@ import com.diveboard.mobile.DiveboardLoginActivity;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.editdive.EditAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditCurrentDialogFragment.EditCurrentDialogListener;
 import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListener;
 import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.editdive.EditDiveTypeDialogFragment.EditDiveTypeDialogListener;
 import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
 import com.diveboard.mobile.editdive.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.editdive.EditSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
 import com.diveboard.mobile.editdive.EditSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
 import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
@@ -21,12 +24,14 @@ import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Units;
 
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.util.Pair;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
@@ -47,7 +52,10 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 																						   EditVisibilityDialogListener,
 																						   EditCurrentDialogListener,
 																						   EditAltitudeDialogListener,
-																						   EditWaterDialogListener
+																						   EditWaterDialogListener,
+																						   EditConfirmDialogListener,
+																						   EditSafetyStopsDialogListener,
+																						   EditDiveTypeDialogListener
 {
 	private ListView			optionList;
 	private DiveboardModel		mModel;
@@ -57,21 +65,47 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	@Override
 	public void onBackPressed()
 	{
+		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+	    	Bundle args = new Bundle();
+	    	args.putInt("index", mIndex);
+	    	dialog.setArguments(args);
+	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
+	
+	public void clearEditList()
+	{
+		super.onBackPressed();
 		Bundle bundle = new Bundle();
 		
 		// put
 		Intent intent = new Intent();
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
-		super.onBackPressed();
 		mModel.getDives().get(mIndex).clearEditList();
-	};
+	}
+	
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
 	
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		if (AC.handleLowMemory() == true)
+			return ;
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 		mIndex = getIntent().getIntExtra("index", -1);
 		
@@ -195,6 +229,24 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
     	dialog.show(getSupportFragmentManager(), "EditWaterDialogFragment");
     }
     
+    private void				_editSafetyStops()
+    {
+    	EditSafetyStopsDialogFragment dialog = new EditSafetyStopsDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditSafetyStopsDialogFragment");
+    }
+    
+    private void				_editDiveType()
+    {
+    	EditDiveTypeDialogFragment dialog = new EditDiveTypeDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getSupportFragmentManager(), "EditDiveTypeDialogFragment");
+    }
+    
     private void				_displayEditList()
     {
     	setContentView(R.layout.tab_edit_details);
@@ -227,47 +279,103 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
 		elem.add(new EditOption("Date : ", dive.getDate()));
 		String[] time_in = dive.getTimeIn().split("T");
-		elem.add(new EditOption("Time in : ", time_in[1]));
-		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
-		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
-		elem.add(new EditOption("Safety stops : ", "not implemented"));
-		if (dive.getWeights() != null)
-			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
+		String[] time = time_in[1].split(":");
+		elem.add(new EditOption("Time in : ", time[0] + ":" + time[1]));
+		//elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
+		String maxdepth_unit = "";
+		if (dive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
 		else
-			elem.add(new EditOption("Weights : ", "Not defined"));
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
+		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
+		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
+		String safetydetails = "";
+		for (int i = 0, length = safetystop.size(); i < length; i++)
+		{
+			if (i != 0)
+				safetydetails += ", ";
+			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+		}
+		elem.add(new EditOption("Safety Stops : ", safetydetails));
+		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
+		//elem.add(new EditOption("Safety stops : ", "not implemented"));
+//		if (dive.getWeights() != null)
+//			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
+//		else
+//			elem.add(new EditOption("Weights : ", ""));
+		if (dive.getWeights() != null)
+		{
+			String weights_unit = "";
+			if (dive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs"; 
+			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights()) + " " + weights_unit));
+		}
+		else
+			elem.add(new EditOption("Weights : ", ""));
 		if (dive.getNumber() != null)
 			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
 		else
-			elem.add(new EditOption("Dive number : ", Integer.toString(0)));
+			elem.add(new EditOption("Dive number : ", ""));
 		elem.add(new EditOption("Trip name : ", dive.getTripName()));
-		elem.add(new EditOption("Other divers : ", "not implemented"));
-		elem.add(new EditOption("Diving type & activities : ", "not implemented"));
+		ArrayList<String> divetype = dive.getDivetype();
+		String divetype_string = "";
+		for (int i = 0, length = divetype.size(); i < length; i++)
+		{
+			if (i != 0)
+				divetype_string += ", ";
+			divetype_string += divetype.get(i);
+		}
+		elem.add(new EditOption("Diving type : ", divetype_string));
+		//elem.add(new EditOption("Other divers : ", "not implemented"));
+		//elem.add(new EditOption("Diving type & activities : ", "not implemented"));
 		if (dive.getVisibility() != null)
 			elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
 		else
-			elem.add(new EditOption("Visibility : ", "Not defined"));
+			elem.add(new EditOption("Visibility : ", ""));
 		if (dive.getCurrent() != null)
 			elem.add(new EditOption("Current : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
 		else
-			elem.add(new EditOption("Current : ", "Not defined"));
+			elem.add(new EditOption("Current : ", ""));
 		if (dive.getTempSurface() != null)
-			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
+		{
+			//elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
+			String tempsurface_unit = "";
+			if (dive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit));
+		}
 		else
-			elem.add(new EditOption("Surface temperature : ", "Not defined"));
+			elem.add(new EditOption("Surface temperature : ", ""));
 		if (dive.getTempBottom() != null)
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
+		{
+//			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
+			String tempbottom_unit = "";
+			if (dive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit));
+		}
 		else
-			elem.add(new EditOption("Bottom temperature : ", "Not defined"));
+			elem.add(new EditOption("Bottom temperature : ", ""));
 		if (dive.getAltitude() != null)
 			elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
 		else
-			elem.add(new EditOption("Altitude : ", "Not defined"));
+			elem.add(new EditOption("Altitude : ", ""));
 		if (dive.getWater() != null)
 			elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
 		else
-			elem.add(new EditOption("Water type : ", "Not defined"));
+			elem.add(new EditOption("Water type : ", ""));
+		if (dive.getPrivacy() == 0)
+			elem.add(new EditOption("Dive privacy : ", "Public", 1));
+		else
+			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
-		mOptionAdapter = new OptionAdapter(this, elem);
+		mOptionAdapter = new OptionAdapter(this, elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(mOptionAdapter);
 		
 		optionList.setOnItemClickListener(new OnItemClickListener() {
@@ -276,6 +384,45 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 			{
 				switch (position)
 				{
+//					case 0:
+//						_editDateDialog();
+//						break ;
+//					case 1:
+//						_editTimeInDialog();
+//						break ;
+//					case 2:
+//						_editMaxDepth();
+//						break ;
+//					case 3:
+//						_editDuration();
+//						break ;
+//					case 5:
+//						_editWeights();
+//						break ;
+//					case 6:
+//						_editDiveNumberDialog();
+//						break ;
+//					case 7:
+//						_editTripNameDialog();
+//						break ;
+//					case 10:
+//						_editVisibility();
+//						break ;
+//					case 11:
+//						_editCurrent();
+//						break ;
+//					case 12:
+//						_editSurfaceTemp();
+//						break ;
+//					case 13:
+//						_editBottomTemp();
+//						break ;
+//					case 14:
+//						_editAltitude();
+//						break ;
+//					case 15:
+//						_editWater();
+//						break ;
 					case 0:
 						_editDateDialog();
 						break ;
@@ -286,6 +433,9 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 						_editMaxDepth();
 						break ;
 					case 3:
+						_editSafetyStops();
+						break ;
+					case 4:
 						_editDuration();
 						break ;
 					case 5:
@@ -297,22 +447,25 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 					case 7:
 						_editTripNameDialog();
 						break ;
-					case 10:
+					case 8:
+						_editDiveType();
+						break ;
+					case 9:
 						_editVisibility();
 						break ;
-					case 11:
+					case 10:
 						_editCurrent();
 						break ;
-					case 12:
+					case 11:
 						_editSurfaceTemp();
 						break ;
-					case 13:
+					case 12:
 						_editBottomTemp();
 						break ;
-					case 14:
+					case 13:
 						_editAltitude();
 						break ;
-					case 15:
+					case 14:
 						_editWater();
 						break ;
 				}
@@ -336,7 +489,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		if (dive.getNumber() != null)
 			((EditOption)mOptionAdapter.getItem(6)).setValue(dive.getNumber().toString());
 		else
-			((EditOption)mOptionAdapter.getItem(6)).setValue("0");
+			((EditOption)mOptionAdapter.getItem(6)).setValue("");
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -349,7 +502,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		String[] time_in = dive.getTimeIn().split("T");
 		String new_time_in = dive.getDate() + "T" + time_in[1];
 		dive.setTimeIn(new_time_in);
-		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
+		String[] time = time_in[1].split(":");
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time[0] + ":" + time[1]);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -359,7 +513,8 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		String[] time_in = dive.getTimeIn().split("T");
-		((EditOption)mOptionAdapter.getItem(1)).setValue(time_in[1]);
+		String[] time = time_in[1].split(":");
+		((EditOption)mOptionAdapter.getItem(1)).setValue(time[0] + ":" + time[1]);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -368,7 +523,13 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onMaxDepthEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		//((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
+		String maxdepth_unit = "";
+		if (dive.getMaxdepthUnit() == null)
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+		else
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
+		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -377,7 +538,7 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(dive.getDuration()) + " min");
+		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(dive.getDuration()) + " min");
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -386,7 +547,18 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onSurfaceTempEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+		if (dive.getTempSurface() == null)
+			((EditOption)mOptionAdapter.getItem(11)).setValue("");
+		else
+		{
+//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+			String tempsurface_unit = "";
+			if (dive.getTempSurfaceUnit() == null)
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -395,7 +567,17 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onBottomTempEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName());
+		if (dive.getTempBottom() == null)
+			((EditOption)mOptionAdapter.getItem(12)).setValue("");
+		else
+		{
+			String tempbottom_unit = "";
+			if (dive.getTempBottomUnit() == null)
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+			else
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -404,16 +586,36 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onWeightsEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+		if (dive.getWeights() == null)
+			((EditOption)mOptionAdapter.getItem(5)).setValue("");
+		else
+		{
+//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+			String weights_unit = "";
+			if (dive.getWeightsUnit() == null)
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+			else
+				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights()) + " " + weights_unit);
+		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+	}
+	
+	@Override
+	public void onConfirmEditComplete(DialogFragment dialog)
+	{
+		clearEditList();
 	}
 
 	@Override
 	public void onVisibilityEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(10)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
+		if (dive.getVisibility() == null)
+			((EditOption)mOptionAdapter.getItem(9)).setValue("");
+		else
+			((EditOption)mOptionAdapter.getItem(9)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -422,7 +624,10 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onCurrentEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(11)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
+		if (dive.getCurrent() == null)
+			((EditOption)mOptionAdapter.getItem(10)).setValue("");
+		else
+			((EditOption)mOptionAdapter.getItem(10)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -431,7 +636,10 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onAltitudeEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
+		if (dive.getAltitude() == null)
+			((EditOption)mOptionAdapter.getItem(13)).setValue("");
+		else
+			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -440,8 +648,43 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onWaterEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(15)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
+		if (dive.getWater() == null)
+			((EditOption)mOptionAdapter.getItem(14)).setValue("");
+		else
+			((EditOption)mOptionAdapter.getItem(14)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
+	}
+
+	@Override
+	public void onSafetyStopsEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
+		String safetydetails = "";
+		for (int i = 0, length = safetystop.size(); i < length; i++)
+		{
+			if (i != 0)
+				safetydetails += ", ";
+			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+		}
+		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		mOptionAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onDiveTypeEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		ArrayList<String> divetype = dive.getDivetype();
+		String divetype_string = "";
+		for (int i = 0, length = divetype.size(); i < length; i++)
+		{
+			if (i != 0)
+				divetype_string += ", ";
+			divetype_string += divetype.get(i);
+		}
+		((EditOption)mOptionAdapter.getItem(8)).setValue(divetype_string);
+		mOptionAdapter.notifyDataSetChanged();
 	}
 }

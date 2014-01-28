@@ -13,11 +13,14 @@ public class ApplicationController extends Application {
 	private static ApplicationController singleton;
 	private DiveboardModel mModel = null;
 	private boolean mDataReady = false;
-	private boolean mDataRefreshed = false;
-	private int mPageIndex = 0;
+	public static boolean mDataRefreshed = false;
+	public static boolean UserVoiceReady = false;
+	private int mPageIndex;
 	private int mCarouselIndex = 0;
 	private Dive mtempDive = null;
 	private int mRefresh = 0;
+	private int mCurrentTab = 0;
+	public static int SudoId = 0;
 	
 	public Boolean handleLowMemory()
 	{
@@ -110,5 +113,13 @@ public class ApplicationController extends Application {
 
 	public void setRefresh(int mRefresh) {
 		this.mRefresh = mRefresh;
+	}
+
+	public int getCurrentTab() {
+		return mCurrentTab;
+	}
+
+	public void setCurrentTab(int mCurrentTab) {
+		this.mCurrentTab = mCurrentTab;
 	}
 }

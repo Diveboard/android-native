@@ -9,6 +9,16 @@ public class					Temperature
 	{
 		_value = value;
 		_unit = Units.getTemperatureUnit();
+		if (_unit == Units.Temperature.F)
+			_value = Converter.convert(_value, Units.Temperature.F, Units.Temperature.C);
+	}
+	
+	public						Temperature(Double value, Units.Temperature unit)
+	{
+		_value = value;
+		_unit = Units.getTemperatureUnit();
+		if (unit == Units.Temperature.F)
+			_value = Converter.convert(_value, Units.Temperature.F, Units.Temperature.C);
 	}
 	
 	public Double				getTemperature()

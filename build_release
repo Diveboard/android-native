@@ -1,0 +1,15 @@
+rm Diveboard-release*.apk
+cd Diveboard/dependencies/FacebookSDK;
+android update project --path . --target android-19;
+cd ../google-play-services_lib;
+android update project --path . --target android-19;
+cd ../UserVoiceSDK;
+android update project --path . --target android-19;
+cd ../../;
+android update project --path . --target android-19;
+ant build_release;
+cp bin/Diveboard-release-unsigned.apk ..;
+ant clean;
+cd ..
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore release.keystore  Diveboard-release-unsigned.apk diveboard
+zipalign -v 4 Diveboard-release-unsigned.apk Diveboard-release-signed.apk

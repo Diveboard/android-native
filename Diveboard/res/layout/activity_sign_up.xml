@@ -177,44 +177,53 @@
 									    android:layout_width="232dp"
 									    android:layout_height="44dp"
 									    android:orientation="horizontal"
-									    android:gravity="right"
+									    android:gravity="right|center_vertical"
 									    android:layout_marginTop="14dp">
-
-										<TextView
+									    <TextView
 										    android:id="@+id/newsletter"
 										    android:layout_width="wrap_content"
 										    android:layout_height="wrap_content"
 										    android:text="@string/sign_up_newsletter"
 										    android:gravity="center"
 										    android:lines="2"/>
-
 									    <CheckBox
 									        android:id="@+id/newsletter_check"
 									        android:layout_width="wrap_content"
 									        android:layout_height="wrap_content"
 									        android:layout_marginLeft="10dp"
+									        android:checked="true"
 									        android:button="@drawable/sign_up_checkbox_selector" />
-
+									    
+										
 									</LinearLayout>
 									<LinearLayout
 									    android:layout_width="232dp"
 									    android:layout_height="44dp"
 									    android:orientation="horizontal"
-									    android:gravity="right">
-
+									    android:gravity="right|center_vertical">
+									    <ImageView 
+									        android:id="@+id/error"
+									        android:src="@drawable/error"
+									        android:layout_height="wrap_content"
+									        android:layout_width="wrap_content"
+									        android:layout_marginRight="10dp"
+									        android:visibility="invisible"/>
 									    <TextView
 									        android:id="@+id/terms"
 									        android:layout_width="wrap_content"
 									        android:layout_height="wrap_content"
 									        android:lines="2"
+									        android:gravity="center"
 									        android:text="@string/sign_up_terms" />
-
-									    <CheckBox
+										<CheckBox
 									        android:id="@+id/terms_check"
 									        android:layout_width="wrap_content"
 									        android:layout_height="wrap_content"
 									        android:layout_marginLeft="10dp"
+									        android:focusableInTouchMode="true"
 									        android:button="@drawable/sign_up_checkbox_selector" />
+									    
+									    
 									</LinearLayout>
 						            <Button
 						                android:id="@+id/sign_in_button"
@@ -232,45 +241,41 @@
 										android:layout_marginTop="14dp"
 						                android:onClick="goToFBLogin"
 						                android:src="@drawable/ic_facebook_register_btn"/>
-						            
+						            <RelativeLayout
+						        	    android:layout_width="match_parent"
+						        	    android:layout_height="60dp"
+						        	    android:layout_marginTop="14dp"
+						        	    android:background="@color/yellow"
+						        	    android:gravity="bottom">
+								        <LinearLayout
+								            android:id="@+id/footer_layout"
+								            android:layout_width="wrap_content"
+								            android:layout_height="wrap_content"
+								            android:layout_alignParentBottom="false"
+								            android:layout_alignParentLeft="false"
+								            android:layout_alignParentRight="false"
+								            android:layout_alignParentTop="false"
+								            android:layout_centerHorizontal="true"
+								            android:layout_centerInParent="true"
+								            android:layout_centerVertical="false"
+								            android:layout_marginTop="10dp"
+								            android:layout_marginBottom="10dp"
+								            android:layout_marginLeft="60dp"
+								            android:layout_marginRight="60dp"
+								            android:orientation="vertical" >
+									        <ImageView
+										        android:id="@+id/logo"
+										        android:layout_width="wrap_content"
+										        android:layout_height="wrap_content"
+										        android:src="@drawable/full_diveboard_grey"/>
+								        </LinearLayout>
+						        	</RelativeLayout>
 							    </LinearLayout>
-							    
 						    </FrameLayout>
 						</LinearLayout>  
 		        	</LinearLayout>
-	        	
 		        </ScrollView>
-		        
 		    </RelativeLayout>
-		    <RelativeLayout
-        	    android:layout_width="match_parent"
-        	    android:layout_height="60dp"
-        	    android:background="@color/yellow"
-        	    android:gravity="bottom">
-		        <LinearLayout
-		            android:id="@+id/footer_layout"
-		            android:layout_width="wrap_content"
-		            android:layout_height="wrap_content"
-		            android:layout_alignParentBottom="false"
-		            android:layout_alignParentLeft="false"
-		            android:layout_alignParentRight="false"
-		            android:layout_alignParentTop="false"
-		            android:layout_centerHorizontal="true"
-		            android:layout_centerInParent="true"
-		            android:layout_centerVertical="false"
-		            android:layout_marginTop="10dp"
-		            android:layout_marginBottom="10dp"
-		            android:layout_marginLeft="60dp"
-		            android:layout_marginRight="60dp"
-		            android:orientation="vertical" >
-			        <ImageView
-				        android:id="@+id/logo"
-				        android:layout_width="wrap_content"
-				        android:layout_height="wrap_content"
-				        android:src="@drawable/full_diveboard_grey"/>
-		        </LinearLayout>
-        	</RelativeLayout>
-        	
 		</LinearLayout>
     </RelativeLayout>
 </merge>
