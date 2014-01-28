@@ -525,7 +525,7 @@ public class					DataManager
 								// Adding parameters
 								ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(4);
 								args.add(new BasicNameValuePair("auth_token", _token));
-								args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+								args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 								JSONObject checkObject = new JSONObject(elem.second);
 								if (checkObject.isNull("spot") == false)
 								{
@@ -617,7 +617,7 @@ public class					DataManager
 		{
 			String[]					info = elemtag.split(":");
 
-			HttpDelete deleteRequest = new HttpDelete(AppConfig.SERVER_URL + "/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("px6LQxmV8wQMdfWsoCwK") + "&flavour=mobile");
+			HttpDelete deleteRequest = new HttpDelete(AppConfig.SERVER_URL + "/api/V2/dive/" + info[1] + "?auth_token=" + URLEncoder.encode(_token) + "&apikey=" + URLEncoder.encode("xJ9GunZaNwLjP4Dz2jy3rdF") + "&flavour=mobile");
 			HttpContext localContext = null;
 			
 			if (ApplicationController.SudoId != 0)

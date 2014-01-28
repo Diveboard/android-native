@@ -176,7 +176,7 @@ public class					DiveboardModel
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("email", login));
 			args.add(new BasicNameValuePair("password", password));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -266,7 +266,7 @@ public class					DiveboardModel
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(3);
 			args.add(new BasicNameValuePair("fbid", fb_id));
 			args.add(new BasicNameValuePair("fbtoken", fb_token));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -569,7 +569,7 @@ public class					DiveboardModel
 		}
 		ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
-		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 		HttpResponse response;
@@ -604,7 +604,7 @@ public class					DiveboardModel
 		postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive?arg=".concat(dive_str));
 		args = new ArrayList<NameValuePair>();
 		args.add(new BasicNameValuePair("auth_token", _token));
-		args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+		args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 		args.add(new BasicNameValuePair("flavour", "mobile"));
 		args.add(new BasicNameValuePair("arg", dive_str));
 		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
@@ -1031,7 +1031,7 @@ public class					DiveboardModel
 			args.add(new BasicNameValuePair("nickname", nickname));
 			args.add(new BasicNameValuePair("password_check", confirm_password));
 			args.add(new BasicNameValuePair("accept_newsletter_email", (loop == true) ? "true" : "false"));
-			args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 			try
 			{
 				// Set parameters
@@ -1301,7 +1301,7 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lngNE", lngNE));
 			try
 			{
-				args.add(new BasicNameValuePair("apikey", "px6LQxmV8wQMdfWsoCwK"));
+				args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 				// Execute request
 				HttpResponse response = client.execute(postRequest);
