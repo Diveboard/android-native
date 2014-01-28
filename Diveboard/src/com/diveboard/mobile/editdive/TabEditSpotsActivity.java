@@ -51,9 +51,11 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
+import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -142,6 +144,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+        
         ApplicationController AC = (ApplicationController)getApplicationContext();
         if (AC.handleLowMemory() == true)
 			return ;
@@ -172,44 +175,44 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 				finish();
 			}
 		});
-	    ((EditText)findViewById(R.id.search_bar)).setOnTouchListener(new OnTouchListener() {
-			
-			@Override
-			public boolean onTouch(View v, MotionEvent event) {
-				v.requestFocusFromTouch();
-				return false;
-			}
-		});
-	    ((EditText)findViewById(R.id.search_bar)).setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-//				ListView lv = ((ListView)findViewById(R.id.list_view));
-//				SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, new ArrayList<Spot>());
-//				lv.setAdapter(adapter);
-//				if (mMyMarker != null)
-//					mMyMarker.remove();
-//				ApplicationController AC = (ApplicationController)getApplicationContext();
-//				Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
-//				if (zoom == null)
-//					zoom = mZoom;
-//				mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), zoom));
-//				mMyMarker = mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(0, 0))
-//				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-				((EditText)findViewById(R.id.search_bar)).setText("");
-//				mSelectedObject = null;
-//				mHasChanged = true;
-//				JSONObject jobject = new JSONObject();
-//				try {
-//					jobject.put("id", 1);
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//				mModel.getDives().get(mIndex).setSpot(jobject);
-			}
-		});
+//	    ((EditText)findViewById(R.id.search_bar)).setOnTouchListener(new OnTouchListener() {
+//			
+//			@Override
+//			public boolean onTouch(View v, MotionEvent event) {
+//				v.requestFocusFromTouch();
+//				return false;
+//			}
+//		});
+//	    ((EditText)findViewById(R.id.search_bar)).setOnClickListener(new OnClickListener() {
+//			
+//			@Override
+//			public void onClick(View v) {
+////				ListView lv = ((ListView)findViewById(R.id.list_view));
+////				SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, new ArrayList<Spot>());
+////				lv.setAdapter(adapter);
+////				if (mMyMarker != null)
+////					mMyMarker.remove();
+////				ApplicationController AC = (ApplicationController)getApplicationContext();
+////				Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
+////				if (zoom == null)
+////					zoom = mZoom;
+////				mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(0, 0), zoom));
+////				mMyMarker = mMap.addMarker(new MarkerOptions()
+////				.position(new LatLng(0, 0))
+////				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+//				((EditText)findViewById(R.id.search_bar)).setText("");
+////				mSelectedObject = null;
+////				mHasChanged = true;
+////				JSONObject jobject = new JSONObject();
+////				try {
+////					jobject.put("id", 1);
+////				} catch (JSONException e) {
+////					// TODO Auto-generated catch block
+////					e.printStackTrace();
+////				}
+////				mModel.getDives().get(mIndex).setSpot(jobject);
+//			}
+//		});
 
 	    EditText editText = (EditText) findViewById(R.id.search_bar);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -219,7 +222,10 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 					KeyEvent event) {
 				boolean handled = false;
 	            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-	                doMySearch();
+	            	mMap.setOnCameraChangeListener(null);
+	                doMySearch("search", ((TextView)findViewById(R.id.search_bar)).getText().toString(), null, null, null);
+	            	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+	        		imm.toggleSoftInput(0, 0);
 	                handled = true;
 	            }
 	            return handled;
@@ -270,11 +276,16 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 			}
 			else
 			{
-				mMyMarker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(0, 0))
-				.title(AC.getModel().getDives().get(mIndex).getSpot().getName())
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+				activeGPS(null);
+				
+
+				//doMySearch(((TextView)findViewById(R.id.search_bar)).getText().toString());
+//				mMyMarker = mMap.addMarker(new MarkerOptions()
+//				.position(new LatLng(0, 0))
+//				.title(AC.getModel().getDives().get(mIndex).getSpot().getName())
+//				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+//				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 			}
 			
 		}
@@ -284,10 +295,19 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
     {
     	((LinearLayout)findViewById(R.id.view_details)).setVisibility(View.GONE);
     	((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+        ((EditText) findViewById(R.id.search_bar)).requestFocusFromTouch();
+        ((EditText) findViewById(R.id.search_bar)).setSelection(((EditText) findViewById(R.id.search_bar)).length());
     }
     
     public void activeGPS(View view)
     {
+    	InputMethodManager imm = (InputMethodManager)getSystemService(
+    		      Context.INPUT_METHOD_SERVICE);
+    	imm.hideSoftInputFromWindow(((EditText) findViewById(R.id.search_bar)).getWindowToken(), 0);
+    	((EditText) findViewById(R.id.search_bar)).setText("");
+    	
     	//removeMarkers();
     	mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
@@ -300,7 +320,34 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 			lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
 		if (lastKnownLocation != null)
 		{
-			mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom));
+			//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom));
+			CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom);
+			mMap.animateCamera(update, new CancelableCallback() {
+				
+				@Override
+				public void onFinish() {
+					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+					System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+					doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+					
+						@Override
+						public void onCameraChange(CameraPosition pos) {
+							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+							System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+							mLatitude = mMap.getCameraPosition().target.latitude;
+							mLongitude = mMap.getCameraPosition().target.longitude;
+							doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+						}
+					});
+				}
+				
+				@Override
+				public void onCancel() {
+					// TODO Auto-generated method stub
+					
+				}
+			});
 			mLongitude = lastKnownLocation.getLongitude();
 			mLatitude = lastKnownLocation.getLatitude();
 //			mMyMarker = mMap.addMarker(new MarkerOptions()
@@ -309,6 +356,64 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 //			.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 		}
     }
+    
+//    public void activeGPS()
+//    {
+//    	//removeMarkers();
+//    	mLocationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+//		// Define a listener that responds to location updates
+//		mLocationListener = new myLocationListener();
+//		// Register the listener with the Location Manager to receive location updates
+//		mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, mLocationListener);
+//		//mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0, mLocationListener);
+//		Location lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.GPS_PROVIDER);
+//		if (lastKnownLocation == null)
+//			lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);
+//		if (lastKnownLocation != null)
+//		{
+//			//mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom));
+//			CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom);
+//			mMap.animateCamera(update, new CancelableCallback() {
+//				
+//				@Override
+//				public void onFinish() {
+//					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//					System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+//					doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+//					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+//					
+//						@Override
+//						public void onCameraChange(CameraPosition pos) {
+//							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//							System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+//							mLatitude = mMap.getCameraPosition().target.latitude;
+//							mLongitude = mMap.getCameraPosition().target.longitude;
+//							doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+//						}
+//					});
+//				}
+//				
+//				@Override
+//				public void onCancel() {
+//					// TODO Auto-generated method stub
+//					
+//				}
+//			});
+//			mLongitude = lastKnownLocation.getLongitude();
+//			mLatitude = lastKnownLocation.getLatitude();
+////			mMyMarker = mMap.addMarker(new MarkerOptions()
+////			.position(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()))
+////			.title("My location")
+////			.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+//		}
+//    }
+    
+//    public void displaySpotsAround()
+//    {
+//    	removeMarkers();
+//	    if (mMyMarker != null)
+//	    	mMyMarker.remove();
+//    }
     
     public String getPosition()
 	{
@@ -351,19 +456,24 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 		return (pos);
 	}
     
-    public void doMySearch()
+    public void doMySearch(String swipe, String text, String latitude, String longitude, LatLngBounds bounds)
     {  	
     	ListView lv = ((ListView)findViewById(R.id.list_view));
     	List<Spot> listSpots = new ArrayList<Spot>();
     	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
     	lv.setAdapter(adapter);
     	((TextView)findViewById(R.id.no_spot)).setVisibility(View.GONE);
-    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-		imm.toggleSoftInput(0, 0);
+//    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+//		imm.toggleSoftInput(0, 0);
 		((ProgressBar)findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
     	SpotsTask spots_task = new SpotsTask();
-	    spots_task.execute(((TextView)findViewById(R.id.search_bar)).getText().toString());
-	    removeMarkers();
+    	if (bounds != null)
+    		spots_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
+    	else
+    		spots_task.execute(swipe, text, latitude, longitude, null, null, null, null);
+    	removeMarkers();
+	    if (mMyMarker != null)
+	    	mMyMarker.remove();
 	    //((TextView)findViewById(R.id.search_bar)).setText("");
     }
     
@@ -380,12 +490,14 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 	{
     	private JSONObject	result;
     	private boolean		searchDone = false;
+    	private String 		swipe;
     	
     	private class SearchTimer extends Thread
     	{
-    		private String query;
+    		private String[] query;
     		
-    		public SearchTimer(String query)
+    		
+    		public SearchTimer(String... query)
     		{
     			this.query = query;
     		}
@@ -394,22 +506,25 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
     		public void run()
     		{
     			ApplicationController AC = (ApplicationController)getApplicationContext();
-    			result = AC.getModel().searchSpotText(query, null, null, null, null, null, null);
+    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
+    			result = AC.getModel().searchSpotText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
+    			System.out.println(result);
     			searchDone = true;
     		}
     	}
     	
 		protected JSONObject doInBackground(String... query)
 		{
+			swipe = query[0];
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			SearchTimer task = new SearchTimer(query[0]);
+			SearchTimer task = new SearchTimer(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 			task.start();
 			try {
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false)
 				{
 					DiveboardModel._searchtimedout = true;
-					return AC.getModel().offlineSearchSpotText(query[0], null, null, null, null, null, null);
+					return AC.getModel().offlineSearchSpotText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -460,7 +575,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
 						mArray = result.getJSONArray("spots");
 						final ListView lv = ((ListView)findViewById(R.id.list_view));
-						List<Spot> listSpots = new ArrayList<Spot>();
+						final List<Spot> listSpots = new ArrayList<Spot>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
 							Spot spot = new Spot(mArray.getJSONObject(i));
@@ -473,11 +588,11 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 						}
 						else
 						{
-							for (int i = 0; i < listSpots.size(); i++)
+							for (int i = 1; i <= listSpots.size(); i++)
 							{
 								Marker marker = mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(listSpots.get(i).getLat(), listSpots.get(i).getLng()))
-								.title(i + ": " + listSpots.get(i).getName())
+								.position(new LatLng(listSpots.get(i - 1).getLat(), listSpots.get(i - 1).getLng()))
+								.title(i + ": " + listSpots.get(i - 1).getName())
 								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 								mListMarkers.add(marker);
 							}
@@ -485,41 +600,60 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 								
 								@Override
 								public boolean onMarkerClick(Marker marker) {
-									System.out.println(Integer.valueOf(marker.getId().replace("m", "")) - 1);
-									lv.smoothScrollToPosition(Integer.valueOf(marker.getId().replace("m", "")) - 1);
-									return false;
+									
+//									int id = 0;
+//									for (int i = 0; i < listSpots.size(); i++)
+//									{
+//										System.out.println(listSpots.get(i).getId() + " " + (Integer.valueOf(marker.getId().replace("m", ""))));
+//										if (listSpots.get(i).getId() == (Integer.valueOf(marker.getId().replace("m", ""))))
+//										{
+//											id = listSpots.get(i).getId();
+//											break;
+//										}
+//									}
+									if (!marker.equals(mMyMarker)){
+										int id = Integer.valueOf(marker.getTitle().substring(0, marker.getTitle().indexOf(":")));
+										System.out.println(id);
+										lv.smoothScrollToPosition(id);
+									}
+									marker.showInfoWindow();
+									return true;
 								}
 							});
 							SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
 							//Zoom out to show markers
-							LatLngBounds.Builder builder = new LatLngBounds.Builder();
-							for (Marker marker : mListMarkers) {
-							    builder.include(marker.getPosition());
-							}
-							LatLngBounds bounds = builder.build();
-							int padding = 100; // offset from edges of the map in pixels
-							CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
-							mMap.animateCamera(cu, new CancelableCallback(){
+							if (swipe.contentEquals("search"))
+							{
+								LatLngBounds.Builder builder = new LatLngBounds.Builder();
+								for (Marker marker : mListMarkers) {
+								    builder.include(marker.getPosition());
+								}
+								LatLngBounds bounds = builder.build();
+								int padding = 100; // offset from edges of the map in pixels
+								CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(bounds, padding);
+								mMap.animateCamera(cu, new CancelableCallback(){
 
-								@Override
-								public void onCancel() {
-									// TODO Auto-generated method stub
+									@Override
+									public void onCancel() {
+										// TODO Auto-generated method stub
+										
+									}
+
+									@Override
+									public void onFinish() {
+										if (mMap.getCameraPosition().zoom > mZoom)
+											mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
+									}
 									
-								}
-
-								@Override
-								public void onFinish() {
-									if (mMap.getCameraPosition().zoom > mZoom)
-										mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
-								}
-								
-							});
+								});
+							}
 							lv.setAdapter(adapter);
 							lv.setOnItemClickListener(new OnItemClickListener()
 							{
 								@Override
 								public void onItemClick(AdapterView<?> parent,
 										View view, int position, long id) {
+									mMap.setOnCameraChangeListener(null);
 									System.out.println("ZOOM = " + mMap.getCameraPosition().zoom);
 									removeMarkers();
 									ApplicationController AC = (ApplicationController)getApplicationContext();
@@ -527,7 +661,9 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 									((LinearLayout)findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 							    	((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.GONE);
 									//((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
-									((EditText)findViewById(R.id.search_bar)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
+							    	String text = ((TextView)view.findViewById(R.id.name)).getText().toString();
+							    	text = text.substring(text.indexOf(" ") + 1);
+									((EditText)findViewById(R.id.search_bar)).setText(text);
 							    	ListView lv = ((ListView)findViewById(R.id.list_view));
 							    	List<Spot> listSpots = new ArrayList<Spot>();
 							    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
@@ -538,8 +674,8 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
 										mModel.getDives().get(mIndex).setSpot(mSelectedObject);
-										
-										mMyMarker.remove();
+										if (mMyMarker != null)
+											mMyMarker.remove();
 										Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
 										if (zoom == null || zoom > mZoom)
 											zoom = mZoom;
@@ -547,6 +683,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
 										mMyMarker = mMap.addMarker(new MarkerOptions()
 										.position(new LatLng(spot.getLat(), spot.getLng()))
+										.title(spot.getName())
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 										
 										((TextView)findViewById(R.id.details_name)).setTypeface(mFaceB);
@@ -627,7 +764,7 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 			}
 
 			//holder.id.setText(Integer.toString(mSpotsList.get(position).getId()));
-			holder.name.setText(position + ": " + mSpotsList.get(position).getName());
+			holder.name.setText((position + 1) + ": " + mSpotsList.get(position).getName());
 			holder.name.setTypeface(mFaceR);
 			holder.location_country.setText(mSpotsList.get(position).getLocationName() + ", " + mSpotsList.get(position).getCountryName());
 			holder.location_country.setTypeface(mFaceR);

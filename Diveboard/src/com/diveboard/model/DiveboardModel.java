@@ -1187,7 +1187,10 @@ public class					DiveboardModel
 			JSONArray jarray = new JSONArray();
 			Cursor c;
 			if (term == null)
+			{
+				System.out.println();
 				c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
+			}
 			else
 				c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
 			if (c.getCount() == 0)
@@ -1269,8 +1272,9 @@ public class					DiveboardModel
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected() && term != null)
+		if (networkInfo != null && networkInfo.isConnected())
 		{
+			System.out.println("ENTRE");
 			// Creating web client
 			HttpParams httpParameters = new BasicHttpParams();
 			int timeoutConnection = DiveboardModel._coTimeout;
