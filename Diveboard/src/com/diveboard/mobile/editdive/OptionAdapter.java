@@ -67,8 +67,10 @@ public class					OptionAdapter extends BaseAdapter
 				convertView = inflater.inflate(R.layout.option_list, null);
 				holder.optTitle = (TextView) convertView.findViewById(R.id.optTitle);
 				holder.optTitle.setTypeface(faceB);
+				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optValue = (TextView) convertView.findViewById(R.id.optValue);
 				holder.optValue.setTypeface(faceR);
+				holder.optValue.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				convertView.setTag(holder);
 //			}
 //			else
@@ -93,6 +95,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView = inflater.inflate(R.layout.option_list_toggle, null);
 				holder.optTitle = (TextView) convertView.findViewById(R.id.optTitle);
 				holder.optTitle.setTypeface(faceB);
+				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optToggle = (ToggleButton) convertView.findViewById(R.id.optToggle);
 				holder.optToggle.setTypeface(faceR);
 				holder.optToggle.setTextOff("Public");
@@ -121,6 +124,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView = inflater.inflate(R.layout.option_list_switch, null);
 				holder.optTitle = (TextView) convertView.findViewById(R.id.optTitle);
 				holder.optTitle.setTypeface(faceB);
+				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optSwitch = (Switch) convertView.findViewById(R.id.optSwitch);
 				holder.optSwitch.setTypeface(faceR);
 				holder.optSwitch.setTextOff("Private");
