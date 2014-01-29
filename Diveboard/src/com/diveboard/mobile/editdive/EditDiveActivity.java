@@ -62,7 +62,6 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 																					EditDiveTypeDialogListener
 {
 	private int					mIndex;
-	private TabHost				mTabHost;
 	private Typeface			mFaceB;
 	private EditPagerAdapter	adapterViewPager;
 	private TabEditDetailsFragment	mEditDetailsFragment = new TabEditDetailsFragment();
