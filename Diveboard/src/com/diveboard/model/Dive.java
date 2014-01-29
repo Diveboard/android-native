@@ -7,6 +7,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.diveboard.config.AppConfig;
+
 import android.util.Pair;
 
 /*
@@ -248,8 +250,16 @@ public class					Dive implements IModel
 		}
 		else
 			_pictures = null;
-		_profile = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
-		_profileV3 = new Picture("http://stage.diveboard.com/artic/" + Integer.toString(_id) + "/profile.png?g=mobile_v003", Integer.toString(_id));
+		if (DiveboardModel._user != null)
+		{
+			_profile = new Picture(AppConfig.SERVER_URL + "/" + DiveboardModel._user.getNickname() + "/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
+			_profileV3 = new Picture(AppConfig.SERVER_URL + "/" + DiveboardModel._user.getNickname() + "/" + Integer.toString(_id) + "/profile.png?g=mobile_v003", Integer.toString(_id));
+		}
+		else
+		{
+			_profile = null;
+			_profileV3 = null;
+		}
 		_shopName = (json.isNull("shop_name")) ? null : json.getString("shop_name");
 		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
 		if (!json.isNull("safetystops"))
