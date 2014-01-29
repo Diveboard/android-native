@@ -72,6 +72,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
+	private int		NUM_ITEMS = 5;
 	
 	@Override
 	protected void onCreate(Bundle savedInstance) {
@@ -81,6 +82,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
         vpPager.setAdapter(adapterViewPager);
+        vpPager.setOffscreenPageLimit(NUM_ITEMS);
         PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
         tabs.setViewPager(vpPager);
         tabs.setOnPageChangeListener(new OnPageChangeListener() {
@@ -177,7 +179,6 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	
 	public class			EditPagerAdapter extends FragmentPagerAdapter
 	{
-		private int		NUM_ITEMS = 5;
 		
 		public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
 		{
