@@ -115,6 +115,21 @@ public class					TabEditSpotsFragment extends Fragment
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_spot));
 		if (no_spot_view != null)
 			((TextView)getActivity().findViewById(R.id.no_spot)).setTypeface(mFaceR);
+		
+		((Button)mRootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				goToSearch(mRootView);
+			}
+		});
+		((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+		((ImageView)mRootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				activeGPS(mRootView);
+			}
+		});
+		
 	    EditText editText = (EditText) mRootView.findViewById(R.id.search_bar);
 	    editText.setTypeface(mFaceR);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -164,18 +179,7 @@ public class					TabEditSpotsFragment extends Fragment
 				((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
 				((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 				((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-				((Button)mRootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						goToSearch(mRootView);
-					}
-				});
-				((ImageView)mRootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						activeGPS(mRootView);
-					}
-				});
+				
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
 				.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())

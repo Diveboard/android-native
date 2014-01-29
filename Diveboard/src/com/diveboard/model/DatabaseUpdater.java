@@ -51,8 +51,11 @@ public class					DatabaseUpdater
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
 				InputStream mInput = url.openConnection().getInputStream();
 				GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(mInput));
-				String outFileName = DB_PATH + DB_NAME;
-				OutputStream mOutput = new FileOutputStream(outFileName);
+				//String outFileName = DB_PATH + DB_NAME;
+				File file = new File(DB_PATH);
+				file.mkdirs();
+				File outputFile = new File(DB_PATH, DB_NAME);
+				OutputStream mOutput = new FileOutputStream(outputFile);
 				byte[] mBuffer = new byte[1024];
 				int mLength;
 				while ((mLength = zis.read(mBuffer))>0)
@@ -61,7 +64,7 @@ public class					DatabaseUpdater
 		        mOutput.close();
 		        mInput.close();
 		        zis.close();
-		        File file = new File(_context.getFilesDir() + "_db_update_date");
+		        file = new File(_context.getFilesDir() + "_db_update_date");
 				file.createNewFile();
 				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");

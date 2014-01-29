@@ -112,18 +112,31 @@ public class					TabNewSpotsFragment extends Fragment
         
 	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
-	    Dive mDive = ((ApplicationController)getActivity().getApplicationContext()).getTempDive();
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		
 	    ((TextView)rootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
-	    if (mDive.getSpot().getId() != 1)
+	    if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
 	     {
 	    	 //((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
-	    	 ((EditText)rootView.findViewById(R.id.search_bar)).setText(mDive.getSpot().getName());
+	    	 ((EditText)rootView.findViewById(R.id.search_bar)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
 	     }
-//	     if (mDive.getSpot().getId() != 1)
-//	    	 ((TextView)findViewById(R.id.current_spot)).setText(mDive.getSpot().getName());
+//	     if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
+//	    	 ((TextView)findViewById(R.id.current_spot)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
 	    ((TextView)rootView.findViewById(R.id.search_bar)).setTypeface(mFaceR);
+	    
+		((Button)rootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				goToSearch(rootView);
+			}
+		});
+		((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+		((ImageView)rootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				activeGPS(rootView);
+			}
+		});
 	    
 	    EditText editText = (EditText) rootView.findViewById(R.id.search_bar);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
@@ -165,39 +178,27 @@ public class					TabNewSpotsFragment extends Fragment
 			mMap.getUiSettings().setRotateGesturesEnabled(true);
 			mMap.getUiSettings().setScrollGesturesEnabled(true);
 			mMap.getUiSettings().setCompassEnabled(true);
-			if (mDive.getSpot().getId() != 1)
+			if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
 			{
 				((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 				((TextView)rootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 				((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 				((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 				((TextView)rootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-				((TextView)rootView.findViewById(R.id.details_name_content)).setText(mDive.getSpot().getName());
+				((TextView)rootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
 				((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 				((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-				((Button)rootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						goToSearch(rootView);
-					}
-				});
-				((ImageView)rootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						activeGPS(rootView);
-					}
-				});
-				System.out.println(mDive.getSpot().getId());
+				
 				mMyMarker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(mDive.getSpot().getLat(), mDive.getSpot().getLng()))
-				.title(mDive.getSpot().getName())
+				.position(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
+				.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-				System.out.println(mDive.getSpot().getId());
-				Integer zoom = mDive.getSpot().getZoom();
+				System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId());
+				Integer zoom = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getZoom();
 				if (zoom == null || zoom > mZoom)
 					zoom = mZoom;
-				if (mDive.getSpot().getLat() != null && mDive.getSpot().getLng() != null)
-					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mDive.getSpot().getLat(), mDive.getSpot().getLng()), zoom));
+				if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() != null && ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() != null)
+					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()), zoom));
 			}
 			else
 			{
@@ -205,7 +206,7 @@ public class					TabNewSpotsFragment extends Fragment
 				activeGPS(null);
 //				mMyMarker = mMap.addMarker(new MarkerOptions()
 //				.position(new LatLng(0, 0))
-//				.title(mDive.getSpot().getName())
+//				.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
 //				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 //				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 			}
@@ -216,41 +217,40 @@ public class					TabNewSpotsFragment extends Fragment
     
     public String getPosition()
 	{
-    	Dive mDive = ((ApplicationController)getActivity().getApplicationContext()).getTempDive();
 		String pos = "";
-		if (mDive.getSpot().getLat() == null)
+		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() == null)
 		{
 			pos += "0° ";
 			pos += "N";
 		}
-		else if (mDive.getSpot().getLat() >= 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() >= 0)
 		{
-			pos += String.valueOf(mDive.getSpot().getLat()) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat()) + "° ";
 			pos += "N";
 		}
-		else if (mDive.getSpot().getLat() < 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() < 0)
 		{
-			pos += String.valueOf(mDive.getSpot().getLat() * (-1)) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (mDive.getSpot().getLng() == null)
+		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() == null)
 		{
 			pos += "0° ";
 			pos += "E";
 		}
-		else if (mDive.getSpot().getLng() >= 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() >= 0)
 		{
-			pos += String.valueOf(mDive.getSpot().getLng()) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()) + "° ";
 			pos += "E";
 		}
-		else if (mDive.getSpot().getLng() < 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() < 0)
 		{
-			pos += String.valueOf(mDive.getSpot().getLng() * (-1)) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
-		if ((mDive.getSpot().getLat() == null ||mDive.getSpot().getLat() == 0) && 
-				(mDive.getSpot().getLng() == null || mDive.getSpot().getLng() == 0))
+		if ((((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() == null ||((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() == 0) && 
+				(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() == null || ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() == 0))
 			pos = "";
 		return (pos);
 	}
@@ -514,7 +514,6 @@ public class					TabNewSpotsFragment extends Fragment
 									mMap.setOnCameraChangeListener(null);
 									removeMarkers();
 									
-									Dive mDive = ((ApplicationController)getActivity().getApplicationContext()).getTempDive();
 									((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 									((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 							    	((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
@@ -531,14 +530,14 @@ public class					TabNewSpotsFragment extends Fragment
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
-										mDive.setSpot(mSelectedObject);
-										System.out.println(mDive.getSpot().toString());
+										((ApplicationController)getActivity().getApplicationContext()).getTempDive().setSpot(mSelectedObject);
+										System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().toString());
 										if (mMyMarker != null)
 											mMyMarker.remove();
-										Integer zoom = mDive.getSpot().getZoom();
+										Integer zoom = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getZoom();
 										if (zoom == null || zoom > mZoom)
 											zoom = mZoom;
-										Spot spot = mDive.getSpot();
+										Spot spot = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot();
 										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
 										mMyMarker = mMap.addMarker(new MarkerOptions()
 										.position(new LatLng(spot.getLat(), spot.getLng()))
@@ -549,7 +548,7 @@ public class					TabNewSpotsFragment extends Fragment
 										((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 										((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 										((TextView)rootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-										((TextView)rootView.findViewById(R.id.details_name_content)).setText(mDive.getSpot().getName());
+										((TextView)rootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
 										((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block

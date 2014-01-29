@@ -7,4 +7,5 @@
     <color name="light_grey">#f8f8f8</color>
     <color name="blue">#0000ff</color>
     <color name="gray_light">#ffabacae</color>
+    <color name="tab_title_underline_grey">#FFDADBDC</color>
 </resources>
