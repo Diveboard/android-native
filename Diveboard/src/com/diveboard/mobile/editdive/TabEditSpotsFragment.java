@@ -34,6 +34,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -159,7 +160,18 @@ public class					TabEditSpotsFragment extends Fragment
 				((TextView)rootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
 				((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 				((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-				
+				((Button)rootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						goToSearch(v);
+					}
+				});
+				((ImageView)rootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						activeGPS(v);
+					}
+				});
 				mMyMarker = mMap.addMarker(new MarkerOptions()
 				.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
 				.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())

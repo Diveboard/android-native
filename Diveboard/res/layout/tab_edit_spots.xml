@@ -101,8 +101,7 @@
 					    android:layout_marginLeft="20dp"
 					    android:layout_marginRight="20dp"
 					    android:background="@drawable/go_to_search_button"
-					    android:text="SEARCH A SPOT >>"
-					    android:onClick="goToSearch"/>
+					    android:text="SEARCH A SPOT >>" />
 				</LinearLayout>
 			</LinearLayout>
 			<LinearLayout
@@ -134,13 +133,13 @@
 			 			<requestFocus />
 			 		</EditText>
 			 		<ImageView
+			 		    android:id="@+id/GPSImage"
 			 		    android:layout_width="0dp"
 			 		    android:layout_weight="0.2"
 			 		    android:layout_height="40dp"
 			 		    android:layout_marginRight="20dp"
 			 		    android:src="@drawable/ic_action_location_found"
-			 		    android:background="@drawable/edit_spot"
-			 		    android:onClick="activeGPS"/>
+			 		    android:background="@drawable/edit_spot" />
 				</LinearLayout>
 				<TextView
 				    android:layout_gravity="center"
