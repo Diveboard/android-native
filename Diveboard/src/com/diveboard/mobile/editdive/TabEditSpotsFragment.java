@@ -80,6 +80,7 @@ public class					TabEditSpotsFragment extends Fragment
 	Double 								mLatitude = 0.0;
 	Double 								mLongitude = 0.0;
 	public final int					mZoom = 12;
+	private ViewGroup					mRootView;
 	
 	private class myLocationListener implements LocationListener
 	{
@@ -106,13 +107,14 @@ public class					TabEditSpotsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
-    	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
+    	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
         
 	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
-
-	    EditText editText = (EditText) rootView.findViewById(R.id.search_bar);
+		((TextView)getActivity().findViewById(R.id.no_spot)).setTypeface(mFaceR);
+	    EditText editText = (EditText) mRootView.findViewById(R.id.search_bar);
+	    editText.setTypeface(mFaceR);
 	    editText.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
@@ -152,24 +154,24 @@ public class					TabEditSpotsFragment extends Fragment
 			mMap.getUiSettings().setCompassEnabled(true);
 			if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId() != 1)
 			{
-				((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-				((TextView)rootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
-				((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
-				((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
-				((TextView)rootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-				((TextView)rootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
-				((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-				((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-				((Button)rootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
+				((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
+				((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
+				((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
+				((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
+				((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
+				((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
+				((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
+				((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+				((Button)mRootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						goToSearch(v);
+						goToSearch(mRootView);
 					}
 				});
-				((ImageView)rootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
+				((ImageView)mRootView.findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
-						activeGPS(v);
+						activeGPS(mRootView);
 					}
 				});
 				mMyMarker = mMap.addMarker(new MarkerOptions()
@@ -185,12 +187,12 @@ public class					TabEditSpotsFragment extends Fragment
 			}
 			else
 			{
-				((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+				((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 				activeGPS(null);
 			}
 			
 		}
-		return rootView;
+		return mRootView;
     }
     
     public void goToSearch(View view)
@@ -502,13 +504,13 @@ public class					TabEditSpotsFragment extends Fragment
 									removeMarkers();
 									ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 									
-									((LinearLayout)view.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-							    	((LinearLayout)view.findViewById(R.id.view_search)).setVisibility(View.GONE);
+									((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
+							    	((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
 									//((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
-							    	String text = ((TextView)view.findViewById(R.id.name)).getText().toString();
+							    	String text = ((TextView)mRootView.findViewById(R.id.name)).getText().toString();
 							    	text = text.substring(text.indexOf(" ") + 1);
-									((EditText)view.findViewById(R.id.search_bar)).setText(text);
-							    	ListView lv = ((ListView)view.findViewById(R.id.list_view));
+									((EditText)mRootView.findViewById(R.id.search_bar)).setText(text);
+							    	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
 							    	List<Spot> listSpots = new ArrayList<Spot>();
 							    	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
 							    	lv.setAdapter(adapter);
@@ -530,12 +532,12 @@ public class					TabEditSpotsFragment extends Fragment
 										.title(spot.getName())
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 										
-										((TextView)view.findViewById(R.id.details_name)).setTypeface(mFaceB);
-										((TextView)view.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
-										((TextView)view.findViewById(R.id.details_gps)).setTypeface(mFaceB);
-										((TextView)view.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-										((TextView)view.findViewById(R.id.details_name_content)).setText(AC.getModel().getDives().get(mIndex).getSpot().getName());
-										((TextView)view.findViewById(R.id.details_gps_content)).setText(getPosition());
+										((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
+										((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
+										((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
+										((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
+										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(AC.getModel().getDives().get(mIndex).getSpot().getName());
+										((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
 										e.printStackTrace();
@@ -612,6 +614,8 @@ public class					TabEditSpotsFragment extends Fragment
 			holder.name.setTypeface(mFaceR);
 			holder.location_country.setText(mSpotsList.get(position).getLocationName() + ", " + mSpotsList.get(position).getCountryName());
 			holder.location_country.setTypeface(mFaceR);
+			holder.name.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
+			holder.location_country.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
 			return convertView;
 		}
 		

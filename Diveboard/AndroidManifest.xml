@@ -138,6 +138,11 @@
             android:label="@string/title_activity_graph_image"
             android:screenOrientation="landscape">
         </activity>
+        <activity
+            android:name="com.diveboard.mobile.TestActivity"
+            android:label="@string/title_activity_graph_image">
+            
+        </activity>
     </application>
 
 </manifest>
