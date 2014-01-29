@@ -56,7 +56,7 @@ public class					DiveboardModel
 	private int					_userId;
 	private String				_shakenId;
 	private Context				_context;
-	private	User				_user = null;
+	protected static User		_user = null;
 	private ConnectivityManager	_connMgr;
 	private DataManager			_cache;
 	private ArrayList<DataRefreshListener>	_dataRefreshListeners = new ArrayList<DataRefreshListener>();

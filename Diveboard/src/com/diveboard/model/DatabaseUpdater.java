@@ -13,6 +13,8 @@ import java.util.Date;
 import java.util.zip.GZIPInputStream;
 import java.text.DateFormat;
 
+import com.diveboard.config.AppConfig;
+
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -45,7 +47,7 @@ public class					DatabaseUpdater
 			if (wifiNetwork.isConnected() == false)
 				return ;
 			try {
-				URL url = new URL("http://stage.diveboard.com/assets/mobilespots.db.gz");
+				URL url = new URL(AppConfig.SERVER_URL + "/assets/mobilespots.db.gz");
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
 				InputStream mInput = url.openConnection().getInputStream();
 				GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(mInput));
