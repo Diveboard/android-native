@@ -71,10 +71,12 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	private TextView			mTitle = null;
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
 	public static EditText			mNotes = null;
+	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	
 	@Override
 	protected void onCreate(Bundle savedInstance) {
 		super.onCreate(savedInstance);
+		mIndex = getIntent().getIntExtra("index", -1);
         setContentView(R.layout.activity_edit_dive);
         ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
@@ -102,7 +104,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
 						return ;
 					case 4:
-						mTitle.setText("SPOT");
+						mTitle.setText(getResources().getString(R.string.tab_spots_title));
 						return ;
 					default:
 						return ;
@@ -196,7 +198,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				case 3:
 					return mEditNotesFragment;
 				case 4:
-					return FirstFragment.newInstance(4, "Page # 5");
+					return mEditSpotsFragment;
 				default:
 					return null;
 			}
