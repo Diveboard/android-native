@@ -250,10 +250,10 @@ public class					Dive implements IModel
 		}
 		else
 			_pictures = null;
-		if (DiveboardModel._user != null)
+		if (_fullpermalink != null)
 		{
-			_profile = new Picture(AppConfig.SERVER_URL + "/" + DiveboardModel._user.getNickname() + "/" + Integer.toString(_id) + "/profile.png?g=mobile_v002", Integer.toString(_id));
-			_profileV3 = new Picture(AppConfig.SERVER_URL + "/" + DiveboardModel._user.getNickname() + "/" + Integer.toString(_id) + "/profile.png?g=mobile_v003", Integer.toString(_id));
+			_profile = new Picture(_fullpermalink + "/profile.png?g=mobile_v002", Integer.toString(_id));
+			_profileV3 = new Picture(_fullpermalink + "/profile.png?g=mobile_v003", Integer.toString(_id));
 		}
 		else
 		{
