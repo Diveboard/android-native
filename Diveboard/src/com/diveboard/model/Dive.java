@@ -359,26 +359,17 @@ public class					Dive implements IModel
 	private ArrayList<Pair<Integer, Integer>>	_parseSafetyStops(String safetystring)
 	{
 		ArrayList<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
-		safetystring = safetystring.subSequence(1, safetystring.length() - 1).toString();
-		String[] list = safetystring.split("\"");
-		boolean first = true;
-		int first_elem = 0;
-		for (int i = 0, length = list.length; i < length; i++)
-		{
-			if (list[i].matches("[0-9]+"))
+
+		try {
+			JSONArray list = new JSONArray(safetystring);
+			for (int i = 0, length = list.length(); i < length; i++)
 			{
-				if (first == true)
-				{
-					first_elem = Integer.parseInt(list[i]);
-					first = false;
-				}
-				else
-				{
-					Pair<Integer, Integer> elem = new Pair<Integer, Integer>(first_elem, Integer.parseInt(list[i]));
-					result.add(elem);
-					first = true;
-				}
+				JSONArray stop = list.getJSONArray(i);
+				Pair<Integer, Integer> elem = new Pair<Integer, Integer>(stop.getInt(0), stop.getInt(1));
+				result.add(elem);
 			}
+		} catch (JSONException e) {
+			System.out.println("Failed to decrypt JSON");
 		}
 		return result;
 	}
@@ -607,6 +598,22 @@ public class					Dive implements IModel
 				return (_parseSafetyStops(_editList.get(i).second));
 		}
 		return _safetyStops;
+	}
+
+	public String getSafetyString(){
+		String safetystring = "[";
+		ArrayList<Pair<Integer, Integer>> stops = getSafetyStops();
+
+		if (stops != null) {
+			for (int i = 0, length = stops.size(); i < length; i++)
+			{
+				if (i != 0)
+					safetystring += ",";
+				safetystring += "[\"" + stops.get(i).first + "\",\"" + stops.get(i).second + "\"]";
+			}
+		}
+		safetystring += "]";
+		return safetystring;
 	}
 
 	public void setSafetyStops(ArrayList<Pair<Integer, Integer>> safetystops) {
