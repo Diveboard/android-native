@@ -78,7 +78,7 @@ public class					Dive implements IModel
 	private ArrayList<Pair<String, String>>	_editList = new ArrayList<Pair<String, String>>();
 	private String				_shopName;
 	private Picture				_shopPicture;
-	private ArrayList<Pair<Integer, Integer>>	_safetyStops = new ArrayList<Pair<Integer, Integer>>();
+	private ArrayList<SafetyStop>	_safetyStops = new ArrayList<SafetyStop>();
 	
 	public						Dive()
 	{
@@ -130,6 +130,7 @@ public class					Dive implements IModel
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
+		System.out.println("DIVE CREATE : " + json);
 		_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"), Units.Distance.KM);
 		// buddies
 		_class = (json.isNull("class")) ? null : json.getString("class");
@@ -262,8 +263,8 @@ public class					Dive implements IModel
 		}
 		_shopName = (json.isNull("shop_name")) ? null : json.getString("shop_name");
 		_shopPicture = (json.isNull("shop_picture")) ? null : new Picture(json.getString("shop_picture"));
-		if (!json.isNull("safetystops"))
-			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
+		if (!json.isNull("safetystops_unit_value"))
+			_safetyStops = _parseSafetyStops(json.getString("safetystops_unit_value"));
 		if (!json.isNull("divetype"))
 		{
 			jarray = new JSONArray(json.getString("divetype"));
@@ -344,8 +345,8 @@ public class					Dive implements IModel
 			_time = json.getString("time");
 		if (!json.isNull("privacy"))
 			_privacy = json.getInt("privacy");
-		if (!json.isNull("safetystops"))
-			_safetyStops = _parseSafetyStops(json.getString("safetystops"));
+		if (!json.isNull("safetystops_unit_value"))
+			_safetyStops = _parseSafetyStops(json.getString("safetystops_unit_value"));
 		if (!json.isNull("divetype"))
 		{
 			JSONArray jarray = new JSONArray(json.getString("divetype"));
@@ -356,20 +357,21 @@ public class					Dive implements IModel
 		}
 	}
 	
-	private ArrayList<Pair<Integer, Integer>>	_parseSafetyStops(String safetystring)
+	private ArrayList<SafetyStop>	_parseSafetyStops(String safetystring)
 	{
-		ArrayList<Pair<Integer, Integer>> result = new ArrayList<Pair<Integer, Integer>>();
+		ArrayList<SafetyStop> result = new ArrayList<SafetyStop>();
 
 		try {
 			JSONArray list = new JSONArray(safetystring);
 			for (int i = 0, length = list.length(); i < length; i++)
 			{
 				JSONArray stop = list.getJSONArray(i);
-				Pair<Integer, Integer> elem = new Pair<Integer, Integer>(stop.getInt(0), stop.getInt(1));
+				SafetyStop elem = new SafetyStop(stop.getInt(0), stop.getInt(1), stop.getString(2));
+				//Pair<Integer, Integer> elem = new Pair<Integer, Integer>(stop.getInt(0), stop.getInt(1));
 				result.add(elem);
 			}
 		} catch (JSONException e) {
-			System.out.println("Failed to decrypt JSON");
+			System.out.println("Failed to parse JSON");
 		}
 		return result;
 	}
@@ -591,10 +593,10 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-	public ArrayList<Pair<Integer, Integer>> getSafetyStops() {
+	public ArrayList<SafetyStop> getSafetyStops() {
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
-			if (_editList.get(i).first.contentEquals("safetystops"))
+			if (_editList.get(i).first.contentEquals("safetystops_unit_value"))
 				return (_parseSafetyStops(_editList.get(i).second));
 		}
 		return _safetyStops;
@@ -602,21 +604,21 @@ public class					Dive implements IModel
 
 	public String getSafetyString(){
 		String safetystring = "[";
-		ArrayList<Pair<Integer, Integer>> stops = getSafetyStops();
+		ArrayList<SafetyStop> stops = getSafetyStops();
 
 		if (stops != null) {
 			for (int i = 0, length = stops.size(); i < length; i++)
 			{
 				if (i != 0)
 					safetystring += ",";
-				safetystring += "[\"" + stops.get(i).first + "\",\"" + stops.get(i).second + "\"]";
+				safetystring += "[\"" + stops.get(i).getDuration() + "\",\"" + stops.get(i).getDepth() + "\",\"" + stops.get(i).getUnit() + "\"]";
 			}
 		}
 		safetystring += "]";
 		return safetystring;
 	}
 
-	public void setSafetyStops(ArrayList<Pair<Integer, Integer>> safetystops) {
+	public void setSafetyStops(ArrayList<SafetyStop> safetystops) {
 		//this._safetyStops = _safetystops;
 		String safetystring = "[";
 		
@@ -624,10 +626,11 @@ public class					Dive implements IModel
 		{
 			if (i != 0)
 				safetystring += ",";
-			safetystring += "[\"" + safetystops.get(i).first + "\",\"" + safetystops.get(i).second + "\"]";
+			safetystring += "[\"" + safetystops.get(i).getDepth() + "\",\"" + safetystops.get(i).getDuration() + "\",\"" + safetystops.get(i).getUnit() + "\"]";
 		}
 		safetystring += "]";
-		Pair<String, String> new_elem = new Pair<String, String>("safetystops", safetystring);
+		System.out.println("SET SAFETY STR : " + safetystring);
+		Pair<String, String> new_elem = new Pair<String, String>("safetystops_unit_value", safetystring);
 		_editList.add(new_elem);
 	}
 

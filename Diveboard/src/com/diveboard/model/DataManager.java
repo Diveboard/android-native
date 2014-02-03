@@ -291,7 +291,7 @@ public class					DataManager
 				}
 				json.put("divetype", jarray);
 			}
-			json.put("safetystops", dive.getSafetyString());
+			json.put("safetystops_unit_value", dive.getSafetyString());
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);

@@ -24,9 +24,11 @@ import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialog
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;
+import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -38,6 +40,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Pair;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TabHost;
@@ -301,6 +304,9 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	@Override
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
+		getApplicationContext();
+		InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
@@ -485,13 +491,13 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	public void onSafetyStopsEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit();
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
