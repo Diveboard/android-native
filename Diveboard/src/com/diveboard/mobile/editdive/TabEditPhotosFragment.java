@@ -1,10 +1,14 @@
-package com.diveboard.mobile;
+package com.diveboard.mobile.editdive;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.GalleryCarouselActivity;
+import com.diveboard.mobile.R;
+import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
@@ -16,17 +20,28 @@ import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.Color;
+import android.graphics.ColorFilter;
+import android.graphics.LightingColorFilter;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.support.v4.app.Fragment;
 import android.util.Pair;
+import android.view.DragEvent;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
+import android.view.View.OnDragListener;
+import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -44,7 +59,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class PhotosActivity extends Activity {
+public class TabEditPhotosFragment extends Fragment {
 
 	private DiveboardModel mModel;
 	private int mPhotoPos = 0;
@@ -52,28 +67,27 @@ public class PhotosActivity extends Activity {
 	private ImageView mImageView;
 	private List<Picture> mItems;
 	private Size mSizePicture;
+	private ViewGroup mRootView;
+	private RelativeLayout mChangeItem;
 
+//	@Override
+//	protected void onResume()
+//	{
+//		super.onResume();
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		AC.handleLowMemory();
+//		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
+//	}
 	@Override
-	protected void onResume()
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
 	{
-		super.onResume();
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		AC.handleLowMemory();
-		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
-	}
-
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		setContentView(R.layout.activity_photos);
-		if (AC.handleLowMemory() == true)
-			return ;
-		mModel = AC.getModel();
-		if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
-				&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
+		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
+		mModel = EditDiveActivity.mModel;
+		if (mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
+				&& mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 		{
-			mItems = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures();
+			mItems = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
 			new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -82,18 +96,31 @@ public class PhotosActivity extends Activity {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					((TableLayout)(findViewById(R.id.tablelayout))).post(new Runnable() {
+					mRootView.post(new Runnable() {
 						public void run()
 						{
+							Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+							Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 							ArrayList<Pair<ImageView, Picture>> arrayPair = new ArrayList<Pair<ImageView, Picture>>();
-							TableLayout tableLayout = (TableLayout)findViewById(R.id.tablelayout);
+							TableLayout tableLayout = (TableLayout)mRootView.findViewById(R.id.tablelayout);
 							System.out.println("il y a " + mItems.size() + " photos");
 							int i = 0;
 							int screenWidth;
 							int screenheight;
 							int nbPicture;
-							screenWidth = getParent().findViewById(R.id.root).getMeasuredWidth();
-							screenheight = getParent().findViewById(R.id.root).getMeasuredHeight();
+							
+							mChangeItem = (RelativeLayout)mRootView.findViewById(R.id.change_item);
+							screenWidth = mRootView.findViewById(R.id.tablelayout).getMeasuredWidth();
+							screenheight = mRootView.findViewById(R.id.tablelayout).getMeasuredHeight();
+							((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
+							RelativeLayout.LayoutParams dropitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
+							dropitemparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+							((RelativeLayout)mRootView.findViewById(R.id.drop_item)).setLayoutParams(dropitemparam);
+							
+							((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
+							RelativeLayout.LayoutParams mainitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
+							mainitemparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+							((RelativeLayout)mRootView.findViewById(R.id.main_item)).setLayoutParams(mainitemparam);
 							if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 							{
 								nbPicture = 3;	
@@ -117,27 +144,30 @@ public class PhotosActivity extends Activity {
 							}
 							while (i < mItems.size())
 							{
-								TableRow row = new TableRow(getApplicationContext());
+								TableRow row = new TableRow(getActivity().getApplicationContext());
 								for (int j = 0; j < nbPicture && i < mItems.size(); j++)
 								{
-									int size = ((TableLayout)(findViewById(R.id.tablelayout))).getMeasuredWidth();
-									LinearLayout linearLayout = new LinearLayout(PhotosActivity.this);
+									int size = ((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getMeasuredWidth();
+									LinearLayout linearLayout = new LinearLayout(getActivity().getApplicationContext());
 									TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
 									tbparam.gravity = Gravity.CENTER;
 									linearLayout.setGravity(Gravity.CENTER);
 									linearLayout.setLayoutParams(tbparam);
-									ImageView imageView = new ImageView(PhotosActivity.this);
+									ImageView imageView = new ImageView(getActivity().getApplicationContext());
 									imageView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
 									imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 									imageView.setContentDescription(String.valueOf(i));
 									imageView.setVisibility(View.GONE);
+									imageView.setOnLongClickListener(new MyTouchListener());
+									((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
+									((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener());
 									//								int shortAnimTime = getResources().getInteger(
 									//										android.R.integer.config_shortAnimTime);
 									//								imageView.setVisibility(View.VISIBLE);
 									//								imageView.animate().setDuration(shortAnimTime).alpha(1);
-									ApplicationController AC = (ApplicationController)getApplicationContext();
-									if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
-											&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
+									ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+									if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
+											&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 									{
 										Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mItems.get(i));
 										arrayPair.add(pair);
@@ -147,13 +177,13 @@ public class PhotosActivity extends Activity {
 
 										@Override
 										public void onClick(View v) {
-											ApplicationController AC = (ApplicationController)getApplicationContext();
-											if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
-													&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
+											ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+											if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
+													&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 											{
 												//Toast.makeText(PhotosActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-												Intent galleryCarousel = new Intent(getApplicationContext(), GalleryCarouselActivity.class);
-												galleryCarousel.putExtra("index", getIntent().getIntExtra("index", 0));
+												Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
+												galleryCarousel.putExtra("index", getActivity().getIntent().getIntExtra("index", -1));
 												galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
 												startActivity(galleryCarousel);
 											}	
@@ -163,21 +193,21 @@ public class PhotosActivity extends Activity {
 									//								mDownloadImageTask = new DownloadImageTask(imageView, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), i);
 									//								mDownloadImageTask.execute();
 									linearLayout.addView(imageView);
-									ProgressBar bar = new ProgressBar(PhotosActivity.this);
+									ProgressBar bar = new ProgressBar(getActivity().getApplicationContext());
 									RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 									bar.setVisibility(View.VISIBLE);
 									bar.setLayoutParams(params);
-									linearLayout.addView(new ProgressBar(PhotosActivity.this));
+									linearLayout.addView(new ProgressBar(getActivity().getApplicationContext()));
 									row.addView(linearLayout);
 									i++;
 								}
 								tableLayout.addView(row);
 							}
-							ApplicationController AC = (ApplicationController)getApplicationContext();
-							if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
-									&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
+							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+							if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
+									&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 							{
-								mDownloadImageTask = new DownloadImageTask(arrayPair, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), 0);
+								mDownloadImageTask = new DownloadImageTask(arrayPair, mItems, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), 0);
 								mDownloadImageTask.execute();
 							}
 						}
@@ -187,77 +217,15 @@ public class PhotosActivity extends Activity {
 		}
 		else
 		{
-			Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-			TextView tv = new TextView(this);
-			tv.setText("No Picture in your album!");
-			tv.setTypeface(face);
-			tv.setGravity(Gravity.CENTER);
-			setContentView(tv);
+//			Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+//			TextView tv = new TextView(getActivity().getApplicationContext());
+//			tv.setText("No Picture in your album!");
+//			tv.setTypeface(face);
+//			tv.setGravity(Gravity.CENTER);
+//			mRootView.setContentView(tv);
 		}
-
-
-		//		TableLayout tableLayout = (TableLayout)findViewById(R.id.tablelayout);
-		//		System.out.println("il y a " + mItems.size() + " photos");
-		//		int i = 0;
-		//		while (i < mItems.size() - 1)
-		//		{
-		//			TableRow row = new TableRow(PhotosActivity.this);
-		//			for (int j = 0; j < 3 && i < mItems.size() - 1; j++)
-		//			{
-		//				ImageView imageView = new ImageView(PhotosActivity.this);
-		//
-		//				int size = ((TableLayout)(findViewById(R.id.tablelayout))).getMeasuredWidth();
-		//				System.out.println("size = " + size);
-		//				imageView.setLayoutParams(new TableRow.LayoutParams(680 / 3, 680 / 3));
-		//				imageView.getLayoutParams().width = 680 / 3;
-		//				imageView.getLayoutParams().height = 680 / 3;
-		//				//imageView.setLayoutParams(new TableLayout.LayoutParams(680 / 3, 680 / 3));
-		//				imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-		//				mDownloadImageTask = new DownloadImageTask(imageView, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), i);
-		//				mDownloadImageTask.execute();
-		//				row.addView(imageView);
-		//				i++;
-		//			}
-		//			tableLayout.addView(row);
-		//		}
+		return mRootView;
 	}
-
-//	private class ImageThread extends Thread
-//	{
-//		private Picture mPicture;
-//		private Context mContext;
-//		private Bitmap mBitmap;
-//		public ImageThread(Context context, Picture picture, Bitmap bitmap)
-//		{
-//			mPicture = picture;
-//			mContext = context;
-//			setBitmap(bitmap);
-//		}
-//
-//		@Override
-//		public void run() {
-//			try {
-//				setBitmap(mPicture.getPicture(mContext, mSizePicture));
-//				try {
-//					Thread.sleep(2000);
-//				} catch (InterruptedException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//		}
-//
-//		public Bitmap getBitmap() {
-//			return mBitmap;
-//		}
-//
-//		public void setBitmap(Bitmap mBitmap) {
-//			this.mBitmap = mBitmap;
-//		}
-//	}
 
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
@@ -306,10 +274,13 @@ public class PhotosActivity extends Activity {
 					LinearLayout rl = (LinearLayout)(imageView.getParent());
 					ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 					bar.setVisibility(View.GONE);
-					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null && PhotosActivity.this != null && mModel.getDives() != null)
+					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null && TabEditPhotosFragment.this != null && mModel.getDives() != null)
 					{
-						mDownloadImageTask = new DownloadImageTask(mArrayPair, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), mPosition + 1);
-						mDownloadImageTask.execute();
+						if (getActivity() != null)
+						{
+							mDownloadImageTask = new DownloadImageTask(mArrayPair, mItems, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), mPosition + 1);
+							mDownloadImageTask.execute();
+						}
 						System.out.println("position = " + mPosition);
 					}
 				}
@@ -319,6 +290,103 @@ public class PhotosActivity extends Activity {
 		@Override
 		protected void onCancelled() {
 			mDownloadImageTask = null;
+		}
+	}
+	
+	private final class MyTouchListener implements OnLongClickListener {
+
+		@Override
+		public boolean onLongClick(View view) {
+			ClipData data = ClipData.newPlainText("", "");
+			DragShadowBuilder shadowBuilder = new View.DragShadowBuilder((View)view.getParent());
+			((View)view.getParent()).startDrag(data, shadowBuilder, view, 0);
+			//((View)view.getParent()).setVisibility(View.INVISIBLE);
+			mChangeItem.setVisibility(View.VISIBLE);
+			return true;
+		}
+	}
+	
+	class MyDropDragListener implements OnDragListener {
+		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
+		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+
+		@Override
+		public boolean onDrag(View v, DragEvent event) {
+			int action = event.getAction();
+			switch (event.getAction()) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				ImageView myIcon = (ImageView) v.findViewById(R.id.drop_icon);
+				((TextView) v.findViewById(R.id.drop_text)).setTextColor(Color.RED);
+				ColorFilter filter = new LightingColorFilter(Color.RED, Color.RED);
+				myIcon.setColorFilter(filter);
+				//v.setBackgroundDrawable(enterShape);
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				((TextView) v.findViewById(R.id.drop_text)).setTextColor(Color.WHITE);
+				((ImageView) v.findViewById(R.id.drop_icon)).setColorFilter(null);
+				//v.setBackgroundDrawable(normalShape);
+				break;
+			case DragEvent.ACTION_DROP:
+				// Dropped, reassign View to ViewGroup
+				View view = (View) event.getLocalState();
+				ViewGroup owner = (ViewGroup) view.getParent();
+				owner.removeView(view);
+//				RelativeLayout container = (RelativeLayout) v;
+//				container.addView(view);
+				view.setVisibility(View.VISIBLE);
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+				mChangeItem.setVisibility(View.GONE);
+				//v.setBackgroundDrawable(normalShape);
+			default:
+				break;
+			}
+			return true;
+		}
+	}
+	
+	class MyMainDragListener implements OnDragListener {
+		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
+		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+
+		@Override
+		public boolean onDrag(View v, DragEvent event) {
+			int action = event.getAction();
+			switch (event.getAction()) {
+			case DragEvent.ACTION_DRAG_STARTED:
+				
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				ImageView myIcon = (ImageView) v.findViewById(R.id.main_icon); 
+				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.RED);
+				ColorFilter filter = new LightingColorFilter(Color.RED, Color.RED);
+				myIcon.setColorFilter(filter);
+				//v.setBackgroundDrawable(enterShape);
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
+				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
+				//v.setBackgroundDrawable(normalShape);
+				break;
+			case DragEvent.ACTION_DROP:
+				// Dropped, reassign View to ViewGroup
+				View view = (View) event.getLocalState();
+				ViewGroup owner = (ViewGroup) view.getParent();
+				owner.removeView(view);
+//				RelativeLayout container = (RelativeLayout) v;
+//				container.addView(view);
+				view.setVisibility(View.VISIBLE);
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+				mChangeItem.setVisibility(View.GONE);
+				//v.setBackgroundDrawable(normalShape);
+			default:
+				break;
+			}
+			return true;
 		}
 	}
 
@@ -442,23 +510,23 @@ public class PhotosActivity extends Activity {
 	//		}
 	//	}
 
-	@Override
-	protected void onDestroy() {
-		if (mDownloadImageTask != null)
-			mDownloadImageTask.cancel(true);
-		super.onDestroy();
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
-	}
-
-	@Override
-	public void onStop() {
-		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
-	}
+//	@Override
+//	protected void onDestroy() {
+//		if (mDownloadImageTask != null)
+//			mDownloadImageTask.cancel(true);
+//		super.onDestroy();
+//	}
+//	
+//	@Override
+//	public void onStart() {
+//		super.onStart();
+//		EasyTracker.getInstance(this).activityStart(this);
+//	}
+//
+//	@Override
+//	public void onStop() {
+//		super.onStop();
+//		EasyTracker.getInstance(this).activityStop(this);
+//	}
 
 }

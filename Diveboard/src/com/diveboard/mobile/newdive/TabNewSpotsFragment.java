@@ -103,6 +103,26 @@ public class					TabNewSpotsFragment extends Fragment
     {
 		super.onCreate(savedInstanceState);
     }
+    
+    @Override
+	public void onPause() {
+    	if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    	}
+		super.onPause();
+	}
+    
+    @Override
+	public void onDestroy() {
+    	if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    	}
+		super.onDestroy();
+	}
 	
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)

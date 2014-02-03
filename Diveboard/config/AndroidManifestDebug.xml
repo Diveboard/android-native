@@ -77,6 +77,10 @@
             android:label="@string/title_activity_edit_dive" >
         </activity>
         <activity
+            android:name="com.diveboard.mobile.editdive.TabEditPhotosActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
+        <activity
             android:name="com.diveboard.mobile.DiveDetailsActivity"
             android:label="@string/title_activity_dive_details_main" >
         </activity>
