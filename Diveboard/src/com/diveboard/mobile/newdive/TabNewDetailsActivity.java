@@ -44,6 +44,7 @@ import org.json.JSONObject;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 
 import android.support.v4.app.DialogFragment;
@@ -348,13 +349,13 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 			elem.add(new EditOption("Max depth : ", Double.toString(mDive.getMaxdepth()) + " " + maxdepth_unit));
 		else
 			elem.add(new EditOption("Max depth : ", ""));
-		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = mDive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + "m";
 		}
 		elem.add(new EditOption("Safety Stops : ", safetydetails));
 		if (mDive.getDuration() != null)
@@ -720,13 +721,13 @@ public class					TabNewDetailsActivity extends FragmentActivity implements EditD
 	@Override
 	public void onSafetyStopsEditComplete(DialogFragment dialog)
 	{
-		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = mDive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + "m";
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();

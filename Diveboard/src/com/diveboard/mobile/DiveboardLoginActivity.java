@@ -1,5 +1,6 @@
 package com.diveboard.mobile;
 
+import org.focuser.sendmelogs.LogCollector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,6 +37,7 @@ import com.bugsense.trace.BugSenseHandler;
  * well.
  */
 public class DiveboardLoginActivity extends FragmentActivity {
+	
 	/**
 	 * A dummy authentication store containing known user names and passwords.
 	 * TODO: remove after connecting to a real authentication system.
@@ -137,7 +139,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		
+
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");

@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 
 import android.support.v4.app.DialogFragment;
@@ -288,13 +289,13 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 		else
 			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
 		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
-		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + "m";
 		}
 		elem.add(new EditOption("Safety Stops : ", safetydetails));
 		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
@@ -660,13 +661,13 @@ public class					TabEditDetailsActivity extends FragmentActivity implements Edit
 	public void onSafetyStopsEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		ArrayList<Pair<Integer, Integer>> safetystop = dive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + "m";
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();

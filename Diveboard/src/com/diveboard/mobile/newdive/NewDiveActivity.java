@@ -33,6 +33,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;
+import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -578,13 +579,13 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onSafetyStopsEditComplete(DialogFragment dialog)
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		ArrayList<Pair<Integer, Integer>> safetystop = mDive.getSafetyStops();
+		ArrayList<SafetyStop> safetystop = mDive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).first.toString() + "min" + "-" + safetystop.get(i).second.toString() + "m";
+			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit();
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();

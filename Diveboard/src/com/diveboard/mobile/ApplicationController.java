@@ -1,5 +1,7 @@
 package com.diveboard.mobile;
 
+import org.focuser.sendmelogs.LogCollector;
+
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 

@@ -3,6 +3,8 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import org.focuser.sendmelogs.LogCollector;
+
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
@@ -48,6 +50,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	private ImageView mPic;
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
+	private LogCollector mCollector;
 	
 	public int dpToPx(int dp) {
 	    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -101,6 +104,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		
 		setContentView(R.layout.activity_dive_details_main);
 		//System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35), dpToPx(35));
