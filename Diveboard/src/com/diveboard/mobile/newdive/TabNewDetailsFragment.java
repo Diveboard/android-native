@@ -9,6 +9,7 @@ import com.diveboard.mobile.newdive.NewDateDialogFragment;
 import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment;
 import com.diveboard.mobile.newdive.NewDurationDialogFragment;
 import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment;
+import com.diveboard.mobile.editdive.EditGuideNameDialogFragment;
 import com.diveboard.mobile.editdive.EditOption;
 import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment;
 import com.diveboard.mobile.newdive.NewTimeInDialogFragment;
@@ -150,6 +151,12 @@ public class					TabNewDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "NewDiveTypeDialogFragment");
     }
     
+    private void				_editGuideNameDialog()
+    {
+    	NewGuideNameDialogFragment dialog = new NewGuideNameDialogFragment();
+    	dialog.show(getActivity().getSupportFragmentManager(), "NewGuideNameDialogFragment");
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -277,6 +284,10 @@ public class					TabNewDetailsFragment extends Fragment
 			elem.add(new EditOption("Dive number : ", Integer.toString(mDive.getNumber())));
 		else
 			elem.add(new EditOption("Dive number : ", ""));
+		if (mDive.getGuide() != null)
+			elem.add(new EditOption("Guide name : ", mDive.getGuide()));
+		else
+			elem.add(new EditOption("Guide name : ", ""));
 		elem.add(new EditOption("Trip name : ", mDive.getTripName()));
 		ArrayList<String> divetype = mDive.getDivetype();
 		String divetype_string = "";
@@ -361,27 +372,30 @@ public class					TabNewDetailsFragment extends Fragment
 						_editDiveNumberDialog();
 						break ;
 					case 7:
+						_editGuideNameDialog();
+						break ;	
+					case 8:
 						_editTripNameDialog();
 						break ;
-					case 8:
+					case 9:
 						_editDiveType();
 						break ;
-					case 9:
+					case 10:
 						_editVisibility();
 						break ;
-					case 10:
+					case 11:
 						_editCurrent();
 						break ;
-					case 11:
+					case 12:
 						_editSurfaceTemp();
 						break ;
-					case 12:
+					case 13:
 						_editBottomTemp();
 						break ;
-					case 13:
+					case 14:
 						_editAltitude();
 						break ;
-					case 14:
+					case 15:
 						_editWater();
 						break ;
 				}

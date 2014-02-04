@@ -126,6 +126,8 @@ public class					Dive implements IModel
 		}
 		_privacy = 0;
 		_divetype = new ArrayList<String>();
+		_guide = null;
+		_pictures = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -253,8 +255,9 @@ public class					Dive implements IModel
 			_pictures = null;
 		if (_fullpermalink != null)
 		{
-			_profile = new Picture(_fullpermalink + "/profile.png?g=mobile_v002", Integer.toString(_id));
-			_profileV3 = new Picture(_fullpermalink + "/profile.png?g=mobile_v003", Integer.toString(_id));
+			String unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "&u=m" : "&u=i";
+			_profile = new Picture(_fullpermalink + "/profile.png?g=mobile_v002" + unit, Integer.toString(_id));
+			_profileV3 = new Picture(_fullpermalink + "/profile.png?g=mobile_v003" + unit, Integer.toString(_id));
 		}
 		else
 		{
@@ -273,6 +276,7 @@ public class					Dive implements IModel
 				new_elem.add(jarray.getString(i));
 			_divetype = new_elem;
 		}
+		_guide = (json.isNull("guide")) ? null : json.getString("guide");
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -354,6 +358,16 @@ public class					Dive implements IModel
 			for (int i = 0, length = jarray.length(); i < length; i++)
 				new_elem.add(jarray.getString(i));
 			_divetype = new_elem;
+		}
+		if (!json.isNull("guide"))
+			_guide = json.getString("guide");
+		if (!json.isNull("pictures"))
+		{
+			JSONArray jarray = new JSONArray(json.getString("pictures"));
+			ArrayList<Picture> new_elem = new ArrayList<Picture>();
+			for (int i = 0, length = jarray.length(); i < length; i++)
+				new_elem.add(new Picture(jarray.getJSONObject(i)));
+			_pictures = new_elem;
 		}
 	}
 	
@@ -560,14 +574,6 @@ public class					Dive implements IModel
 
 	public void setFullpermalink(String _fullpermalink) {
 		this._fullpermalink = _fullpermalink;
-	}
-
-	public String getGuide() {
-		return _guide;
-	}
-
-	public void setGuide(String _guide) {
-		this._guide = _guide;
 	}
 
 	public String getPermalink() {
@@ -875,6 +881,21 @@ public class					Dive implements IModel
 		Pair<String, String> new_elem = new Pair<String, String>("trip_name", _tripName);
 		_editList.add(new_elem);
 	}
+	
+	public String getGuide() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("guide"))
+				return (_editList.get(i).second);
+		}
+		return _guide;
+	}
+
+	public void setGuide(String guideName) {
+		//this._tripName = _tripName;
+		Pair<String, String> new_elem = new Pair<String, String>("guide", guideName);
+		_editList.add(new_elem);
+	}
 
 	public ArrayList<UserGear> getUserGears() {
 		return _userGears;
@@ -1066,12 +1087,37 @@ public class					Dive implements IModel
 		this._featuredPicture = _featuredPicture;
 	}
 
-	public ArrayList<Picture> getPictures() {
+	public ArrayList<Picture> getPictures()
+	{
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("pictures"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<Picture> result = new ArrayList<Picture>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+						result.add(new Picture(jarray.getJSONObject(i)));
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return _pictures;
 	}
 
-	public void setPictures(ArrayList<Picture> _pictures) {
-		this._pictures = _pictures;
+	public void setPictures(ArrayList<Picture> _pictures)
+	{
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		for (int i = 0, size = _pictures.size(); i < size; i++)
+			jarray.put(_pictures.get(i).getJson());
+		new_elem = new Pair<String, String>("pictures", jarray.toString());
+		_editList.add(new_elem);
 	}
 
 	public ArrayList<String> getDivetype() {

@@ -177,6 +177,15 @@ public class					TabEditDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "EditDiveTypeDialogFragment");
     }
     
+    private void				_editGuideNameDialog()
+    {
+    	EditGuideNameDialogFragment dialog = new EditGuideNameDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getActivity().getSupportFragmentManager(), "EditGuideNameDialogFragment");
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -228,6 +237,10 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
 		else
 			elem.add(new EditOption("Dive number : ", ""));
+		if (dive.getGuide() != null)
+			elem.add(new EditOption("Guide name : ", dive.getGuide()));
+		else
+			elem.add(new EditOption("Guide name : ", ""));
 		elem.add(new EditOption("Trip name : ", dive.getTripName()));
 		ArrayList<String> divetype = dive.getDivetype();
 		String divetype_string = "";
@@ -316,27 +329,30 @@ public class					TabEditDetailsFragment extends Fragment
 						_editDiveNumberDialog();
 						break ;
 					case 7:
-						_editTripNameDialog();
+						_editGuideNameDialog();
 						break ;
 					case 8:
-						_editDiveType();
+						_editTripNameDialog();
 						break ;
 					case 9:
-						_editVisibility();
+						_editDiveType();
 						break ;
 					case 10:
-						_editCurrent();
+						_editVisibility();
 						break ;
 					case 11:
-						_editSurfaceTemp();
+						_editCurrent();
 						break ;
 					case 12:
-						_editBottomTemp();
+						_editSurfaceTemp();
 						break ;
 					case 13:
-						_editAltitude();
+						_editBottomTemp();
 						break ;
 					case 14:
+						_editAltitude();
+						break ;
+					case 15:
 						_editWater();
 						break ;
 				}

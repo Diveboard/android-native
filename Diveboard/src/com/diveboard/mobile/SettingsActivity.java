@@ -29,6 +29,7 @@ import android.text.TextUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.List;
 
 import org.json.JSONException;
@@ -87,6 +88,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (AC.handleLowMemory() == true)
 			return ;

@@ -10,6 +10,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
+import com.diveboard.mobile.newdive.NewGuideNameDialogFragment.EditGuideNameDialogListener;
 import com.diveboard.mobile.editdive.EditOption;
 import com.diveboard.mobile.editdive.OptionAdapter;
 import com.diveboard.mobile.editdive.TabEditSpotsFragment;
@@ -70,7 +71,8 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 																					EditWaterDialogListener,
 																					EditConfirmDialogListener,
 																					EditSafetyStopsDialogListener,
-																					EditDiveTypeDialogListener
+																					EditDiveTypeDialogListener,
+																					EditGuideNameDialogListener
 {
 	private Typeface			mFaceB;
 	private NewPagerAdapter		adapterViewPager;
@@ -340,7 +342,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		((EditOption)mOptionAdapter.getItem(7)).setValue(mDive.getTripName());
+		((EditOption)mOptionAdapter.getItem(8)).setValue(mDive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -458,7 +460,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getTempSurface() == null)
-			((EditOption)mOptionAdapter.getItem(11)).setValue("");
+			((EditOption)mOptionAdapter.getItem(12)).setValue("");
 		else
 		{
 //			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
@@ -467,7 +469,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
 				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface()) + " °" + tempsurface_unit);
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempSurface()) + " °" + tempsurface_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -478,7 +480,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getTempBottom() == null)
-			((EditOption)mOptionAdapter.getItem(12)).setValue("");
+			((EditOption)mOptionAdapter.getItem(13)).setValue("");
 		else
 		{
 //			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
@@ -487,7 +489,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
 				tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom()) + " °" + tempbottom_unit);
+			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(mDive.getTempBottom()) + " °" + tempbottom_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -517,9 +519,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getVisibility() == null)
-			((EditOption)mOptionAdapter.getItem(9)).setValue("");
+			((EditOption)mOptionAdapter.getItem(10)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(9)).setValue(mDive.getVisibility().substring(0, 1).toUpperCase() + mDive.getVisibility().substring(1));
+			((EditOption)mOptionAdapter.getItem(10)).setValue(mDive.getVisibility().substring(0, 1).toUpperCase() + mDive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 	}
 
@@ -528,9 +530,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getCurrent() == null)
-			((EditOption)mOptionAdapter.getItem(10)).setValue("");
+			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(10)).setValue(mDive.getCurrent().substring(0, 1).toUpperCase() + mDive.getCurrent().substring(1));
+			((EditOption)mOptionAdapter.getItem(11)).setValue(mDive.getCurrent().substring(0, 1).toUpperCase() + mDive.getCurrent().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -540,9 +542,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getAltitude() == null)
-			((EditOption)mOptionAdapter.getItem(13)).setValue("");
+			((EditOption)mOptionAdapter.getItem(14)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(mDive.getAltitude().getDistance()) + " " + mDive.getAltitude().getSmallName());
+			((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(mDive.getAltitude().getDistance()) + " " + mDive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 	}
 
@@ -551,9 +553,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		if (mDive.getWater() == null)
-			((EditOption)mOptionAdapter.getItem(14)).setValue("");
+			((EditOption)mOptionAdapter.getItem(15)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(14)).setValue(mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1));
+			((EditOption)mOptionAdapter.getItem(15)).setValue(mDive.getWater().substring(0, 1).toUpperCase() + mDive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 	}
 	
@@ -602,7 +604,15 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				divetype_string += ", ";
 			divetype_string += divetype.get(i);
 		}
-		((EditOption)mOptionAdapter.getItem(8)).setValue(divetype_string);
+		((EditOption)mOptionAdapter.getItem(9)).setValue(divetype_string);
+		mOptionAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onGuideNameEditComplete(DialogFragment dialog)
+	{
+		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+		((EditOption)mOptionAdapter.getItem(7)).setValue(mDive.getGuide());
 		mOptionAdapter.notifyDataSetChanged();
 	}
 }

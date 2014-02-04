@@ -94,4 +94,6 @@
     <string name="research_type">Research</string>
     <string name="admin_category">Admin</string>
     <string name="sudo_hint">User Id</string>
+    <string name="edit_guidename_title">Guide Name</string>
+    <string name="guidename_hint">Guide Name</string>
 </resources>

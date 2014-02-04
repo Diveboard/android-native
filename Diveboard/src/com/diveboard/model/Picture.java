@@ -25,6 +25,7 @@ import android.util.Pair;
 
 public class					Picture
 {
+	private JSONObject			_json = null;
 	private String				_urlDefault;
 	private String				_urlLarge;
 	private String				_urlMedium;
@@ -61,8 +62,8 @@ public class					Picture
 		_urlSmall = url;
 		_urlThumbnail = url;
 		_uniqId = uniqid;
-		Pair<String, Picture> new_elem = new Pair<String, Picture>(url, this);
-		DiveboardModel.pictureList.add(new_elem);
+		//Pair<String, Picture> new_elem = new Pair<String, Picture>(url, this);
+		//DiveboardModel.pictureList.add(new_elem);
 	}
 	
 	public 							Picture(final JSONObject json) throws JSONException
@@ -82,6 +83,7 @@ public class					Picture
 		_urlThumbnail = json.getString("thumbnail");
 		new_elem = new Pair<String, Picture>(_urlThumbnail, this);
 		DiveboardModel.pictureList.add(new_elem);
+		_json = json;
 	}
 	
 	public synchronized boolean		loadPicture(final Context context) throws IOException
@@ -130,7 +132,10 @@ public class					Picture
 	
 	public synchronized Bitmap				getPicture(final Context context, final Size size) throws IOException
 	{
-		if (!_loadCachePicture(context, size))
+		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+
+		if (!_loadCachePicture(context, size) || (_uniqId != null && networkInfo != null && networkInfo.isConnected()))
 		{
 			if (!loadPicture(context, size))
 				return null;
@@ -332,5 +337,10 @@ public class					Picture
 		{
 			file.delete();
 		}
+	}
+	
+	public JSONObject			getJson()
+	{
+		return _json;
 	}
 }

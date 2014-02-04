@@ -13,6 +13,7 @@ import com.diveboard.mobile.editdive.EditDateDialogFragment.EditDateDialogListen
 import com.diveboard.mobile.editdive.EditDiveNumberDialogFragment.EditDiveNumberDialogListener;
 import com.diveboard.mobile.editdive.EditDiveTypeDialogFragment.EditDiveTypeDialogListener;
 import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
+import com.diveboard.mobile.editdive.EditGuideNameDialogFragment.EditGuideNameDialogListener;
 import com.diveboard.mobile.editdive.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
 import com.diveboard.mobile.editdive.EditSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
 import com.diveboard.mobile.editdive.EditSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
@@ -62,7 +63,8 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 																					EditWaterDialogListener,
 																					EditConfirmDialogListener,
 																					EditSafetyStopsDialogListener,
-																					EditDiveTypeDialogListener
+																					EditDiveTypeDialogListener,
+																					EditGuideNameDialogListener
 {
 	private int					mIndex;
 	private Typeface			mFaceB;
@@ -304,11 +306,8 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	@Override
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
-		getApplicationContext();
-		InputMethodManager inputManager = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
-        inputManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getTripName());
+		((EditOption)mOptionAdapter.getItem(8)).setValue(dive.getTripName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -388,7 +387,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
 				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit);
+			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -399,7 +398,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getTempBottom() == null)
-			((EditOption)mOptionAdapter.getItem(12)).setValue("");
+			((EditOption)mOptionAdapter.getItem(13)).setValue("");
 		else
 		{
 			String tempbottom_unit = "";
@@ -407,7 +406,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
 			else
 				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit);
+			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -444,9 +443,9 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getVisibility() == null)
-			((EditOption)mOptionAdapter.getItem(9)).setValue("");
+			((EditOption)mOptionAdapter.getItem(10)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(9)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
+			((EditOption)mOptionAdapter.getItem(10)).setValue(dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -456,9 +455,9 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getCurrent() == null)
-			((EditOption)mOptionAdapter.getItem(10)).setValue("");
+			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(10)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
+			((EditOption)mOptionAdapter.getItem(11)).setValue(dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -468,9 +467,9 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getAltitude() == null)
-			((EditOption)mOptionAdapter.getItem(13)).setValue("");
+			((EditOption)mOptionAdapter.getItem(14)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
+			((EditOption)mOptionAdapter.getItem(14)).setValue(Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName());
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -480,9 +479,9 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		if (dive.getWater() == null)
-			((EditOption)mOptionAdapter.getItem(14)).setValue("");
+			((EditOption)mOptionAdapter.getItem(15)).setValue("");
 		else
-			((EditOption)mOptionAdapter.getItem(14)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
+			((EditOption)mOptionAdapter.getItem(15)).setValue(dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -515,7 +514,15 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				divetype_string += ", ";
 			divetype_string += divetype.get(i);
 		}
-		((EditOption)mOptionAdapter.getItem(8)).setValue(divetype_string);
+		((EditOption)mOptionAdapter.getItem(9)).setValue(divetype_string);
+		mOptionAdapter.notifyDataSetChanged();
+	}
+
+	@Override
+	public void onGuideNameEditComplete(DialogFragment dialog)
+	{
+		Dive dive = mModel.getDives().get(mIndex);
+		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getGuide());
 		mOptionAdapter.notifyDataSetChanged();
 	}
 }
