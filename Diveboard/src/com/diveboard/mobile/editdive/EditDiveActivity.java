@@ -74,6 +74,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	public static OptionAdapter		mOptionAdapter;
 	private TextView			mTitle = null;
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
+	private TabEditPhotosFragment	mEditPhotosFragment = new TabEditPhotosFragment();
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private int		NUM_ITEMS = 5;
@@ -199,7 +200,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				case 1:
 					return FirstFragment.newInstance(1, "Page # 2");
 				case 2:
-					return FirstFragment.newInstance(2, "Page # 3");
+					return mEditPhotosFragment;
 				case 3:
 					return mEditNotesFragment;
 				case 4:

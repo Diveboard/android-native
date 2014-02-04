@@ -23,7 +23,7 @@
     <application
         android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -75,6 +75,10 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditSpotsActivity"
+            android:label="@string/title_activity_edit_dive" >
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.editdive.TabEditPhotosActivity"
             android:label="@string/title_activity_edit_dive" >
         </activity>
         <activity

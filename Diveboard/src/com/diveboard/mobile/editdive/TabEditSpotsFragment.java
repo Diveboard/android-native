@@ -64,6 +64,7 @@ import com.google.android.gms.maps.model.MarkerOptions;
 
 public class					TabEditSpotsFragment extends Fragment
 {
+
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
 	private int							mIndex;
@@ -86,7 +87,6 @@ public class					TabEditSpotsFragment extends Fragment
 	{
 		public void onLocationChanged(Location location)
 		{
-			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 			mLongitude = location.getLongitude();
 			mLatitude = location.getLatitude();
 		}
@@ -113,8 +113,7 @@ public class					TabEditSpotsFragment extends Fragment
 	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_spot));
-		if (no_spot_view != null)
-			((TextView)getActivity().findViewById(R.id.no_spot)).setTypeface(mFaceR);
+		((TextView)mRootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
 		
 		((Button)mRootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
 			@Override
@@ -200,6 +199,26 @@ public class					TabEditSpotsFragment extends Fragment
 		}
 		return mRootView;
     }
+    
+    @Override
+	public void onPause() {
+    	if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    	}
+		super.onPause();
+	}
+    
+    @Override
+	public void onDestroy() {
+    	if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    	}
+		super.onDestroy();
+	}
     
     public void goToSearch(View view)
     {
