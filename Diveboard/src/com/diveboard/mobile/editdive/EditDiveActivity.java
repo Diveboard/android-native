@@ -48,6 +48,7 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -67,6 +68,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
+import android.widget.ProgressBar;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -74,22 +76,22 @@ import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class					EditDiveActivity extends FragmentActivity implements EditTripNameDialogListener,
-																					EditDiveNumberDialogListener,
-																					EditDateDialogListener,
-																					EditTimeInDialogListener,
-																					EditMaxDepthDialogListener,
-																					EditDurationDialogListener,
-																					EditSurfaceTempDialogListener,
-																					EditBottomTempDialogListener,
-																					EditWeightsDialogListener,
-																					EditVisibilityDialogListener,
-																					EditCurrentDialogListener,
-																					EditAltitudeDialogListener,
-																					EditWaterDialogListener,
-																					EditConfirmDialogListener,
-																					EditSafetyStopsDialogListener,
-																					EditDiveTypeDialogListener,
-																					EditGuideNameDialogListener
+EditDiveNumberDialogListener,
+EditDateDialogListener,
+EditTimeInDialogListener,
+EditMaxDepthDialogListener,
+EditDurationDialogListener,
+EditSurfaceTempDialogListener,
+EditBottomTempDialogListener,
+EditWeightsDialogListener,
+EditVisibilityDialogListener,
+EditCurrentDialogListener,
+EditAltitudeDialogListener,
+EditWaterDialogListener,
+EditConfirmDialogListener,
+EditSafetyStopsDialogListener,
+EditDiveTypeDialogListener,
+EditGuideNameDialogListener
 {
 	private int					mIndex;
 	private Typeface			mFaceB;
@@ -113,6 +115,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	public static final int MEDIA_TYPE_IMAGE = 1;
 	public static final int MEDIA_TYPE_VIDEO = 2;
 	public static int count=0;
+	private UploadPictureTask mUploadPictureTask = null;
 
 	@Override
 	protected void onCreate(Bundle savedInstance) {
@@ -190,126 +193,126 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    Intent intent;
-	    switch (item.getItemId()) {
-		    case R.id.take_picture:
-		    	final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-		        File newdir = new File(dir); 
-		        newdir.mkdirs();
-				String file = dir+"test.jpg";
-	            File newfile = new File(file);
-	            try {
-	                newfile.createNewFile();
-	            } catch (IOException e) {}
-	            Uri outputFileUri = Uri.fromFile(newfile);
-	            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
-	            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-	            startActivityForResult(cameraIntent, TAKE_PICTURE);
-				return true;
-	    	case R.id.gallery:
-	    		intent = new Intent();
-		        intent.setType("image/*");
-		        intent.setAction(Intent.ACTION_GET_CONTENT);
-		        intent.addCategory(Intent.CATEGORY_OPENABLE);
-		        startActivityForResult(Intent.createChooser(intent,
-                        "Select Picture"), SELECT_PICTURE);
-	    	    return true;
-	    	
-	        default:
-	            return super.onContextItemSelected(item);
-	    }
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		Intent intent;
+		switch (item.getItemId()) {
+		case R.id.take_picture:
+			final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+			File newdir = new File(dir); 
+			newdir.mkdirs();
+			String file = dir+"test.jpg";
+			File newfile = new File(file);
+			try {
+				newfile.createNewFile();
+			} catch (IOException e) {}
+			Uri outputFileUri = Uri.fromFile(newfile);
+			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+			startActivityForResult(cameraIntent, TAKE_PICTURE);
+			return true;
+		case R.id.gallery:
+			intent = new Intent();
+			intent.setType("image/*");
+			intent.setAction(Intent.ACTION_GET_CONTENT);
+			intent.addCategory(Intent.CATEGORY_OPENABLE);
+			startActivityForResult(Intent.createChooser(intent,
+					"Select Picture"), SELECT_PICTURE);
+			return true;
+
+		default:
+			return super.onContextItemSelected(item);
+		}
 	}
-	
+
 	public void goToMenuV3(View view)
 	{
 		PopupMenu popup = new PopupMenu(this, view);
-	    MenuInflater inflater = popup.getMenuInflater();
-	    inflater.inflate(R.menu.edit_gallery, popup.getMenu());
-	    popup.show();
-	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-	    {
+		MenuInflater inflater = popup.getMenuInflater();
+		inflater.inflate(R.menu.edit_gallery, popup.getMenu());
+		popup.show();
+		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+		{
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
 				Intent intent;
 				switch (item.getItemId()) {
 				case R.id.take_picture:
 					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-			        File newdir = new File(dir); 
-			        newdir.mkdirs();
+					File newdir = new File(dir); 
+					newdir.mkdirs();
 					String file = dir+"diveboard.jpg";
-		            File newfile = new File(file);
-		            try {
-		                newfile.createNewFile();
-		            } catch (IOException e) {}
-		            Uri outputFileUri = Uri.fromFile(newfile);
-		            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
-		            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-		            startActivityForResult(cameraIntent, TAKE_PICTURE);
-//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-//			        startActivityForResult(intent, TAKE_PICTURE);
+					File newfile = new File(file);
+					try {
+						newfile.createNewFile();
+					} catch (IOException e) {}
+					Uri outputFileUri = Uri.fromFile(newfile);
+					Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+					startActivityForResult(cameraIntent, TAKE_PICTURE);
+					//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+					//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+					//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+					//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+					//			        startActivityForResult(intent, TAKE_PICTURE);
 					return true;
 				case R.id.gallery:
 					intent = new Intent();
-			        intent.setType("image/*");
-			        intent.setAction(Intent.ACTION_GET_CONTENT);
-			        intent.addCategory(Intent.CATEGORY_OPENABLE);
-			        startActivityForResult(Intent.createChooser(intent,
-	                        "Select Picture"), SELECT_PICTURE);
-		    	    return true;
-		        default:
-		            return false;
+					intent.setType("image/*");
+					intent.setAction(Intent.ACTION_GET_CONTENT);
+					intent.addCategory(Intent.CATEGORY_OPENABLE);
+					startActivityForResult(Intent.createChooser(intent,
+							"Select Picture"), SELECT_PICTURE);
+					return true;
+				default:
+					return false;
 				}
 			}
-	    	
-	    });
+
+		});
 
 	}
-	
-	
 
-//	/** Create a file Uri for saving an image or video */
-//	private static Uri getOutputMediaFileUri(int type){
-//	      return Uri.fromFile(getOutputMediaFile(type));
-//	}
-//
-//	/** Create a File for saving an image or video */
-//	private static File getOutputMediaFile(int type){
-//	    // To be safe, you should check that the SDCard is mounted
-//	    // using Environment.getExternalStorageState() before doing this.
-//
-//	    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-//	              Environment.DIRECTORY_PICTURES), "MyCameraApp");
-//	    // This location works best if you want the created images to be shared
-//	    // between applications and persist after your app has been uninstalled.
-//
-//	    // Create the storage directory if it does not exist
-//	    if (! mediaStorageDir.exists()){
-//	        if (! mediaStorageDir.mkdirs()){
-//	            Log.d("MyCameraApp", "failed to create directory");
-//	            return null;
-//	        }
-//	    }
-//
-//	    // Create a media file name
-//	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-//	    File mediaFile;
-//	    if (type == MEDIA_TYPE_IMAGE){
-//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-//	        "IMG_"+ timeStamp + ".jpg");
-//	    } else if(type == MEDIA_TYPE_VIDEO) {
-//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-//	        "VID_"+ timeStamp + ".mp4");
-//	    } else {
-//	        return null;
-//	    }
-//
-//	    return mediaFile;
-//	}
-	
+
+
+	//	/** Create a file Uri for saving an image or video */
+	//	private static Uri getOutputMediaFileUri(int type){
+	//	      return Uri.fromFile(getOutputMediaFile(type));
+	//	}
+	//
+	//	/** Create a File for saving an image or video */
+	//	private static File getOutputMediaFile(int type){
+	//	    // To be safe, you should check that the SDCard is mounted
+	//	    // using Environment.getExternalStorageState() before doing this.
+	//
+	//	    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+	//	              Environment.DIRECTORY_PICTURES), "MyCameraApp");
+	//	    // This location works best if you want the created images to be shared
+	//	    // between applications and persist after your app has been uninstalled.
+	//
+	//	    // Create the storage directory if it does not exist
+	//	    if (! mediaStorageDir.exists()){
+	//	        if (! mediaStorageDir.mkdirs()){
+	//	            Log.d("MyCameraApp", "failed to create directory");
+	//	            return null;
+	//	        }
+	//	    }
+	//
+	//	    // Create a media file name
+	//	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+	//	    File mediaFile;
+	//	    if (type == MEDIA_TYPE_IMAGE){
+	//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+	//	        "IMG_"+ timeStamp + ".jpg");
+	//	    } else if(type == MEDIA_TYPE_VIDEO) {
+	//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+	//	        "VID_"+ timeStamp + ".mp4");
+	//	    } else {
+	//	        return null;
+	//	    }
+	//
+	//	    return mediaFile;
+	//	}
+
 	@Override
 	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
@@ -321,37 +324,42 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 		{
 			if ((requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) && resultCode == Activity.RESULT_OK)
 			{
-//				try {
-					//InputStream stream = getContentResolver().openInputStream(data.getData());
+				//				try {
+				//InputStream stream = getContentResolver().openInputStream(data.getData());
 				final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
 				File file = new File(dir+"diveboard.jpg");
-				Picture picture = mModel.uploadPicture(file);
+				((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
+				mUploadPictureTask = new UploadPictureTask(file);
+				mUploadPictureTask.execute();
+
+				
+
 				//System.out.println(file.getAbsolutePath());
-//				final File file = new File(data.getData().getPath());
-//				if (data.getData() != null)
-//				{
-//					System.out.println(data.getData() + " " + data.getData().getPath());
-//					final File file = new File(data.getData().getPath());
-//				}
-					
-					
-					//final File file = new File(getCacheDir(), "temp_photo");
-//					final OutputStream output = new FileOutputStream(file);
-//					final byte[] buffer = new byte[1024];
-//					int read;
-//					while ((read = stream.read(buffer)) != -1)
-//						output.write(buffer, 0, read);
-//					output.flush();
-//					output.close();
-//					stream.close();
-//				} 
-//				catch (FileNotFoundException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				} catch (IOException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
+				//				final File file = new File(data.getData().getPath());
+				//				if (data.getData() != null)
+				//				{
+				//					System.out.println(data.getData() + " " + data.getData().getPath());
+				//					final File file = new File(data.getData().getPath());
+				//				}
+
+
+				//final File file = new File(getCacheDir(), "temp_photo");
+				//					final OutputStream output = new FileOutputStream(file);
+				//					final byte[] buffer = new byte[1024];
+				//					int read;
+				//					while ((read = stream.read(buffer)) != -1)
+				//						output.write(buffer, 0, read);
+				//					output.flush();
+				//					output.close();
+				//					stream.close();
+				//				} 
+				//				catch (FileNotFoundException e) {
+				//					// TODO Auto-generated catch block
+				//					e.printStackTrace();
+				//				} catch (IOException e) {
+				//					// TODO Auto-generated catch block
+				//					e.printStackTrace();
+				//				}
 				//            try {
 				//                // We need to recyle unused bitmaps
 				//                if (bitmap != null) {
@@ -370,7 +378,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 				//            } catch (IOException e) {
 				//                e.printStackTrace();
 				//            }
-				
+
 			}
 		}
 		else
@@ -379,165 +387,190 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 			toast.setText("An internet connection is required for picture upload. Please check your connectivity and try again.");
 			toast.show();
 		}
-//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-//	        if (resultCode == RESULT_OK) {
-//	        	// Video captured and saved to fileUri specified in the Intent
-//	            Toast.makeText(this, "Video saved to:\n" +
-//	                     data.getData(), Toast.LENGTH_LONG).show();
-//	        } else if (resultCode == RESULT_CANCELED) {
-//	            // User cancelled the video capture
-//	        } else {
-//	            // Video capture failed, advise user
-//	        }
-//	    }
+		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+		//	        if (resultCode == RESULT_OK) {
+		//	        	// Video captured and saved to fileUri specified in the Intent
+		//	            Toast.makeText(this, "Video saved to:\n" +
+		//	                     data.getData(), Toast.LENGTH_LONG).show();
+		//	        } else if (resultCode == RESULT_CANCELED) {
+		//	            // User cancelled the video capture
+		//	        } else {
+		//	            // Video capture failed, advise user
+		//	        }
+		//	    }
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-
-		@Override
-		public void onBackPressed()
+	
+	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
+	{
+		private File mFile;
+		
+		public UploadPictureTask(File file)
 		{
-			if (mModel.getDives().get(mIndex).getEditList().size() > 0)
-			{
-				EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
-				Bundle args = new Bundle();
-				args.putInt("index", mIndex);
-				dialog.setArguments(args);
-				dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
-			}
-			else
-			{
-				clearEditList();
-			}
-		};
-
-		public void clearEditList()
-		{
-			super.onBackPressed();
-			Bundle bundle = new Bundle();
-
-			// put
-			Intent intent = new Intent();
-			intent.putExtras(bundle);
-			setResult(RESULT_OK, intent);
-			mModel.getDives().get(mIndex).clearEditList();
+			mFile = file;
 		}
 
-		public class			EditPagerAdapter extends FragmentPagerAdapter
+		@Override
+		protected Picture doInBackground(Void... arg0) {
+			
+			Picture picture = mModel.uploadPicture(mFile);
+			return picture;
+		}
+
+		@Override
+		protected void onPostExecute(Picture result) {
+			((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			EditDiveActivity.mListPictures.add(result);
+			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+		}
+		
+	}
+
+	@Override
+	public void onBackPressed()
+	{
+		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
 		{
+			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+			Bundle args = new Bundle();
+			args.putInt("index", mIndex);
+			dialog.setArguments(args);
+			dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+		}
+		else
+		{
+			clearEditList();
+		}
+	};
 
-			public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
-			{
-				super(fm);
-			}
+	public void clearEditList()
+	{
+		super.onBackPressed();
+		Bundle bundle = new Bundle();
 
-			@Override
-			public android.support.v4.app.Fragment getItem(int position)
-			{
-				switch (position)
-				{
-				case 0:
-					return mEditDetailsFragment;
-				case 1:
-					return FirstFragment.newInstance(1, "Page # 2");
-				case 2:
-					return mEditPhotosFragment;
-				case 3:
-					return mEditNotesFragment;
-				case 4:
-					return mEditSpotsFragment;
-				default:
-					return null;
-				}
-			}
+		// put
+		Intent intent = new Intent();
+		intent.putExtras(bundle);
+		setResult(RESULT_OK, intent);
+		mModel.getDives().get(mIndex).clearEditList();
+	}
 
-			@Override
-			public int getCount()
-			{
-				return NUM_ITEMS;
-			}
+	public class			EditPagerAdapter extends FragmentPagerAdapter
+	{
 
-			@Override
-			public CharSequence getPageTitle(int position)
+		public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
+		{
+			super(fm);
+		}
+
+		@Override
+		public android.support.v4.app.Fragment getItem(int position)
+		{
+			switch (position)
 			{
-				switch (position)
-				{
-				case 0:
-					return "Dive Details";
-				case 1:
-					return "Shop";
-				case 2:
-					return "Photos";
-				case 3:
-					return "Notes";
-				case 4:
-					return "Spot";
-				default:
-					return null;
-				}
+			case 0:
+				return mEditDetailsFragment;
+			case 1:
+				return FirstFragment.newInstance(1, "Page # 2");
+			case 2:
+				return mEditPhotosFragment;
+			case 3:
+				return mEditNotesFragment;
+			case 4:
+				return mEditSpotsFragment;
+			default:
+				return null;
 			}
 		}
 
 		@Override
-		protected void onResume()
+		public int getCount()
 		{
-			super.onResume();
-			ApplicationController AC = (ApplicationController)getApplicationContext();
-			AC.handleLowMemory();
+			return NUM_ITEMS;
 		}
+
+		@Override
+		public CharSequence getPageTitle(int position)
+		{
+			switch (position)
+			{
+			case 0:
+				return "Dive Details";
+			case 1:
+				return "Shop";
+			case 2:
+				return "Photos";
+			case 3:
+				return "Notes";
+			case 4:
+				return "Spot";
+			default:
+				return null;
+			}
+		}
+	}
+
+	@Override
+	protected void onResume()
+	{
+		super.onResume();
+		ApplicationController AC = (ApplicationController)getApplicationContext();
+		AC.handleLowMemory();
+	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}
-//	
-//	/** Called when the activity is first created. */
-//	@Override
-//	public void onCreate(Bundle savedInstanceState)
-//	{
-//	    super.onCreate(savedInstanceState);
-//	    ApplicationController AC = (ApplicationController)getApplicationContext();
-//	    if (AC.handleLowMemory() == true)
-//			return ;
-//	    setContentView(R.layout.activity_edit_dive);
-//	
-//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-//	    
-//	    mIndex = getIntent().getIntExtra("index", -1);
-//	
-//	    System.out.println("index " + Integer.toString(mIndex));
-//	    // create the TabHost that will contain the Tabs
-//	    mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-//	
-//	    Intent intent = new Intent(this, TabEditDetailsActivity.class);
-//	    intent.putExtra("index", mIndex);
-//	    setupTab(new TextView(this), getResources().getString(R.string.tab_details_label), intent);
-//	    	    
-//	    intent = new Intent(this,TabEditNotesActivity.class);
-//	    intent.putExtra("index", mIndex);
-//	    setupTab(new TextView(this), getResources().getString(R.string.tab_notes_label), intent);
-//	
-//	    intent = new Intent(this,TabEditSpotsActivity.class);
-//	    intent.putExtra("index", mIndex);
-//	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
-//	}
-//	
-//	private void					setupTab(final View view, final String tag, final Intent content)
-//	{
-//		View tabview = createTabView(mTabHost.getContext(), tag);
-//		TabSpec setContent = mTabHost.newTabSpec(tag).setIndicator(tabview).setContent(content);
-//		mTabHost.addTab(setContent);
-//	}
-//	
-//	private View				createTabView(final Context context, final String text)
-//	{
-//		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
-//		TextView tv = (TextView) view.findViewById(R.id.tabsText);
-//		tv.setTypeface(mFaceB);
-//		tv.setTextSize(12);
-//		tv.setText(text);
-//		return view;
-//	}
+	//	
+	//	/** Called when the activity is first created. */
+	//	@Override
+	//	public void onCreate(Bundle savedInstanceState)
+	//	{
+	//	    super.onCreate(savedInstanceState);
+	//	    ApplicationController AC = (ApplicationController)getApplicationContext();
+	//	    if (AC.handleLowMemory() == true)
+	//			return ;
+	//	    setContentView(R.layout.activity_edit_dive);
+	//	
+	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+	//	    
+	//	    mIndex = getIntent().getIntExtra("index", -1);
+	//	
+	//	    System.out.println("index " + Integer.toString(mIndex));
+	//	    // create the TabHost that will contain the Tabs
+	//	    mTabHost = (TabHost)findViewById(android.R.id.tabhost);
+	//	
+	//	    Intent intent = new Intent(this, TabEditDetailsActivity.class);
+	//	    intent.putExtra("index", mIndex);
+	//	    setupTab(new TextView(this), getResources().getString(R.string.tab_details_label), intent);
+	//	    	    
+	//	    intent = new Intent(this,TabEditNotesActivity.class);
+	//	    intent.putExtra("index", mIndex);
+	//	    setupTab(new TextView(this), getResources().getString(R.string.tab_notes_label), intent);
+	//	
+	//	    intent = new Intent(this,TabEditSpotsActivity.class);
+	//	    intent.putExtra("index", mIndex);
+	//	    setupTab(new TextView(this), getResources().getString(R.string.tab_spots_label), intent);
+	//	}
+	//	
+	//	private void					setupTab(final View view, final String tag, final Intent content)
+	//	{
+	//		View tabview = createTabView(mTabHost.getContext(), tag);
+	//		TabSpec setContent = mTabHost.newTabSpec(tag).setIndicator(tabview).setContent(content);
+	//		mTabHost.addTab(setContent);
+	//	}
+	//	
+	//	private View				createTabView(final Context context, final String text)
+	//	{
+	//		View view = LayoutInflater.from(context).inflate(R.layout.tabs_bg, null);
+	//		TextView tv = (TextView) view.findViewById(R.id.tabsText);
+	//		tv.setTypeface(mFaceB);
+	//		tv.setTextSize(12);
+	//		tv.setText(text);
+	//		return view;
+	//	}
 	@Override
 	public void onTripNameEditComplete(DialogFragment dialog)
 	{
@@ -546,7 +579,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
-	
+
 	@Override
 	public void onDiveNumberEditComplete(DialogFragment dialog)
 	{
@@ -616,7 +649,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
 		{
-//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
@@ -655,7 +688,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 			((EditOption)mOptionAdapter.getItem(5)).setValue("");
 		else
 		{
-//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
+			//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
 			String weights_unit = "";
 			if (dive.getWeightsUnit() == null)
 				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
@@ -666,7 +699,7 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
-	
+
 	@Override
 	public void onConfirmEditComplete(DialogFragment dialog)
 	{

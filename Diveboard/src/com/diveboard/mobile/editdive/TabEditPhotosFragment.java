@@ -90,6 +90,7 @@ public class TabEditPhotosFragment extends Fragment {
 	private Size mSizePicture;
 	private ViewGroup mRootView;
 	private RelativeLayout mChangeItem;
+	private int mImageSelected;
 	//private DropPictureTask mDropPictureTask = null;
 
 	//	@Override
@@ -184,9 +185,8 @@ public class TabEditPhotosFragment extends Fragment {
 									imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 									imageView.setContentDescription(String.valueOf(i));
 									imageView.setVisibility(View.GONE);
-									imageView.setOnLongClickListener(new MyTouchListener());
-									//((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener(i));
-									((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener(i));
+									imageView.setOnLongClickListener(new MyTouchListener(i));
+									
 									//								int shortAnimTime = getResources().getInteger(
 									//										android.R.integer.config_shortAnimTime);
 									//								imageView.setVisibility(View.VISIBLE);
@@ -301,6 +301,8 @@ public class TabEditPhotosFragment extends Fragment {
 								row.addView(linearLayout);
 								//tableLayout.addView(row);
 							}
+							((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
+							((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener());
 							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 							if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 									&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
@@ -405,8 +407,17 @@ public class TabEditPhotosFragment extends Fragment {
 
 	private final class MyTouchListener implements OnLongClickListener
 	{
+		private int mImagePosition;
+		
+		
+		public MyTouchListener(int i)
+		{
+			mImagePosition = i;
+		}
+		
 		@Override
 		public boolean onLongClick(View view) {
+			mImageSelected = mImagePosition;
 			ClipData data = ClipData.newPlainText("", "");
 			DragShadowBuilder shadowBuilder = new View.DragShadowBuilder((View)view.getParent());
 			((View)view.getParent()).startDrag(data, shadowBuilder, view, 0);
@@ -452,11 +463,6 @@ public class TabEditPhotosFragment extends Fragment {
 		private int mPosition;
 		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
 		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
-		public MyMainDragListener(int i)
-		{
-			System.out.println("MyMainDragListener");
-			mPosition = i;
-		}
 
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
@@ -483,19 +489,22 @@ public class TabEditPhotosFragment extends Fragment {
 				View view = (View) event.getLocalState();
 				ViewGroup owner = (ViewGroup) view.getParent();
 				owner.removeView(view);
+				view.setVisibility(View.VISIBLE);
 				//			RelativeLayout container = (RelativeLayout) v;
 				//			container.addView(view);
-				view.setVisibility(View.VISIBLE);
+				
+				Collections.swap(EditDiveActivity.mListPictures,0,mImageSelected);
+				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
+				
+				
 				System.out.println("Set as main picture");
 				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
 				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
 				//mChangeItem.setVisibility(View.GONE);
 				Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_up);
 				((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
-				Collections.swap(EditDiveActivity.mListPictures,0,mPosition);
-				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
 				//v.setBackgroundDrawable(normalShape);
 			default:
 				break;
@@ -505,15 +514,8 @@ public class TabEditPhotosFragment extends Fragment {
 	}
 
 	private class MyDropDragListener implements OnDragListener {
-		private int mPosition;
 		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
 		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
-
-		public MyDropDragListener(int i)
-		{
-			System.out.println("MyDropDragListener");
-			mPosition = i;
-		}
 
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
@@ -544,9 +546,14 @@ public class TabEditPhotosFragment extends Fragment {
 				//				RelativeLayout container = (RelativeLayout) v;
 				//				container.addView(view);
 				view.setVisibility(View.VISIBLE);
+				
+				System.out.println("drop picture");
+				
+				//ArrayList<Picture> listPictures = new ArrayList<Picture>();
+				EditDiveActivity.mListPictures.remove(mImageSelected);
+				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
-				System.out.println("drop picture");
 				((TextView) v.findViewById(R.id.drop_text)).setTextColor(Color.WHITE);
 				((ImageView) v.findViewById(R.id.drop_icon)).setColorFilter(null);
 				view = (ImageView) event.getLocalState();
@@ -559,9 +566,6 @@ public class TabEditPhotosFragment extends Fragment {
 				//v.setBackgroundDrawable(normalShape);
 				Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_up);
 				((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
-				//ArrayList<Picture> listPictures = new ArrayList<Picture>();
-				EditDiveActivity.mListPictures.remove(mPosition);
-				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
 				//	        	mDropPictureTask = new DropPictureTask();
 				//	        	mDropPictureTask.execute();
 			default:

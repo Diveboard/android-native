@@ -5,6 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/dark_grey">
+    
     <RelativeLayout
         android:id="@+id/change_item"
 	    android:layout_width="match_parent"
@@ -72,6 +73,7 @@
 		    
 		</TableLayout>
 	</ScrollView>
+
 </RelativeLayout>
 
 <!-- <GridView xmlns:android="http://schemas.android.com/apk/res/android" 

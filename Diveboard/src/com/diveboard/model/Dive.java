@@ -292,6 +292,7 @@ public class					Dive implements IModel
 	
 	public void					applyEdit(JSONObject json) throws JSONException
 	{
+		System.out.println("ApplyEdit "+ json);
 		if (!json.isNull("trip_name"))
 			_tripName = json.getString("trip_name");
 		if (json.has("number"))
