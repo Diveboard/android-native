@@ -9,18 +9,23 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.concurrent.Semaphore;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.CookieStore;
+import org.apache.http.client.HttpClient;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.impl.cookie.BasicClientCookie;
@@ -42,8 +47,6 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
 import android.util.Pair;
-import android.view.Gravity;
-import android.widget.Toast;
 import android.database.Cursor;
 import android.database.sqlite.*;
 
@@ -1391,5 +1394,41 @@ public class					DiveboardModel
 	public UserPreference					getPreference()
 	{
 		return _preference;
+	}
+	
+	public Picture				uploadPicture(File picture_file)
+	{
+		HttpClient				httpClient = new DefaultHttpClient();
+		HttpContext				localContext = new BasicHttpContext();
+		HttpPost				httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+				entity.addPart("qqfile", new FileBody(picture_file, "image/jpeg"));
+				entity.addPart("auth_token", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("apikey", new StringBody(_token));
+				httpPost.setEntity(entity);
+				HttpResponse response = httpClient.execute(httpPost, localContext);
+				HttpEntity entity_response = response.getEntity();
+				String result = ContentExtractor.getASCII(entity_response);
+				JSONObject json = new JSONObject(result);
+				if (json.getBoolean("success") == false)
+					return null;
+				return (new Picture(json.getJSONObject("result")));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
 	}
 }

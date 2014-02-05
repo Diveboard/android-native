@@ -3,8 +3,6 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import org.focuser.sendmelogs.LogCollector;
-
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
@@ -50,7 +48,6 @@ public class DiveDetailsMainActivity extends FragmentActivity implements DeleteC
 	private ImageView mPic;
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
-	private LogCollector mCollector;
 	
 	public int dpToPx(int dp) {
 	    DisplayMetrics displayMetrics = getResources().getDisplayMetrics();

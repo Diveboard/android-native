@@ -1,6 +1,5 @@
 package com.diveboard.mobile;
 
-import org.focuser.sendmelogs.LogCollector;
 import org.json.JSONException;
 import org.json.JSONObject;
 
