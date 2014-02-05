@@ -88,7 +88,6 @@ public class					DiveboardModel
 	public static boolean 		_cotimedout = false;
 	public static boolean 		_sotimedout = false;
 	public static boolean 		_searchtimedout = false;
-	private static PictureManager		pictureManager = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -104,7 +103,6 @@ public class					DiveboardModel
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
 		_initSavedPictures();
-		DiveboardModel.pictureManager = new PictureManager(_context);
 	}
 	
 	public						DiveboardModel(final Context context)
@@ -115,7 +113,6 @@ public class					DiveboardModel
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
 		_initSavedPictures();
-		DiveboardModel.pictureManager = new PictureManager(_context);
 	}
 	
 	public boolean				isLogged()
@@ -1396,11 +1393,11 @@ public class					DiveboardModel
 		return _preference;
 	}
 	
-	public Picture				uploadPicture(File picture_file)
+	public Picture							uploadPicture(File picture_file)
 	{
-		HttpClient				httpClient = new DefaultHttpClient();
-		HttpContext				localContext = new BasicHttpContext();
-		HttpPost				httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		HttpClient							httpClient = new DefaultHttpClient();
+		HttpContext							localContext = new BasicHttpContext();
+		HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
 		
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity

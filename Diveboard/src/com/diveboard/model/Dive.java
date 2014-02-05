@@ -132,7 +132,6 @@ public class					Dive implements IModel
 	
 	public						Dive(JSONObject json) throws JSONException
 	{
-		System.out.println("DIVE CREATE : " + json);
 		_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"), Units.Distance.KM);
 		// buddies
 		_class = (json.isNull("class")) ? null : json.getString("class");
