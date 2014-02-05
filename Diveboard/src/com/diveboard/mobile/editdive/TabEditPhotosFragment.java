@@ -185,7 +185,7 @@ public class TabEditPhotosFragment extends Fragment {
 									imageView.setContentDescription(String.valueOf(i));
 									imageView.setVisibility(View.GONE);
 									imageView.setOnLongClickListener(new MyTouchListener());
-									((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener(i));
+									//((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener(i));
 									((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener(i));
 									//								int shortAnimTime = getResources().getInteger(
 									//										android.R.integer.config_shortAnimTime);
