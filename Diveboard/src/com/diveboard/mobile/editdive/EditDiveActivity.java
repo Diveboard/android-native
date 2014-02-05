@@ -1,6 +1,15 @@
 package com.diveboard.mobile.editdive;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
@@ -25,28 +34,44 @@ import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialog
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;
+import com.diveboard.model.Picture;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Typeface;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Log;
 import android.util.Pair;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class					EditDiveActivity extends FragmentActivity implements EditTripNameDialogListener,
 																					EditDiveNumberDialogListener,
@@ -78,19 +103,29 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private int		NUM_ITEMS = 5;
-	
+	public static final int SELECT_PICTURE = 1;
+	public static final int TAKE_PICTURE = 2;
+	private Bitmap bitmap;
+	public static ImageView mPhotoView;
+	public static ArrayList<Picture>		mListPictures = new ArrayList<Picture>();
+	private Uri fileUri;
+	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+	public static final int MEDIA_TYPE_IMAGE = 1;
+	public static final int MEDIA_TYPE_VIDEO = 2;
+	public static int count=0;
+
 	@Override
 	protected void onCreate(Bundle savedInstance) {
 		super.onCreate(savedInstance);
 		mIndex = getIntent().getIntExtra("index", -1);
-        setContentView(R.layout.activity_edit_dive);
-        ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
-        adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
-        vpPager.setAdapter(adapterViewPager);
-        vpPager.setOffscreenPageLimit(NUM_ITEMS);
-        PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-        tabs.setViewPager(vpPager);
-        tabs.setOnPageChangeListener(new OnPageChangeListener() {
+		setContentView(R.layout.activity_edit_dive);
+		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+		adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
+		vpPager.setAdapter(adapterViewPager);
+		vpPager.setOffscreenPageLimit(NUM_ITEMS);
+		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
+		tabs.setViewPager(vpPager);
+		tabs.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
 				System.out.println("Page changed");
@@ -98,49 +133,49 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 					return ;
 				switch (position)
 				{
-					case 0:
-						mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
-						return ;
-					case 1:
-						mTitle.setText("SHOP");
-						return ;
-					case 2:
-						mTitle.setText("PHOTOS");
-						return ;
-					case 3:
-						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
-						return ;
-					case 4:
-						mTitle.setText(getResources().getString(R.string.tab_spots_title));
-						return ;
-					default:
-						return ;
+				case 0:
+					mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
+					return ;
+				case 1:
+					mTitle.setText("SHOP");
+					return ;
+				case 2:
+					mTitle.setText("PHOTOS");
+					return ;
+				case 3:
+					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+					return ;
+				case 4:
+					mTitle.setText(getResources().getString(R.string.tab_spots_title));
+					return ;
+				default:
+					return ;
 				}
 			}
-			
+
 			@Override
 			public void onPageScrolled(int arg0, float arg1, int arg2) {
 				// TODO Auto-generated method stub
 			}
-			
+
 			@Override
 			public void onPageScrollStateChanged(int arg0) {
 				// TODO Auto-generated method stub
 			}
 		});
-        mModel = ((ApplicationController)getApplicationContext()).getModel();
-        
-        Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-        mTitle = (TextView) findViewById(R.id.title);
-	    mTitle.setTypeface(faceB);
-	    mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
-	    
-	    Button save = (Button) findViewById(R.id.save_button);
-	    save.setTypeface(faceB);
-	    save.setText(getResources().getString(R.string.save_button));
-	    save.setOnClickListener(new OnClickListener()
-        {
-	    	@Override
+		mModel = ((ApplicationController)getApplicationContext()).getModel();
+
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		mTitle = (TextView) findViewById(R.id.title);
+		mTitle.setTypeface(faceB);
+		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
+
+		Button save = (Button) findViewById(R.id.save_button);
+		save.setTypeface(faceB);
+		save.setText(getResources().getString(R.string.save_button));
+		save.setOnClickListener(new OnClickListener()
+		{
+			@Override
 			public void onClick(View v)
 			{
 				Dive dive = mModel.getDives().get(mIndex);
@@ -152,49 +187,254 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 			}
 		});
 	}
+
+	@Override
+	public boolean onContextItemSelected(MenuItem item) {
+	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+	    Intent intent;
+	    switch (item.getItemId()) {
+		    case R.id.take_picture:
+		    	final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+		        File newdir = new File(dir); 
+		        newdir.mkdirs();
+				String file = dir+"test.jpg";
+	            File newfile = new File(file);
+	            try {
+	                newfile.createNewFile();
+	            } catch (IOException e) {}
+	            Uri outputFileUri = Uri.fromFile(newfile);
+	            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+	            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+	            startActivityForResult(cameraIntent, TAKE_PICTURE);
+				return true;
+	    	case R.id.gallery:
+	    		intent = new Intent();
+		        intent.setType("image/*");
+		        intent.setAction(Intent.ACTION_GET_CONTENT);
+		        intent.addCategory(Intent.CATEGORY_OPENABLE);
+		        startActivityForResult(Intent.createChooser(intent,
+                        "Select Picture"), SELECT_PICTURE);
+	    	    return true;
+	    	
+	        default:
+	            return super.onContextItemSelected(item);
+	    }
+	}
+	
+	public void goToMenuV3(View view)
+	{
+		PopupMenu popup = new PopupMenu(this, view);
+	    MenuInflater inflater = popup.getMenuInflater();
+	    inflater.inflate(R.menu.edit_gallery, popup.getMenu());
+	    popup.show();
+	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+	    {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Intent intent;
+				switch (item.getItemId()) {
+				case R.id.take_picture:
+					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+			        File newdir = new File(dir); 
+			        newdir.mkdirs();
+					String file = dir+"diveboard.jpg";
+		            File newfile = new File(file);
+		            try {
+		                newfile.createNewFile();
+		            } catch (IOException e) {}
+		            Uri outputFileUri = Uri.fromFile(newfile);
+		            Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
+		            cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
+		            startActivityForResult(cameraIntent, TAKE_PICTURE);
+//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
+//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
+//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+//			        startActivityForResult(intent, TAKE_PICTURE);
+					return true;
+				case R.id.gallery:
+					intent = new Intent();
+			        intent.setType("image/*");
+			        intent.setAction(Intent.ACTION_GET_CONTENT);
+			        intent.addCategory(Intent.CATEGORY_OPENABLE);
+			        startActivityForResult(Intent.createChooser(intent,
+	                        "Select Picture"), SELECT_PICTURE);
+		    	    return true;
+		        default:
+		            return false;
+				}
+			}
+	    	
+	    });
+
+	}
+	
+	
+
+//	/** Create a file Uri for saving an image or video */
+//	private static Uri getOutputMediaFileUri(int type){
+//	      return Uri.fromFile(getOutputMediaFile(type));
+//	}
+//
+//	/** Create a File for saving an image or video */
+//	private static File getOutputMediaFile(int type){
+//	    // To be safe, you should check that the SDCard is mounted
+//	    // using Environment.getExternalStorageState() before doing this.
+//
+//	    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
+//	              Environment.DIRECTORY_PICTURES), "MyCameraApp");
+//	    // This location works best if you want the created images to be shared
+//	    // between applications and persist after your app has been uninstalled.
+//
+//	    // Create the storage directory if it does not exist
+//	    if (! mediaStorageDir.exists()){
+//	        if (! mediaStorageDir.mkdirs()){
+//	            Log.d("MyCameraApp", "failed to create directory");
+//	            return null;
+//	        }
+//	    }
+//
+//	    // Create a media file name
+//	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//	    File mediaFile;
+//	    if (type == MEDIA_TYPE_IMAGE){
+//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+//	        "IMG_"+ timeStamp + ".jpg");
+//	    } else if(type == MEDIA_TYPE_VIDEO) {
+//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
+//	        "VID_"+ timeStamp + ".mp4");
+//	    } else {
+//	        return null;
+//	    }
+//
+//	    return mediaFile;
+//	}
 	
 	@Override
-	public void onBackPressed()
+	protected void onActivityResult(int requestCode, int resultCode, Intent data)
 	{
-		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		//System.out.println(REQUEST_CODE + "=" + requestCode + ", " + Activity.RESULT_OK+"=" + resultCode);
+		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
 		{
-			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
-	    	Bundle args = new Bundle();
-	    	args.putInt("index", mIndex);
-	    	dialog.setArguments(args);
-	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+			if ((requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) && resultCode == Activity.RESULT_OK)
+			{
+//				try {
+					//InputStream stream = getContentResolver().openInputStream(data.getData());
+				final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+				File file = new File(dir+"diveboard.jpg");
+				Picture picture = mModel.uploadPicture(file);
+				//System.out.println(file.getAbsolutePath());
+//				final File file = new File(data.getData().getPath());
+//				if (data.getData() != null)
+//				{
+//					System.out.println(data.getData() + " " + data.getData().getPath());
+//					final File file = new File(data.getData().getPath());
+//				}
+					
+					
+					//final File file = new File(getCacheDir(), "temp_photo");
+//					final OutputStream output = new FileOutputStream(file);
+//					final byte[] buffer = new byte[1024];
+//					int read;
+//					while ((read = stream.read(buffer)) != -1)
+//						output.write(buffer, 0, read);
+//					output.flush();
+//					output.close();
+//					stream.close();
+//				} 
+//				catch (FileNotFoundException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				} catch (IOException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+				//            try {
+				//                // We need to recyle unused bitmaps
+				//                if (bitmap != null) {
+				//                    bitmap.recycle();
+				//                }
+				//                InputStream stream = getContentResolver().openInputStream(
+				//                        data.getData());
+				//                bitmap = BitmapFactory.decodeStream(stream);
+				//                stream.close();
+				//                System.out.println("OnActivityResult");
+				//                mPhotoView.setImageBitmap(bitmap);
+				//                mPhotoView.setOnClickListener(null);
+				//                //imageView.setImageBitmap(bitmap);
+				//            } catch (FileNotFoundException e) {
+				//                e.printStackTrace();
+				//            } catch (IOException e) {
+				//                e.printStackTrace();
+				//            }
+				
+			}
 		}
 		else
 		{
-			clearEditList();
+			Toast toast = new Toast(this);
+			toast.setText("An internet connection is required for picture upload. Please check your connectivity and try again.");
+			toast.show();
 		}
-	};
-	
-	public void clearEditList()
-	{
-		super.onBackPressed();
-		Bundle bundle = new Bundle();
-		
-		// put
-		Intent intent = new Intent();
-		intent.putExtras(bundle);
-		setResult(RESULT_OK, intent);
-		mModel.getDives().get(mIndex).clearEditList();
+//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+//	        if (resultCode == RESULT_OK) {
+//	        	// Video captured and saved to fileUri specified in the Intent
+//	            Toast.makeText(this, "Video saved to:\n" +
+//	                     data.getData(), Toast.LENGTH_LONG).show();
+//	        } else if (resultCode == RESULT_CANCELED) {
+//	            // User cancelled the video capture
+//	        } else {
+//	            // Video capture failed, advise user
+//	        }
+//	    }
+		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
-	public class			EditPagerAdapter extends FragmentPagerAdapter
-	{
-		
-		public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
-		{
-			super(fm);
-		}
 
 		@Override
-		public android.support.v4.app.Fragment getItem(int position)
+		public void onBackPressed()
 		{
-			switch (position)
+			if (mModel.getDives().get(mIndex).getEditList().size() > 0)
 			{
+				EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
+				Bundle args = new Bundle();
+				args.putInt("index", mIndex);
+				dialog.setArguments(args);
+				dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
+			}
+			else
+			{
+				clearEditList();
+			}
+		};
+
+		public void clearEditList()
+		{
+			super.onBackPressed();
+			Bundle bundle = new Bundle();
+
+			// put
+			Intent intent = new Intent();
+			intent.putExtras(bundle);
+			setResult(RESULT_OK, intent);
+			mModel.getDives().get(mIndex).clearEditList();
+		}
+
+		public class			EditPagerAdapter extends FragmentPagerAdapter
+		{
+
+			public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
+			{
+				super(fm);
+			}
+
+			@Override
+			public android.support.v4.app.Fragment getItem(int position)
+			{
+				switch (position)
+				{
 				case 0:
 					return mEditDetailsFragment;
 				case 1:
@@ -207,49 +447,43 @@ public class					EditDiveActivity extends FragmentActivity implements EditTripNa
 					return mEditSpotsFragment;
 				default:
 					return null;
+				}
+			}
+
+			@Override
+			public int getCount()
+			{
+				return NUM_ITEMS;
+			}
+
+			@Override
+			public CharSequence getPageTitle(int position)
+			{
+				switch (position)
+				{
+				case 0:
+					return "Dive Details";
+				case 1:
+					return "Shop";
+				case 2:
+					return "Photos";
+				case 3:
+					return "Notes";
+				case 4:
+					return "Spot";
+				default:
+					return null;
+				}
 			}
 		}
 
 		@Override
-		public int getCount()
+		protected void onResume()
 		{
-			return NUM_ITEMS;
+			super.onResume();
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			AC.handleLowMemory();
 		}
-		
-        @Override
-        public CharSequence getPageTitle(int position)
-        {
-        	switch (position)
-        	{
-        		case 0:
-        			return "Dive Details";
-        		case 1:
-        			return "Shop";
-        		case 2:
-        			return "Photos";
-        		case 3:
-        			return "Notes";
-        		case 4:
-        			return "Spot";
-        		default:
-        			return null;
-        	}
-        }
-	}
-	
-	@Override
-	protected void onResume()
-	{
-		super.onResume();
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		AC.handleLowMemory();
-	}
-	
-	@Override
-	public void onStart() {
-		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
-	}
 
 	@Override
 	public void onStop() {

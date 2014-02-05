@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/root"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:background="@color/dark_grey">
     <RelativeLayout
         android:id="@+id/change_item"
 	    android:layout_width="match_parent"
-	    android:layout_height="80dp"
+	    android:layout_height="wrap_content"
 	    android:background="@color/dark_grey"
-	    android:visibility="gone">
+	    android:visibility="visible">
 	    <RelativeLayout
 	        android:id="@+id/drop_item"
 	        android:layout_height="match_parent"
@@ -62,7 +62,8 @@
 		android:id="@+id/scroll"
 		android:layout_width="match_parent"
 		android:layout_height="wrap_content"
-		android:fillViewport="true" >
+		android:fillViewport="true"
+		android:background="@color/dark_grey">
 		<TableLayout
 		    android:id="@+id/tablelayout"
 		    android:layout_height="wrap_content"
@@ -71,7 +72,7 @@
 		    
 		</TableLayout>
 	</ScrollView>
-</LinearLayout>
+</RelativeLayout>
 
 <!-- <GridView xmlns:android="http://schemas.android.com/apk/res/android" 
     android:id="@+id/gridview"

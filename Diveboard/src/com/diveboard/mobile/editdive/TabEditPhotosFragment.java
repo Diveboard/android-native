@@ -1,21 +1,30 @@
 package com.diveboard.mobile.editdive;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.DivesActivity;
 import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
+import com.diveboard.mobile.SettingsActivity;
+import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.uservoice.uservoicesdk.Config;
+import com.uservoice.uservoicesdk.UserVoice;
 
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -23,19 +32,25 @@ import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.StateListDrawable;
 import android.support.v4.app.Fragment;
 import android.util.Pair;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
@@ -44,14 +59,20 @@ import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
+import android.widget.AdapterView.AdapterContextMenuInfo;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
@@ -64,22 +85,23 @@ public class TabEditPhotosFragment extends Fragment {
 	private DiveboardModel mModel;
 	private int mPhotoPos = 0;
 	private DownloadImageTask mDownloadImageTask;
-	private ImageView mImageView;
-	private List<Picture> mItems;
+	//private ImageView mImageView;
+	//private List<Picture> mItems;
 	private Size mSizePicture;
 	private ViewGroup mRootView;
 	private RelativeLayout mChangeItem;
+	//private DropPictureTask mDropPictureTask = null;
 
-//	@Override
-//	protected void onResume()
-//	{
-//		super.onResume();
-//		ApplicationController AC = (ApplicationController)getApplicationContext();
-//		AC.handleLowMemory();
-//		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
-//	}
+	//	@Override
+	//	protected void onResume()
+	//	{
+	//		super.onResume();
+	//		ApplicationController AC = (ApplicationController)getApplicationContext();
+	//		AC.handleLowMemory();
+	//		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
+	//	}
 	@Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
 	{
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
@@ -87,7 +109,7 @@ public class TabEditPhotosFragment extends Fragment {
 		if (mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 				&& mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 		{
-			mItems = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
+			EditDiveActivity.mListPictures = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
 			new Thread(new Runnable() {
 				public void run() {
 					try {
@@ -103,24 +125,28 @@ public class TabEditPhotosFragment extends Fragment {
 							Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 							ArrayList<Pair<ImageView, Picture>> arrayPair = new ArrayList<Pair<ImageView, Picture>>();
 							TableLayout tableLayout = (TableLayout)mRootView.findViewById(R.id.tablelayout);
-							System.out.println("il y a " + mItems.size() + " photos");
+							System.out.println("il y a " + EditDiveActivity.mListPictures.size() + " photos");
 							int i = 0;
 							int screenWidth;
 							int screenheight;
 							int nbPicture;
-							
-							mChangeItem = (RelativeLayout)mRootView.findViewById(R.id.change_item);
+
+
 							screenWidth = mRootView.findViewById(R.id.tablelayout).getMeasuredWidth();
 							screenheight = mRootView.findViewById(R.id.tablelayout).getMeasuredHeight();
 							((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
 							RelativeLayout.LayoutParams dropitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 							dropitemparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 							((RelativeLayout)mRootView.findViewById(R.id.drop_item)).setLayoutParams(dropitemparam);
-							
+
 							((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
 							RelativeLayout.LayoutParams mainitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 							mainitemparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 							((RelativeLayout)mRootView.findViewById(R.id.main_item)).setLayoutParams(mainitemparam);
+
+							mChangeItem = (RelativeLayout)mRootView.findViewById(R.id.change_item);
+							RelativeLayout.LayoutParams changeitemparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, mRootView.getMeasuredHeight() / 5);
+							mChangeItem.setLayoutParams(changeitemparams);
 							if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 							{
 								nbPicture = 3;	
@@ -142,10 +168,10 @@ public class TabEditPhotosFragment extends Fragment {
 								System.out.println("SMALL");
 								mSizePicture = Size.SMALL; // small
 							}
-							while (i < mItems.size())
+							while (i < EditDiveActivity.mListPictures.size())
 							{
 								TableRow row = new TableRow(getActivity().getApplicationContext());
-								for (int j = 0; j < nbPicture && i < mItems.size(); j++)
+								for (int j = 0; j < nbPicture && i < EditDiveActivity.mListPictures.size(); j++)
 								{
 									int size = ((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getMeasuredWidth();
 									LinearLayout linearLayout = new LinearLayout(getActivity().getApplicationContext());
@@ -159,8 +185,8 @@ public class TabEditPhotosFragment extends Fragment {
 									imageView.setContentDescription(String.valueOf(i));
 									imageView.setVisibility(View.GONE);
 									imageView.setOnLongClickListener(new MyTouchListener());
-									((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
-									((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener());
+									((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener(i));
+									((RelativeLayout)(mRootView.findViewById(R.id.main_item))).setOnDragListener(new MyMainDragListener(i));
 									//								int shortAnimTime = getResources().getInteger(
 									//										android.R.integer.config_shortAnimTime);
 									//								imageView.setVisibility(View.VISIBLE);
@@ -169,7 +195,7 @@ public class TabEditPhotosFragment extends Fragment {
 									if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 											&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 									{
-										Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mItems.get(i));
+										Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, EditDiveActivity.mListPictures.get(i));
 										arrayPair.add(pair);
 										//imageView.setImageBitmap(mItems.get(i).getPicture(PhotosActivity.this, Size.MEDIUM));
 									}
@@ -203,11 +229,83 @@ public class TabEditPhotosFragment extends Fragment {
 								}
 								tableLayout.addView(row);
 							}
+							if (EditDiveActivity.mListPictures.size() % nbPicture == 0)
+							{
+								// Add a new line
+								TableRow row = new TableRow(getActivity().getApplicationContext());
+								int size = ((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getMeasuredWidth();
+								LinearLayout linearLayout = new LinearLayout(getActivity().getApplicationContext());
+								TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
+								tbparam.gravity = Gravity.CENTER;
+								linearLayout.setGravity(Gravity.CENTER);
+								linearLayout.setLayoutParams(tbparam);
+								EditDiveActivity.mPhotoView = new ImageView(getActivity().getApplicationContext());
+								EditDiveActivity.mPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+								EditDiveActivity.mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+								EditDiveActivity.mPhotoView.setContentDescription(String.valueOf(i));
+								EditDiveActivity.mPhotoView.setImageResource(R.drawable.ic_add);
+								EditDiveActivity.mPhotoView.setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+										{
+											((EditDiveActivity) getActivity()).goToMenuV3(v);
+										}
+										else
+											goToMenuV2(v);
+									}
+								});
+								//imageView.setVisibility(View.GONE);
+								linearLayout.addView(EditDiveActivity.mPhotoView);
+								//imageView.setBackgroundResource(R.drawable.item_selector_add_picture);
+								row.addView(linearLayout);
+								tableLayout.addView(row);
+							}
+							else
+							{
+								// Use the same row
+								TableRow row = (TableRow)((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getChildAt(EditDiveActivity.mListPictures.size() / nbPicture);
+								int size = ((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getMeasuredWidth();
+								LinearLayout linearLayout = new LinearLayout(getActivity().getApplicationContext());
+								TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
+								tbparam.gravity = Gravity.CENTER;
+								linearLayout.setGravity(Gravity.CENTER);
+								linearLayout.setLayoutParams(tbparam);
+								EditDiveActivity.mPhotoView = new ImageView(getActivity().getApplicationContext());
+								EditDiveActivity.mPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+								EditDiveActivity.mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+								EditDiveActivity.mPhotoView.setContentDescription(String.valueOf(i));
+								//imageView.setVisibility(View.GONE);
+								//								StateListDrawable states = new StateListDrawable();
+								//								Drawable nameDrawableSelected = getActivity().getResources().getDrawable(R.drawable.ic_add_grey);
+								//								Drawable nameDrawableUnselected = getActivity().getResources().getDrawable(R.drawable.ic_add);
+								//								states.addState(new int[] {android.R.attr.state_pressed},
+								//										nameDrawableSelected);
+								//								states.addState(new int[] { },
+								//										nameDrawableUnselected);
+								EditDiveActivity.mPhotoView.setImageResource(R.drawable.ic_add);
+								EditDiveActivity.mPhotoView.setOnClickListener(new OnClickListener() {
+
+									@Override
+									public void onClick(View v) {
+										if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+										{
+											((EditDiveActivity) getActivity()).goToMenuV3(v);
+										}
+										else
+											goToMenuV2(v);
+									}
+								});
+								linearLayout.addView(EditDiveActivity.mPhotoView);
+								row.addView(linearLayout);
+								//tableLayout.addView(row);
+							}
 							ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 							if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 									&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 							{
-								mDownloadImageTask = new DownloadImageTask(arrayPair, mItems, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), 0);
+								mDownloadImageTask = new DownloadImageTask(arrayPair, EditDiveActivity.mListPictures, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), 0);
 								mDownloadImageTask.execute();
 							}
 						}
@@ -217,15 +315,27 @@ public class TabEditPhotosFragment extends Fragment {
 		}
 		else
 		{
-//			Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-//			TextView tv = new TextView(getActivity().getApplicationContext());
-//			tv.setText("No Picture in your album!");
-//			tv.setTypeface(face);
-//			tv.setGravity(Gravity.CENTER);
-//			mRootView.setContentView(tv);
+			//			Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+			//			TextView tv = new TextView(getActivity().getApplicationContext());
+			//			tv.setText("No Picture in your album!");
+			//			tv.setTypeface(face);
+			//			tv.setGravity(Gravity.CENTER);
+			//			mRootView.setContentView(tv);
 		}
 		return mRootView;
 	}
+
+	public void goToMenuV2(View view)
+	{
+		// Settings floating menu
+		registerForContextMenu(view);
+		getActivity().openContextMenu(view);
+		unregisterForContextMenu(view);
+	}
+
+
+
+
 
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
@@ -278,7 +388,7 @@ public class TabEditPhotosFragment extends Fragment {
 					{
 						if (getActivity() != null)
 						{
-							mDownloadImageTask = new DownloadImageTask(mArrayPair, mItems, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), mPosition + 1);
+							mDownloadImageTask = new DownloadImageTask(mArrayPair, EditDiveActivity.mListPictures, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), mPosition + 1);
 							mDownloadImageTask.execute();
 						}
 						System.out.println("position = " + mPosition);
@@ -292,9 +402,9 @@ public class TabEditPhotosFragment extends Fragment {
 			mDownloadImageTask = null;
 		}
 	}
-	
-	private final class MyTouchListener implements OnLongClickListener {
 
+	private final class MyTouchListener implements OnLongClickListener
+	{
 		@Override
 		public boolean onLongClick(View view) {
 			ClipData data = ClipData.newPlainText("", "");
@@ -302,20 +412,117 @@ public class TabEditPhotosFragment extends Fragment {
 			((View)view.getParent()).startDrag(data, shadowBuilder, view, 0);
 			//((View)view.getParent()).setVisibility(View.INVISIBLE);
 			mChangeItem.setVisibility(View.VISIBLE);
+			Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_down);
+			//use this to make it longer:  animation.setDuration(1000);
+			animation.setAnimationListener(new AnimationListener() {
+				@Override
+				public void onAnimationStart(Animation animation) {}
+
+				@Override
+				public void onAnimationRepeat(Animation animation) {}
+
+				@Override
+				public void onAnimationEnd(Animation animation) {
+					//		        	ScrollView scroll = ((ScrollView)mRootView.findViewById(R.id.scroll));
+					//		        	RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					//		        	params.addRule(RelativeLayout.BELOW, mChangeItem.getId());
+					//		        	scroll.setLayoutParams(params);
+				}
+			});
+
+			((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
 			return true;
 		}
 	}
-	
-	class MyDropDragListener implements OnDragListener {
+
+
+
+	//	private class DropPictureTask extends AsyncTask<Void, Void, Void>
+	//	{
+	//
+	//		@Override
+	//		protected Void doInBackground(Void... params) {
+	//			EditDiveActivity.mListPictures.
+	//			return null;
+	//		}
+	//		
+	//	}
+
+	private class MyMainDragListener implements OnDragListener {
+		private int mPosition;
 		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
 		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+		public MyMainDragListener(int i)
+		{
+			System.out.println("MyMainDragListener");
+			mPosition = i;
+		}
 
 		@Override
 		public boolean onDrag(View v, DragEvent event) {
 			int action = event.getAction();
 			switch (event.getAction()) {
 			case DragEvent.ACTION_DRAG_STARTED:
-				
+
+				break;
+			case DragEvent.ACTION_DRAG_ENTERED:
+				ImageView myIcon = (ImageView) v.findViewById(R.id.main_icon); 
+				((TextView) v.findViewById(R.id.main_text)).setTextColor(getActivity().getResources().getColor(R.color.yellow));
+				//ColorFilter filter = new LightingColorFilter(getActivity().getResources().getColor(R.color.yellow), getActivity().getResources().getColor(R.color.yellow));
+				ColorFilter filter = new PorterDuffColorFilter(getActivity().getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
+				myIcon.setColorFilter(filter);
+				//v.setBackgroundDrawable(enterShape);
+				break;
+			case DragEvent.ACTION_DRAG_EXITED:
+				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
+				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
+				//v.setBackgroundDrawable(normalShape);
+				break;
+			case DragEvent.ACTION_DROP:
+				// Dropped, reassign View to ViewGroup
+				View view = (View) event.getLocalState();
+				ViewGroup owner = (ViewGroup) view.getParent();
+				owner.removeView(view);
+				//			RelativeLayout container = (RelativeLayout) v;
+				//			container.addView(view);
+				view.setVisibility(View.VISIBLE);
+				break;
+			case DragEvent.ACTION_DRAG_ENDED:
+				System.out.println("Set as main picture");
+				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
+				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
+				//mChangeItem.setVisibility(View.GONE);
+				Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_up);
+				((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
+				Collections.swap(EditDiveActivity.mListPictures,0,mPosition);
+				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+				//v.setBackgroundDrawable(normalShape);
+			default:
+				break;
+			}
+			return true;
+		}
+	}
+
+	private class MyDropDragListener implements OnDragListener {
+		private int mPosition;
+		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
+		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
+
+		public MyDropDragListener(int i)
+		{
+			System.out.println("MyDropDragListener");
+			mPosition = i;
+		}
+
+		@Override
+		public boolean onDrag(View v, DragEvent event) {
+			int action = event.getAction();
+			ImageView view;
+			ViewGroup owner;
+			switch (event.getAction()) {
+			case DragEvent.ACTION_DRAG_STARTED:
+
 				break;
 			case DragEvent.ACTION_DRAG_ENTERED:
 				ImageView myIcon = (ImageView) v.findViewById(R.id.drop_icon);
@@ -331,58 +538,32 @@ public class TabEditPhotosFragment extends Fragment {
 				break;
 			case DragEvent.ACTION_DROP:
 				// Dropped, reassign View to ViewGroup
-				View view = (View) event.getLocalState();
-				ViewGroup owner = (ViewGroup) view.getParent();
+				view = (ImageView) event.getLocalState();
+				owner = (ViewGroup) view.getParent();
 				owner.removeView(view);
-//				RelativeLayout container = (RelativeLayout) v;
-//				container.addView(view);
+				//				RelativeLayout container = (RelativeLayout) v;
+				//				container.addView(view);
 				view.setVisibility(View.VISIBLE);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
-				mChangeItem.setVisibility(View.GONE);
+				System.out.println("drop picture");
+				((TextView) v.findViewById(R.id.drop_text)).setTextColor(Color.WHITE);
+				((ImageView) v.findViewById(R.id.drop_icon)).setColorFilter(null);
+				view = (ImageView) event.getLocalState();
+				((ImageView)((RelativeLayout)v).getChildAt(0)).setColorFilter(null);
+				//mChangeItem.setVisibility(View.GONE);
+				ScrollView scroll = ((ScrollView)mRootView.findViewById(R.id.scroll));
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+				params.addRule(RelativeLayout.BELOW, -1);
+				scroll.setLayoutParams(params);
 				//v.setBackgroundDrawable(normalShape);
-			default:
-				break;
-			}
-			return true;
-		}
-	}
-	
-	class MyMainDragListener implements OnDragListener {
-		Drawable enterShape = getResources().getDrawable(R.drawable.shape_droptarget);
-		Drawable normalShape = getResources().getDrawable(R.drawable.shape);
-
-		@Override
-		public boolean onDrag(View v, DragEvent event) {
-			int action = event.getAction();
-			switch (event.getAction()) {
-			case DragEvent.ACTION_DRAG_STARTED:
-				
-				break;
-			case DragEvent.ACTION_DRAG_ENTERED:
-				ImageView myIcon = (ImageView) v.findViewById(R.id.main_icon); 
-				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.RED);
-				ColorFilter filter = new LightingColorFilter(Color.RED, Color.RED);
-				myIcon.setColorFilter(filter);
-				//v.setBackgroundDrawable(enterShape);
-				break;
-			case DragEvent.ACTION_DRAG_EXITED:
-				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
-				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
-				//v.setBackgroundDrawable(normalShape);
-				break;
-			case DragEvent.ACTION_DROP:
-				// Dropped, reassign View to ViewGroup
-				View view = (View) event.getLocalState();
-				ViewGroup owner = (ViewGroup) view.getParent();
-				owner.removeView(view);
-//				RelativeLayout container = (RelativeLayout) v;
-//				container.addView(view);
-				view.setVisibility(View.VISIBLE);
-				break;
-			case DragEvent.ACTION_DRAG_ENDED:
-				mChangeItem.setVisibility(View.GONE);
-				//v.setBackgroundDrawable(normalShape);
+				Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_up);
+				((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
+				//ArrayList<Picture> listPictures = new ArrayList<Picture>();
+				EditDiveActivity.mListPictures.remove(mPosition);
+				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+				//	        	mDropPictureTask = new DropPictureTask();
+				//	        	mDropPictureTask.execute();
 			default:
 				break;
 			}
@@ -510,23 +691,23 @@ public class TabEditPhotosFragment extends Fragment {
 	//		}
 	//	}
 
-//	@Override
-//	protected void onDestroy() {
-//		if (mDownloadImageTask != null)
-//			mDownloadImageTask.cancel(true);
-//		super.onDestroy();
-//	}
-//	
-//	@Override
-//	public void onStart() {
-//		super.onStart();
-//		EasyTracker.getInstance(this).activityStart(this);
-//	}
-//
-//	@Override
-//	public void onStop() {
-//		super.onStop();
-//		EasyTracker.getInstance(this).activityStop(this);
-//	}
+	//	@Override
+	//	protected void onDestroy() {
+	//		if (mDownloadImageTask != null)
+	//			mDownloadImageTask.cancel(true);
+	//		super.onDestroy();
+	//	}
+	//	
+	//	@Override
+	//	public void onStart() {
+	//		super.onStart();
+	//		EasyTracker.getInstance(this).activityStart(this);
+	//	}
+	//
+	//	@Override
+	//	public void onStop() {
+	//		super.onStop();
+	//		EasyTracker.getInstance(this).activityStop(this);
+	//	}
 
 }
