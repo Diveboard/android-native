@@ -111,19 +111,19 @@ EditGuideNameDialogListener
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private int		NUM_ITEMS = 4;
-	public static final int SELECT_PICTURE = 1;
-	public static final int TAKE_PICTURE = 2;
-	private Bitmap bitmap;
-	public static ImageView mPhotoView;
-	public static ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
-	private Uri fileUri;
-	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-	public static final int MEDIA_TYPE_IMAGE = 1;
-	public static final int MEDIA_TYPE_VIDEO = 2;
-	public static int count=0;
-	private UploadPictureTask mUploadPictureTask = null;
-	public static int mMenuType = 0;
-	public static int mImageSelected;
+//	public static final int SELECT_PICTURE = 1;
+//	public static final int TAKE_PICTURE = 2;
+//	private Bitmap bitmap;
+//	
+//	public static ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
+//	private Uri fileUri;
+//	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
+//	public static final int MEDIA_TYPE_IMAGE = 1;
+//	public static final int MEDIA_TYPE_VIDEO = 2;
+//	public static int count=0;
+	//private UploadPictureTask mUploadPictureTask = null;
+	
+	
 	public static ViewPager mViewPager;
 
 	@Override
@@ -217,328 +217,44 @@ EditGuideNameDialogListener
 		});
 	}
 	
-	public void goToMenuV2(View view)
-	{
-		// Settings floating menu
-		registerForContextMenu(view);
-		openContextMenu(view);
-		unregisterForContextMenu(view);
-	}
-	
-	@Override
-	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
-	{
-		super.onCreateContextMenu(menu, v, menuInfo);
-		//System.out.println("view = " + menu.);
-		MenuInflater inflater = getMenuInflater();
-		if (mMenuType == 1)
-			inflater.inflate(R.menu.edit_gallery, menu);
-		else
-			inflater.inflate(R.menu.edit_photo, menu);
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		Intent intent;
-		System.out.println("Entre");
-		switch (item.getItemId()) {
-		case R.id.take_picture:
-			final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-			File newdir = new File(dir); 
-			newdir.mkdirs();
-			String file = dir+"test.jpg";
-			File newfile = new File(file);
-			try {
-				newfile.createNewFile();
-			} catch (IOException e) {}
-			Uri outputFileUri = Uri.fromFile(newfile);
-			Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
-			cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-			startActivityForResult(cameraIntent, TAKE_PICTURE);
-			return true;
-		case R.id.gallery:
-			intent = new Intent();
-			intent.setType("image/*");
-			intent.setAction(Intent.ACTION_GET_CONTENT);
-			intent.addCategory(Intent.CATEGORY_OPENABLE);
-			startActivityForResult(Intent.createChooser(intent,
-					"Select Picture"), SELECT_PICTURE);
-			return true;
-		case R.id.remove:
-			EditDiveActivity.mListPictures.remove(EditDiveActivity.mImageSelected);
-			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
-			return true;
-		case R.id.main:
-			Collections.swap(EditDiveActivity.mListPictures,0,mImageSelected);
-			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
-			return true;
-		default:
-			return super.onContextItemSelected(item);
-		}
-	}
-
-	public void goToMenuV3(View view)
-	{
-		PopupMenu popup = new PopupMenu(this, view);
-		MenuInflater inflater = popup.getMenuInflater();
-		inflater.inflate(R.menu.edit_gallery, popup.getMenu());
-		popup.show();
-		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-		{
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				Intent intent;
-				switch (item.getItemId()) {
-				case R.id.take_picture:
-					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-					File newdir = new File(dir); 
-					newdir.mkdirs();
-					String file = dir+"diveboard.jpg";
-					File newfile = new File(file);
-					try {
-						newfile.createNewFile();
-					} catch (IOException e) {}
-					Uri outputFileUri = Uri.fromFile(newfile);
-					Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
-					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-					startActivityForResult(cameraIntent, TAKE_PICTURE);
-					//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-					//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-					//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-					//			        startActivityForResult(intent, TAKE_PICTURE);
-					return true;
-				case R.id.gallery:
-					intent = new Intent();
-					intent.setType("image/*");
-					intent.setAction(Intent.ACTION_GET_CONTENT);
-					intent.addCategory(Intent.CATEGORY_OPENABLE);
-					startActivityForResult(Intent.createChooser(intent,
-							"Select Picture"), SELECT_PICTURE);
-					return true;
-				default:
-					return false;
-				}
-			}
-
-		});
-
-	}
 
 
-
-	//	/** Create a file Uri for saving an image or video */
-	//	private static Uri getOutputMediaFileUri(int type){
-	//	      return Uri.fromFile(getOutputMediaFile(type));
-	//	}
-	//
-	//	/** Create a File for saving an image or video */
-	//	private static File getOutputMediaFile(int type){
-	//	    // To be safe, you should check that the SDCard is mounted
-	//	    // using Environment.getExternalStorageState() before doing this.
-	//
-	//	    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-	//	              Environment.DIRECTORY_PICTURES), "MyCameraApp");
-	//	    // This location works best if you want the created images to be shared
-	//	    // between applications and persist after your app has been uninstalled.
-	//
-	//	    // Create the storage directory if it does not exist
-	//	    if (! mediaStorageDir.exists()){
-	//	        if (! mediaStorageDir.mkdirs()){
-	//	            Log.d("MyCameraApp", "failed to create directory");
-	//	            return null;
-	//	        }
-	//	    }
-	//
-	//	    // Create a media file name
-	//	    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-	//	    File mediaFile;
-	//	    if (type == MEDIA_TYPE_IMAGE){
-	//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	//	        "IMG_"+ timeStamp + ".jpg");
-	//	    } else if(type == MEDIA_TYPE_VIDEO) {
-	//	        mediaFile = new File(mediaStorageDir.getPath() + File.separator +
-	//	        "VID_"+ timeStamp + ".mp4");
-	//	    } else {
-	//	        return null;
-	//	    }
-	//
-	//	    return mediaFile;
-	//	}
-
-	@Override
-	protected void onActivityResult(int requestCode, int resultCode, Intent data)
-	{
-		//System.out.println(REQUEST_CODE + "=" + requestCode + ", " + Activity.RESULT_OK+"=" + resultCode);
-		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
-		{
-			if (resultCode == Activity.RESULT_OK)
-			{
-				if (requestCode == TAKE_PICTURE)
-				{
-					//					try {
-					//InputStream stream = getContentResolver().openInputStream(data.getData());
-					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-					File file = new File(dir+"diveboard.jpg");
-					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
-					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
-					ProgressBar bar = new ProgressBar(getApplicationContext());
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-					bar.setVisibility(View.VISIBLE);
-					bar.setLayoutParams(params);
-					parent.addView(bar);
-					mPhotoView.setVisibility(View.GONE);
-					mUploadPictureTask = new UploadPictureTask(file);
-					mUploadPictureTask.execute();
-				}
-				else if (requestCode == SELECT_PICTURE)
-				{
-					InputStream stream;
-					try {
-						stream = getContentResolver().openInputStream(data.getData());
-						System.out.println(data.getData());
-						//InputStream stream = getContentResolver().openInputStream(data.getData());
-						//final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-						final File file = new File(getCacheDir(), "temp_photo.jpg");
-						final OutputStream output = new FileOutputStream(file);
-						final byte[] buffer = new byte[1024];
-						int read;
-						while ((read = stream.read(buffer)) != -1)
-							output.write(buffer, 0, read);
-						output.flush();
-						output.close();
-						stream.close();
-
-						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
-						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
-						ProgressBar bar = new ProgressBar(getApplicationContext());
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-						bar.setVisibility(View.VISIBLE);
-						bar.setLayoutParams(params);
-						parent.addView(bar);
-						mPhotoView.setVisibility(View.GONE);
-						mUploadPictureTask = new UploadPictureTask(file);
-						mUploadPictureTask.execute();
-					} catch (FileNotFoundException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					
-				}
-
-
-
-
-				//System.out.println(file.getAbsolutePath());
-				//				final File file = new File(data.getData().getPath());
-				//				if (data.getData() != null)
-				//				{
-				//					System.out.println(data.getData() + " " + data.getData().getPath());
-				//					final File file = new File(data.getData().getPath());
-				//				}
-
-
-				//final File file = new File(getCacheDir(), "temp_photo");
-				//					final OutputStream output = new FileOutputStream(file);
-				//					final byte[] buffer = new byte[1024];
-				//					int read;
-				//					while ((read = stream.read(buffer)) != -1)
-				//						output.write(buffer, 0, read);
-				//					output.flush();
-				//					output.close();
-				//					stream.close();
-				//				} 
-				//				catch (FileNotFoundException e) {
-				//					// TODO Auto-generated catch block
-				//					e.printStackTrace();
-				//				} catch (IOException e) {
-				//					// TODO Auto-generated catch block
-				//					e.printStackTrace();
-				//				}
-				//            try {
-				//                // We need to recyle unused bitmaps
-				//                if (bitmap != null) {
-				//                    bitmap.recycle();
-				//                }
-				//                InputStream stream = getContentResolver().openInputStream(
-				//                        data.getData());
-				//                bitmap = BitmapFactory.decodeStream(stream);
-				//                stream.close();
-				//                System.out.println("OnActivityResult");
-				//                mPhotoView.setImageBitmap(bitmap);
-				//                mPhotoView.setOnClickListener(null);
-				//                //imageView.setImageBitmap(bitmap);
-				//            } catch (FileNotFoundException e) {
-				//                e.printStackTrace();
-				//            } catch (IOException e) {
-				//                e.printStackTrace();
-				//            }
-
-			}
-		}
-		else
-		{
-			Toast toast = new Toast(this);
-			toast.setText("An internet connection is required for picture upload. Please check your connectivity and try again.");
-			toast.show();
-		}
-		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-		//	        if (resultCode == RESULT_OK) {
-		//	        	// Video captured and saved to fileUri specified in the Intent
-		//	            Toast.makeText(this, "Video saved to:\n" +
-		//	                     data.getData(), Toast.LENGTH_LONG).show();
-		//	        } else if (resultCode == RESULT_CANCELED) {
-		//	            // User cancelled the video capture
-		//	        } else {
-		//	            // Video capture failed, advise user
-		//	        }
-		//	    }
-		super.onActivityResult(requestCode, resultCode, data);
-	}
-
-	@Override
-	protected void onPause() {
-		if (mUploadPictureTask != null)
-			mUploadPictureTask.cancel(true);
-		super.onPause();
-	}
-
-	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
-	{
-		private File mFile;
-
-		public UploadPictureTask(File file)
-		{
-			mFile = file;
-		}
-
-		@Override
-		protected Picture doInBackground(Void... arg0) {
-
-			Picture picture = mModel.uploadPicture(mFile);
-			return picture;
-		}
-
-		@Override
-		protected void onPostExecute(Picture result) {
-			System.out.println("TRUC de jean " + result.getJson());
-			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
-			EditDiveActivity.mPhotoView.setVisibility(View.VISIBLE);
-			LinearLayout rl = (LinearLayout)(EditDiveActivity.mPhotoView.getParent());
-			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
-			bar.setVisibility(View.GONE);
-			EditDiveActivity.mListPictures.add(result);
-			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
-		}
-
-	}
+//	@Override
+//	protected void onPause() {
+//		if (mUploadPictureTask != null)
+//			mUploadPictureTask.cancel(true);
+//		super.onPause();
+//	}
+//
+//	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
+//	{
+//		private File mFile;
+//
+//		public UploadPictureTask(File file)
+//		{
+//			mFile = file;
+//		}
+//
+//		@Override
+//		protected Picture doInBackground(Void... arg0) {
+//
+//			Picture picture = mModel.uploadPicture(mFile);
+//			return picture;
+//		}
+//
+//		@Override
+//		protected void onPostExecute(Picture result) {
+//			System.out.println("TRUC de jean " + result.getJson());
+//			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+//			EditDiveActivity.mPhotoView.setVisibility(View.VISIBLE);
+//			LinearLayout rl = (LinearLayout)(EditDiveActivity.mPhotoView.getParent());
+//			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+//			bar.setVisibility(View.GONE);
+//			EditDiveActivity.mListPictures.add(result);
+//			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+//		}
+//
+//	}
 
 	@Override
 	public void onBackPressed()
@@ -567,8 +283,8 @@ EditGuideNameDialogListener
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
 		mModel.getDives().get(mIndex).clearEditList();
-		if (mUploadPictureTask != null)
-			mUploadPictureTask.cancel(true);
+//		if (mUploadPictureTask != null)
+//			mUploadPictureTask.cancel(true);
 	}
 
 	public class			EditPagerAdapter extends FragmentPagerAdapter
@@ -693,8 +409,7 @@ EditGuideNameDialogListener
 
 	@Override
 	public void onStop() {
-		if (mUploadPictureTask != null)
-			mUploadPictureTask.cancel(true);
+
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}

@@ -74,6 +74,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 																					EditDiveTypeDialogListener,
 																					EditGuideNameDialogListener
 {
+	public static DiveboardModel		mModel;
 	private Typeface			mFaceB;
 	private NewPagerAdapter		adapterViewPager;
 	private int					NUM_ITEMS = 4;
@@ -85,6 +86,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public static EditText		mNotes = null;
 	private TabNewNotesFragment	mNewNotesFragment = new TabNewNotesFragment();
 	private TabNewSpotsFragment	mNewSpotsFragment = new TabNewSpotsFragment();
+	private TabNewPhotosFragment	mNewPhotosFragment = new TabNewPhotosFragment();
 	
 	public class			NewPagerAdapter extends FragmentPagerAdapter
 	{

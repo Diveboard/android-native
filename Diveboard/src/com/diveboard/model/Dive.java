@@ -1099,8 +1099,14 @@ public class					Dive implements IModel
 				JSONArray jarray;
 				try {
 					jarray = new JSONArray(_editList.get(i).second);
+					System.out.println("---------------------------------------GETPICTURES JSON DEBUT----------------------------");
+					System.out.println(_editList.get(i).second);
 					for (int j = 0, length = jarray.length(); j < length; j++)
-						result.add(new Picture(jarray.getJSONObject(i)));
+					{
+						System.out.println("GETPICTURES JSON: " + jarray.getJSONObject(i));
+						result.add(new Picture(jarray.getJSONObject(j)));
+					}
+					System.out.println("---------------------------------------GETPICTURES JSON FIN----------------------------");
 					return (result);
 				} catch (JSONException e) {
 					e.printStackTrace();

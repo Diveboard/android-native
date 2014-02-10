@@ -1,4 +1,4 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -92,9 +92,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class TabEditPhotosFragment extends Fragment {
+public class TabNewPhotosFragment extends Fragment {
 
-	private DiveboardModel mModel;
+	//private DiveboardModel mModel;
 	private int mPhotoPos = 0;
 	private DownloadImageTask mDownloadImageTask;
 	//private ImageView mImageView;
@@ -112,6 +112,9 @@ public class TabEditPhotosFragment extends Fragment {
 	public ImageView mPhotoView;
 	public ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
 	public boolean isAddingPic = false;
+	private Dive				mDive;
+	private int					mIndex;
+	private DiveboardModel mModel;
 	
 	//private DropPictureTask mDropPictureTask = null;
 
@@ -124,13 +127,21 @@ public class TabEditPhotosFragment extends Fragment {
 	//		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
 	//	}
 	@Override
+    public void onCreate(Bundle savedInstanceState)
+    {
+		super.onCreate(savedInstanceState);
+		mDive = ((ApplicationController)getActivity().getApplicationContext()).getTempDive();
+    }
+	
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
 	{
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
-		mModel = EditDiveActivity.mModel;
+		mModel = NewDiveActivity.mModel;
 		System.out.println("LIST PICTURE : " + mListPictures);
-		mListPictures = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
+		mListPictures = mDive.getPictures();
 //		for (int i = 0; i < EditDiveActivity.mListPictures.size(); i++)
 //		{
 //			System.out.println(EditDiveActivity.mListPictures.get(i).getJson());
@@ -287,7 +298,7 @@ public class TabEditPhotosFragment extends Fragment {
 			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 			bar.setVisibility(View.GONE);
 			mListPictures.add(result);
-			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+			mDive.setPictures(mListPictures);
 			generateTableLayout();
 			isAddingPic = false;
 		}
@@ -506,7 +517,7 @@ public class TabEditPhotosFragment extends Fragment {
 		if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 				&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 		{
-			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), 0);
+			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, getActivity().getApplicationContext(),  mDive, 0);
 			mDownloadImageTask.execute();
 		}
 	}
@@ -561,11 +572,11 @@ public class TabEditPhotosFragment extends Fragment {
 			return true;
 		case R.id.remove:
 			mListPictures.remove(mImageSelected);
-			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+			mDive.setPictures(mListPictures);
 			return true;
 		case R.id.main:
 			Collections.swap(mListPictures,0,mImageSelected);
-			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+			mDive.setPictures(mListPictures);
 			return true;
 		default:
 			return super.onContextItemSelected(item);
@@ -667,11 +678,11 @@ public class TabEditPhotosFragment extends Fragment {
 					LinearLayout rl = (LinearLayout)(imageView.getParent());
 					ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 					bar.setVisibility(View.GONE);
-					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null && TabEditPhotosFragment.this != null && mModel.getDives() != null)
+					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null && TabNewPhotosFragment.this != null && mModel.getDives() != null)
 					{
 						if (getActivity() != null)
 						{
-							mDownloadImageTask = new DownloadImageTask(mArrayPair, mListPictures, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), mPosition + 1);
+							mDownloadImageTask = new DownloadImageTask(mArrayPair, mListPictures, getActivity().getApplicationContext(),  mDive, mPosition + 1);
 							mDownloadImageTask.execute();
 						}
 						System.out.println("position = " + mPosition);
@@ -788,7 +799,7 @@ public class TabEditPhotosFragment extends Fragment {
 				//			container.addView(view);
 
 				Collections.swap(mListPictures,0, mImageSelected);
-				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+				mDive.setPictures(mListPictures);
 				System.out.println("Set as main picture");
 //				TableRow row = (TableRow)((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getChildAt(0);
 //				LinearLayout layout = (LinearLayout) row.getChildAt(0);
@@ -887,7 +898,7 @@ public class TabEditPhotosFragment extends Fragment {
 				//ArrayList<Picture> listPictures = new ArrayList<Picture>();
 				System.out.println("index =" + mImageSelected);
 				mListPictures.remove(mImageSelected);
-				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+				mDive.setPictures(mListPictures);
 				
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
