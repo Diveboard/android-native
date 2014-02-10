@@ -139,7 +139,7 @@ public class					TabEditSpotsFragment extends Fragment
 				boolean handled = false;
 	            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 	            	mMap.setOnCameraChangeListener(null);
-	                doMySearch("search", ((TextView)getActivity().findViewById(R.id.search_bar)).getText().toString(), null, null, null);
+	                doMySearch("search", ((TextView)mRootView.findViewById(R.id.search_bar)).getText().toString(), null, null, null);
 	            	InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 	        		imm.toggleSoftInput(0, 0);
 	                handled = true;
@@ -152,50 +152,52 @@ public class					TabEditSpotsFragment extends Fragment
 	        Fragment fragment = fm.findFragmentById(R.id.mapfragment);
 	        SupportMapFragment support = (SupportMapFragment)fragment;
 	        mMap = support.getMap();
-	        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+	        //mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
 	        // Check if we were successful in obtaining the map.
-	        if (mMap != null) {
-	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+	        if (mMap == null) {
+	        	System.out.println("Map non safe");
 	            // The Map is verified. It is now safe to manipulate the map
 	        }
 	        else
-	        	System.out.println("Map non safe");
-	        mMap.getUiSettings().setAllGesturesEnabled(true);
-			mMap.getUiSettings().setMyLocationButtonEnabled(true);
-			mMap.getUiSettings().setZoomControlsEnabled(true);
-			mMap.getUiSettings().setZoomGesturesEnabled(true);
-			
-			mMap.getUiSettings().setRotateGesturesEnabled(true);
-			mMap.getUiSettings().setScrollGesturesEnabled(true);
-			mMap.getUiSettings().setCompassEnabled(true);
-			if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId() != 1)
-			{
-				((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-				((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
-				((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
-				((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
-				((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-				((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
-				((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-				((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+	        {
+	        	
+	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+		        mMap.getUiSettings().setAllGesturesEnabled(true);
+				mMap.getUiSettings().setMyLocationButtonEnabled(true);
+				mMap.getUiSettings().setZoomControlsEnabled(true);
+				mMap.getUiSettings().setZoomGesturesEnabled(true);
 				
-				mMyMarker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
-				.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-				System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId());
-				Integer zoom = EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getZoom();
-				if (zoom == null || zoom > mZoom)
-					zoom = mZoom;
-				if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng() != null)
-					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
-			}
-			else
-			{
-				((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
-				activeGPS(null);
-			}
-			
+				mMap.getUiSettings().setRotateGesturesEnabled(true);
+				mMap.getUiSettings().setScrollGesturesEnabled(true);
+				mMap.getUiSettings().setCompassEnabled(true);
+				if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId() != 1)
+				{
+					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
+					((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
+					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
+					((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
+					((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
+					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
+					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
+					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+					
+					mMyMarker = mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
+					.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+					System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId());
+					Integer zoom = EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getZoom();
+					if (zoom == null || zoom > mZoom)
+						zoom = mZoom;
+					if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
+				}
+				else
+				{
+					((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+					activeGPS(null);
+				}
+	        }
 		}
 		return mRootView;
     }
@@ -328,14 +330,14 @@ public class					TabEditSpotsFragment extends Fragment
     
     public void doMySearch(String swipe, String text, String latitude, String longitude, LatLngBounds bounds)
     {  	
-    	ListView lv = ((ListView)getActivity().findViewById(R.id.list_view));
+    	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
     	List<Spot> listSpots = new ArrayList<Spot>();
     	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
     	lv.setAdapter(adapter);
-    	((TextView)getActivity().findViewById(R.id.no_spot)).setVisibility(View.GONE);
+    	((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
 //    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //		imm.toggleSoftInput(0, 0);
-		((ProgressBar)getActivity().findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+		((ProgressBar)mRootView.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
     	SpotsTask spots_task = new SpotsTask();
     	if (bounds != null)
     		spots_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
@@ -437,14 +439,14 @@ public class					TabEditSpotsFragment extends Fragment
 				}
 				DiveboardModel._sotimedout = false;
 			}
-			((ProgressBar)getActivity().findViewById(R.id.progressBar)).setVisibility(View.GONE);
+			((ProgressBar)mRootView.findViewById(R.id.progressBar)).setVisibility(View.GONE);
 			try {
 				if (result != null && result.getBoolean("success") == true)
 				{
 					try {
 						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
 						mArray = result.getJSONArray("spots");
-						final ListView lv = ((ListView)getActivity().findViewById(R.id.list_view));
+						final ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
 						final List<Spot> listSpots = new ArrayList<Spot>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
@@ -454,7 +456,7 @@ public class					TabEditSpotsFragment extends Fragment
 						}
 						if (listSpots.size() == 0)
 						{
-							((TextView)getActivity().findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+							((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
 						}
 						else
 						{
@@ -576,7 +578,7 @@ public class					TabEditSpotsFragment extends Fragment
 				}
 				else
 				{
-					((TextView)getActivity().findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+					((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block

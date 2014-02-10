@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -53,22 +54,27 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.Pair;
+import android.view.ContextMenu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TabHost;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -95,7 +101,7 @@ EditGuideNameDialogListener
 {
 	private int					mIndex;
 	private Typeface			mFaceB;
-	private EditPagerAdapter	adapterViewPager;
+	public static EditPagerAdapter	adapterViewPager;
 	private TabEditDetailsFragment	mEditDetailsFragment = new TabEditDetailsFragment();
 	public static DiveboardModel		mModel;
 	public static OptionAdapter		mOptionAdapter;
@@ -116,18 +122,21 @@ EditGuideNameDialogListener
 	public static final int MEDIA_TYPE_VIDEO = 2;
 	public static int count=0;
 	private UploadPictureTask mUploadPictureTask = null;
+	public static int mMenuType = 0;
+	public static int mImageSelected;
+	public static ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstance) {
 		super.onCreate(savedInstance);
 		mIndex = getIntent().getIntExtra("index", -1);
 		setContentView(R.layout.activity_edit_dive);
-		ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
+		mViewPager = (ViewPager) findViewById(R.id.vpPager);
 		adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
-		vpPager.setAdapter(adapterViewPager);
-		vpPager.setOffscreenPageLimit(NUM_ITEMS);
+		mViewPager.setAdapter(adapterViewPager);
+		mViewPager.setOffscreenPageLimit(NUM_ITEMS);
 		PagerSlidingTabStrip tabs = (PagerSlidingTabStrip) findViewById(R.id.tabs);
-		tabs.setViewPager(vpPager);
+		tabs.setViewPager(mViewPager);
 		tabs.setOnPageChangeListener(new OnPageChangeListener() {
 			@Override
 			public void onPageSelected(int position) {
@@ -190,11 +199,32 @@ EditGuideNameDialogListener
 			}
 		});
 	}
+	
+	public void goToMenuV2(View view)
+	{
+		// Settings floating menu
+		registerForContextMenu(view);
+		openContextMenu(view);
+		unregisterForContextMenu(view);
+	}
+	
+	@Override
+	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
+	{
+		super.onCreateContextMenu(menu, v, menuInfo);
+		//System.out.println("view = " + menu.);
+		MenuInflater inflater = getMenuInflater();
+		if (mMenuType == 1)
+			inflater.inflate(R.menu.edit_gallery, menu);
+		else
+			inflater.inflate(R.menu.edit_photo, menu);
+	}
 
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
 		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
 		Intent intent;
+		System.out.println("Entre");
 		switch (item.getItemId()) {
 		case R.id.take_picture:
 			final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
@@ -218,7 +248,14 @@ EditGuideNameDialogListener
 			startActivityForResult(Intent.createChooser(intent,
 					"Select Picture"), SELECT_PICTURE);
 			return true;
-
+		case R.id.remove:
+			EditDiveActivity.mListPictures.remove(EditDiveActivity.mImageSelected);
+			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+			return true;
+		case R.id.main:
+			Collections.swap(EditDiveActivity.mListPictures,0,mImageSelected);
+			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
+			return true;
 		default:
 			return super.onContextItemSelected(item);
 		}
@@ -322,17 +359,65 @@ EditGuideNameDialogListener
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
-			if ((requestCode == SELECT_PICTURE || requestCode == TAKE_PICTURE) && resultCode == Activity.RESULT_OK)
+			if (resultCode == Activity.RESULT_OK)
 			{
-				//				try {
-				//InputStream stream = getContentResolver().openInputStream(data.getData());
-				final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
-				File file = new File(dir+"diveboard.jpg");
-				((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
-				mUploadPictureTask = new UploadPictureTask(file);
-				mUploadPictureTask.execute();
+				if (requestCode == TAKE_PICTURE)
+				{
+					//					try {
+					//InputStream stream = getContentResolver().openInputStream(data.getData());
+					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+					File file = new File(dir+"diveboard.jpg");
+					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
+					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+					ProgressBar bar = new ProgressBar(getApplicationContext());
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+					bar.setVisibility(View.VISIBLE);
+					bar.setLayoutParams(params);
+					parent.addView(bar);
+					mPhotoView.setVisibility(View.GONE);
+					mUploadPictureTask = new UploadPictureTask(file);
+					mUploadPictureTask.execute();
+				}
+				else if (requestCode == SELECT_PICTURE)
+				{
+					InputStream stream;
+					try {
+						stream = getContentResolver().openInputStream(data.getData());
+						System.out.println(data.getData());
+						//InputStream stream = getContentResolver().openInputStream(data.getData());
+						//final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+						final File file = new File(getCacheDir(), "temp_photo.jpg");
+						final OutputStream output = new FileOutputStream(file);
+						final byte[] buffer = new byte[1024];
+						int read;
+						while ((read = stream.read(buffer)) != -1)
+							output.write(buffer, 0, read);
+						output.flush();
+						output.close();
+						stream.close();
 
-				
+						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
+						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+						ProgressBar bar = new ProgressBar(getApplicationContext());
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+						bar.setVisibility(View.VISIBLE);
+						bar.setLayoutParams(params);
+						parent.addView(bar);
+						mPhotoView.setVisibility(View.GONE);
+						mUploadPictureTask = new UploadPictureTask(file);
+						mUploadPictureTask.execute();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+
+
+
 
 				//System.out.println(file.getAbsolutePath());
 				//				final File file = new File(data.getData().getPath());
@@ -400,11 +485,18 @@ EditGuideNameDialogListener
 		//	    }
 		super.onActivityResult(requestCode, resultCode, data);
 	}
-	
+
+	@Override
+	protected void onPause() {
+		if (mUploadPictureTask != null)
+			mUploadPictureTask.cancel(true);
+		super.onPause();
+	}
+
 	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
 	{
 		private File mFile;
-		
+
 		public UploadPictureTask(File file)
 		{
 			mFile = file;
@@ -412,18 +504,23 @@ EditGuideNameDialogListener
 
 		@Override
 		protected Picture doInBackground(Void... arg0) {
-			
+
 			Picture picture = mModel.uploadPicture(mFile);
 			return picture;
 		}
 
 		@Override
 		protected void onPostExecute(Picture result) {
-			((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			System.out.println("TRUC de jean " + result.getJson());
+			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			EditDiveActivity.mPhotoView.setVisibility(View.VISIBLE);
+			LinearLayout rl = (LinearLayout)(EditDiveActivity.mPhotoView.getParent());
+			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+			bar.setVisibility(View.GONE);
 			EditDiveActivity.mListPictures.add(result);
 			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
 		}
-		
+
 	}
 
 	@Override
@@ -453,11 +550,14 @@ EditGuideNameDialogListener
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
 		mModel.getDives().get(mIndex).clearEditList();
+		if (mUploadPictureTask != null)
+			mUploadPictureTask.cancel(true);
 	}
 
 	public class			EditPagerAdapter extends FragmentPagerAdapter
 	{
-
+		final ArrayList<String> titles = new ArrayList<String>();
+		
 		public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
 		{
 			super(fm);
@@ -482,6 +582,36 @@ EditGuideNameDialogListener
 				return null;
 			}
 		}
+		
+		@Override
+		public int getItemPosition(Object object) {
+			Fragment fragment = (Fragment)object;
+			
+			if (object.equals(mEditDetailsFragment))
+			{
+				System.out.println("0");
+				return 0;
+			}
+				
+//			else if (object.equals(mEditDetailsFragment))
+//				return 1;
+			else if (object.equals(mEditPhotosFragment))
+			{
+				System.out.println("2");
+				return POSITION_NONE;
+			}
+			else if (object.equals(mEditNotesFragment))
+			{
+				System.out.println("3");
+				return 3;
+			}
+			else if (object.equals(mEditSpotsFragment))
+			{
+				System.out.println("4");
+				return 4;
+			}
+			return POSITION_NONE;	
+			}
 
 		@Override
 		public int getCount()
@@ -520,6 +650,8 @@ EditGuideNameDialogListener
 
 	@Override
 	public void onStop() {
+		if (mUploadPictureTask != null)
+			mUploadPictureTask.cancel(true);
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
 	}

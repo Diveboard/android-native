@@ -2,12 +2,14 @@ package com.diveboard.model;
 
 import java.io.File;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.SocketTimeoutException;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.concurrent.Semaphore;
 
@@ -24,6 +26,7 @@ import org.apache.http.client.protocol.ClientContext;
 import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
 import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCookieStore;
@@ -46,9 +49,12 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.util.Base64;
 import android.util.Pair;
 import android.database.Cursor;
 import android.database.sqlite.*;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 /*
  * Class DiveboardModel
@@ -1277,7 +1283,6 @@ public class					DiveboardModel
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
-			System.out.println("ENTRE");
 			// Creating web client
 			HttpParams httpParameters = new BasicHttpParams();
 			int timeoutConnection = DiveboardModel._coTimeout;
@@ -1405,13 +1410,21 @@ public class					DiveboardModel
 		{
 			try {
 				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-				entity.addPart("qqfile", new FileBody(picture_file, "image/jpeg"));
-				entity.addPart("auth_token", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
-				entity.addPart("apikey", new StringBody(_token));
+				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+				byte[] b = baos.toByteArray();
+				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+				entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+				entity.addPart("auth_token", new StringBody(_token));
+				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("flavour", new StringBody("private"));
 				httpPost.setEntity(entity);
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();
+				System.out.println("Entre");
 				String result = ContentExtractor.getASCII(entity_response);
+				System.out.println(result);
 				JSONObject json = new JSONObject(result);
 				if (json.getBoolean("success") == false)
 					return null;

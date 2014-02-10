@@ -68,7 +68,6 @@ public class					Picture
 	
 	public 							Picture(final JSONObject json) throws JSONException
 	{
-		System.out.println("Picture : " + json);
 		_urlDefault = json.getString("large");
 		Pair<String, Picture> new_elem = new Pair<String, Picture>(_urlDefault, this);
 		DiveboardModel.pictureList.add(new_elem);
