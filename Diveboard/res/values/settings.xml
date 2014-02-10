@@ -20,4 +20,5 @@
         <item>Medium Definition</item>
         <item>High Definition</item>
     </string-array>
+    <string translatable="false" name="clear_cache_title">Clear Cache</string>
 </resources>

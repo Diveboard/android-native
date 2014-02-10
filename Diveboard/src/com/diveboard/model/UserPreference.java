@@ -142,6 +142,8 @@ public class					UserPreference
 	
 	static public String		getPictureQuality()
 	{
+		if (_userPreferences.isNull("picture_quality"))
+			return "m_qual";
 		try {
 			return _userPreferences.getString("picture_quality");
 		} catch (JSONException e) {

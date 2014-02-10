@@ -25,6 +25,7 @@ import android.preference.PreferenceManager;
 import android.preference.RingtonePreference;
 import android.preference.SwitchPreference;
 import android.text.TextUtils;
+import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -61,6 +62,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 */
 	private ListPreference mUnitSetting;
 	private ListPreference mPicQualitySetting;
+	private Integer clearCacheClickCount = 0;
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 	
@@ -350,6 +352,28 @@ public class SettingsActivity extends PreferenceActivity {
 			
 			getPreferenceScreen().addPreference(remainingRequest);
 			
+			Preference clear_cache = new Preference(this);
+			clear_cache.setTitle(getResources().getString(R.string.clear_cache_title));
+			clear_cache.setOnPreferenceClickListener(new OnPreferenceClickListener() {
+				@Override
+				public boolean onPreferenceClick(Preference preference) {
+					if (clearCacheClickCount < 4)
+					{
+						if (clearCacheClickCount == 0)
+							Toast.makeText(SettingsActivity.this, "Click 5 times to confirm cache cleaning", Toast.LENGTH_SHORT).show();
+						clearCacheClickCount++;
+					}
+					else
+					{
+						Toast.makeText(SettingsActivity.this, "Cache cleared", Toast.LENGTH_SHORT).show();
+						clearCacheClickCount = 0;
+						trimCache(getApplicationContext());
+					}
+					return false;
+				}
+			});
+			//getPreferenceScreen().addPreference(clear_cache);
+			
 			Preference db_version = new Preference(this);
 			db_version.setEnabled(true);
 			db_version.setKey("db_version");
@@ -612,4 +636,29 @@ public class SettingsActivity extends PreferenceActivity {
 //			bindPreferenceSummaryToValue(findPreference("sync_frequency"));
 //		}
 //	}
+	
+	public static void trimCache(Context context) {
+	    try {
+	       File dir = context.getCacheDir();
+	       if (dir != null && dir.isDirectory()) {
+	          deleteDir(dir);
+	       }
+	    } catch (Exception e) {
+	       // TODO: handle exception
+	    }
+	 }
+
+	public static boolean deleteDir(File dir) {
+	    if (dir != null && dir.isDirectory()) {
+	       String[] children = dir.list();
+	       for (int i = 0; i < children.length; i++) {
+	          boolean success = deleteDir(new File(dir, children[i]));
+	          if (!success) {
+	             return false;
+	          }
+	       }
+	    }
+	    // The directory is now empty so delete it
+	    return dir.delete();
+	}
 }
