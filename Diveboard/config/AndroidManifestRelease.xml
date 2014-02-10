@@ -8,6 +8,10 @@
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
+    <uses-permission android:name="android.permission.READ_LOGS" />
+    <uses-permission android:name="android.permission.CAMERA" />
+	<uses-feature android:name="android.hardware.camera" android:required="false"/>
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <!--
          The following two permissions are not required to use
 	     Google Maps Android API v2, but are recommended.
@@ -141,6 +145,11 @@
             android:name="com.diveboard.mobile.GraphImageActivity"
             android:label="@string/title_activity_graph_image"
             android:screenOrientation="landscape">
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.TestActivity"
+            android:label="@string/title_activity_graph_image">
+            
         </activity>
     </application>
 

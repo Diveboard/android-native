@@ -74,6 +74,7 @@ public class					UserPreference
 			units.put("temperature", "C");
 			units.put("pressure", "bar");
 			new_pref.put("units", units);
+			new_pref.put("picture_quality", "m_qual");
 			_userPreferences = new_pref;
 			outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 			outputStream.write(new_pref.toString().getBytes());
@@ -127,6 +128,26 @@ public class					UserPreference
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public void					setPictureQuality(final String val)
+	{
+		try {
+			_userPreferences.put("picture_quality", val);
+			_savePreference();
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	static public String		getPictureQuality()
+	{
+		try {
+			return _userPreferences.getString("picture_quality");
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
 	}
 	
 	public void					setUnits(final JSONObject units)

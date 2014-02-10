@@ -77,12 +77,12 @@ public class					Picture
 		_urlMedium = json.getString("medium");
 		new_elem = new Pair<String, Picture>(_urlMedium, this);
 		DiveboardModel.pictureList.add(new_elem);
-		_urlSmall = json.getString("small");
+		/*_urlSmall = json.getString("small");
 		new_elem = new Pair<String, Picture>(_urlSmall, this);
 		DiveboardModel.pictureList.add(new_elem);
 		_urlThumbnail = json.getString("thumbnail");
 		new_elem = new Pair<String, Picture>(_urlThumbnail, this);
-		DiveboardModel.pictureList.add(new_elem);
+		DiveboardModel.pictureList.add(new_elem);*/
 		_json = json;
 	}
 	
@@ -128,12 +128,18 @@ public class					Picture
 	public synchronized Bitmap				getPicture(final Context context) throws IOException
 	{
 		//return (getPicture(context, Size.DEFAULT));
-		return (getPicture(context, Size.MEDIUM));
+		if (UserPreference.getPictureQuality().equals("m_qual"))
+			return (getPicture(context, Size.MEDIUM));
+		else
+			return (getPicture(context, Size.LARGE));
 	}
 	
 	public synchronized Bitmap				getPicture(final Context context, Size size) throws IOException
 	{
-		size = Size.MEDIUM;
+		if (UserPreference.getPictureQuality().equals("m_qual"))
+			size = Size.MEDIUM;
+		else
+			size = Size.LARGE;
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 

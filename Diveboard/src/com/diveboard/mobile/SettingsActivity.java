@@ -60,6 +60,7 @@ public class SettingsActivity extends PreferenceActivity {
 	 * shown on tablets.
 	 */
 	private ListPreference mUnitSetting;
+	private ListPreference mPicQualitySetting;
 	
 	private static final boolean ALWAYS_SIMPLE_PREFS = false;
 	
@@ -172,6 +173,47 @@ public class SettingsActivity extends PreferenceActivity {
 		PreferenceCategory systemCategory = new PreferenceCategory(this);
 		systemCategory.setTitle(getResources().getString(R.string.system_settings_category));
 		getPreferenceScreen().addPreference(systemCategory);		
+		
+		mPicQualitySetting = new ListPreference(this);
+		mPicQualitySetting.setTitle(getResources().getString(R.string.picquality_setting_title));
+		mPicQualitySetting.setEntries(getResources().getStringArray(R.array.picquality_entries));
+		mPicQualitySetting.setEntryValues(getResources().getStringArray(R.array.picquality_entries));
+		mPicQualitySetting.setKey("picquality");
+		
+		String pic_qual_str;
+		if (UserPreference.getPictureQuality().equals("m_qual"))
+		{
+			mPicQualitySetting.setValueIndex(0);
+			pic_qual_str = "Medium Definition";
+			mPicQualitySetting.setValue("Medium Defition");
+		}
+		else
+		{
+			mPicQualitySetting.setValueIndex(1);
+			pic_qual_str = "High Definition";
+			mPicQualitySetting.setValue("High Definition");
+		}
+		
+		mPicQualitySetting.setSummary(pic_qual_str);
+		mPicQualitySetting.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
+		{
+			@Override
+			public boolean onPreferenceChange(Preference pref, Object newVal)
+			{
+				ListPreference picqual = (ListPreference) findPreference("picquality");
+				pref.setSummary(newVal.toString());
+				String val = (String) newVal;
+				if (val.equals("Medium Definition"))
+					mModel.getPreference().setPictureQuality("m_qual");
+				else
+					mModel.getPreference().setPictureQuality("h_qual");
+				((ApplicationController)getApplicationContext()).setRefresh(1);
+				return true;
+			}
+			
+		});
+		
+		getPreferenceScreen().addPreference(mPicQualitySetting);
 		
 //		if (Build.VERSION.SDK_INT >= 14)
 //		{

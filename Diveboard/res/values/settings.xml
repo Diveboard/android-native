@@ -15,4 +15,9 @@
     <string translatable="false" name="remaining_requests_title">Pending Requests</string>
     <string translatable="false" name="version_title">Application Version</string>
     <string translatable="false" name="db_version_title">Spot Database</string>
+    <string translatable="false" name="picquality_setting_title">Picture Quality</string>
+    <string-array translatable="false" name="picquality_entries">
+        <item>Medium Definition</item>
+        <item>High Definition</item>
+    </string-array>
 </resources>
