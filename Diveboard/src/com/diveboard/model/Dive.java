@@ -1107,7 +1107,7 @@ public class					Dive implements IModel
 				}
 			}
 		}
-		return _pictures;
+		return (ArrayList<Picture>) _pictures.clone();
 	}
 
 	public void setPictures(ArrayList<Picture> _pictures)

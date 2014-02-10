@@ -115,7 +115,7 @@ EditGuideNameDialogListener
 	public static final int TAKE_PICTURE = 2;
 	private Bitmap bitmap;
 	public static ImageView mPhotoView;
-	public static ArrayList<Picture>		mListPictures = new ArrayList<Picture>();
+	public static ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
 	private Uri fileUri;
 	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
 	public static final int MEDIA_TYPE_IMAGE = 1;
@@ -835,6 +835,7 @@ EditGuideNameDialogListener
 	@Override
 	public void onConfirmEditComplete(DialogFragment dialog)
 	{
+		System.out.println("CLEAR");
 		clearEditList();
 	}
 

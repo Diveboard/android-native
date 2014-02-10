@@ -127,11 +127,13 @@ public class					Picture
 	
 	public synchronized Bitmap				getPicture(final Context context) throws IOException
 	{
-		return (getPicture(context, Size.DEFAULT));
+		//return (getPicture(context, Size.DEFAULT));
+		return (getPicture(context, Size.MEDIUM));
 	}
 	
-	public synchronized Bitmap				getPicture(final Context context, final Size size) throws IOException
+	public synchronized Bitmap				getPicture(final Context context, Size size) throws IOException
 	{
+		size = Size.MEDIUM;
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
 
