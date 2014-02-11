@@ -127,7 +127,7 @@ public class					Dive implements IModel
 		_privacy = 0;
 		_divetype = new ArrayList<String>();
 		_guide = null;
-		_pictures = null;
+		_pictures = new ArrayList<Picture>();
 	}
 	
 	public						Dive(JSONObject json) throws JSONException

@@ -787,14 +787,22 @@ public class					TabEditSpotsActivity extends FragmentActivity implements EditCo
 	@Override
 	protected void onDestroy()
 	{
+		if (mLocationManager != null && mLocationListener != null)
+		{
+			mLocationManager.removeUpdates(mLocationListener);
+			mLocationManager = null;
+		}
 		super.onDestroy();
 	}
 	
 	@Override
     protected void onPause() {
         // Save the current setting for updates
-//		mLocationManager.removeUpdates(mLocationListener);
-//		mLocationManager = null;
+		if (mLocationManager != null && mLocationListener != null)
+		{
+			mLocationManager.removeUpdates(mLocationListener);
+			mLocationManager = null;
+		}
         super.onPause();
     }
 }

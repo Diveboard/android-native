@@ -208,6 +208,7 @@ public class					TabEditSpotsFragment extends Fragment
     	{
     		mLocationManager.removeUpdates(mLocationListener);
     		mLocationManager = null;
+    		mLocationListener = null;
     	}
 		super.onPause();
 	}
@@ -218,6 +219,7 @@ public class					TabEditSpotsFragment extends Fragment
     	{
     		mLocationManager.removeUpdates(mLocationListener);
     		mLocationManager = null;
+    		mLocationListener = null;
     	}
 		super.onDestroy();
 	}
@@ -237,7 +239,12 @@ public class					TabEditSpotsFragment extends Fragment
     	InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(((EditText) mRootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
 		((EditText) mRootView.findViewById(R.id.search_bar)).setText("");
-    	
+		if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    		mLocationListener = null;
+    	}
     	//removeMarkers();
     	mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
@@ -388,7 +395,6 @@ public class					TabEditSpotsFragment extends Fragment
 		protected JSONObject doInBackground(String... query)
 		{
 			swipe = query[0];
-			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 			SearchTimer task = new SearchTimer(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 			task.start();
 			try {
@@ -396,6 +402,7 @@ public class					TabEditSpotsFragment extends Fragment
 				if (searchDone == false)
 				{
 					DiveboardModel._searchtimedout = true;
+					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchSpotText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;

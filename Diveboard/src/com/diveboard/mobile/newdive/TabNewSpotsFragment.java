@@ -110,16 +110,19 @@ public class					TabNewSpotsFragment extends Fragment
     	{
     		mLocationManager.removeUpdates(mLocationListener);
     		mLocationManager = null;
+    		mLocationListener = null;
     	}
 		super.onPause();
 	}
     
     @Override
 	public void onDestroy() {
+    	System.out.println("destroy");
     	if (mLocationManager != null && mLocationListener != null)
     	{
     		mLocationManager.removeUpdates(mLocationListener);
     		mLocationManager = null;
+    		mLocationListener = null;
     	}
 		super.onDestroy();
 	}
@@ -222,6 +225,7 @@ public class					TabNewSpotsFragment extends Fragment
 			}
 			else
 			{
+				System.out.println("activeGPS");
 				((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 				activeGPS(null);
 //				mMyMarker = mMap.addMarker(new MarkerOptions()
@@ -292,6 +296,12 @@ public class					TabNewSpotsFragment extends Fragment
     	imm.hideSoftInputFromWindow(((EditText) rootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
     	((EditText) rootView.findViewById(R.id.search_bar)).setText("");
     	//removeMarkers();
+    	if (mLocationManager != null && mLocationListener != null)
+    	{
+    		mLocationManager.removeUpdates(mLocationListener);
+    		mLocationManager = null;
+    		mLocationListener = null;
+    	}
     	mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
 		mLocationListener = new myLocationListener();
@@ -405,7 +415,6 @@ public class					TabNewSpotsFragment extends Fragment
 		protected JSONObject doInBackground(String... query)
 		{
 			swipe = query[0];
-			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 			SearchTimer task = new SearchTimer(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 			task.start();
 			try {
@@ -413,6 +422,7 @@ public class					TabNewSpotsFragment extends Fragment
 				if (searchDone == false)
 				{
 					DiveboardModel._searchtimedout = true;
+					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchSpotText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;

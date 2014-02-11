@@ -139,7 +139,7 @@ public class TabNewPhotosFragment extends Fragment {
 	{
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
-		mModel = NewDiveActivity.mModel;
+		mModel = AC.getModel();
 		System.out.println("LIST PICTURE : " + mListPictures);
 		mListPictures = mDive.getPictures();
 //		for (int i = 0; i < EditDiveActivity.mListPictures.size(); i++)
@@ -386,30 +386,30 @@ public class TabNewPhotosFragment extends Fragment {
 				//								imageView.setVisibility(View.VISIBLE);
 				//								imageView.animate().setDuration(shortAnimTime).alpha(1);
 				ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-				if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
-						&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
+				if (mDive.getPictures() != null
+						&& mDive.getPictures().size() != 0)
 				{
 					Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mListPictures.get(i));
 					arrayPair.add(pair);
 					//imageView.setImageBitmap(mItems.get(i).getPicture(PhotosActivity.this, Size.MEDIUM));
 				}
-				imageView.setOnClickListener(new OnClickListener() {
-
-					@Override
-					public void onClick(View v) {
-						ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-						if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
-								&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
-						{
-							//Toast.makeText(PhotosActivity.this, "" + position, Toast.LENGTH_SHORT).show();
-							Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
-							galleryCarousel.putExtra("index", getActivity().getIntent().getIntExtra("index", -1));
-							galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
-							startActivity(galleryCarousel);
-						}	
-
-					}
-				});
+//				imageView.setOnClickListener(new OnClickListener() {
+//
+//					@Override
+//					public void onClick(View v) {
+//						ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+//						if (mDive.getPictures() != null
+//								&& mDive.getPictures().size() != 0)
+//						{
+//							//Toast.makeText(PhotosActivity.this, "" + position, Toast.LENGTH_SHORT).show();
+//							Intent galleryCarousel = new Intent(getActivity().getApplicationContext(), GalleryCarouselActivity.class);
+//							galleryCarousel.putExtra("index", getActivity().getIntent().getIntExtra("index", -1));
+//							galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
+//							startActivity(galleryCarousel);
+//						}	
+//
+//					}
+//				});
 				//								mDownloadImageTask = new DownloadImageTask(imageView, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), i);
 				//								mDownloadImageTask.execute();
 				linearLayout.addView(imageView);
@@ -514,8 +514,8 @@ public class TabNewPhotosFragment extends Fragment {
 			
 		}
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-		if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
-				&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
+		if (mDive.getPictures() != null
+				&& mDive.getPictures().size() != 0)
 		{
 			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, getActivity().getApplicationContext(),  mDive, 0);
 			mDownloadImageTask.execute();
