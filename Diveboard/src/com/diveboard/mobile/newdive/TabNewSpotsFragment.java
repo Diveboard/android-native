@@ -182,7 +182,7 @@ public class					TabNewSpotsFragment extends Fragment
 	    
 	    if (mMap == null) {
 			FragmentManager fm = getActivity().getSupportFragmentManager();
-	        Fragment fragment = fm.findFragmentById(R.id.mapfragment);
+	        Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
 	        SupportMapFragment support = (SupportMapFragment)fragment;
 	        mMap = support.getMap();
 	        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);

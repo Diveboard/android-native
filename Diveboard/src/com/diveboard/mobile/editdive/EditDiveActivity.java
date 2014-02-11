@@ -110,6 +110,7 @@ EditGuideNameDialogListener
 	private TabEditPhotosFragment	mEditPhotosFragment = new TabEditPhotosFragment();
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
+	private TabEditShopFragment		mEditShopFragment = new TabEditShopFragment();
 	private int		NUM_ITEMS = 5;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;
@@ -287,7 +288,7 @@ EditGuideNameDialogListener
 			case 0:
 				return mEditDetailsFragment;
 			case 1:
-				return FirstFragment.newInstance(1, "Page # 2");
+				return mEditShopFragment;
 			case 2:
 				return mEditPhotosFragment;
 			case 3:

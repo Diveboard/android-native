@@ -47,6 +47,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Shop;
 import com.diveboard.model.Spot;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -62,14 +63,14 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class					TabEditSpotsFragment extends Fragment
+public class					TabEditShopFragment extends Fragment
 {
 
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
 	private int							mIndex;
-	private SpotsTask 					mSpotsTask;
-	private Spot						mSpot;
+	private ShopsTask 					mShopsTask;
+	private Shop						mShop;
 	private JSONObject					mSelectedObject = null;
 	private JSONArray					mArray;
 	private Boolean						mHasChanged = false;
@@ -107,13 +108,13 @@ public class					TabEditSpotsFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
-    	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
+    	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_shops, container, false);
         
 	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
-		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_spot));
-		((TextView)mRootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
+		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_shop));
+		((TextView)mRootView.findViewById(R.id.no_shop)).setTypeface(mFaceR);
 		
 		((Button)mRootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
 			@Override
@@ -149,7 +150,7 @@ public class					TabEditSpotsFragment extends Fragment
 	    });
 		if (mMap == null) {
 			FragmentManager fm = getActivity().getSupportFragmentManager();
-	        Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
+	        Fragment fragment = fm.findFragmentById(R.id.mapfragmentshop);
 	        SupportMapFragment support = (SupportMapFragment)fragment;
 	        mMap = support.getMap();
 	        //mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
@@ -170,27 +171,27 @@ public class					TabEditSpotsFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
-				if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId() != 1)
+				if (EditDiveActivity.mModel.getDives().get(mIndex).getShop() != null)
 				{
 					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 					((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 					((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
+					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getName());
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 					
 					mMyMarker = mMap.addMarker(new MarkerOptions()
-					.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
-					.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())
+					.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()))
+					.title(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getName())
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-					System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId());
-					Integer zoom = EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getZoom();
-					if (zoom == null || zoom > mZoom)
-						zoom = mZoom;
-					if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
+					//System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getId());
+					Integer zoom = mZoom;// = EditDiveActivity.mModel.getDives().get(mIndex).getShop().getZoom();
+//					if (zoom == null || zoom > mZoom)
+//						zoom = mZoom;
+					if (EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()), zoom));
 				}
 				else
 				{
@@ -264,14 +265,14 @@ public class					TabEditSpotsFragment extends Fragment
 				@Override
 				public void onFinish() {
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-					System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+					//System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
 					doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
 					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 					
 						@Override
 						public void onCameraChange(CameraPosition pos) {
 							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-							System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
+							//System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
 							mLatitude = mMap.getCameraPosition().target.latitude;
 							mLongitude = mMap.getCameraPosition().target.longitude;
 							doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
@@ -298,39 +299,39 @@ public class					TabEditSpotsFragment extends Fragment
 	{
     	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		String pos = "";
-		if (AC.getModel().getDives().get(mIndex).getSpot().getLat() == null)
+		if (AC.getModel().getDives().get(mIndex).getShop().getLat() == null)
 		{
 			pos += "0° ";
 			pos += "N";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getSpot().getLat() >= 0)
+		else if (AC.getModel().getDives().get(mIndex).getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getSpot().getLat()) + "° ";
+			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLat()) + "° ";
 			pos += "N";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getSpot().getLat() < 0)
+		else if (AC.getModel().getDives().get(mIndex).getShop().getLat() < 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getSpot().getLat() * (-1)) + "° ";
+			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (AC.getModel().getDives().get(mIndex).getSpot().getLng() == null)
+		if (AC.getModel().getDives().get(mIndex).getShop().getLng() == null)
 		{
 			pos += "0° ";
 			pos += "E";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getSpot().getLng() >= 0)
+		else if (AC.getModel().getDives().get(mIndex).getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getSpot().getLng()) + "° ";
+			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLng()) + "° ";
 			pos += "E";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getSpot().getLng() < 0)
+		else if (AC.getModel().getDives().get(mIndex).getShop().getLng() < 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getSpot().getLng() * (-1)) + "° ";
+			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
-		if ((AC.getModel().getDives().get(mIndex).getSpot().getLat() == null || AC.getModel().getDives().get(mIndex).getSpot().getLat() == 0) && 
-				(AC.getModel().getDives().get(mIndex).getSpot().getLng() == null || AC.getModel().getDives().get(mIndex).getSpot().getLng() == 0))
+		if ((AC.getModel().getDives().get(mIndex).getShop().getLat() == null || AC.getModel().getDives().get(mIndex).getShop().getLat() == 0) && 
+				(AC.getModel().getDives().get(mIndex).getShop().getLng() == null || AC.getModel().getDives().get(mIndex).getShop().getLng() == 0))
 			pos = "";
 		return (pos);
 	}
@@ -338,18 +339,18 @@ public class					TabEditSpotsFragment extends Fragment
     public void doMySearch(String swipe, String text, String latitude, String longitude, LatLngBounds bounds)
     {  	
     	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
-    	List<Spot> listSpots = new ArrayList<Spot>();
-    	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+    	List<Shop> listShops = new ArrayList<Shop>();
+    	ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
     	lv.setAdapter(adapter);
-    	((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
+    	((TextView)mRootView.findViewById(R.id.no_shop)).setVisibility(View.GONE);
 //    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
 //		imm.toggleSoftInput(0, 0);
 		((ProgressBar)mRootView.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
-    	SpotsTask spots_task = new SpotsTask();
+    	ShopsTask shops_task = new ShopsTask();
     	if (bounds != null)
-    		spots_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
+    		shops_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
     	else
-    		spots_task.execute(swipe, text, latitude, longitude, null, null, null, null);
+    		shops_task.execute(swipe, text, latitude, longitude, null, null, null, null);
     	removeMarkers();
 	    if (mMyMarker != null)
 	    	mMyMarker.remove();
@@ -365,7 +366,7 @@ public class					TabEditSpotsFragment extends Fragment
     	mListMarkers.clear();
     }
     
-    private class SpotsTask extends AsyncTask<String, Void, JSONObject>
+    private class ShopsTask extends AsyncTask<String, Void, JSONObject>
 	{
     	private JSONObject	result;
     	private boolean		searchDone = false;
@@ -385,9 +386,9 @@ public class					TabEditSpotsFragment extends Fragment
     		public void run()
     		{
     			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
-    			result = AC.getModel().searchSpotText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
-    			System.out.println(result);
+    			//System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
+    			result = AC.getModel().searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
+    			//System.out.println(result);
     			searchDone = true;
     		}
     	}
@@ -401,9 +402,10 @@ public class					TabEditSpotsFragment extends Fragment
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false)
 				{
-					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-					return AC.getModel().offlineSearchSpotText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
+					return null;
+//					DiveboardModel._searchtimedout = true;
+//					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+//					return AC.getModel().offlineSearchShopText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -420,7 +422,7 @@ public class					TabEditSpotsFragment extends Fragment
 			{
 				if (AppConfig.DEBUG_MODE == 1)
 				{
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Spot Search Timeout", Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Shop Search Timeout", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -451,29 +453,34 @@ public class					TabEditSpotsFragment extends Fragment
 				if (result != null && result.getBoolean("success") == true)
 				{
 					try {
+						//System.out.println(result);
 						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
-						mArray = result.getJSONArray("spots");
+						mArray = result.getJSONArray("data");
 						final ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
-						final List<Spot> listSpots = new ArrayList<Spot>();
+						final List<Shop> listShops = new ArrayList<Shop>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
-							Spot spot = new Spot(mArray.getJSONObject(i));
-							listSpots.add(spot);
+							Shop shop = new Shop(mArray.getJSONObject(i).getJSONObject("data"));
+							listShops.add(shop);
 							
 						}
-						if (listSpots.size() == 0)
+						if (listShops.size() == 0)
 						{
-							((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+							((TextView)mRootView.findViewById(R.id.no_shop)).setVisibility(View.VISIBLE);
 						}
 						else
 						{
-							for (int i = 1; i <= listSpots.size(); i++)
+							for (int i = 1; i <= listShops.size(); i++)
 							{
-								Marker marker = mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(listSpots.get(i - 1).getLat(), listSpots.get(i - 1).getLng()))
-								.title(i + ": " + listSpots.get(i - 1).getName())
-								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-								mListMarkers.add(marker);
+								//System.out.println(listShops.get(i - 1).getName() + " " +listShops.get(i - 1).getLat());
+								if (listShops.get(i - 1).getLat() != null && listShops.get(i - 1).getLng() != null)
+								{
+									Marker marker = mMap.addMarker(new MarkerOptions()
+									.position(new LatLng(listShops.get(i - 1).getLat(), listShops.get(i - 1).getLng()))
+									.title(i + ": " + listShops.get(i - 1).getName())
+									.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+									mListMarkers.add(marker);
+								}
 							}
 							mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 								
@@ -492,14 +499,14 @@ public class					TabEditSpotsFragment extends Fragment
 //									}
 									if (!marker.equals(mMyMarker)){
 										int id = Integer.valueOf(marker.getTitle().substring(0, marker.getTitle().indexOf(":")));
-										System.out.println(id);
+										//System.out.println(id);
 										lv.smoothScrollToPosition(id);
 									}
 									marker.showInfoWindow();
 									return true;
 								}
 							});
-							SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+							ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
 							//Zoom out to show markers
 							if (swipe.contentEquals("search"))
 							{
@@ -533,7 +540,7 @@ public class					TabEditSpotsFragment extends Fragment
 								public void onItemClick(AdapterView<?> parent,
 										View view, int position, long id) {
 									mMap.setOnCameraChangeListener(null);
-									System.out.println("ZOOM = " + mMap.getCameraPosition().zoom);
+									//System.out.println("ZOOM = " + mMap.getCameraPosition().zoom);
 									removeMarkers();
 									ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 									
@@ -544,32 +551,37 @@ public class					TabEditSpotsFragment extends Fragment
 							    	text = text.substring(text.indexOf(" ") + 1);
 									((EditText)mRootView.findViewById(R.id.search_bar)).setText(text);
 							    	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
-							    	List<Spot> listSpots = new ArrayList<Spot>();
-							    	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+							    	List<Shop> listShops = new ArrayList<Shop>();
+							    	ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
 							    	lv.setAdapter(adapter);
 //							    	ImageView remove = (ImageView) findViewById(R.id.remove_button);
 //							    	remove.setVisibility(View.VISIBLE);
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
-										EditDiveActivity.mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+										Shop newShop = new Shop(mSelectedObject);
+										EditDiveActivity.mModel.getDives().get(mIndex).setShop(newShop);
 										if (mMyMarker != null)
 											mMyMarker.remove();
-										Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
-										if (zoom == null || zoom > mZoom)
-											zoom = mZoom;
-										Spot spot = EditDiveActivity.mModel.getDives().get(mIndex).getSpot();
-										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
-										mMyMarker = mMap.addMarker(new MarkerOptions()
-										.position(new LatLng(spot.getLat(), spot.getLng()))
-										.title(spot.getName())
-										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+										Integer zoom = mZoom;// = AC.getModel().getDives().get(mIndex).getShop().getZoom();
+//										if (zoom == null || zoom > mZoom)
+//											zoom = mZoom;
+										Shop shop = EditDiveActivity.mModel.getDives().get(mIndex).getShop();
+										if (shop.getLat() != null && shop.getLng() != null)
+										{
+											mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(shop.getLat(), shop.getLng()), zoom));
+											mMyMarker = mMap.addMarker(new MarkerOptions()
+											.position(new LatLng(shop.getLat(), shop.getLng()))
+											.title(shop.getName())
+											.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+										}
+										
 										
 										((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 										((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 										((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(AC.getModel().getDives().get(mIndex).getSpot().getName());
+										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(AC.getModel().getDives().get(mIndex).getShop().getName());
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
@@ -585,7 +597,7 @@ public class					TabEditSpotsFragment extends Fragment
 				}
 				else
 				{
-					((TextView)mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+					((TextView)mRootView.findViewById(R.id.no_shop)).setVisibility(View.VISIBLE);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -595,29 +607,29 @@ public class					TabEditSpotsFragment extends Fragment
 		
 		@Override
 		protected void onCancelled() {
-			mSpotsTask = null;
+			mShopsTask = null;
 		}
 	}
     
-    public class SpotAdapter extends BaseAdapter
+    public class ShopAdapter extends BaseAdapter
     {
     	LayoutInflater	mLayoutInflater;
-    	List<Spot>		mSpotsList;
+    	List<Shop>		mShopsList;
     	
-    	public SpotAdapter(Context context, List<Spot> spotsList)
+    	public ShopAdapter(Context context, List<Shop> shopsList)
     	{
     		mLayoutInflater = LayoutInflater.from(context);
-    		this.mSpotsList = spotsList;
+    		this.mShopsList = shopsList;
     	}
     	
 		@Override
 		public int getCount() {
-			return mSpotsList.size();
+			return mShopsList.size();
 		}
 
 		@Override
 		public Object getItem(int position) {
-			return mSpotsList.get(position);
+			return mShopsList.get(position);
 		}
 
 		@Override
@@ -643,9 +655,11 @@ public class					TabEditSpotsFragment extends Fragment
 			}
 
 			//holder.id.setText(Integer.toString(mSpotsList.get(position).getId()));
-			holder.name.setText((position + 1) + ": " + mSpotsList.get(position).getName());
+			holder.name.setText((position + 1) + ": " + mShopsList.get(position).getName());
 			holder.name.setTypeface(mFaceR);
-			holder.location_country.setText(mSpotsList.get(position).getLocationName() + ", " + mSpotsList.get(position).getCountryName());
+			//holder.location_country.setText(mShopsList.get(position).getLocationName() + ", " + mShopsList.get(position).getCountryName());
+			holder.location_country.setText("");
+			
 			holder.location_country.setTypeface(mFaceR);
 			holder.name.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
 			holder.location_country.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));

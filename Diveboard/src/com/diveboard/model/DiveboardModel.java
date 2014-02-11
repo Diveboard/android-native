@@ -1319,7 +1319,7 @@ public class					DiveboardModel
 			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
 			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
 			// Initiate POST request
-			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search/shopv2");
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_shop_text");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 			args.add(new BasicNameValuePair("term", term));
@@ -1344,6 +1344,7 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
+				System.out.println("result = " + result);
 				JSONObject json = new JSONObject(result);
 //				System.out.println(json);
 //				client.close();

@@ -34,7 +34,7 @@
 	        android:layout_width="match_parent"
 	        android:layout_height="wrap_content">
 			<fragment
-		        android:id="@+id/mapfragmentspot"
+		        android:id="@+id/mapfragmentshop"
 		        android:layout_width="match_parent"
 		        android:layout_height="@dimen/map"
 		        android:name="com.google.android.gms.maps.SupportMapFragment"/>
@@ -101,7 +101,7 @@
 					    android:layout_marginLeft="20dp"
 					    android:layout_marginRight="20dp"
 					    android:background="@drawable/go_to_search_button"
-					    android:text="SEARCH A SPOT >>" />
+					    android:text="SEARCH A SHOP >>" />
 				</LinearLayout>
 			</LinearLayout>
 			<LinearLayout
@@ -144,8 +144,8 @@
 				<TextView
 				    android:layout_gravity="center"
 				    android:gravity="center"
-				    android:id="@+id/no_spot"
-				    android:text="No spot found"
+				    android:id="@+id/no_shop"
+				    android:text="No shop found"
 				    android:layout_width="match_parent"
 				    android:layout_height="match_parent"
 				    android:visibility="gone"/>
