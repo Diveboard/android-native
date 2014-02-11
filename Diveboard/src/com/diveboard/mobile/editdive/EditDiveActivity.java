@@ -550,7 +550,6 @@ EditGuideNameDialogListener
 	@Override
 	public void onConfirmEditComplete(DialogFragment dialog)
 	{
-		System.out.println("CLEAR");
 		clearEditList();
 	}
 

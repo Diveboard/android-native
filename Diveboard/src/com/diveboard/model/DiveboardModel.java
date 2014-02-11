@@ -1305,6 +1305,74 @@ public class					DiveboardModel
 //		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
 //	}
 	
+	public JSONObject					searchShopText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
+	{
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			HttpParams httpParameters = new BasicHttpParams();
+			int timeoutConnection = DiveboardModel._coTimeout;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			int timeoutSocket = DiveboardModel._soTimeout;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search/shopv2");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+			args.add(new BasicNameValuePair("term", term));
+			if (lat != null)
+				args.add(new BasicNameValuePair("lat", lat));
+			if (lng != null)
+				args.add(new BasicNameValuePair("lng", lng));
+			if (latSW != null)
+				args.add(new BasicNameValuePair("latSW", latSW));
+			if (latNE != null)
+				args.add(new BasicNameValuePair("latNE", latNE));
+			if (lngSW != null)
+				args.add(new BasicNameValuePair("lngSW", lngSW));
+			if (lngNE != null)
+				args.add(new BasicNameValuePair("lngNE", lngNE));
+			try
+			{
+				args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+//				System.out.println(json);
+//				client.close();
+				return (json);
+			}
+			catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (ConnectTimeoutException e) {
+				DiveboardModel._cotimedout = true;
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (SocketTimeoutException e) {
+				DiveboardModel._sotimedout = true;
+				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else
+		{
+			//return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+			return null;
+		}
+		return null;
+	}
+	
 	public JSONObject					searchSpotText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();

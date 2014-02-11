@@ -222,7 +222,6 @@ public class					Picture
 				try {
 					file.createNewFile();
 				} catch (IOException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			try
@@ -327,7 +326,6 @@ public class					Picture
 			try {
 				return (file.getCanonicalPath());
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		return null;
