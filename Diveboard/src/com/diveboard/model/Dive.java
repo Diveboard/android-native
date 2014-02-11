@@ -128,6 +128,7 @@ public class					Dive implements IModel
 		_divetype = new ArrayList<String>();
 		_guide = null;
 		_pictures = new ArrayList<Picture>();
+		_shop = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -338,7 +339,6 @@ public class					Dive implements IModel
 			_notes = json.getString("notes");
 		if (!json.isNull("spot"))
 		{
-			System.out.println("JSON = " + json);
 			_spot = new Spot(json.getJSONObject("spot"));
 			//_spot = new Spot(new JSONObject(json.getString("spot").replace("\\\")));
 			_lng = _spot.getLng();
@@ -1072,11 +1072,28 @@ public class					Dive implements IModel
 	}
 
 	public Shop getShop() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("shop"))
+			{
+				Shop result;
+				try {
+					if (_editList.get(i).second.equals("null"))
+						return null;
+					result = new Shop(new JSONObject(_editList.get(i).second));
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return _shop;
 	}
 
-	public void setShop(Shop _shop) {
-		this._shop = _shop;
+	public void setShop(JSONObject _shop) {
+		//this._shop = _shop;
+		Pair<String, String> new_elem = new Pair<String, String>("shop", _shop.toString());
+		_editList.add(new_elem);
 	}
 
 	public Picture getFeaturedPicture() {
@@ -1099,14 +1116,10 @@ public class					Dive implements IModel
 				JSONArray jarray;
 				try {
 					jarray = new JSONArray(_editList.get(i).second);
-					System.out.println("---------------------------------------GETPICTURES JSON DEBUT----------------------------");
-					System.out.println(_editList.get(i).second);
 					for (int j = 0, length = jarray.length(); j < length; j++)
 					{
-						System.out.println("GETPICTURES JSON: " + jarray.getJSONObject(i));
 						result.add(new Picture(jarray.getJSONObject(j)));
 					}
-					System.out.println("---------------------------------------GETPICTURES JSON FIN----------------------------");
 					return (result);
 				} catch (JSONException e) {
 					e.printStackTrace();

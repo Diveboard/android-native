@@ -559,8 +559,7 @@ public class					TabEditShopFragment extends Fragment
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
-										Shop newShop = new Shop(mSelectedObject);
-										EditDiveActivity.mModel.getDives().get(mIndex).setShop(newShop);
+										EditDiveActivity.mModel.getDives().get(mIndex).setShop(mSelectedObject);
 										if (mMyMarker != null)
 											mMyMarker.remove();
 										Integer zoom = mZoom;// = AC.getModel().getDives().get(mIndex).getShop().getZoom();
