@@ -110,7 +110,7 @@ EditGuideNameDialogListener
 	private TabEditPhotosFragment	mEditPhotosFragment = new TabEditPhotosFragment();
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
-	private int		NUM_ITEMS = 4;
+	private int		NUM_ITEMS = 5;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;
 //	private Bitmap bitmap;
@@ -143,38 +143,21 @@ EditGuideNameDialogListener
 				System.out.println("Page changed");
 				if (mTitle == null)
 					return ;
-//				switch (position)
-//				{
-//				case 0:
-//					mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
-//					return ;
-//				case 1:
-//					mTitle.setText("SHOP");
-//					return ;
-//				case 2:
-//					mTitle.setText("PHOTOS");
-//					return ;
-//				case 3:
-//					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
-//					return ;
-//				case 4:
-//					mTitle.setText(getResources().getString(R.string.tab_spots_title));
-//					return ;
-//				default:
-//					return ;
-//				}
 				switch (position)
 				{
 				case 0:
 					mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 					return ;
 				case 1:
-					mTitle.setText("PHOTOS");
+					mTitle.setText("SHOP");
 					return ;
 				case 2:
-					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+					mTitle.setText("PHOTOS");
 					return ;
 				case 3:
+					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+					return ;
+				case 4:
 					mTitle.setText(getResources().getString(R.string.tab_spots_title));
 					return ;
 				default:
@@ -299,30 +282,17 @@ EditGuideNameDialogListener
 		@Override
 		public android.support.v4.app.Fragment getItem(int position)
 		{
-//			switch (position)
-//			{
-//			case 0:
-//				return mEditDetailsFragment;
-//			case 1:
-//				return FirstFragment.newInstance(1, "Page # 2");
-//			case 2:
-//				return mEditPhotosFragment;
-//			case 3:
-//				return mEditNotesFragment;
-//			case 4:
-//				return mEditSpotsFragment;
-//			default:
-//				return null;
-//			}
 			switch (position)
 			{
 			case 0:
 				return mEditDetailsFragment;
 			case 1:
-				return mEditPhotosFragment;
+				return FirstFragment.newInstance(1, "Page # 2");
 			case 2:
-				return mEditNotesFragment;
+				return mEditPhotosFragment;
 			case 3:
+				return mEditNotesFragment;
+			case 4:
 				return mEditSpotsFragment;
 			default:
 				return null;
@@ -368,30 +338,17 @@ EditGuideNameDialogListener
 		@Override
 		public CharSequence getPageTitle(int position)
 		{
-//			switch (position)
-//			{
-//			case 0:
-//				return "Dive Details";
-//			case 1:
-//				return "Shop";
-//			case 2:
-//				return "Photos";
-//			case 3:
-//				return "Notes";
-//			case 4:
-//				return "Spot";
-//			default:
-//				return null;
-//			}
 			switch (position)
 			{
 			case 0:
 				return "Dive Details";
 			case 1:
-				return "Photos";
+				return "Shop";
 			case 2:
-				return "Notes";
+				return "Photos";
 			case 3:
+				return "Notes";
+			case 4:
 				return "Spot";
 			default:
 				return null;

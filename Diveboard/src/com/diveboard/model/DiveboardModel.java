@@ -44,13 +44,19 @@ import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.DiveboardLoginActivity;
+import com.diveboard.mobile.SettingsActivity;
+import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.support.v4.app.DialogFragment;
 import android.util.Base64;
 import android.util.Pair;
+import android.widget.Toast;
 import android.database.Cursor;
 import android.database.sqlite.*;
 import android.graphics.Bitmap;
@@ -94,6 +100,7 @@ public class					DiveboardModel
 	public static boolean 		_cotimedout = false;
 	public static boolean 		_sotimedout = false;
 	public static boolean 		_searchtimedout = false;
+	private TokenExpireListener	mTokenExpireListener = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -186,6 +193,7 @@ public class					DiveboardModel
 			args.add(new BasicNameValuePair("email", login));
 			args.add(new BasicNameValuePair("password", password));
 			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+			args.add(new BasicNameValuePair("extralong_token", "true"));
 			try
 			{
 				// Set parameters
@@ -276,6 +284,7 @@ public class					DiveboardModel
 			args.add(new BasicNameValuePair("fbid", fb_id));
 			args.add(new BasicNameValuePair("fbtoken", fb_token));
 			args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+			args.add(new BasicNameValuePair("extralong_token", "true"));
 			try
 			{
 				// Set parameters
@@ -483,10 +492,22 @@ public class					DiveboardModel
 					try
 					{
 						if (_user == null)
-							_loadOnlineData(false);
+						{
+							if (_loadOnlineData(false) == false)
+							{
+								if (mTokenExpireListener != null)
+									mTokenExpireListener.onTokenExpire();
+								return ;
+							}
+						}
 						else
 						{
-							_loadOnlineData(true);
+							if (_loadOnlineData(true) == false)
+							{
+								if (mTokenExpireListener != null)
+									mTokenExpireListener.onTokenExpire();
+								return ;
+							}
 							_applyEdit();
 						}
 					}
@@ -556,7 +577,7 @@ public class					DiveboardModel
 	 * Sends requests to Diveboard server and retrieves data from online source
 	 * temp_mode : Define if temporary mode is active (true = active, false = disabled)
 	 */
-	private void				_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
+	private Boolean			_loadOnlineData(final boolean temp_mode) throws IOException, JSONException
 	{
 		// Load user information
 		AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
@@ -603,6 +624,12 @@ public class					DiveboardModel
 		String dive_str = "%5B";
 		System.out.println(json);
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
+		if (json.isNull("all_dive_ids"))
+		{
+			client.close();
+			return false;
+		}
+		
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
 			if (i != 0)
@@ -639,6 +666,7 @@ public class					DiveboardModel
 				_enable_overwrite = true;
 		}
 		client.close();
+		return true;
 	}
 	
 	/*
@@ -1441,4 +1469,14 @@ public class					DiveboardModel
 		}
 		return null;
 	}
+	
+	public void					attackTokenExpireListener(TokenExpireListener listener)
+	{
+		mTokenExpireListener = listener;
+	}
+	
+	public interface			TokenExpireListener
+	{
+        void					onTokenExpire();
+    }
 }

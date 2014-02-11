@@ -68,6 +68,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	private View mLoginFormView;
 	private View mLoginStatusView;
 	private TextView mLoginStatusMessageView;
+	public static Boolean TokenExpired = false;
 	
 	@Override
 	protected void onResume()
@@ -98,6 +99,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 //	    config.setShowContactUs(true);
 //	    config.setShowPostIdea(false);
 //	    config.setShowKnowledgeBase(false);
+		
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
 		AC.setDataRefreshed(false);
@@ -202,6 +204,12 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
+		
+		if (ApplicationController.tokenExpired == true)
+		{
+			Toast.makeText(DiveboardLoginActivity.this, "Token expired, please login again", Toast.LENGTH_SHORT).show();
+			ApplicationController.tokenExpired = false;
+		}
 		EasyTracker.getInstance(this).activityStart(this);
 		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
 		dbUpdater.launchUpdate();

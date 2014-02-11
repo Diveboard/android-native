@@ -21,6 +21,7 @@ public class ApplicationController extends Application {
 	private int mRefresh = 0;
 	private int mCurrentTab = 0;
 	public static int SudoId = 0;
+	public static boolean tokenExpired = false;
 	
 	public Boolean handleLowMemory()
 	{

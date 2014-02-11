@@ -8,6 +8,7 @@ import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.TokenExpireListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
 
@@ -56,6 +57,7 @@ import android.widget.RelativeLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
@@ -82,6 +84,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private ImageView mBackground1;
 	private ImageView mBackground2;
 	private	 int mBackground = 1;
+	private TokenExpireListener mTokenExpireListener;
 	
 	//Tracking bar
 	public class TrackingBarPosition
@@ -846,6 +849,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 							}
 				        	
 				        });
+				        mTokenExpireListener = new TokenExpireListener() {
+							@Override
+							public void onTokenExpire() {
+								ApplicationController.tokenExpired = true;
+								logout();
+							}
+						};
+						mModel.attackTokenExpireListener(mTokenExpireListener);
 				        mModel.refreshData(false);
 			        }
 
