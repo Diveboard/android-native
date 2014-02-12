@@ -171,9 +171,9 @@ public class					TabEditShopFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
-
 				if (EditDiveActivity.mModel.getDives().get(mIndex).getShop() != null)
 				{
+					System.out.println("shop != null");
 					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 					((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
@@ -183,19 +183,23 @@ public class					TabEditShopFragment extends Fragment
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 					
-					mMyMarker = mMap.addMarker(new MarkerOptions()
-					.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()))
-					.title(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getName())
-					.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-					//System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getId());
-					Integer zoom = mZoom;// = EditDiveActivity.mModel.getDives().get(mIndex).getShop().getZoom();
-//					if (zoom == null || zoom > mZoom)
-//						zoom = mZoom;
 					if (EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()), zoom));
+					{
+						mMyMarker = mMap.addMarker(new MarkerOptions()
+						.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()))
+						.title(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getName())
+						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+						//System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getId());
+						Integer zoom = mZoom;// = EditDiveActivity.mModel.getDives().get(mIndex).getShop().getZoom();
+//						if (zoom == null || zoom > mZoom)
+//							zoom = mZoom;
+						if (EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng() != null)
+							mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getShop().getLng()), zoom));
+					}
 				}
 				else
 				{
+					System.out.println("shop == null");
 					((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 					activeGPS(null);
 				}
