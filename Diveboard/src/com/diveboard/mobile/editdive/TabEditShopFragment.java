@@ -173,7 +173,6 @@ public class					TabEditShopFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
-
 				if (mModel.getDives().get(mIndex).getShop() != null)
 				{
 					System.out.println("shop != null");
@@ -192,8 +191,8 @@ public class					TabEditShopFragment extends Fragment
 						.position(new LatLng(mModel.getDives().get(mIndex).getShop().getLat(), mModel.getDives().get(mIndex).getShop().getLng()))
 						.title(mModel.getDives().get(mIndex).getShop().getName())
 						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-						//System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getId());
-						Integer zoom = mZoom;// = EditDiveActivity.mModel.getDives().get(mIndex).getShop().getZoom();
+						//System.out.println(mModel.getDives().get(mIndex).getShop().getId());
+						Integer zoom = mZoom;// = mModel.getDives().get(mIndex).getShop().getZoom();
 //						if (zoom == null || zoom > mZoom)
 //							zoom = mZoom;
 						if (mModel.getDives().get(mIndex).getShop().getLat() != null && mModel.getDives().get(mIndex).getShop().getLng() != null)
@@ -307,39 +306,39 @@ public class					TabEditShopFragment extends Fragment
 	{
     	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		String pos = "";
-		if (AC.getModel().getDives().get(mIndex).getShop().getLat() == null)
+		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
 		{
 			pos += "0° ";
 			pos += "N";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getShop().getLat() >= 0)
+		else if (mModel.getDives().get(mIndex).getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLat()) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "° ";
 			pos += "N";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getShop().getLat() < 0)
+		else if (mModel.getDives().get(mIndex).getShop().getLat() < 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (AC.getModel().getDives().get(mIndex).getShop().getLng() == null)
+		if (mModel.getDives().get(mIndex).getShop().getLng() == null)
 		{
 			pos += "0° ";
 			pos += "E";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getShop().getLng() >= 0)
+		else if (mModel.getDives().get(mIndex).getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLng()) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "° ";
 			pos += "E";
 		}
-		else if (AC.getModel().getDives().get(mIndex).getShop().getLng() < 0)
+		else if (mModel.getDives().get(mIndex).getShop().getLng() < 0)
 		{
-			pos += String.valueOf(AC.getModel().getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
-		if ((AC.getModel().getDives().get(mIndex).getShop().getLat() == null || AC.getModel().getDives().get(mIndex).getShop().getLat() == 0) && 
-				(AC.getModel().getDives().get(mIndex).getShop().getLng() == null || AC.getModel().getDives().get(mIndex).getShop().getLng() == 0))
+		if ((mModel.getDives().get(mIndex).getShop().getLat() == null || mModel.getDives().get(mIndex).getShop().getLat() == 0) && 
+				(mModel.getDives().get(mIndex).getShop().getLng() == null || mModel.getDives().get(mIndex).getShop().getLng() == 0))
 			pos = "";
 		return (pos);
 	}
@@ -395,7 +394,7 @@ public class					TabEditShopFragment extends Fragment
     		{
     			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
     			//System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
-    			result = AC.getModel().searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
+    			result = mModel.searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
     			//System.out.println(result);
     			searchDone = true;
     		}
@@ -413,7 +412,7 @@ public class					TabEditShopFragment extends Fragment
 					return null;
 //					DiveboardModel._searchtimedout = true;
 //					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-//					return AC.getModel().offlineSearchShopText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
+//					return mModel.offlineSearchShopText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -421,7 +420,7 @@ public class					TabEditShopFragment extends Fragment
 			}
 			return null;
 //			ApplicationController AC = (ApplicationController)getApplicationContext();
-//			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
+//			return mModel.searchSpotText(query[0], null, null, null, null, null, null);
 		}
 		
 		protected void onPostExecute(JSONObject result)
@@ -570,7 +569,7 @@ public class					TabEditShopFragment extends Fragment
 										mModel.getDives().get(mIndex).setShop(mSelectedObject);
 										if (mMyMarker != null)
 											mMyMarker.remove();
-										Integer zoom = mZoom;// = AC.getModel().getDives().get(mIndex).getShop().getZoom();
+										Integer zoom = mZoom;// = mModel.getDives().get(mIndex).getShop().getZoom();
 //										if (zoom == null || zoom > mZoom)
 //											zoom = mZoom;
 										Shop shop = mModel.getDives().get(mIndex).getShop();
@@ -588,7 +587,7 @@ public class					TabEditShopFragment extends Fragment
 										((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 										((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(AC.getModel().getDives().get(mIndex).getShop().getName());
+										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(mModel.getDives().get(mIndex).getShop().getName());
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
