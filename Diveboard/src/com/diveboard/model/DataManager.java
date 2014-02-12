@@ -280,7 +280,7 @@ public class					DataManager
 			{
 				JSONObject temp = new JSONObject();
 				temp.put("id", dive.getShop().getId());
-				json.put("diveshop", temp);
+				json.put("shop", temp);
 			}
 			if (dive.getNumber() != null)
 				json.put("number", dive.getNumber());
@@ -330,7 +330,7 @@ public class					DataManager
 				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
-				else if (edit_list.get(i).first.equals("diveshop"))
+				else if (edit_list.get(i).first.equals("shop"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("divetype"))
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
