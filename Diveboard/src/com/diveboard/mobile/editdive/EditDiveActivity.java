@@ -111,7 +111,7 @@ EditGuideNameDialogListener
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private TabEditShopFragment		mEditShopFragment = new TabEditShopFragment();
-	private int		NUM_ITEMS = 5;
+	private int		NUM_ITEMS = 6;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;
 //	private Bitmap bitmap;
@@ -150,17 +150,19 @@ EditGuideNameDialogListener
 					mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 					return ;
 				case 1:
-					mTitle.setText("SHOP");
-					return ;
-				case 2:
-					mTitle.setText("PHOTOS");
-					return ;
-				case 3:
-					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
-					return ;
-				case 4:
 					mTitle.setText(getResources().getString(R.string.tab_spots_title));
 					return ;
+				case 2:
+					mTitle.setText("SHOP");
+					return ;
+				case 3:
+					mTitle.setText("BUDDIES");
+					return ;
+				case 4:
+					mTitle.setText("PHOTOS");
+					return ;
+				case 5:
+					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
 				default:
 					return ;
 				}
@@ -289,13 +291,15 @@ EditGuideNameDialogListener
 			case 0:
 				return mEditDetailsFragment;
 			case 1:
-				return mEditShopFragment;
-			case 2:
-				return mEditPhotosFragment;
-			case 3:
-				return mEditNotesFragment;
-			case 4:
 				return mEditSpotsFragment;
+			case 2:
+				return mEditShopFragment;
+			case 3:
+				return FirstFragment.newInstance(3, "Page # 4");
+			case 4:
+				return mEditPhotosFragment;
+			case 5:
+				return mEditNotesFragment;
 			default:
 				return null;
 			}
@@ -345,13 +349,15 @@ EditGuideNameDialogListener
 			case 0:
 				return "Dive Details";
 			case 1:
-				return "Shop";
-			case 2:
-				return "Photos";
-			case 3:
-				return "Notes";
-			case 4:
 				return "Spot";
+			case 2:
+				return "Shop";
+			case 3:
+				return "Buddies";
+			case 4:
+				return "Photos";
+			case 5:
+				return "Notes";
 			default:
 				return null;
 			}
