@@ -103,7 +103,7 @@ EditGuideNameDialogListener
 	private Typeface			mFaceB;
 	public static EditPagerAdapter	adapterViewPager;
 	private TabEditDetailsFragment	mEditDetailsFragment = new TabEditDetailsFragment();
-	public static DiveboardModel		mModel;
+	public DiveboardModel		mModel;
 	public static OptionAdapter		mOptionAdapter;
 	private TextView			mTitle = null;
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
@@ -191,7 +191,8 @@ EditGuideNameDialogListener
 			@Override
 			public void onClick(View v)
 			{
-				Dive dive = mModel.getDives().get(mIndex);
+				mModel = ((ApplicationController)getApplicationContext()).getModel();
+				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
 				if (mNotes != null)
 					dive.setNotes(mNotes.getText().toString());
 				mModel.getDataManager().save(dive);

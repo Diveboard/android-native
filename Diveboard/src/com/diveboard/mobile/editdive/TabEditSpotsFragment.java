@@ -82,6 +82,7 @@ public class					TabEditSpotsFragment extends Fragment
 	Double 								mLongitude = 0.0;
 	public final int					mZoom = 12;
 	private ViewGroup					mRootView;
+	private DiveboardModel				mModel;
 	
 	private class myLocationListener implements LocationListener
 	{
@@ -109,6 +110,7 @@ public class					TabEditSpotsFragment extends Fragment
     {
     	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
         
+    	mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
 	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
@@ -170,27 +172,27 @@ public class					TabEditSpotsFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
-				if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId() != 1)
+				if (mModel.getDives().get(mIndex).getSpot().getId() != 1)
 				{
 					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 					((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 					((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName());
+					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(mModel.getDives().get(mIndex).getSpot().getName());
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 					
 					mMyMarker = mMap.addMarker(new MarkerOptions()
-					.position(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()))
-					.title(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getName())
+					.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(), mModel.getDives().get(mIndex).getSpot().getLng()))
+					.title(mModel.getDives().get(mIndex).getSpot().getName())
 					.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-					System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getId());
-					Integer zoom = EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getZoom();
+					System.out.println(mModel.getDives().get(mIndex).getSpot().getId());
+					Integer zoom = mModel.getDives().get(mIndex).getSpot().getZoom();
 					if (zoom == null || zoom > mZoom)
 						zoom = mZoom;
-					if (EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat() != null && EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLat(), EditDiveActivity.mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
+					if (mModel.getDives().get(mIndex).getSpot().getLat() != null && mModel.getDives().get(mIndex).getSpot().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(), mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
 				}
 				else
 				{
@@ -552,13 +554,13 @@ public class					TabEditSpotsFragment extends Fragment
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
-										EditDiveActivity.mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+										mModel.getDives().get(mIndex).setSpot(mSelectedObject);
 										if (mMyMarker != null)
 											mMyMarker.remove();
 										Integer zoom = AC.getModel().getDives().get(mIndex).getSpot().getZoom();
 										if (zoom == null || zoom > mZoom)
 											zoom = mZoom;
-										Spot spot = EditDiveActivity.mModel.getDives().get(mIndex).getSpot();
+										Spot spot = mModel.getDives().get(mIndex).getSpot();
 										mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(spot.getLat(), spot.getLng()), zoom));
 										mMyMarker = mMap.addMarker(new MarkerOptions()
 										.position(new LatLng(spot.getLat(), spot.getLng()))

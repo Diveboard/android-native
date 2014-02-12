@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import java.util.ArrayList;
 
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 
@@ -22,6 +23,7 @@ public class					TabEditDetailsFragment extends Fragment
 {
 	private ListView			optionList;
 	private int					mIndex;
+	private DiveboardModel		mModel;
 	
 	@Override
 	public void onResume()
@@ -38,7 +40,7 @@ public class					TabEditDetailsFragment extends Fragment
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		if (AC.handleLowMemory() == true)
 			return ;
-		EditDiveActivity.mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
+		mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
 		mIndex = getActivity().getIntent().getIntExtra("index", -1);
     }
 
@@ -191,7 +193,7 @@ public class					TabEditDetailsFragment extends Fragment
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_details, container, false);
 	    
-    	Dive dive = EditDiveActivity.mModel.getDives().get(mIndex);
+    	Dive dive = mModel.getDives().get(mIndex);
     	
     	optionList = (ListView) rootView.findViewById(R.id.optionList);
     	
@@ -298,7 +300,7 @@ public class					TabEditDetailsFragment extends Fragment
 		else
 			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
-		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, EditDiveActivity.mModel.getDives().get(mIndex));
+		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(EditDiveActivity.mOptionAdapter);
 		
 		optionList.setOnItemClickListener(new OnItemClickListener() {

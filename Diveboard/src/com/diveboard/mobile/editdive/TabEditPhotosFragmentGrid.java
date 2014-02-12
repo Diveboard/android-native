@@ -82,7 +82,7 @@ public class TabEditPhotosFragmentGrid extends Fragment {
 	{
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos_grid, container, false);
-		mModel = EditDiveActivity.mModel;
+		mModel = AC.getModel();
 		if (mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 				&& mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
 		{
