@@ -1,4 +1,4 @@
-package com.diveboard.mobile.editdive;
+package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -63,7 +63,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class					TabEditShopFragment extends Fragment
+public class					TabNewShopFragment extends Fragment
 {
 
 	private Typeface					mFaceR;
@@ -173,7 +173,7 @@ public class					TabEditShopFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
-				if (mModel.getDives().get(mIndex).getShop() != null)
+				if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop() != null)
 				{
 					System.out.println("shop != null");
 					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
@@ -181,22 +181,22 @@ public class					TabEditShopFragment extends Fragment
 					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 					((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(mModel.getDives().get(mIndex).getShop().getName());
+					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getName());
 					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 					
-					if (mModel.getDives().get(mIndex).getShop().getLat() != null && mModel.getDives().get(mIndex).getShop().getLng() != null)
+					if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() != null && ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() != null)
 					{
 						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(mModel.getDives().get(mIndex).getShop().getLat(), mModel.getDives().get(mIndex).getShop().getLng()))
-						.title(mModel.getDives().get(mIndex).getShop().getName())
+						.position(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng()))
+						.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getName())
 						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-						//System.out.println(mModel.getDives().get(mIndex).getShop().getId());
-						Integer zoom = mZoom;// = mModel.getDives().get(mIndex).getShop().getZoom();
+						//System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getId());
+						Integer zoom = mZoom;// = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getZoom();
 //						if (zoom == null || zoom > mZoom)
 //							zoom = mZoom;
-						if (mModel.getDives().get(mIndex).getShop().getLat() != null && mModel.getDives().get(mIndex).getShop().getLng() != null)
-							mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mModel.getDives().get(mIndex).getShop().getLat(), mModel.getDives().get(mIndex).getShop().getLng()), zoom));
+						if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() != null && ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() != null)
+							mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng()), zoom));
 					}
 				}
 				else
@@ -306,39 +306,39 @@ public class					TabEditShopFragment extends Fragment
 	{
     	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		String pos = "";
-		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
+		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == null)
 		{
 			pos += "0° ";
 			pos += "N";
 		}
-		else if (mModel.getDives().get(mIndex).getShop().getLat() >= 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat()) + "° ";
 			pos += "N";
 		}
-		else if (mModel.getDives().get(mIndex).getShop().getLat() < 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
-		if (mModel.getDives().get(mIndex).getShop().getLng() == null)
+		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() == null)
 		{
 			pos += "0° ";
 			pos += "E";
 		}
-		else if (mModel.getDives().get(mIndex).getShop().getLng() >= 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng()) + "° ";
 			pos += "E";
 		}
-		else if (mModel.getDives().get(mIndex).getShop().getLng() < 0)
+		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
-		if ((mModel.getDives().get(mIndex).getShop().getLat() == null || mModel.getDives().get(mIndex).getShop().getLat() == 0) && 
-				(mModel.getDives().get(mIndex).getShop().getLng() == null || mModel.getDives().get(mIndex).getShop().getLng() == 0))
+		if ((((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == null || ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == 0) && 
+				(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() == null || ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() == 0))
 			pos = "";
 		return (pos);
 	}
@@ -569,13 +569,13 @@ public class					TabEditShopFragment extends Fragment
 							    	mHasChanged = true;
 							    	try {
 										mSelectedObject = mArray.getJSONObject(position);
-										mModel.getDives().get(mIndex).setShop(mSelectedObject);
+										((ApplicationController)getActivity().getApplicationContext()).getTempDive().setShop(mSelectedObject);
 										if (mMyMarker != null)
 											mMyMarker.remove();
-										Integer zoom = mZoom;// = mModel.getDives().get(mIndex).getShop().getZoom();
+										Integer zoom = mZoom;// = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getZoom();
 //										if (zoom == null || zoom > mZoom)
 //											zoom = mZoom;
-										Shop shop = mModel.getDives().get(mIndex).getShop();
+										Shop shop = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop();
 										if (shop.getLat() != null && shop.getLng() != null)
 										{
 											mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(shop.getLat(), shop.getLng()), zoom));
@@ -590,7 +590,7 @@ public class					TabEditShopFragment extends Fragment
 										((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 										((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(mModel.getDives().get(mIndex).getShop().getName());
+										((TextView)mRootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getName());
 										((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
 									} catch (JSONException e) {
 										// TODO Auto-generated catch block
