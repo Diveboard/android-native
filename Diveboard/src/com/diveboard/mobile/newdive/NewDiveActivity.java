@@ -77,7 +77,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	//public static DiveboardModel		mModel;
 	private Typeface			mFaceB;
 	private NewPagerAdapter		adapterViewPager;
-	private int					NUM_ITEMS = 4;
+	private int					NUM_ITEMS = 5;
 	private TextView			mTitle = null;
 	public static OptionAdapter	mOptionAdapter;
 	private TabNewDetailsFragment	mNewDetailsFragment = new TabNewDetailsFragment();
@@ -99,30 +99,17 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		@Override
 		public android.support.v4.app.Fragment getItem(int position)
 		{
-//			switch (position)
-//			{
-//				case 0:
-//					return mNewDetailsFragment;
-//				case 1:
-//					return FirstFragment.newInstance(1, "Page # 2");
-//				case 2:
-//					return FirstFragment.newInstance(2, "Page # 3");
-//				case 3:
-//					return mNewNotesFragment;
-//				case 4:
-//					return mNewSpotsFragment;
-//				default:
-//					return null;
-//			}
 			switch (position)
 			{
 				case 0:
 					return mNewDetailsFragment;
 				case 1:
-					return mNewPhotosFragment;
+					return FirstFragment.newInstance(1, "Page # 2");
 				case 2:
-					return mNewNotesFragment;
+					return mNewPhotosFragment;
 				case 3:
+					return mNewNotesFragment;
+				case 4:
 					return mNewSpotsFragment;
 				default:
 					return null;
@@ -138,30 +125,17 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
         @Override
         public CharSequence getPageTitle(int position)
         {
-//        	switch (position)
-//        	{
-//        		case 0:
-//        			return "Dive Details";
-//        		case 1:
-//        			return "Shop";
-//        		case 2:
-//        			return "Photos";
-//        		case 3:
-//        			return "Notes";
-//        		case 4:
-//        			return "Spot";
-//        		default:
-//        			return null;
-//        	}
         	switch (position)
         	{
         		case 0:
         			return "Dive Details";
         		case 1:
-        			return "Photos";
+        			return "Shop";
         		case 2:
-        			return "Notes";
+        			return "Photos";
         		case 3:
+        			return "Notes";
+        		case 4:
         			return "Spot";
         		default:
         			return null;
@@ -316,38 +290,21 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				System.out.println("Page changed");
 				if (mTitle == null)
 					return ;
-//				switch (position)
-//				{
-//					case 0:
-//						mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
-//						return ;
-//					case 1:
-//						mTitle.setText("SHOP");
-//						return ;
-//					case 2:
-//						mTitle.setText("PHOTOS");
-//						return ;
-//					case 3:
-//						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
-//						return ;
-//					case 4:
-//						mTitle.setText(getResources().getString(R.string.tab_spots_title));
-//						return ;
-//					default:
-//						return ;
-//				}
 				switch (position)
 				{
 					case 0:
 						mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 						return ;
 					case 1:
-						mTitle.setText("PHOTOS");
+						mTitle.setText("SHOP");
 						return ;
 					case 2:
-						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+						mTitle.setText("PHOTOS");
 						return ;
 					case 3:
+						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+						return ;
+					case 4:
 						mTitle.setText(getResources().getString(R.string.tab_spots_title));
 						return ;
 					default:
