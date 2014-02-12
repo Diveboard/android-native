@@ -1322,7 +1322,7 @@ public class					DiveboardModel
 			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_shop_text");
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
-			args.add(new BasicNameValuePair("q", term));
+			args.add(new BasicNameValuePair("term", term));
 			if (lat != null)
 				args.add(new BasicNameValuePair("lat", lat));
 			if (lng != null)

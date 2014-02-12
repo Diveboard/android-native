@@ -239,7 +239,7 @@ public class					Dive implements IModel
 		}
 		else
 			_species = null;
-		_shop = (json.isNull("shop")) ? null : new Shop(json.getJSONObject("shop"));
+		_shop = (json.isNull("diveshop")) ? null : new Shop(json.getJSONObject("diveshop"));
 		_featuredPicture = (json.isNull("featured_picture") ? null : new Picture(json.getJSONObject("featured_picture")));
 		if (!json.isNull("pictures"))
 		{
@@ -344,6 +344,12 @@ public class					Dive implements IModel
 			_lng = _spot.getLng();
 			_lat = _spot.getLat();
 			_spotId = _spot.getId();
+		}
+		if (!json.isNull("diveshop"))
+		{
+			_shop = new Shop(json.getJSONObject("diveshop"));
+			_shopId = _shop.getId();
+			_shopName = _shop.getName();
 		}
 		if (!json.isNull("time"))
 			_time = json.getString("time");
@@ -1074,7 +1080,7 @@ public class					Dive implements IModel
 	public Shop getShop() {
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
-			if (_editList.get(i).first.contentEquals("shop"))
+			if (_editList.get(i).first.contentEquals("diveshop"))
 			{
 				Shop result;
 				try {
@@ -1092,7 +1098,7 @@ public class					Dive implements IModel
 
 	public void setShop(JSONObject _shop) {
 		//this._shop = _shop;
-		Pair<String, String> new_elem = new Pair<String, String>("shop", _shop.toString());
+		Pair<String, String> new_elem = new Pair<String, String>("diveshop", _shop.toString());
 		_editList.add(new_elem);
 	}
 
