@@ -99,6 +99,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		@Override
 		public android.support.v4.app.Fragment getItem(int position)
 		{
+			// return FirstFragment.newInstance(1, "Page # 2");
 			switch (position)
 			{
 				case 0:
