@@ -123,7 +123,7 @@
 					    android:layout_height="40dp"
 					    android:layout_marginLeft="20dp"
 					    android:layout_marginRight="20dp"
-					    android:hint="@string/search_hint"
+					    android:hint="@string/search_hint_shop"
 					    android:inputType="text"
 					    android:imeOptions="actionSearch"
 					    android:background="@drawable/edit_spot"

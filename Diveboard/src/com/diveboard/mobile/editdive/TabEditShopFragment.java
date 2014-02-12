@@ -171,6 +171,7 @@ public class					TabEditShopFragment extends Fragment
 				mMap.getUiSettings().setRotateGesturesEnabled(true);
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
+				System.out.println(EditDiveActivity.mModel.getDives().get(mIndex).getShop().getName());
 				if (EditDiveActivity.mModel.getDives().get(mIndex).getShop() != null)
 				{
 					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
@@ -455,12 +456,12 @@ public class					TabEditShopFragment extends Fragment
 					try {
 						//System.out.println(result);
 						//((ListView)findViewById(R.id.list_view)).setVisibility(View.VISIBLE);
-						mArray = result.getJSONArray("data");
+						mArray = result.getJSONArray("shops");
 						final ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
 						final List<Shop> listShops = new ArrayList<Shop>();
 						for (int i = 0; i < mArray.length(); i++)
 						{
-							Shop shop = new Shop(mArray.getJSONObject(i).getJSONObject("data"));
+							Shop shop = new Shop(mArray.getJSONObject(i));
 							listShops.add(shop);
 							
 						}
