@@ -21,6 +21,7 @@ public class					Shop implements IModel
 	private Picture				_logo;
 	private ArrayList<Integer>	_diveIds;
 	private Integer				_diveCount;
+	private String				_cname;
 	
 	public						Shop(JSONObject json) throws JSONException
 	{
@@ -46,6 +47,7 @@ public class					Shop implements IModel
 		else
 			_diveIds = null;
 		_diveCount = (json.isNull("dive_count")) ? null : json.getInt("dive_count");
+		_cname = (json.isNull("cname")) ? null : json.getString("cname");
 	}
 
 	public Integer getId() {
@@ -134,6 +136,14 @@ public class					Shop implements IModel
 
 	public void setDiveCount(Integer _diveCount) {
 		this._diveCount = _diveCount;
+	}
+	
+	public void	setCountryName(String cname) {
+		this._cname = cname;
+	}
+	
+	public String getCountryName() {
+		return this._cname;
 	}
 
 	@Override
