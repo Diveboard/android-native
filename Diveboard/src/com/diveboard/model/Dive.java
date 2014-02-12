@@ -18,7 +18,7 @@ import android.util.Pair;
 public class					Dive implements IModel
 {
 	private Distance			_altitude;
-	// buddies
+	private ArrayList<Buddy>	_buddies = new ArrayList<Buddy>();
 	private String				_class;
 	private Boolean				_complete;
 	private String				_current;
@@ -134,7 +134,15 @@ public class					Dive implements IModel
 	public						Dive(JSONObject json) throws JSONException
 	{
 		_altitude = (json.isNull("altitude")) ? null : new Distance(json.getDouble("altitude"), Units.Distance.KM);
-		// buddies
+		if (!json.isNull("buddies"))
+		{
+			JSONArray jarray = (json.getJSONArray("buddies"));
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				Buddy new_elem = new Buddy(jarray.getJSONObject(i));
+				_buddies.add(new_elem);
+			}
+		}
 		_class = (json.isNull("class")) ? null : json.getString("class");
 		_complete = (json.isNull("complete")) ? null : json.getBoolean("complete");
 		_current = (json.isNull("current")) ? null : json.getString("current");
@@ -1209,5 +1217,13 @@ public class					Dive implements IModel
 
 	public void setShopPicture(Picture _shopPicture) {
 		this._shopPicture = _shopPicture;
+	}
+
+	public ArrayList<Buddy> getBuddies() {
+		return _buddies;
+	}
+
+	public void setBuddies(ArrayList<Buddy> _buddies) {
+		this._buddies = _buddies;
 	}
 }
