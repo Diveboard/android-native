@@ -87,6 +87,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	private TabNewNotesFragment	mNewNotesFragment = new TabNewNotesFragment();
 	private TabNewSpotsFragment	mNewSpotsFragment = new TabNewSpotsFragment();
 	private TabNewPhotosFragment	mNewPhotosFragment = new TabNewPhotosFragment();
+	private TabNewShopFragment mNewShopFragment = new TabNewShopFragment();
 	
 	public class			NewPagerAdapter extends FragmentPagerAdapter
 	{
@@ -105,7 +106,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				case 0:
 					return mNewDetailsFragment;
 				case 1:
-					return FirstFragment.newInstance(1, "Page # 2");
+					return mNewShopFragment;
 				case 2:
 					return mNewPhotosFragment;
 				case 3:

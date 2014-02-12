@@ -76,7 +76,7 @@ public class					TabNewSpotsFragment extends Fragment
 	private Boolean						mHasChanged = false;
 	private SpotsTask 					mSpotsTask;
 	private ViewGroup					rootView;
-	
+
 	private class myLocationListener implements LocationListener
 	{
 		public void onLocationChanged(Location location)
@@ -97,56 +97,56 @@ public class					TabNewSpotsFragment extends Fragment
 		public void onStatusChanged(String provider, int status, Bundle extras) {			
 		}
 	}
-	
-    @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+
+	@Override
+	public void onCreate(Bundle savedInstanceState)
+	{
 		super.onCreate(savedInstanceState);
-    }
-    
-    @Override
+	}
+
+	@Override
 	public void onPause() {
-    	if (mLocationManager != null && mLocationListener != null)
-    	{
-    		mLocationManager.removeUpdates(mLocationListener);
-    		mLocationManager = null;
-    		mLocationListener = null;
-    	}
+		if (mLocationManager != null && mLocationListener != null)
+		{
+			mLocationManager.removeUpdates(mLocationListener);
+			mLocationManager = null;
+			mLocationListener = null;
+		}
 		super.onPause();
 	}
-    
-    @Override
+
+	@Override
 	public void onDestroy() {
-    	System.out.println("destroy");
-    	if (mLocationManager != null && mLocationListener != null)
-    	{
-    		mLocationManager.removeUpdates(mLocationListener);
-    		mLocationManager = null;
-    		mLocationListener = null;
-    	}
+		System.out.println("destroy");
+		if (mLocationManager != null && mLocationListener != null)
+		{
+			mLocationManager.removeUpdates(mLocationListener);
+			mLocationManager = null;
+			mLocationListener = null;
+		}
 		super.onDestroy();
 	}
-	
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
-    {
-    	rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
-        ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-        
-	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+
+	@Override
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
+	{
+		rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
+		ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+
+		mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+		mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
-		
-	    ((TextView)rootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
-	    if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
-	     {
-	    	 //((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
-	    	 ((EditText)rootView.findViewById(R.id.search_bar)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
-	     }
-//	     if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
-//	    	 ((TextView)findViewById(R.id.current_spot)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
-	    ((TextView)rootView.findViewById(R.id.search_bar)).setTypeface(mFaceR);
-	    
+
+		((TextView)rootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
+		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
+		{
+			//((TextView)findViewById(R.id.current_spot)).setText(mModel.getDives().get(mIndex).getSpot().getName());
+			((EditText)rootView.findViewById(R.id.search_bar)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
+		}
+		//	     if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
+		//	    	 ((TextView)findViewById(R.id.current_spot)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
+		((TextView)rootView.findViewById(R.id.search_bar)).setTypeface(mFaceR);
+
 		((Button)rootView.findViewById(R.id.goToSearch)).setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -160,86 +160,88 @@ public class					TabNewSpotsFragment extends Fragment
 				activeGPS(rootView);
 			}
 		});
-	    
-	    EditText editText = (EditText) rootView.findViewById(R.id.search_bar);
-	    editText.setOnEditorActionListener(new OnEditorActionListener() {
+
+		EditText editText = (EditText) rootView.findViewById(R.id.search_bar);
+		editText.setOnEditorActionListener(new OnEditorActionListener() {
 
 			@Override
 			public boolean onEditorAction(TextView v, int actionId,
 					KeyEvent event) {
 				boolean handled = false;
-	            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-	            	mMap.setOnCameraChangeListener(null);
-	                doMySearch("search", ((TextView)rootView.findViewById(R.id.search_bar)).getText().toString(), null, null, null);
-	            	InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-	        		imm.toggleSoftInput(0, 0);
-	                handled = true;
-	            }
-	            return handled;
+				if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+					mMap.setOnCameraChangeListener(null);
+					doMySearch("search", ((TextView)rootView.findViewById(R.id.search_bar)).getText().toString(), null, null, null);
+					InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+					imm.toggleSoftInput(0, 0);
+					handled = true;
+				}
+				return handled;
 			}
-	    });
-	    
-	    
-	    if (mMap == null) {
+		});
+
+
+		if (mMap == null) {
 			FragmentManager fm = getActivity().getSupportFragmentManager();
-	        Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
-	        SupportMapFragment support = (SupportMapFragment)fragment;
-	        mMap = support.getMap();
-	        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-	        // Check if we were successful in obtaining the map.
-	        if (mMap != null) {
-	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-	            // The Map is verified. It is now safe to manipulate the map
-	        }
-	        else
-	        	System.out.println("Map non safe");
-	        mMap.getUiSettings().setAllGesturesEnabled(true);
-			mMap.getUiSettings().setMyLocationButtonEnabled(true);
-			mMap.getUiSettings().setZoomControlsEnabled(true);
-			mMap.getUiSettings().setZoomGesturesEnabled(true);
-			
-			mMap.getUiSettings().setRotateGesturesEnabled(true);
-			mMap.getUiSettings().setScrollGesturesEnabled(true);
-			mMap.getUiSettings().setCompassEnabled(true);
-			if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
-			{
-				((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-				((TextView)rootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
-				((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
-				((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
-				((TextView)rootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-				((TextView)rootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
-				((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-				((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-				
-				mMyMarker = mMap.addMarker(new MarkerOptions()
-				.position(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
-				.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-				System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId());
-				Integer zoom = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getZoom();
-				if (zoom == null || zoom > mZoom)
-					zoom = mZoom;
-				if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() != null && ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() != null)
-					mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()), zoom));
+			Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
+			SupportMapFragment support = (SupportMapFragment)fragment;
+			mMap = support.getMap();
+			mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+			// Check if we were successful in obtaining the map.
+			if (mMap == null) {
+				System.out.println("Map non safe");
+				// The Map is verified. It is now safe to manipulate the map
 			}
 			else
 			{
-				System.out.println("activeGPS");
-				((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
-				activeGPS(null);
-//				mMyMarker = mMap.addMarker(new MarkerOptions()
-//				.position(new LatLng(0, 0))
-//				.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-//				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-//				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+				System.out.println("Map non safe");
+				mMap.getUiSettings().setAllGesturesEnabled(true);
+				mMap.getUiSettings().setMyLocationButtonEnabled(true);
+				mMap.getUiSettings().setZoomControlsEnabled(true);
+				mMap.getUiSettings().setZoomGesturesEnabled(true);
+
+				mMap.getUiSettings().setRotateGesturesEnabled(true);
+				mMap.getUiSettings().setScrollGesturesEnabled(true);
+				mMap.getUiSettings().setCompassEnabled(true);
+				if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1)
+				{
+					((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
+					((TextView)rootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
+					((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
+					((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
+					((TextView)rootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
+					((TextView)rootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName());
+					((TextView)rootView.findViewById(R.id.details_gps_content)).setText(getPosition());
+					((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+
+					mMyMarker = mMap.addMarker(new MarkerOptions()
+					.position(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
+					.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
+					.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+					System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getId());
+					Integer zoom = ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getZoom();
+					if (zoom == null || zoom > mZoom)
+						zoom = mZoom;
+					if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() != null && ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(), ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()), zoom));
+				}
+				else
+				{
+					System.out.println("activeGPS");
+					((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+					activeGPS(null);
+					//				mMyMarker = mMap.addMarker(new MarkerOptions()
+					//				.position(new LatLng(0, 0))
+					//				.title(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getName())
+					//				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+					//				((LinearLayout)findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+				}
 			}
-			
+
 		}
-	    return rootView;
-    }
-    
-    public String getPosition()
+		return rootView;
+	}
+
+	public String getPosition()
 	{
 		String pos = "";
 		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat() == null)
@@ -278,31 +280,31 @@ public class					TabNewSpotsFragment extends Fragment
 			pos = "";
 		return (pos);
 	}
-    
-    public void goToSearch(View view)
-    {
-    	((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.GONE);
-    	((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
-    	InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
-        ((EditText) rootView.findViewById(R.id.search_bar)).requestFocusFromTouch();
-        ((EditText) rootView.findViewById(R.id.search_bar)).setSelection(((EditText) rootView.findViewById(R.id.search_bar)).length());
-    }
-    
-    
-    public void activeGPS(View view)
-    {
-    	InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-    	imm.hideSoftInputFromWindow(((EditText) rootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
-    	((EditText) rootView.findViewById(R.id.search_bar)).setText("");
-    	//removeMarkers();
-    	if (mLocationManager != null && mLocationListener != null)
-    	{
-    		mLocationManager.removeUpdates(mLocationListener);
-    		mLocationManager = null;
-    		mLocationListener = null;
-    	}
-    	mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+	public void goToSearch(View view)
+	{
+		((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.GONE);
+		((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+		InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
+		((EditText) rootView.findViewById(R.id.search_bar)).requestFocusFromTouch();
+		((EditText) rootView.findViewById(R.id.search_bar)).setSelection(((EditText) rootView.findViewById(R.id.search_bar)).length());
+	}
+
+
+	public void activeGPS(View view)
+	{
+		InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+		imm.hideSoftInputFromWindow(((EditText) rootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
+		((EditText) rootView.findViewById(R.id.search_bar)).setText("");
+		//removeMarkers();
+		if (mLocationManager != null && mLocationListener != null)
+		{
+			mLocationManager.removeUpdates(mLocationListener);
+			mLocationManager = null;
+			mLocationListener = null;
+		}
+		mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
 		mLocationListener = new myLocationListener();
 		// Register the listener with the Location Manager to receive location updates
@@ -315,14 +317,14 @@ public class					TabNewSpotsFragment extends Fragment
 		{
 			CameraUpdate update = CameraUpdateFactory.newLatLngZoom(new LatLng(lastKnownLocation.getLatitude(), lastKnownLocation.getLongitude()), mZoom);
 			mMap.animateCamera(update, new CancelableCallback() {
-				
+
 				@Override
 				public void onFinish() {
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 					System.out.println(Double.toString(bounds.southwest.latitude) + " " + Double.toString(bounds.northeast.latitude) + " " + Double.toString(bounds.southwest.longitude) + " " + Double.toString(bounds.northeast.longitude));
 					doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
 					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-					
+
 						@Override
 						public void onCameraChange(CameraPosition pos) {
 							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
@@ -333,85 +335,85 @@ public class					TabNewSpotsFragment extends Fragment
 						}
 					});
 				}
-				
+
 				@Override
 				public void onCancel() {
 					// TODO Auto-generated method stub
-					
+
 				}
 			});
 			mLongitude = lastKnownLocation.getLongitude();
 			mLatitude = lastKnownLocation.getLatitude();
 		}
-    }
-    
-//    public void setCurrentSpot(View view)
-//    {  	
-//    	((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
-//    	ListView lv = ((ListView)findViewById(R.id.list_view));
-//    	List<Spot> listSpots = new ArrayList<Spot>();
-//    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
-//    	lv.setAdapter(adapter);
-////    	SpotAdapter adapter = ((SpotAdapter)lv.getAdapter());
-////    	for (int i = 0; i < adapter.getCount(); i++)
-////    	{
-////    		adapter.
-////    	}
-//    }
-    
-    public void doMySearch(String swipe, String text, String latitude, String longitude, LatLngBounds bounds)
-    {  	
-    	ListView lv = ((ListView)rootView.findViewById(R.id.list_view));
-    	List<Spot> listSpots = new ArrayList<Spot>();
-    	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
-    	lv.setAdapter(adapter);
-    	((TextView)rootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
-    	SpotsTask spots_task = new SpotsTask();
-    	if (bounds != null)
-    		spots_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
-    	else
-    		spots_task.execute(swipe, text, latitude, longitude, null, null, null, null);
-	    removeMarkers();
-	    if (mMyMarker != null)
-	    	mMyMarker.remove();
-	    //((TextView)findViewById(R.id.search_bar)).setText("");
-    }
-    
-    public void removeMarkers()
-    {
-    	for (int i = 0; i < mListMarkers.size(); i++)
-    	{
-    		mListMarkers.get(i).remove();
-    	}
-    	mListMarkers.clear();
-    }
-    
-    private class SpotsTask extends AsyncTask<String, Void, JSONObject>
+	}
+
+	//    public void setCurrentSpot(View view)
+	//    {  	
+	//    	((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
+	//    	ListView lv = ((ListView)findViewById(R.id.list_view));
+	//    	List<Spot> listSpots = new ArrayList<Spot>();
+	//    	SpotAdapter adapter = new SpotAdapter(TabEditSpotsActivity.this, listSpots);
+	//    	lv.setAdapter(adapter);
+	////    	SpotAdapter adapter = ((SpotAdapter)lv.getAdapter());
+	////    	for (int i = 0; i < adapter.getCount(); i++)
+	////    	{
+	////    		adapter.
+	////    	}
+	//    }
+
+	public void doMySearch(String swipe, String text, String latitude, String longitude, LatLngBounds bounds)
+	{  	
+		ListView lv = ((ListView)rootView.findViewById(R.id.list_view));
+		List<Spot> listSpots = new ArrayList<Spot>();
+		SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+		lv.setAdapter(adapter);
+		((TextView)rootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
+		SpotsTask spots_task = new SpotsTask();
+		if (bounds != null)
+			spots_task.execute(swipe, text, latitude, longitude, Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
+		else
+			spots_task.execute(swipe, text, latitude, longitude, null, null, null, null);
+		removeMarkers();
+		if (mMyMarker != null)
+			mMyMarker.remove();
+		//((TextView)findViewById(R.id.search_bar)).setText("");
+	}
+
+	public void removeMarkers()
 	{
-    	private JSONObject	result;
-    	private boolean		searchDone = false;
-    	private String 		swipe;
-    	
-    	private class SearchTimer extends Thread
-    	{
-    		private String[] query;
-    		
-    		public SearchTimer(String... query)
-    		{
-    			this.query = query;
-    		}
-    		
-    		@Override
-    		public void run()
-    		{
-    			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
-    			result = AC.getModel().searchSpotText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
-    			System.out.println(result);
-    			searchDone = true;
-    		}
-    	}
-    	
+		for (int i = 0; i < mListMarkers.size(); i++)
+		{
+			mListMarkers.get(i).remove();
+		}
+		mListMarkers.clear();
+	}
+
+	private class SpotsTask extends AsyncTask<String, Void, JSONObject>
+	{
+		private JSONObject	result;
+		private boolean		searchDone = false;
+		private String 		swipe;
+
+		private class SearchTimer extends Thread
+		{
+			private String[] query;
+
+			public SearchTimer(String... query)
+			{
+				this.query = query;
+			}
+
+			@Override
+			public void run()
+			{
+				ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+				System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
+				result = AC.getModel().searchSpotText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
+				System.out.println(result);
+				searchDone = true;
+			}
+		}
+
 		protected JSONObject doInBackground(String... query)
 		{
 			swipe = query[0];
@@ -430,11 +432,11 @@ public class					TabNewSpotsFragment extends Fragment
 				e.printStackTrace();
 			}
 			return null;
-//			ApplicationController AC = (ApplicationController)getApplicationContext();
-//			
-//			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
+			//			ApplicationController AC = (ApplicationController)getApplicationContext();
+			//			
+			//			return AC.getModel().searchSpotText(query[0], null, null, null, null, null, null);
 		}
-		
+
 		protected void onPostExecute(JSONObject result)
 		{
 			if (DiveboardModel._searchtimedout == true)
@@ -495,7 +497,7 @@ public class					TabNewSpotsFragment extends Fragment
 								mListMarkers.add(marker);
 							}
 							mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
-								
+
 								@Override
 								public boolean onMarkerClick(Marker marker) {
 									if (!marker.equals(mMyMarker)){
@@ -514,7 +516,7 @@ public class					TabNewSpotsFragment extends Fragment
 							{
 								LatLngBounds.Builder builder = new LatLngBounds.Builder();
 								for (Marker marker : mListMarkers) {
-								    builder.include(marker.getPosition());
+									builder.include(marker.getPosition());
 								}
 								LatLngBounds bounds = builder.build();
 								int padding = 100; // offset from edges of the map in pixels
@@ -524,7 +526,7 @@ public class					TabNewSpotsFragment extends Fragment
 									@Override
 									public void onCancel() {
 										// TODO Auto-generated method stub
-										
+
 									}
 
 									@Override
@@ -532,7 +534,7 @@ public class					TabNewSpotsFragment extends Fragment
 										if (mMap.getCameraPosition().zoom > mZoom)
 											mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
 									}
-									
+
 								});
 							}
 							lv.setAdapter(adapter);
@@ -543,22 +545,22 @@ public class					TabNewSpotsFragment extends Fragment
 										View view, int position, long id) {
 									mMap.setOnCameraChangeListener(null);
 									removeMarkers();
-									
+
 									((Button)rootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
 									((LinearLayout)rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-							    	((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
-							    	String text = ((TextView)view.findViewById(R.id.name)).getText().toString();
-							    	text = text.substring(text.indexOf(" ") + 1);
+									((LinearLayout)rootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
+									String text = ((TextView)view.findViewById(R.id.name)).getText().toString();
+									text = text.substring(text.indexOf(" ") + 1);
 									((EditText)rootView.findViewById(R.id.search_bar)).setText(text);
 									//((TextView)findViewById(R.id.current_spot)).setText(((TextView)view.findViewById(R.id.name)).getText().toString());
-							    	ListView lv = ((ListView)rootView.findViewById(R.id.list_view));
-							    	List<Spot> listSpots = new ArrayList<Spot>();
-							    	SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
-							    	lv.setAdapter(adapter);
-//							    	ImageView remove = (ImageView) findViewById(R.id.remove_button);
-//							    	remove.setVisibility(View.VISIBLE);
-							    	mHasChanged = true;
-							    	try {
+									ListView lv = ((ListView)rootView.findViewById(R.id.list_view));
+									List<Spot> listSpots = new ArrayList<Spot>();
+									SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+									lv.setAdapter(adapter);
+									//							    	ImageView remove = (ImageView) findViewById(R.id.remove_button);
+									//							    	remove.setVisibility(View.VISIBLE);
+									mHasChanged = true;
+									try {
 										mSelectedObject = mArray.getJSONObject(position);
 										((ApplicationController)getActivity().getApplicationContext()).getTempDive().setSpot(mSelectedObject);
 										System.out.println(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().toString());
@@ -573,7 +575,7 @@ public class					TabNewSpotsFragment extends Fragment
 										.position(new LatLng(spot.getLat(), spot.getLng()))
 										.title(spot.getName())
 										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-										
+
 										((TextView)rootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
 										((TextView)rootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
 										((TextView)rootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
@@ -601,24 +603,24 @@ public class					TabNewSpotsFragment extends Fragment
 				e.printStackTrace();
 			}
 		}
-		
+
 		@Override
 		protected void onCancelled() {
 			mSpotsTask = null;
 		}
 	}
-    
-    public class SpotAdapter extends BaseAdapter
-    {
-    	LayoutInflater	mLayoutInflater;
-    	List<Spot>		mSpotsList;
-    	
-    	public SpotAdapter(Context context, List<Spot> spotsList)
-    	{
-    		mLayoutInflater = LayoutInflater.from(context);
-    		this.mSpotsList = spotsList;
-    	}
-    	
+
+	public class SpotAdapter extends BaseAdapter
+	{
+		LayoutInflater	mLayoutInflater;
+		List<Spot>		mSpotsList;
+
+		public SpotAdapter(Context context, List<Spot> spotsList)
+		{
+			mLayoutInflater = LayoutInflater.from(context);
+			this.mSpotsList = spotsList;
+		}
+
 		@Override
 		public int getCount() {
 			return mSpotsList.size();
@@ -637,7 +639,7 @@ public class					TabNewSpotsFragment extends Fragment
 		@Override
 		public View getView(int position, View convertView, ViewGroup parent) {
 			ViewHolder holder;
-			
+
 			if(convertView == null) {
 				holder = new ViewHolder();
 				convertView = mLayoutInflater.inflate(R.layout.item_spots, null);
@@ -660,12 +662,12 @@ public class					TabNewSpotsFragment extends Fragment
 			holder.location_country.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
 			return convertView;
 		}
-		
+
 		private class ViewHolder {
 			TextView id;
 			TextView name;
 			TextView location_country;
 		}
-    	
-    }
+
+	}
 }
