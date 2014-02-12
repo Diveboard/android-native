@@ -242,6 +242,8 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 							try {
 								if (editList.get(i).first.equals("spot"))
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+								else if (editList.get(i).first.equals("shop"))
+									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
 								else
 									edit.put(editList.get(i).first, editList.get(i).second);
 							} catch (JSONException e) {
