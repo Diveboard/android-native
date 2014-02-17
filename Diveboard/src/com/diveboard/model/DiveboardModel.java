@@ -1519,9 +1519,7 @@ public class					DiveboardModel
 				httpPost.setEntity(entity);
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();
-				System.out.println("Entre");
 				String result = ContentExtractor.getASCII(entity_response);
-				System.out.println(result);
 				JSONObject json = new JSONObject(result);
 				if (json.getBoolean("success") == false)
 					return null;
@@ -1548,4 +1546,33 @@ public class					DiveboardModel
 	{
         void					onTokenExpire();
     }
+	
+	public ArrayList<Buddy>		getOldBuddies()
+	{
+		ArrayList<Buddy> result = new ArrayList<Buddy>();
+		ArrayList<Dive> dives = getDives();
+		
+		for (int i = 0, length = dives.size(); i < length; i++)
+		{
+			ArrayList<Buddy> buddies = dives.get(i).getBuddies();
+			if (buddies != null && buddies.size() != 0)
+			{
+				for (int j = 0, buddy_size = buddies.size(); j < buddy_size; j++)
+				{
+					boolean flag = false;
+					for (int k = 0, result_size = result.size(); k < result_size; k++)
+					{
+						if (result.get(k).getId() == buddies.get(j).getId())
+						{
+							flag = true;
+							break ;
+						}
+					}
+					if (flag == false)
+						result.add(buddies.get(j));
+				}
+			}
+		}
+		return result;
+	}
 }

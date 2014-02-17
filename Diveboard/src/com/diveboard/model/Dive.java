@@ -18,7 +18,7 @@ import android.util.Pair;
 public class					Dive implements IModel
 {
 	private Distance			_altitude;
-	private ArrayList<Buddy>	_buddies = new ArrayList<Buddy>();
+	private ArrayList<Buddy>	_buddies;
 	private String				_class;
 	private Boolean				_complete;
 	private String				_current;
@@ -129,6 +129,7 @@ public class					Dive implements IModel
 		_guide = null;
 		_pictures = new ArrayList<Picture>();
 		_shop = null;
+		_buddies = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -383,6 +384,14 @@ public class					Dive implements IModel
 			for (int i = 0, length = jarray.length(); i < length; i++)
 				new_elem.add(new Picture(jarray.getJSONObject(i)));
 			_pictures = new_elem;
+		}
+		if (!json.isNull("buddies"))
+		{
+			JSONArray jarray = new JSONArray(json.getString("buddies"));
+			ArrayList<Buddy> new_elem = new ArrayList<Buddy>();
+			for (int i = 0, length = jarray.length(); i < length; i++)
+				new_elem.add(new Buddy(jarray.getJSONObject(i)));
+			_buddies = new_elem;
 		}
 	}
 	
@@ -1220,10 +1229,35 @@ public class					Dive implements IModel
 	}
 
 	public ArrayList<Buddy> getBuddies() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("buddies"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<Buddy> result = new ArrayList<Buddy>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+						result.add(new Buddy(jarray.getJSONObject(j)));
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 		return _buddies;
 	}
 
-	public void setBuddies(ArrayList<Buddy> _buddies) {
-		this._buddies = _buddies;
+	public void setBuddies(ArrayList<Buddy> buddies) {
+		//this._buddies = _buddies;
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		
+		for (int i = 0, length = buddies.size(); i < length; i++)
+			jarray.put(buddies.get(i));
+		new_elem = new Pair<String, String>("buddies", jarray.toString());
+		_editList.add(new_elem);
 	}
 }
