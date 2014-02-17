@@ -686,7 +686,11 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 			        ((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
 			        ((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
-			        ((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+			        //((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+			        if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
+	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
+	        		else
+	        			((TextView)findViewById(R.id.left_data)).setText("");
 			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
 			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
 			        
@@ -809,7 +813,11 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								if (position_stroke > max_strokes_possible)
 									position_stroke = max_strokes_possible;
 								upperStroke(position_stroke);
-								((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+								//((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+								if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
+									((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
+								else
+									((TextView)findViewById(R.id.left_data)).setText("");
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
@@ -1114,10 +1122,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
 				if (stroke_selected != 0)
 				{
+					ApplicationController AC = ((ApplicationController)getApplicationContext());
 					lowerStroke(position_stroke);
 	        		position_stroke = stroke_selected;
 	        		upperStroke(position_stroke);
-	        		((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
+	        		//((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
+	        		if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
+	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
+	        		else
+	        			((TextView)findViewById(R.id.left_data)).setText("");
 	        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
 	            	rl.setBackgroundResource(R.drawable.ic_triangle);
 	            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -1143,7 +1156,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            	tv.setGravity(Gravity.CENTER_HORIZONTAL);
 	            	tv.setId(1000);
 	            	TextView place = new TextView(DivesActivity.this);
-	            	ApplicationController AC = ((ApplicationController)getApplicationContext());
 	            	if (position_stroke == 1)
                 	{
 	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
