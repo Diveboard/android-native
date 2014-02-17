@@ -690,7 +690,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 	        		else
-	        			((TextView)findViewById(R.id.left_data)).setText("");
+	        			((TextView)findViewById(R.id.left_data)).setText("n/a");
 			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
 			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
 			        
@@ -817,7 +817,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 									((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 								else
-									((TextView)findViewById(R.id.left_data)).setText("");
+									((TextView)findViewById(R.id.left_data)).setText("n/a");
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
@@ -1130,7 +1130,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        		if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 	        		else
-	        			((TextView)findViewById(R.id.left_data)).setText("");
+	        			((TextView)findViewById(R.id.left_data)).setText("n/a");
 	        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
 	            	rl.setBackgroundResource(R.drawable.ic_triangle);
 	            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
