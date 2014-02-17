@@ -84,6 +84,12 @@ public class					TabEditShopFragment extends Fragment
 	public final int					mZoom = 12;
 	private ViewGroup					mRootView;
 	private DiveboardModel				mModel;
+	private Context						mContext;
+	
+	public TabEditShopFragment(Context ctx)
+	{
+		mContext = ctx;
+	}
 	
 	private class myLocationListener implements LocationListener
 	{
@@ -111,9 +117,9 @@ public class					TabEditShopFragment extends Fragment
     {
     	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_shops, container, false);
         
-    	mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
-	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+    	mModel = ((ApplicationController)mContext.getApplicationContext()).getModel();
+	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
+	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_shop));
 		((TextView)mRootView.findViewById(R.id.no_shop)).setTypeface(mFaceR);
@@ -143,7 +149,7 @@ public class					TabEditShopFragment extends Fragment
 	            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
 	            	mMap.setOnCameraChangeListener(null);
 	                doMySearch("search", ((TextView)mRootView.findViewById(R.id.search_bar)).getText().toString(), null, null, null);
-	            	InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+	            	InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 	        		imm.toggleSoftInput(0, 0);
 	                handled = true;
 	            }
@@ -236,7 +242,7 @@ public class					TabEditShopFragment extends Fragment
     {
     	((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.GONE);
     	((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
-    	InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    	InputMethodManager imm = (InputMethodManager) mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED,0);
         ((EditText) mRootView.findViewById(R.id.search_bar)).requestFocusFromTouch();
         ((EditText) mRootView.findViewById(R.id.search_bar)).setSelection(((EditText) mRootView.findViewById(R.id.search_bar)).length());
@@ -244,7 +250,7 @@ public class					TabEditShopFragment extends Fragment
     
     public void activeGPS(View view)
     {
-    	InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+    	InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(((EditText) mRootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
 		((EditText) mRootView.findViewById(R.id.search_bar)).setText("");
 		if (mLocationManager != null && mLocationListener != null)
@@ -254,7 +260,7 @@ public class					TabEditShopFragment extends Fragment
     		mLocationListener = null;
     	}
     	//removeMarkers();
-    	mLocationManager = (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+    	mLocationManager = (LocationManager) mContext.getSystemService(Context.LOCATION_SERVICE);
 		// Define a listener that responds to location updates
 		mLocationListener = new myLocationListener();
 		// Register the listener with the Location Manager to receive location updates
@@ -304,7 +310,7 @@ public class					TabEditShopFragment extends Fragment
     
     public String getPosition()
 	{
-    	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+    	ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
 		String pos = "";
 		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
 		{
@@ -347,7 +353,7 @@ public class					TabEditShopFragment extends Fragment
     {  	
     	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
     	List<Shop> listShops = new ArrayList<Shop>();
-    	ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
+    	ShopAdapter adapter = new ShopAdapter(mContext, listShops);
     	lv.setAdapter(adapter);
     	((TextView)mRootView.findViewById(R.id.no_shop)).setVisibility(View.GONE);
 //    	InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
@@ -392,7 +398,7 @@ public class					TabEditShopFragment extends Fragment
     		@Override
     		public void run()
     		{
-    			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+    			ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
     			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
     			result = mModel.searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
     			System.out.println(result);
@@ -411,7 +417,7 @@ public class					TabEditShopFragment extends Fragment
 				{
 					return null;
 //					DiveboardModel._searchtimedout = true;
-//					ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+//					ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
 //					return mModel.offlineSearchShopText(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
@@ -429,7 +435,7 @@ public class					TabEditShopFragment extends Fragment
 			{
 				if (AppConfig.DEBUG_MODE == 1)
 				{
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Shop Search Timeout", Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mContext.getApplicationContext(), "Shop Search Timeout", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -439,7 +445,7 @@ public class					TabEditShopFragment extends Fragment
 			{
 				if (AppConfig.DEBUG_MODE == 1)
 				{
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Connection Timeout", Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mContext.getApplicationContext(), "Connection Timeout", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -449,7 +455,7 @@ public class					TabEditShopFragment extends Fragment
 			{
 				if (AppConfig.DEBUG_MODE == 1)
 				{
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Socket Timeout", Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mContext.getApplicationContext(), "Socket Timeout", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -513,7 +519,7 @@ public class					TabEditShopFragment extends Fragment
 									return true;
 								}
 							});
-							ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
+							ShopAdapter adapter = new ShopAdapter(mContext, listShops);
 							//Zoom out to show markers
 							if (swipe.contentEquals("search"))
 							{
@@ -552,7 +558,7 @@ public class					TabEditShopFragment extends Fragment
 									mMap.setOnCameraChangeListener(null);
 									//System.out.println("ZOOM = " + mMap.getCameraPosition().zoom);
 									removeMarkers();
-									ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+									ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
 									
 									((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 							    	((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
@@ -562,7 +568,7 @@ public class					TabEditShopFragment extends Fragment
 									((EditText)mRootView.findViewById(R.id.search_bar)).setText(text);
 							    	ListView lv = ((ListView)mRootView.findViewById(R.id.list_view));
 							    	List<Shop> listShops = new ArrayList<Shop>();
-							    	ShopAdapter adapter = new ShopAdapter(getActivity().getApplicationContext(), listShops);
+							    	ShopAdapter adapter = new ShopAdapter(mContext, listShops);
 							    	lv.setAdapter(adapter);
 //							    	ImageView remove = (ImageView) findViewById(R.id.remove_button);
 //							    	remove.setVisibility(View.VISIBLE);
@@ -670,8 +676,8 @@ public class					TabEditShopFragment extends Fragment
 			//holder.location_country.setText("");
 			
 			holder.location_country.setTypeface(mFaceR);
-			holder.name.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
-			holder.location_country.setTextColor(getActivity().getResources().getColor(R.color.dark_grey));
+			holder.name.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
+			holder.location_country.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 			return convertView;
 		}
 		

@@ -185,7 +185,7 @@ public class					TabNewSpotsFragment extends Fragment
 			Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
 			SupportMapFragment support = (SupportMapFragment)fragment;
 			mMap = support.getMap();
-			mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+			//mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
 			// Check if we were successful in obtaining the map.
 			if (mMap == null) {
 				System.out.println("Map non safe");
