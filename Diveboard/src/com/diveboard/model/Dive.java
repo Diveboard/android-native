@@ -79,6 +79,7 @@ public class					Dive implements IModel
 	private String				_shopName;
 	private Picture				_shopPicture;
 	private ArrayList<SafetyStop>	_safetyStops = new ArrayList<SafetyStop>();
+	private Review				_review;
 	
 	public						Dive()
 	{
@@ -130,6 +131,7 @@ public class					Dive implements IModel
 		_pictures = new ArrayList<Picture>();
 		_shop = null;
 		_buddies = null;
+		_review = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -286,6 +288,7 @@ public class					Dive implements IModel
 			_divetype = new_elem;
 		}
 		_guide = (json.isNull("guide")) ? null : json.getString("guide");
+		_review = (json.isNull("review")) ? null : new Review(json.getJSONObject("review"));
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -393,6 +396,8 @@ public class					Dive implements IModel
 				new_elem.add(new Buddy(jarray.getJSONObject(i)));
 			_buddies = new_elem;
 		}
+		if (!json.isNull("review"))
+			_review = new Review(json.getJSONObject("review"));
 	}
 	
 	private ArrayList<SafetyStop>	_parseSafetyStops(String safetystring)
@@ -1258,6 +1263,28 @@ public class					Dive implements IModel
 		for (int i = 0, length = buddies.size(); i < length; i++)
 			jarray.put(buddies.get(i));
 		new_elem = new Pair<String, String>("buddies", jarray.toString());
+		_editList.add(new_elem);
+	}
+
+	public Review getReview() {
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("review"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				try {
+					return (new Review(new JSONObject(_editList.get(i).second)));
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return _review;
+	}
+
+	public void setReview(Review review) {
+		Pair<String, String> new_elem = new Pair<String, String>("review", review.getJson().toString());
 		_editList.add(new_elem);
 	}
 }

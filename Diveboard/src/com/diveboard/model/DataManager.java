@@ -315,6 +315,8 @@ public class					DataManager
 					jarray.put(elem.get(i));
 				json.put("buddies", jarray);
 			}
+			if (dive.getReview() != null)
+				json.put("review", dive.getReview().getJson());
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);
@@ -346,6 +348,8 @@ public class					DataManager
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("buddies"))
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
+				else if (edit_list.get(i).first.equals("review"))
+					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else
 				{
 					if (edit_list.get(i).second == null)
