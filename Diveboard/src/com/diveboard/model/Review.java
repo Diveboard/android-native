@@ -7,9 +7,9 @@ public class					Review
 {
 	private Integer				_overall;
 	private Integer				_difficulty;
-	private Integer				_life;
+	private Integer				_marine;
 	private Integer				_wreck;
-	private Integer				_fish;
+	private Integer				_bigfish;
 	private JSONObject			_json;
 	
 	public						Review(JSONObject json)
@@ -17,9 +17,9 @@ public class					Review
 		try {
 			_overall = (json.isNull("overall")) ? null : json.getInt("overall");
 			_difficulty = (json.isNull("difficulty")) ? null : json.getInt("difficulty");
-			_life = (json.isNull("life")) ? null : json.getInt("life");
+			_marine = (json.isNull("marine")) ? null : json.getInt("marine");
 			_wreck = (json.isNull("wreck")) ? null : json.getInt("wreck");
-			_fish = (json.isNull("fish")) ? null : json.getInt("fish");
+			_bigfish = (json.isNull("bigfish")) ? null : json.getInt("bigfish");
 			_json = json;
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -42,12 +42,12 @@ public class					Review
 		this._difficulty = _difficulty;
 	}
 
-	public Integer getLife() {
-		return _life;
+	public Integer getMarine() {
+		return _marine;
 	}
 
-	public void setLife(Integer _life) {
-		this._life = _life;
+	public void setMarine(Integer _marine) {
+		this._marine = _marine;
 	}
 
 	public Integer getWreck() {
@@ -58,19 +58,26 @@ public class					Review
 		this._wreck = _wreck;
 	}
 
-	public Integer getFish() {
-		return _fish;
+	public Integer getBigFish() {
+		return _bigfish;
 	}
 
-	public void setFish(Integer _fish) {
-		this._fish = _fish;
+	public void setBigFish(Integer _bigfish) {
+		this._bigfish = _bigfish;
 	}
 
-	public JSONObject getJson() {
-		return _json;
-	}
-
-	public void setJson(JSONObject _json) {
-		this._json = _json;
+	public JSONObject getJson()
+	{
+		JSONObject result = new JSONObject();
+		try {
+			result.put("overall", _overall);
+			result.put("difficulty", _difficulty);
+			result.put("marine", _marine);
+			result.put("wreck", _wreck);
+			result.put("bigfish", _bigfish);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 }

@@ -140,6 +140,7 @@ public class					Dive implements IModel
 		if (!json.isNull("buddies"))
 		{
 			JSONArray jarray = (json.getJSONArray("buddies"));
+			_buddies = new ArrayList<Buddy>();
 			for (int i = 0, length = jarray.length(); i < length; i++)
 			{
 				Buddy new_elem = new Buddy(jarray.getJSONObject(i));
