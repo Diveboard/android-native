@@ -6,6 +6,7 @@ import com.diveboard.mobile.R;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
@@ -264,11 +265,6 @@ public class					TabEditBuddiesFragment extends Fragment
             // Finally load the image asynchronously into the ImageView, this also takes care of
             // setting a placeholder image while the background thread runs
             ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-            for (int i = 0; i < AC.getModel().getOldBuddies().size(); i++)
-            {
-            	System.out.println("TEST" + position + ": "+ AC.getModel().getOldBuddies().get(i).getNickname() + " " + AC.getModel().getOldBuddies().get(i).getId());
-            }
-            
             
             mImageFetcher.loadImage(AC.getModel().getOldBuddies().get(position).getPicture()._urlDefault, imageView);
             return imageView;

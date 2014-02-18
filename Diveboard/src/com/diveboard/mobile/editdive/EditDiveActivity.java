@@ -32,6 +32,7 @@ import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDial
 import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibilityDialogListener;
 import com.diveboard.mobile.editdive.EditWaterDialogFragment.EditWaterDialogListener;
 import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
+import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;

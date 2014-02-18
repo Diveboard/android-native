@@ -1270,7 +1270,7 @@ public class					Dive implements IModel
 	public Review getReview() {
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
-			if (_editList.get(i).first.contentEquals("review"))
+			if (_editList.get(i).first.contentEquals("dive_reviews"))
 			{
 				if (_editList.get(i).second == null)
 					return null;
@@ -1285,7 +1285,7 @@ public class					Dive implements IModel
 	}
 
 	public void setReview(Review review) {
-		Pair<String, String> new_elem = new Pair<String, String>("review", review.getJson().toString());
+		Pair<String, String> new_elem = new Pair<String, String>("dive_reviews", review.getJson().toString());
 		_editList.add(new_elem);
 	}
 }

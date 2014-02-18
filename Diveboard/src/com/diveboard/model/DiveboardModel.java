@@ -1562,7 +1562,7 @@ public class					DiveboardModel
 					boolean flag = false;
 					for (int k = 0, result_size = result.size(); k < result_size; k++)
 					{
-						if (result.get(k).getId() == buddies.get(j).getId())
+						if (result.get(k).getId().equals(buddies.get(j).getId()))
 						{
 							flag = true;
 							break ;
