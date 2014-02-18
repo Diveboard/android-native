@@ -97,4 +97,5 @@
     <string name="sudo_hint">User Id</string>
     <string name="edit_guidename_title">Guide Name</string>
     <string name="guidename_hint">Guide Name</string>
+    <string name="no_network_connection_toast">No network connection found</string>
 </resources>

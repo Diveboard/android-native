@@ -26,7 +26,7 @@ import android.util.Pair;
 public class					Picture
 {
 	private JSONObject			_json = null;
-	private String				_urlDefault;
+	public String				_urlDefault;
 	private String				_urlLarge;
 	private String				_urlMedium;
 	private String				_urlSmall;

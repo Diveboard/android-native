@@ -86,6 +86,8 @@ public class					TabEditShopFragment extends Fragment
 	private DiveboardModel				mModel;
 	private Context						mContext;
 	
+	public TabEditShopFragment(){}
+	
 	public TabEditShopFragment(Context ctx)
 	{
 		mContext = ctx;
