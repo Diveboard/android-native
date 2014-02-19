@@ -47,6 +47,8 @@ public class					TabEditBuddiesFragment extends Fragment
     private int mImageThumbSpacing;
     private ImageFetcher mImageFetcher;
     private ImageAdapter mAdapter;
+    ArrayList<Buddy> mListBuddies;
+    ArrayList<String> mListString = new  ArrayList<String>();
     
     public TabEditBuddiesFragment() {
     	
@@ -64,7 +66,7 @@ public class					TabEditBuddiesFragment extends Fragment
 		setHasOptionsMenu(false);
 		mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
 		mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
-		mAdapter = new ImageAdapter(getActivity());
+		
 		ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 		cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 		// The ImageFetcher takes care of loading images into our ImageView children asynchronously
@@ -77,9 +79,21 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
+    	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+    	mListBuddies = AC.getModel().getOldBuddies();
+    	for (int i = 0; i < mListBuddies.size(); i++)
+    	{
+    		System.out.println("Add String " + mListBuddies.get(i).getPicture()._urlDefault);
+    		mListString.add(mListBuddies.get(i).getPicture()._urlDefault);
+    	}
+    	for (int i = 0; i < mListBuddies.size(); i++)
+        {
+        	System.out.println("TEST: "+ mListBuddies.get(i).getNickname() + " " + mListBuddies.get(i).getId());
+        }
     	final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_buddies, container, false);
     	mGridView = (GridView)rootView.findViewById(R.id.gridView);
     	Dive dive = mModel.getDives().get(mIndex);
+    	mAdapter = new ImageAdapter(getActivity());
     	mGridView.setAdapter(mAdapter);
     	mGridView.setOnScrollListener(new OnScrollListener() {
 			
@@ -93,6 +107,7 @@ public class					TabEditBuddiesFragment extends Fragment
                     }
                 } else {
                     mImageFetcher.setPauseWork(false);
+                    
                 }
 			}
 			
@@ -110,8 +125,11 @@ public class					TabEditBuddiesFragment extends Fragment
         mGridView.getViewTreeObserver().addOnGlobalLayoutListener(
                 new ViewTreeObserver.OnGlobalLayoutListener() {
                     @Override
-                    public void onGlobalLayout() {
-                        if (mAdapter.getNumColumns() == 0) {
+                    public void onGlobalLayout()
+                    {
+                    	
+                        if (mAdapter.getNumColumns() == 0)
+                        {
                             final int numColumns = (int) Math.floor(
                                     mGridView.getWidth() / (mImageThumbSize + mImageThumbSpacing));
                             if (numColumns > 0) {
@@ -140,8 +158,6 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onResume() {
     	super.onResume();
-		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-		AC.handleLowMemory();
         mImageFetcher.setExitTasksEarly(false);
         mAdapter.notifyDataSetChanged();
     }
@@ -149,6 +165,7 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
+        System.out.println("ON-PAUSE");
         mImageFetcher.setPauseWork(false);
         mImageFetcher.setExitTasksEarly(true);
         mImageFetcher.flushCache();
@@ -157,7 +174,11 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mImageFetcher.closeCache();
+        System.out.println("ON-DESTROY");
+        //mImageFetcher.closeCache();
+        mImageFetcher.setPauseWork(false);
+        mImageFetcher.setExitTasksEarly(true);
+        mImageFetcher.flushCache();
     }
     
     /**
@@ -196,8 +217,9 @@ public class					TabEditBuddiesFragment extends Fragment
 
             // Size + number of columns for top empty row
             //return Images.imageThumbUrls.length + mNumColumns;
-        	ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-        	return AC.getModel().getOldBuddies().size();
+//        	ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
+        	return mListString.size();
+        	//return Images.imageThumbUrls.length;
         }
 
 //        @Override
@@ -266,7 +288,9 @@ public class					TabEditBuddiesFragment extends Fragment
             // setting a placeholder image while the background thread runs
             ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
             
-            mImageFetcher.loadImage(AC.getModel().getOldBuddies().get(position).getPicture()._urlDefault, imageView);
+            
+            mImageFetcher.loadImage(mListString.get(position), imageView);
+            //mImageFetcher.loadImage(Images.imageThumbUrls[position], imageView);
             return imageView;
         }
 
@@ -297,8 +321,8 @@ public class					TabEditBuddiesFragment extends Fragment
 
 		@Override
 		public Object getItem(int position) {
-			// TODO Auto-generated method stub
-			return null;
+			return mListString;
+			//return Images.imageThumbUrls[position];
 		}
     }
 }

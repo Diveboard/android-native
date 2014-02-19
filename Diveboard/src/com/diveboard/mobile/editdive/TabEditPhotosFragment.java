@@ -296,7 +296,6 @@ public class TabEditPhotosFragment extends Fragment {
 
 	public void generateTableLayout()
 	{
-		Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 		
 		

@@ -118,7 +118,8 @@ public class					TabEditShopFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
     	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_shops, container, false);
-        
+    	if (mContext == null)
+        	mContext = getActivity();
     	mModel = ((ApplicationController)mContext.getApplicationContext()).getModel();
 	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
