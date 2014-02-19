@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -127,6 +128,8 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mBottomTemp.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -162,6 +165,8 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 				mDive.setTempBottom(temperature);
 				mDive.setTempBottomUnit(((String) temp_label.getSelectedItem()).substring(1));
 				mListener.onBottomTempEditComplete(NewBottomTempDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mBottomTemp.getWindowToken(), 0);
 				dismiss();
 			}
 		});

@@ -32,6 +32,7 @@ import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDial
 import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibilityDialogListener;
 import com.diveboard.mobile.editdive.EditWaterDialogFragment.EditWaterDialogListener;
 import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
+import com.diveboard.mobile.editdive.EditReviewDialogFragment.EditReviewDialogListener;
 import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -98,7 +99,9 @@ EditWaterDialogListener,
 EditConfirmDialogListener,
 EditSafetyStopsDialogListener,
 EditDiveTypeDialogListener,
-EditGuideNameDialogListener
+EditGuideNameDialogListener,
+EditReviewDialogListener
+
 {
 	private int					mIndex;
 	private Typeface			mFaceB;
@@ -155,13 +158,13 @@ EditGuideNameDialogListener
 					mTitle.setText(getResources().getString(R.string.tab_spots_title));
 					return ;
 				case 2:
-					mTitle.setText("SHOP");
+					mTitle.setText(getResources().getString(R.string.tab_shop_title));
 					return ;
 				case 3:
-					mTitle.setText("BUDDIES");
+					mTitle.setText(getResources().getString(R.string.tab_buddies_title));
 					return ;
 				case 4:
-					mTitle.setText("PHOTOS");
+					mTitle.setText(getResources().getString(R.string.tab_photos_title));
 					return ;
 				case 5:
 					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
@@ -648,6 +651,27 @@ EditGuideNameDialogListener
 	{
 		Dive dive = mModel.getDives().get(mIndex);
 		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getGuide());
+		mOptionAdapter.notifyDataSetChanged();
+	}
+
+
+
+	@Override
+	public void onReviewEditComplete(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		Dive dive = mModel.getDives().get(mIndex);
+		String fullReview = "";
+		if (dive.getDiveReviews().getOverall()!= null)
+			fullReview += "The Overall review was " + dive.getDiveReviews().getOverall().toString() + " ,";
+		if (dive.getDiveReviews().getDifficulty()!= null)
+			fullReview += "Difficulty was " + dive.getDiveReviews().getDifficulty().toString() + " ,";
+		if (dive.getDiveReviews().getMarine()!= null)
+			fullReview += "Marine life review was " + dive.getDiveReviews().getMarine().toString() + " ,";
+		if (dive.getDiveReviews().getBigFish()!= null)
+			fullReview += "Fish review was " + dive.getDiveReviews().getBigFish().toString() + " ,";
+		if (dive.getDiveReviews().getWreck()!= null)
+			fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
+		((EditOption)mOptionAdapter.getItem(17)).setValue(fullReview);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 }

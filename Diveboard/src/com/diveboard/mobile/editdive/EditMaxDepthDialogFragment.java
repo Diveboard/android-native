@@ -20,6 +20,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -121,6 +122,8 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mMaxDepth.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -147,6 +150,8 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 				mModel.getDives().get(getArguments().getInt("index")).setMaxdepth(dbl);
 				mModel.getDives().get(getArguments().getInt("index")).setMaxdepthUnit((String) max_depth_label.getSelectedItem());
 				mListener.onMaxDepthEditComplete(EditMaxDepthDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mMaxDepth.getWindowToken(), 0);
 				dismiss();
 			}
 		});

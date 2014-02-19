@@ -27,6 +27,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -197,6 +198,8 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 				mDepthField = null;
 				mDepthField = null;
 				mIndex = null;
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				openSafetyStopsList();
 			}
 		});
@@ -217,6 +220,8 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 				mDepthField = null;
 				mDepthField = null;
 				mIndex = null;
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDepthField.getWindowToken(), 0);
 				openSafetyStopsList();
 			}
 		});
@@ -312,6 +317,8 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 			{
 				mDepthField = null;
 				mDepthField = null;
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				openSafetyStopsList();
 			}
 		});
@@ -331,6 +338,8 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 				mSafetyStops.add(new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
 				mDepthField = null;
 				mDepthField = null;
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				openSafetyStopsList();
 			}
 		});

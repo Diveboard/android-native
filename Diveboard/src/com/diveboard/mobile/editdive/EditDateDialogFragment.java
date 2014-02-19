@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
@@ -71,6 +72,8 @@ public class					EditDateDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDate.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -92,6 +95,8 @@ public class					EditDateDialogFragment extends DialogFragment
 				date += Integer.toString(mDate.getDayOfMonth());
 				mModel.getDives().get(getArguments().getInt("index")).setDate(date);
 				mListener.onDateEditComplete(EditDateDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDate.getWindowToken(), 0);
 				dismiss();
 			}
 		});

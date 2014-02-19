@@ -79,7 +79,7 @@ public class					Dive implements IModel
 	private String				_shopName;
 	private Picture				_shopPicture;
 	private ArrayList<SafetyStop>	_safetyStops = new ArrayList<SafetyStop>();
-	private Review				_review;
+	private Review				_diveReviews;
 	
 	public						Dive()
 	{
@@ -131,7 +131,7 @@ public class					Dive implements IModel
 		_pictures = new ArrayList<Picture>();
 		_shop = null;
 		_buddies = null;
-		_review = null;
+		_diveReviews = null;
 	}
 	
 	public						Dive(JSONObject json) throws JSONException
@@ -289,7 +289,7 @@ public class					Dive implements IModel
 			_divetype = new_elem;
 		}
 		_guide = (json.isNull("guide")) ? null : json.getString("guide");
-		_review = (json.isNull("review")) ? null : new Review(json.getJSONObject("review"));
+		_diveReviews = (json.isNull("dive_reviews")) ? null : new Review(json.getJSONObject("dive_reviews"));
 	}
 
 	public ArrayList<Pair<String, String>> getEditList()
@@ -305,7 +305,6 @@ public class					Dive implements IModel
 	
 	public void					applyEdit(JSONObject json) throws JSONException
 	{
-		System.out.println("ApplyEdit "+ json);
 		if (!json.isNull("trip_name"))
 			_tripName = json.getString("trip_name");
 		if (json.has("number"))
@@ -314,28 +313,20 @@ public class					Dive implements IModel
 			_date = json.getString("date");
 		if (!json.isNull("time_in"))
 			_timeIn = json.getString("time_in");
-//		if (!json.isNull("maxdepth"))
-//			_maxdepth = new Distance(json.getDouble("maxdepth"), Units.Distance.KM);
 		if (!json.isNull("maxdepth_value"))
 			_maxdepth = json.getDouble("maxdepth_value");
 		if (!json.isNull("maxdepth_unit"))
 			_maxdepthUnit = json.getString("maxdepth_unit");
 		if (!json.isNull("duration"))
 			_duration = json.getInt("duration");
-//		if (json.has("temp_surface"))
-//			_tempSurface = (json.isNull("temp_surface")) ? null : new Temperature(json.getDouble("temp_surface"), Units.Temperature.C);
 		if (json.has("temp_surface_value"))
 			_tempSurface = (json.isNull("temp_surface_value")) ? null : json.getDouble("temp_surface_value");
 		if (!json.isNull("temp_surface_unit"))
 			_tempSurfaceUnit = json.getString("temp_surface_unit");
-//		if (json.has("temp_bottom"))
-//			_tempBottom = (json.isNull("temp_bottom")) ? null : new Temperature(json.getDouble("temp_bottom"), Units.Temperature.C);
 		if (json.has("temp_bottom_value"))
 			_tempBottom = (json.isNull("temp_bottom_value")) ? null : json.getDouble("temp_bottom_value");
 		if (!json.isNull("temp_bottom_unit"))
 			_tempBottomUnit = json.getString("temp_bottom_unit");
-//		if (json.has("weights"))
-//			_weights = (json.isNull("weights")) ? null : new Weight(json.getDouble("weights"), Units.Weight.KG);
 		if (json.has("weights_value"))
 			_weights = (json.isNull("weights_value")) ? null : json.getDouble("weights_value");
 		if (!json.isNull("weights_unit"))
@@ -397,8 +388,8 @@ public class					Dive implements IModel
 				new_elem.add(new Buddy(jarray.getJSONObject(i)));
 			_buddies = new_elem;
 		}
-		if (!json.isNull("review"))
-			_review = new Review(json.getJSONObject("review"));
+		if (!json.isNull("dive_reviews"))
+			_diveReviews = new Review(json.getJSONObject("dive_reviews"));
 	}
 	
 	private ArrayList<SafetyStop>	_parseSafetyStops(String safetystring)
@@ -1267,7 +1258,7 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-	public Review getReview() {
+	public Review getDiveReviews() {
 		for (int i = _editList.size() - 1; i >= 0; i--)
 		{
 			if (_editList.get(i).first.contentEquals("dive_reviews"))
@@ -1281,10 +1272,10 @@ public class					Dive implements IModel
 				}
 			}
 		}
-		return _review;
+		return _diveReviews;
 	}
 
-	public void setReview(Review review) {
+	public void setDiveReviews(Review review) {
 		Pair<String, String> new_elem = new Pair<String, String>("dive_reviews", review.getJson().toString());
 		_editList.add(new_elem);
 	}

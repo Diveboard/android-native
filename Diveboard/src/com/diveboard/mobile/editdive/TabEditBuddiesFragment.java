@@ -3,38 +3,28 @@ package com.diveboard.mobile.editdive;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SafetyStop;
-import com.diveboard.model.Units;
 import com.diveboard.util.ImageCache.ImageCacheParams;
 import com.diveboard.util.ImageFetcher;
 import com.diveboard.util.Utils;
 
 import android.support.v4.app.Fragment;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.os.Bundle;
-import android.util.Log;
-import android.util.Pair;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
-import android.widget.ListView;
 
 public class					TabEditBuddiesFragment extends Fragment
 {
@@ -66,14 +56,13 @@ public class					TabEditBuddiesFragment extends Fragment
 		setHasOptionsMenu(false);
 		mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
 		mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
-		
+
 		ImageCacheParams cacheParams = new ImageCacheParams(getActivity(), IMAGE_CACHE_DIR);
 		cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
 		// The ImageFetcher takes care of loading images into our ImageView children asynchronously
         mImageFetcher = new ImageFetcher(getActivity(), mImageThumbSize);
         mImageFetcher.setLoadingImage(R.drawable.empty_photo);
         mImageFetcher.addImageCache(getActivity().getSupportFragmentManager(), cacheParams);
-		
     }
     
     @Override
@@ -151,7 +140,6 @@ public class					TabEditBuddiesFragment extends Fragment
                         }
                     }
                 });
-    	
 		return rootView;
     }
     
@@ -193,12 +181,16 @@ public class					TabEditBuddiesFragment extends Fragment
         private int mNumColumns = 0;
         //private int mActionBarHeight = 0;
         private GridView.LayoutParams mImageViewLayoutParams;
+        private ArrayList<Buddy> mOldBuddies;
 
         public ImageAdapter(Context context) {
             super();
             mContext = context;
             mImageViewLayoutParams = new GridView.LayoutParams(
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+            
+            ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
+            mOldBuddies = AC.getModel().getOldBuddies();
             // Calculate ActionBar height
 //            TypedValue tv = new TypedValue();
 //            if (context.getTheme().resolveAttribute(
@@ -218,8 +210,9 @@ public class					TabEditBuddiesFragment extends Fragment
             // Size + number of columns for top empty row
             //return Images.imageThumbUrls.length + mNumColumns;
 //        	ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-        	return mListString.size();
+        	//return mListString.size();
         	//return Images.imageThumbUrls.length;
+        	return mOldBuddies.size();
         }
 
 //        @Override
@@ -289,8 +282,9 @@ public class					TabEditBuddiesFragment extends Fragment
             ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
             
             
-            mImageFetcher.loadImage(mListString.get(position), imageView);
+            //mImageFetcher.loadImage(mListString.get(position), imageView);
             //mImageFetcher.loadImage(Images.imageThumbUrls[position], imageView);
+            mImageFetcher.loadImage(mOldBuddies.get(position).getPicture()._urlDefault, imageView);
             return imageView;
         }
 

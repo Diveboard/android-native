@@ -119,6 +119,7 @@ public class					TabEditSpotsFragment extends Fragment
     	mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots, container, false);
         if (mContext == null)
         	mContext = getActivity();
+    	//mContext = getActivity().getApplicationContext();
     	mModel = ((ApplicationController)mContext.getApplicationContext()).getModel();
 	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
 	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");

@@ -4,12 +4,14 @@
 	android:layout_width="match_parent"
 	android:layout_height="match_parent"
 	android:fillViewport="true" >
-<LinearLayout 
+
+<LinearLayout
+    android:id="@+id/root"
     android:layout_width="match_parent"
-	android:layout_height="match_parent"
-	android:id="@+id/root"
-	android:background="@color/black"
-	android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:background="@color/black"
+    android:orientation="vertical" >
+
 	<RelativeLayout
 	    android:id="@+id/trip_bar"
 	    android:layout_width="match_parent"

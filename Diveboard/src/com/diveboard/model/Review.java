@@ -10,7 +10,6 @@ public class					Review
 	private Integer				_marine;
 	private Integer				_wreck;
 	private Integer				_bigfish;
-	private JSONObject			_json;
 	
 	public						Review(JSONObject json)
 	{
@@ -20,7 +19,6 @@ public class					Review
 			_marine = (json.isNull("marine")) ? null : json.getInt("marine");
 			_wreck = (json.isNull("wreck")) ? null : json.getInt("wreck");
 			_bigfish = (json.isNull("bigfish")) ? null : json.getInt("bigfish");
-			_json = json;
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -70,11 +68,16 @@ public class					Review
 	{
 		JSONObject result = new JSONObject();
 		try {
-			result.put("overall", _overall);
-			result.put("difficulty", _difficulty);
-			result.put("marine", _marine);
-			result.put("wreck", _wreck);
-			result.put("bigfish", _bigfish);
+			if (_overall != null && _overall != 0)
+				result.put("overall", _overall);
+			if (_difficulty != null && _difficulty != 0)
+				result.put("difficulty", _difficulty);
+			if (_marine != null && _marine != 0)
+				result.put("marine", _marine);
+			if (_wreck != null && _wreck != 0)
+				result.put("wreck", _wreck);
+			if (_bigfish != null && _bigfish != 0)
+				result.put("bigfish", _bigfish);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}

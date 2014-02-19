@@ -17,6 +17,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -84,6 +85,8 @@ public class					NewDurationDialogFragment extends DialogFragment implements OnE
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDuration.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -108,6 +111,8 @@ public class					NewDurationDialogFragment extends DialogFragment implements OnE
 				}
 				mDive.setDuration(duration);
 				mListener.onDurationEditComplete(NewDurationDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDuration.getWindowToken(), 0);
 				dismiss();
 			}
 		});

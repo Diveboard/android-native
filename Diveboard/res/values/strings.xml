@@ -13,6 +13,9 @@
     <string name="hello_world">Hello World!</string>
     <string name="tab_notes_edit_title">DIVE NOTES</string>
     <string name="tab_spots_title">SPOTS</string>
+    <string name="tab_shop_title">SHOP</string>
+    <string name="tab_buddies_title">BUDDIES</string>
+    <string name="tab_photos_title">PHOTOS</string>
     <string name="save_button">SAVE</string>
     <string name="tab_details_label">DETAILS</string>
     <string name="tab_notes_label">NOTES</string>
@@ -49,6 +52,7 @@
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>
     <string name="excellent_visibility">Excellent (over 25m / 75ft)</string>
     <string name="edit_visibility_title">Visibility</string>
+    <string name="edit_review_title">Review</string>
     <string name="edit_current_title">Current</string>
     <string name="none_current">None</string>
     <string name="light_current">Light (up to 1 knot)</string>

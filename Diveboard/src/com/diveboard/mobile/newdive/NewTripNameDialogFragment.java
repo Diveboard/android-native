@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -79,6 +80,8 @@ public class					NewTripNameDialogFragment extends DialogFragment implements OnE
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mTripName.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -93,6 +96,8 @@ public class					NewTripNameDialogFragment extends DialogFragment implements OnE
 			{
 				mDive.setTripName(mTripName.getText().toString());
 				mListener.onTripNameEditComplete(NewTripNameDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mTripName.getWindowToken(), 0);
 				dismiss();
 			}
 		});

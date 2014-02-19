@@ -236,7 +236,6 @@ public class					DataManager
 			json.put("date", dive.getDate());
 			json.put("time_in", dive.getTimeIn());
 			json.put("time", dive.getTime());
-			//json.put("maxdepth", dive.getMaxdepth().getDistance(Units.Distance.KM).toString());
 			json.put("maxdepth_value", dive.getMaxdepth().toString());
 			if (dive.getMaxdepthUnit() != null)
 				json.put("maxdepth_unit", dive.getMaxdepthUnit());
@@ -248,14 +247,10 @@ public class					DataManager
 				json.put("visibility", dive.getVisibility());
 			if (dive.getCurrent() != null)
 				json.put("current", dive.getCurrent());
-//			if (dive.getTempSurface() != null)
-//				json.put("temp_surface", dive.getTempSurface().getTemperature(Units.Temperature.C).toString());
 			if (dive.getTempSurface() != null)
 				json.put("temp_surface_value", dive.getTempSurface());
 			if (dive.getTempSurfaceUnit() != null)
 				json.put("temp_surface_unit", dive.getTempSurfaceUnit());
-//			if (dive.getTempBottom() != null)
-//				json.put("temp_bottom", dive.getTempBottom().getTemperature(Units.Temperature.C).toString());
 			if (dive.getTempBottom() != null)
 				json.put("temp_bottom_value", dive.getTempBottom());
 			if (dive.getTempBottomUnit() != null)
@@ -263,8 +258,6 @@ public class					DataManager
 			if (dive.getWater() != null)
 				json.put("water", dive.getWater());
 			json.put("notes", dive.getNotes());
-//			if (dive.getWeights() != null)
-//				json.put("weights", dive.getWeights().getWeight(Units.Weight.KG).toString());
 			if (dive.getWeights() != null)
 				json.put("weights_value", dive.getWeights().toString());
 			if (dive.getWeightsUnit() != null)
@@ -315,8 +308,8 @@ public class					DataManager
 					jarray.put(elem.get(i));
 				json.put("buddies", jarray);
 			}
-			if (dive.getReview() != null)
-				json.put("review", dive.getReview().getJson());
+			if (dive.getDiveReviews() != null)
+				json.put("dive_reviews", dive.getDiveReviews().getJson());
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
 			_editList.add(new_elem);
@@ -348,7 +341,7 @@ public class					DataManager
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("buddies"))
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
-				else if (edit_list.get(i).first.equals("review"))
+				else if (edit_list.get(i).first.equals("dive_reviews"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else
 				{
@@ -486,7 +479,6 @@ public class					DataManager
 						JSONArray new_jarray = new JSONArray(list);
 						
 						json.put("result", new_jarray);
-						//saveCache(_userId, "dives", new_jarray.toString());
 						saveCache(_userId, "dives", json.toString());
 						commitCache();
 						break ;
@@ -586,7 +578,6 @@ public class					DataManager
 								JSONObject json = new JSONObject(result);
 								if (json.getBoolean("success") == false)
 									break ;
-								//if (Integer.parseInt(info[1]) == -1)
 								if (Integer.parseInt(info[1]) < 0)
 								{
 									// New Dive segment
