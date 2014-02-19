@@ -18,6 +18,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -133,6 +134,8 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mSurfaceTemp.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -168,6 +171,8 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 				mModel.getDives().get(getArguments().getInt("index")).setTempSurface(temperature);
 				mModel.getDives().get(getArguments().getInt("index")).setTempSurfaceUnit(((String) temp_label.getSelectedItem()).substring(1));
 				mListener.onSurfaceTempEditComplete(EditSurfaceTempDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mSurfaceTemp.getWindowToken(), 0);
 				dismiss();
 			}
 		});

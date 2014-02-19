@@ -158,13 +158,13 @@ EditReviewDialogListener
 					mTitle.setText(getResources().getString(R.string.tab_spots_title));
 					return ;
 				case 2:
-					mTitle.setText("SHOP");
+					mTitle.setText(getResources().getString(R.string.tab_shop_title));
 					return ;
 				case 3:
-					mTitle.setText("BUDDIES");
+					mTitle.setText(getResources().getString(R.string.tab_buddies_title));
 					return ;
 				case 4:
-					mTitle.setText("PHOTOS");
+					mTitle.setText(getResources().getString(R.string.tab_photos_title));
 					return ;
 				case 5:
 					mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));

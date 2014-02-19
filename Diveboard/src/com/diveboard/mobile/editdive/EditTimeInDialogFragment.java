@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 import android.view.View.OnClickListener;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.TimePicker;
@@ -73,6 +74,8 @@ public class					EditTimeInDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mTimeIn.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -111,6 +114,8 @@ public class					EditTimeInDialogFragment extends DialogFragment
 					new_time += mTimeIn.getCurrentMinute();
 				mModel.getDives().get(getArguments().getInt("index")).setTime(new_time);
 				mListener.onTimeInEditComplete(EditTimeInDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mTimeIn.getWindowToken(), 0);
 				dismiss();
 			}
 		});

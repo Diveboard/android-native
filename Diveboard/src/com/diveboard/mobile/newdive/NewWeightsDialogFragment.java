@@ -19,6 +19,7 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -131,6 +132,8 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mWeights.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -154,6 +157,8 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 					mDive.setWeights(null);
 				}
 				mListener.onWeightsEditComplete(NewWeightsDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mWeights.getWindowToken(), 0);
 				dismiss();
 			}
 		});

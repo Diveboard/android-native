@@ -88,6 +88,8 @@ public class					EditAltitudeDialogFragment extends DialogFragment implements On
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mAltitude.getWindowToken(), 0);
 				dismiss();
 			}
 		});
@@ -112,6 +114,8 @@ public class					EditAltitudeDialogFragment extends DialogFragment implements On
 				Distance new_altitude = (dbl == null) ? null : new Distance(dbl);
 				mModel.getDives().get(getArguments().getInt("index")).setAltitude(new_altitude);
 				mListener.onAltitudeEditComplete(EditAltitudeDialogFragment.this);
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mAltitude.getWindowToken(), 0);
 				dismiss();
 			}
 		});

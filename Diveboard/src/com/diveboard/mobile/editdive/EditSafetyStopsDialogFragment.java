@@ -26,6 +26,7 @@ import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -193,6 +194,8 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				mDepthField = null;
 				mDepthField = null;
 				mIndex = null;
@@ -208,6 +211,8 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				if (mDepthField.getText().toString().isEmpty())
 					mDepthField.setText("0");
 				if (mDurationField.getText().toString().isEmpty())
@@ -309,6 +314,8 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				mDepthField = null;
 				mDepthField = null;
 				openSafetyStopsList();
@@ -323,6 +330,8 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
+				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
+				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
 				if (mDepthField.getText().toString().isEmpty())
 					mDepthField.setText("0");
 				if (mDurationField.getText().toString().isEmpty())

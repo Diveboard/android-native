@@ -95,7 +95,7 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		ImageView delete5 = (ImageView) view.findViewById(R.id.DeleteWreck);
 		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
 		
-		onClick
+		//onClick
 
 		overall = (RatingBar) view.findViewById(R.id.OverallRatingBar);
 		difficulty = (RatingBar) view.findViewById(R.id.DifficultyRatingBar);
