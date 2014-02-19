@@ -137,7 +137,7 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        mImageFetcher.setPauseWork(false);
+//        mImageFetcher.setPauseWork(false);
         mImageFetcher.setExitTasksEarly(true);
         mImageFetcher.flushCache();
     }
@@ -145,7 +145,7 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        mImageFetcher.closeCache();
+//        mImageFetcher.closeCache();
     }
     
     /**
