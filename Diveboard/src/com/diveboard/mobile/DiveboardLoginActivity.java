@@ -363,7 +363,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					}
 					else
 					{
-						String str = (String)json.getString("error");
+						
 						Toast toast = Toast.makeText(getApplicationContext(), "Sorry, wrong login or password.", Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.BOTTOM, 0, 200);
 						toast.show();

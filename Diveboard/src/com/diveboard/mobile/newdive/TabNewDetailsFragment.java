@@ -157,6 +157,12 @@ public class					TabNewDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "NewGuideNameDialogFragment");
     }
     
+    private void 				_editReviewDialog()
+    {
+    	NewReviewDialogFragment dialog = new NewReviewDialogFragment();
+    	dialog.show(getActivity().getSupportFragmentManager(), "NewReviewDialogFragment");
+    	
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -341,6 +347,14 @@ public class					TabNewDetailsFragment extends Fragment
 		else
 			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
+		if (mDive.getDiveReviews()== null)
+			elem.add(new EditOption("Review : ", ""));
+		else
+		{
+			
+			elem.add(new EditOption("Review : ",elem.get(17).getValue()));	
+		}
+		
 		NewDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mDive);
 		NewDiveActivity.optionList.setAdapter(NewDiveActivity.mOptionAdapter);
 		
@@ -397,6 +411,9 @@ public class					TabNewDetailsFragment extends Fragment
 						break ;
 					case 15:
 						_editWater();
+						break ;
+					case 17:
+						_editReviewDialog();
 						break ;
 				}
 			}

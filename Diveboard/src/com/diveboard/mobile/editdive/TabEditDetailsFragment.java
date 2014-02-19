@@ -2,7 +2,10 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+
 import java.util.ArrayList;
+
+import org.apache.commons.codec.digest.Md5Crypt;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -188,6 +191,15 @@ public class					TabEditDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "EditGuideNameDialogFragment");
     }
     
+    private void				_editReviewType()
+    {
+    	EditReviewDialogFragment dialog = new EditReviewDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getActivity().getSupportFragmentManager(), "EditReviewDialogFragment");
+    }
+    
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -300,6 +312,27 @@ public class					TabEditDetailsFragment extends Fragment
 		else
 			elem.add(new EditOption("Dive privacy : ", "Private", 1));
 		
+		if (dive.getDiveReviews()== null)
+			elem.add(new EditOption("Review : ", ""));
+		else
+		{
+			
+			String fullReview = "";
+			Integer overall, difficulty, life, fish, wreck = 0;
+			if (dive.getDiveReviews().getOverall()!= null)
+				fullReview += "The Overall review was " + dive.getDiveReviews().getOverall().toString() + " ,";
+			if (dive.getDiveReviews().getDifficulty()!= null)
+				fullReview += "Difficulty was " + dive.getDiveReviews().getDifficulty().toString() + " ,";
+			if (dive.getDiveReviews().getMarine()!= null)
+				fullReview += "Marine life review was " + dive.getDiveReviews().getMarine().toString() + " ,";
+			if (dive.getDiveReviews().getBigFish()!= null)
+				fullReview += "Fish review was " + dive.getDiveReviews().getBigFish().toString() + " ,";
+			if (dive.getDiveReviews().getOverall()!= null)
+				fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
+			elem.add(new EditOption("Review : ", fullReview));
+			
+		}
+		
 		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(EditDiveActivity.mOptionAdapter);
 		
@@ -357,6 +390,9 @@ public class					TabEditDetailsFragment extends Fragment
 					case 15:
 						_editWater();
 						break ;
+					case 17:
+						_editReviewType();
+						break;
 				}
 			}
 		});
