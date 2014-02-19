@@ -68,15 +68,15 @@ public class					Review
 	{
 		JSONObject result = new JSONObject();
 		try {
-			if (_overall != null)
+			if (_overall != null && _overall != 0)
 				result.put("overall", _overall);
-			if (_difficulty != null)
+			if (_difficulty != null && _difficulty != 0)
 				result.put("difficulty", _difficulty);
-			if (_marine != null)
+			if (_marine != null && _marine != 0)
 				result.put("marine", _marine);
-			if (_wreck != null)
+			if (_wreck != null && _wreck != 0)
 				result.put("wreck", _wreck);
-			if (_bigfish != null)
+			if (_bigfish != null && _bigfish != 0)
 				result.put("bigfish", _bigfish);
 		} catch (JSONException e) {
 			e.printStackTrace();
