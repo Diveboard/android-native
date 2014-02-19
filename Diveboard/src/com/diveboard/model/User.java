@@ -84,11 +84,6 @@ public class					User implements IModel, Cloneable
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
 		_admin_rights = (json.isNull("admin_rights")) ? null : json.getInt("admin_rights");
-//		if (unitPreferences != null)
-//		{
-//			JSONObject unit = new JSONObject(unitPreferences);
-//			_unitPreferences = new Units(unit);
-//		}
 	}
 
 	public int getId() {

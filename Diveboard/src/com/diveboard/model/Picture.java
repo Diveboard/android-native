@@ -211,7 +211,6 @@ public class					Picture
 	
 	private synchronized void				_updateSaveList(final Context context, String url)
 	{
-		//System.out.println("UPDATE SAVE LIST");
 		synchronized (DiveboardModel.savedPictureList)
 		{
 			//DiveboardModel.savedPictureList.put(url);
@@ -227,11 +226,9 @@ public class					Picture
 			try
 			{
 				DiveboardModel.savedPictureLock.acquire();
-				//System.out.println("START WRITE");
 				FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_APPEND);
 				outputStream.write(url.getBytes());
 				outputStream.close();
-				//System.out.println("END WRITE");
 				DiveboardModel.savedPictureLock.release();
 			}
 			catch (FileNotFoundException e)
@@ -284,14 +281,12 @@ public class					Picture
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		if (file.exists())
 		{
-			System.out.println("Picture Exists");
 			FileInputStream inputStream = context.openFileInput(file.getName());
 			_bitmap = BitmapFactory.decodeStream(inputStream);
 			if (_bitmap == null)
 				return false;
 			return true;
 		}
-		System.out.println("Picture doesn't Exists");
 		return false;
 	}
 	

@@ -952,7 +952,7 @@ public class					DiveboardModel
 						{
 							synchronized (_lock1)
 							{
-								System.out.println("Loading pictures " + i);
+								//System.out.println("Loading pictures " + i);
 								if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
@@ -1003,7 +1003,7 @@ public class					DiveboardModel
 					{
 						_pictureCount = 0;
 					}
-					System.out.println(_pictureCount + " pictures remaining");
+					//System.out.println(_pictureCount + " pictures remaining");
 				}
 			}
 			else if (_increment < 0)
@@ -1011,7 +1011,7 @@ public class					DiveboardModel
 				for (int i = _start; i >= 0 && _pictureCount > 0 && _run; i += _increment)
 				{
 					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-					System.out.println("Loading pictures " + i);
+					//System.out.println("Loading pictures " + i);
 					try
 					{
 						if (!_run || !wifiNetwork.isConnected())
@@ -1044,7 +1044,7 @@ public class					DiveboardModel
 					{
 						_pictureCount = 0;
 					}
-					System.out.println(_pictureCount + " pictures remaining");
+					//System.out.println(_pictureCount + " pictures remaining");
 				}
 			}
 		}
