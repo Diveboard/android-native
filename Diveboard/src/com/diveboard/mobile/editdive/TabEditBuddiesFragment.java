@@ -54,6 +54,7 @@ public class					TabEditBuddiesFragment extends Fragment
 		mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
 		mIndex = getActivity().getIntent().getIntExtra("index", -1);
 		setHasOptionsMenu(false);
+		mAdapter = new ImageAdapter(getActivity());
 		mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
 		mImageThumbSpacing = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_spacing);
 
@@ -82,7 +83,6 @@ public class					TabEditBuddiesFragment extends Fragment
     	final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_buddies, container, false);
     	mGridView = (GridView)rootView.findViewById(R.id.gridView);
     	Dive dive = mModel.getDives().get(mIndex);
-    	mAdapter = new ImageAdapter(getActivity());
     	mGridView.setAdapter(mAdapter);
     	mGridView.setOnScrollListener(new OnScrollListener() {
 			
@@ -167,6 +167,7 @@ public class					TabEditBuddiesFragment extends Fragment
         mImageFetcher.setPauseWork(false);
         mImageFetcher.setExitTasksEarly(true);
         mImageFetcher.flushCache();
+        mImageFetcher.closeCache();
     }
     
     /**
