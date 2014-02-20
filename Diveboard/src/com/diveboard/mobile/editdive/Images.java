@@ -30,6 +30,17 @@ public class Images {
      * https://plus.google.com/109538161516040592207/about
      * http://www.flickr.com/photos/romainguy
      */
+	public final static String[] imageTest = new String[] {
+		"http://st2.diveboard.com/14826/20925_b7f10da6e266809f0030fca9842fdbb2_thumb.jpeg",
+		"http://stage.diveboard.com/img/no_picture.png",
+		"http://stage.diveboard.com/img/no_picture.png",
+		"http://graph.facebook.com/714361168/picture?type=normal",
+		"http://st6.diveboard.com/30/20374_3d80f159663665415a6f48aab1bdedc5_thumb.jpeg",
+		"http://stage.diveboard.com/img/no_picture.png",
+		"http://graph.facebook.com/100000634962265/picture?width=200&height=200"
+
+	};
+	
     public final static String[] imageUrls = new String[] {
             "https://lh6.googleusercontent.com/-55osAWw3x0Q/URquUtcFr5I/AAAAAAAAAbs/rWlj1RUKrYI/s1024/A%252520Photographer.jpg",
             "https://lh4.googleusercontent.com/--dq8niRp7W4/URquVgmXvgI/AAAAAAAAAbs/-gnuLQfNnBA/s1024/A%252520Song%252520of%252520Ice%252520and%252520Fire.jpg",
@@ -141,7 +152,7 @@ public class Images {
      * https://plus.google.com/109538161516040592207/about
      * http://www.flickr.com/photos/romainguy
      */
-    public final static String[] imageThumbUrls = new String[] {
+    public final static String[] imageThumbUrls = new String[] { 
             "https://lh6.googleusercontent.com/-55osAWw3x0Q/URquUtcFr5I/AAAAAAAAAbs/rWlj1RUKrYI/s240-c/A%252520Photographer.jpg",
             "https://lh4.googleusercontent.com/--dq8niRp7W4/URquVgmXvgI/AAAAAAAAAbs/-gnuLQfNnBA/s240-c/A%252520Song%252520of%252520Ice%252520and%252520Fire.jpg",
             "https://lh5.googleusercontent.com/-7qZeDtRKFKc/URquWZT1gOI/AAAAAAAAAbs/hqWgteyNXsg/s240-c/Another%252520Rockaway%252520Sunset.jpg",

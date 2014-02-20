@@ -37,7 +37,7 @@ public class					TabEditBuddiesFragment extends Fragment
     private int mImageThumbSpacing;
     private ImageFetcher mImageFetcher;
     private ImageAdapter mAdapter;
-    ArrayList<Buddy> mListBuddies;
+    ArrayList<Buddy> mOldBuddies;
     ArrayList<String> mListString = new  ArrayList<String>();
     
     public TabEditBuddiesFragment() {
@@ -70,15 +70,15 @@ public class					TabEditBuddiesFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
     	ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-    	mListBuddies = AC.getModel().getOldBuddies();
-    	for (int i = 0; i < mListBuddies.size(); i++)
+    	mOldBuddies = AC.getModel().getOldBuddies();
+    	for (int i = 0; i < mOldBuddies.size(); i++)
     	{
-    		System.out.println("Add String " + mListBuddies.get(i).getPicture()._urlDefault);
-    		mListString.add(mListBuddies.get(i).getPicture()._urlDefault);
+    		System.out.println("Add String " + mOldBuddies.get(i).getPicture()._urlDefault);
+    		mListString.add(mOldBuddies.get(i).getPicture()._urlDefault);
     	}
-    	for (int i = 0; i < mListBuddies.size(); i++)
+    	for (int i = 0; i < mOldBuddies.size(); i++)
         {
-        	System.out.println("TEST: "+ mListBuddies.get(i).getNickname() + " " + mListBuddies.get(i).getId());
+        	System.out.println("TEST: "+ mOldBuddies.get(i).getNickname() + " " + mOldBuddies.get(i).getId());
         }
     	final ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_buddies, container, false);
     	mGridView = (GridView)rootView.findViewById(R.id.gridView);
@@ -143,9 +143,36 @@ public class					TabEditBuddiesFragment extends Fragment
 		return rootView;
     }
     
+//    @Override
+//    public void onResume() {
+//    	super.onResume();
+//        mImageFetcher.setExitTasksEarly(false);
+//        mAdapter.notifyDataSetChanged();
+//    }
+//
+//    @Override
+//    public void onPause() {
+//        super.onPause();
+//        System.out.println("ON-PAUSE");
+//        mImageFetcher.setPauseWork(false);
+//        mImageFetcher.setExitTasksEarly(true);
+//        mImageFetcher.flushCache();
+//    }
+//
+//    @Override
+//    public void onDestroy() {
+//        super.onDestroy();
+//        System.out.println("ON-DESTROY");
+//        //mImageFetcher.closeCache();
+//        mImageFetcher.setPauseWork(false);
+//        mImageFetcher.setExitTasksEarly(true);
+//        mImageFetcher.flushCache();
+//        mImageFetcher.closeCache();
+//    }
+    
     @Override
     public void onResume() {
-    	super.onResume();
+        super.onResume();
         mImageFetcher.setExitTasksEarly(false);
         mAdapter.notifyDataSetChanged();
     }
@@ -153,7 +180,6 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onPause() {
         super.onPause();
-        System.out.println("ON-PAUSE");
         mImageFetcher.setPauseWork(false);
         mImageFetcher.setExitTasksEarly(true);
         mImageFetcher.flushCache();
@@ -162,11 +188,6 @@ public class					TabEditBuddiesFragment extends Fragment
     @Override
     public void onDestroy() {
         super.onDestroy();
-        System.out.println("ON-DESTROY");
-        //mImageFetcher.closeCache();
-        mImageFetcher.setPauseWork(false);
-        mImageFetcher.setExitTasksEarly(true);
-        mImageFetcher.flushCache();
         mImageFetcher.closeCache();
     }
     
@@ -182,7 +203,6 @@ public class					TabEditBuddiesFragment extends Fragment
         private int mNumColumns = 0;
         //private int mActionBarHeight = 0;
         private GridView.LayoutParams mImageViewLayoutParams;
-        private ArrayList<Buddy> mOldBuddies;
 
         public ImageAdapter(Context context) {
             super();
@@ -191,7 +211,6 @@ public class					TabEditBuddiesFragment extends Fragment
                     LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
             
             ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-            mOldBuddies = AC.getModel().getOldBuddies();
             // Calculate ActionBar height
 //            TypedValue tv = new TypedValue();
 //            if (context.getTheme().resolveAttribute(
@@ -212,8 +231,8 @@ public class					TabEditBuddiesFragment extends Fragment
             //return Images.imageThumbUrls.length + mNumColumns;
 //        	ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
         	//return mListString.size();
-        	//return Images.imageThumbUrls.length;
         	return mOldBuddies.size();
+        	//return mOldBuddies.size();
         }
 
 //        @Override
@@ -266,11 +285,13 @@ public class					TabEditBuddiesFragment extends Fragment
             // Now handle the main ImageView thumbnails
             ImageView imageView;
             if (convertView == null) { // if it's not recycled, instantiate and initialize
+            	System.out.println("convertview = null");
                 imageView = new RecyclingImageView(mContext);
                 imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
                 imageView.setLayoutParams(mImageViewLayoutParams);
             } else { // Otherwise re-use the converted view
-                imageView = (ImageView) convertView;
+            	System.out.println("convertview != null");
+            	imageView = (ImageView) convertView;
             }
 
             // Check the height matches our calculated column width
@@ -285,7 +306,12 @@ public class					TabEditBuddiesFragment extends Fragment
             
             //mImageFetcher.loadImage(mListString.get(position), imageView);
             //mImageFetcher.loadImage(Images.imageThumbUrls[position], imageView);
-            mImageFetcher.loadImage(mOldBuddies.get(position).getPicture()._urlDefault, imageView);
+            if (Images.imageTest[position].contains("no_picture"))
+            {
+            	imageView.setImageResource(R.drawable.no_picture);
+            }
+            else
+            	mImageFetcher.loadImage(mOldBuddies.get(position).getPicture()._urlDefault, imageView);
             return imageView;
         }
 
@@ -316,8 +342,7 @@ public class					TabEditBuddiesFragment extends Fragment
 
 		@Override
 		public Object getItem(int position) {
-			return mListString;
-			//return Images.imageThumbUrls[position];
+			return mOldBuddies.get(position).getPicture()._urlDefault;
 		}
     }
 }
