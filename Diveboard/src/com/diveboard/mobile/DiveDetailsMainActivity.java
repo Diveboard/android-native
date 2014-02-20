@@ -50,6 +50,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 	private ImageView mPic;
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
+	private RatingBar mOverall, mDifficulty, mFish, mLife, mWreck;
 
 	public int dpToPx(int dp) {
 		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -376,31 +377,63 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		}
 
 		// Visualizing Reviews
+		mOverall = (RatingBar) findViewById(R.id.overall_review);
+		mDifficulty = (RatingBar) findViewById(R.id.difficulty_review);
+		mFish = (RatingBar) findViewById(R.id.fish_review);
+		mLife = (RatingBar) findViewById(R.id.life_review);
+		mWreck = (RatingBar) findViewById(R.id.wreck_review);
+
 		if (mDive.getDiveReviews() != null) {
 			if (mDive.getDiveReviews().getOverall() == null) {
-				((TextView) findViewById(R.id.overallTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.overall_review)).setVisibility(View.GONE);
+				((TextView) findViewById(R.id.overallTV))
+						.setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.overall_review))
+						.setVisibility(View.GONE);
+			} else {
+				mOverall.setRating(mDive.getDiveReviews().getOverall());
 			}
 			if (mDive.getDiveReviews().getDifficulty() == null) {
-				((TextView) findViewById(R.id.difficultyTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.difficulty_review)).setVisibility(View.GONE);
+				((TextView) findViewById(R.id.difficultyTV))
+						.setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.difficulty_review))
+						.setVisibility(View.GONE);
+			} else {
+
+				mDifficulty.setRating(mDive.getDiveReviews().getDifficulty());
+
 			}
 			if (mDive.getDiveReviews().getBigFish() == null) {
 				((TextView) findViewById(R.id.fishTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.fish_review)).setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.fish_review))
+						.setVisibility(View.GONE);
+			} else {
+
+				mFish.setRating(mDive.getDiveReviews().getBigFish());
+
 			}
 			if (mDive.getDiveReviews().getMarine() == null) {
 				((TextView) findViewById(R.id.lifeTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.life_review)).setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.life_review))
+						.setVisibility(View.GONE);
+			} else {
+
+				mLife.setRating(mDive.getDiveReviews().getMarine());
+
 			}
 			if (mDive.getDiveReviews().getWreck() == null) {
-				((TextView) findViewById(R.id.wreckTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.wreck_review)).setVisibility(View.GONE);
+				((TextView) findViewById(R.id.wreckTV))
+						.setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.wreck_review))
+						.setVisibility(View.GONE);
+			} else {
+
+				mWreck.setRating(mDive.getDiveReviews().getWreck());
+
 			}
-		}else{
-			((LinearLayout)findViewById(R.id.layout_review)).setVisibility(View.GONE);
+		} else {
+			((LinearLayout) findViewById(R.id.layout_review))
+					.setVisibility(View.GONE);
 		}
-			
 
 		mPic = ((ImageView) findViewById(R.id.profile_image));
 		mRoundedPic = ((ImageView) findViewById(R.id.main_image_cache));
