@@ -1575,4 +1575,44 @@ public class					DiveboardModel
 		}
 		return result;
 	}
+	
+	public ArrayList<Buddy>		searchBuddy(final String name)
+	{		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				// Creating web client
+				AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+				// Initiate POST request
+				HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search/user.json");
+				// Adding parameters
+				ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+				args.add(new BasicNameValuePair("q", name));
+
+				postRequest.setEntity(new UrlEncodedFormEntity(args));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONArray jarray = new JSONArray(result);
+				client.close();
+				ArrayList<Buddy> buddy_list = new ArrayList<Buddy>();
+				for (int i = 0, length = jarray.length(); i < length; i++)
+					buddy_list.add(new Buddy(jarray.getJSONObject(i)));
+				return (buddy_list);
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
 }

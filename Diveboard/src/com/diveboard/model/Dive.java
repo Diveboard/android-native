@@ -1253,7 +1253,7 @@ public class					Dive implements IModel
 		JSONArray jarray = new JSONArray();
 		
 		for (int i = 0, length = buddies.size(); i < length; i++)
-			jarray.put(buddies.get(i));
+			jarray.put(buddies.get(i).getJson());
 		new_elem = new Pair<String, String>("buddies", jarray.toString());
 		_editList.add(new_elem);
 	}
