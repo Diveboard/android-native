@@ -85,15 +85,15 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		title.setText(getResources().getString(R.string.edit_review_title));
 		
 		ImageView delete1 = (ImageView) view.findViewById(R.id.DeleteOverall);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 		ImageView delete2 = (ImageView) view.findViewById(R.id.DeleteDifficulty);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 		ImageView delete3 = (ImageView) view.findViewById(R.id.DeleteMarine);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 		ImageView delete4 = (ImageView) view.findViewById(R.id.DeleteBigFish);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 		ImageView delete5 = (ImageView) view.findViewById(R.id.DeleteWreck);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 		
 		//onClick
 

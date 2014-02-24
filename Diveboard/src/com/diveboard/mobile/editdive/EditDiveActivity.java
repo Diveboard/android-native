@@ -624,7 +624,7 @@ EditReviewDialogListener
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit();
+			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + "min";
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
@@ -653,8 +653,6 @@ EditReviewDialogListener
 		((EditOption)mOptionAdapter.getItem(7)).setValue(dive.getGuide());
 		mOptionAdapter.notifyDataSetChanged();
 	}
-
-
 
 	@Override
 	public void onReviewEditComplete(DialogFragment dialog) {

@@ -227,7 +227,7 @@ public class					TabEditDetailsFragment extends Fragment
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).getDuration().toString() + "min" + "-" + safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit();
+			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + "min";
 		}
 		elem.add(new EditOption("Safety Stops : ", safetydetails));
 		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
