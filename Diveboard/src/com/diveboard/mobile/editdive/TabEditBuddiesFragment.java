@@ -31,9 +31,11 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -246,8 +248,17 @@ public class					TabEditBuddiesFragment extends Fragment
         ((TextView)mRootView.findViewById(R.id.myBuddies)).setTypeface(faceB);
         ((TextView)mRootView.findViewById(R.id.myOldBuddies)).setTypeface(faceB);
         ((TextView)mRootView.findViewById(R.id.search)).setTypeface(faceB);
-        ((TextView)mRootView.findViewById(R.id.diveboard_text)).setTypeface(faceB);
-        ((EditText)mRootView.findViewById(R.id.diveboard_edit)).setTypeface(faceR);
+        ((TextView)mRootView.findViewById(R.id.search_diveboard_text)).setTypeface(faceB);
+        ((EditText)mRootView.findViewById(R.id.search_diveboard_edit)).setTypeface(faceR);
+        ((TextView)mRootView.findViewById(R.id.notify_diveboard_text)).setTypeface(faceB);
+        ((TextView)mRootView.findViewById(R.id.search_facebook_text)).setTypeface(faceB);
+        ((EditText)mRootView.findViewById(R.id.search_facebook_edit)).setTypeface(faceR);
+        ((TextView)mRootView.findViewById(R.id.search_name_text)).setTypeface(faceB);
+        ((EditText)mRootView.findViewById(R.id.search_name_edit)).setTypeface(faceR);
+        ((TextView)mRootView.findViewById(R.id.search_email_text)).setTypeface(faceB);
+        ((EditText)mRootView.findViewById(R.id.search_email_edit)).setTypeface(faceR);
+        ((TextView)mRootView.findViewById(R.id.notify_email_text)).setTypeface(faceB);
+        ((Button)mRootView.findViewById(R.id.add_email_checkbox)).setTypeface(faceB);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
 				R.array.buddy_short_array, android.R.layout.simple_spinner_item);
 		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
@@ -260,7 +271,10 @@ public class					TabEditBuddiesFragment extends Fragment
 					int position, long arg3) {
 				if (position == 0)
 				{
-//					EditText editText = new EditText(getActivity());
+					((LinearLayout)mRootView.findViewById(R.id.search_global_diveboard)).setVisibility(View.VISIBLE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_email)).setVisibility(View.GONE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_facebook)).setVisibility(View.GONE);
+					//EditText editText = new EditText(getActivity());
 //					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 //					params.addRule(RelativeLayout.BELOW, arg0.getId());
 //					editText.setLayoutParams(params);
@@ -268,11 +282,16 @@ public class					TabEditBuddiesFragment extends Fragment
 				}
 				else if (position == 1)
 				{
-					
-				
+					((LinearLayout)mRootView.findViewById(R.id.search_global_diveboard)).setVisibility(View.GONE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_facebook)).setVisibility(View.VISIBLE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_email)).setVisibility(View.GONE);
 				}
 				else if (position == 2)
 				{
+					((LinearLayout)mRootView.findViewById(R.id.search_global_diveboard)).setVisibility(View.GONE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_facebook)).setVisibility(View.GONE);
+					((LinearLayout)mRootView.findViewById(R.id.search_global_email)).setVisibility(View.VISIBLE);
+					
 					
 				}
 			}
