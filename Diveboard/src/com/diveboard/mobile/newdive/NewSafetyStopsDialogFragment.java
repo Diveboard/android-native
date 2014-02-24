@@ -394,7 +394,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 				delete.setScaleType(ScaleType.FIT_CENTER);
 				delete.setLayoutParams(new LinearLayout.LayoutParams((int)(50 * scale + 0.5f), LayoutParams.MATCH_PARENT));
 				delete.setPadding(0, 0, (int)(5 * scale + 0.5f), 0);
-				delete.setImageDrawable(getResources().getDrawable(R.drawable.recyclebin));
+				delete.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 				delete.setTag(i);
 				delete.setOnClickListener(new OnClickListener()
 				{

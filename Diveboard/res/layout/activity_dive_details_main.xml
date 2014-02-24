@@ -384,7 +384,7 @@
                             android:layout_weight="0.5"
                             android:numStars="5"
                             android:paddingTop="5dp"
-                            android:rating="1.0"
+                            android:rating="0.0"
                             android:stepSize="1.0" />
                     </LinearLayout>
 
