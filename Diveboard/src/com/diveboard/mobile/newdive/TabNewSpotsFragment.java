@@ -488,11 +488,11 @@ public class					TabNewSpotsFragment extends Fragment
 						}
 						else
 						{
-							for (int i = 0; i < listSpots.size(); i++)
+							for (int i = 1; i <= listSpots.size(); i++)
 							{
 								Marker marker = mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(listSpots.get(i).getLat(), listSpots.get(i).getLng()))
-								.title(i + ": " + listSpots.get(i).getName())
+								.position(new LatLng(listSpots.get(i - 1).getLat(), listSpots.get(i - 1).getLng()))
+								.title(i + ": " + listSpots.get(i - 1).getName())
 								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 								mListMarkers.add(marker);
 							}
