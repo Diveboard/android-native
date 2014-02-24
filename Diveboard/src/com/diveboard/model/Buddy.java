@@ -20,6 +20,7 @@ public class					Buddy implements IModel
 	private String				_permalink;
 	private String				_vanity_url;
 	private String				_shaken_id;
+	private Boolean				_notify = null;
 	
 	public						Buddy(JSONObject json)
 	{
@@ -39,6 +40,40 @@ public class					Buddy implements IModel
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public JSONObject				getJson()
+	{
+		JSONObject json = new JSONObject();
+		try {
+			if (_fullpermalink != null)
+				json.put("fullpermalink", _fullpermalink);
+			if (_nickname != null)
+				json.put("nickname", _nickname);
+			if (_location != null)
+				json.put("location", _location);
+			if (_picture_small != null)
+				json.put("picture_small", _picture_small._urlDefault);
+			if (_class != null)
+				json.put("class", _class);
+			if (_picture_large != null)
+				json.put("picture_large", _picture_large._urlDefault);
+			if (_picture != null)
+				json.put("picture", _picture._urlDefault);
+			if (_id != null)
+				json.put("id", _id);
+			if (_permalink != null)
+				json.put("permalink", _permalink);
+			if (_vanity_url != null)
+				json.put("vanity_url", _vanity_url);
+			if (_shaken_id != null)
+				json.put("shaken_id", _shaken_id);
+			if (_notify != null)
+				json.put("notify", _notify);
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
 	}
 	
 	@Override
@@ -145,5 +180,13 @@ public class					Buddy implements IModel
 
 	public void setShakenId(String _shaken_id) {
 		this._shaken_id = _shaken_id;
+	}
+	
+	public Boolean isNotified() {
+		return this._notify;
+	}
+	
+	public void setNotify(Boolean notify) {
+		this._notify = notify;
 	}
 }
