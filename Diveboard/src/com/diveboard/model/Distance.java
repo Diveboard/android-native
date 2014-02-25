@@ -1,5 +1,9 @@
 package com.diveboard.model;
 
+import com.diveboard.mobile.R;
+
+import android.content.res.Resources;
+
 public class					Distance
 {
 	private Double				_value;
@@ -56,18 +60,18 @@ public class					Distance
 	public String				getSmallName()
 	{
 		if (_unit == Units.Distance.KM)
-			return ("m");
+			return (Resources.getSystem().getString(R.string.unit_m));
 		if (_unit == Units.Distance.FT)
-			return ("ft");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.unit_ft));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 	
 	public String				getFullName()
 	{
 		if (_unit == Units.Distance.KM)
-			return ("meters");
+			return (Resources.getSystem().getString(R.string.meters));
 		if (_unit == Units.Distance.FT)
-			return ("feet");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.feet));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 }

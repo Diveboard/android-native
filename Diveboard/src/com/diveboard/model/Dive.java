@@ -1244,7 +1244,7 @@ public class					Dive implements IModel
 				}
 			}
 		}
-		return _buddies;
+		return (ArrayList<Buddy>) _buddies.clone();
 	}
 
 	public void setBuddies(ArrayList<Buddy> buddies) {

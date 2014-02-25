@@ -20,7 +20,7 @@ public class					Buddy implements IModel
 	private String				_permalink;
 	private String				_vanity_url;
 	private String				_shaken_id;
-	private Boolean				_notify = null;
+	private Boolean				_notify = false;
 	
 	public						Buddy(JSONObject json)
 	{

@@ -1,5 +1,8 @@
 package com.diveboard.model;
 
+import com.diveboard.mobile.R;
+import android.content.res.Resources;
+
 public class					Temperature
 {
 	private Double				_value;
@@ -56,19 +59,19 @@ public class					Temperature
 	public String				getSmallName()
 	{
 		if (_unit == Units.Temperature.C)
-			return ("C");
+			return (Resources.getSystem().getString(R.string.unit_C));
 		if (_unit == Units.Temperature.F)
-			return ("F");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.unit_F));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 	
 	public String				getFullName()
 	{
 		if (_unit == Units.Temperature.C)
-			return ("celcius");
+			return (Resources.getSystem().getString(R.string.celcius));
 		if (_unit == Units.Temperature.F)
-			return ("fahrenheit");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.farenheit));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 }
 

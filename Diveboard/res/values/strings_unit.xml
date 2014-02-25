@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="celcius">celcius</string>
+    <string name="farenheit">farenheit</string>
+    <string name="unit_C">C</string>
+    <string name="unit_C_symbol">°C</string>
+    <string name="unit_F">F</string>
+    <string name="unit_F_symbol">°F</string>
+    <string name="unit_not_defined">Unit not defined</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_lb">lb</string>
+    <string name="kilogram">kilogram</string>
+    <string name="pound">pound</string>
+    <string name="unit_m">m</string>
+    <string name="unit_ft">ft</string>
+    <string name="meters">meters</string>
+    <string name="feet">feet</string>
+</resources>

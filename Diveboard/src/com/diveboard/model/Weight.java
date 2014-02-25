@@ -1,5 +1,9 @@
 package com.diveboard.model;
 
+import com.diveboard.mobile.R;
+
+import android.content.res.Resources;
+
 public class					Weight
 {
 	private Double				_value;
@@ -56,18 +60,18 @@ public class					Weight
 	public String				getSmallName()
 	{
 		if (_unit == Units.Weight.KG)
-			return ("kg");
+			return (Resources.getSystem().getString(R.string.unit_kg));
 		if (_unit == Units.Weight.LBS)
-			return ("lb");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.unit_lb));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 	
 	public String				getFullName()
 	{
 		if (_unit == Units.Weight.KG)
-			return ("kilogram");
+			return (Resources.getSystem().getString(R.string.kilogram));
 		if (_unit == Units.Weight.LBS)
-			return ("pound");
-		return ("Unit not defined");
+			return (Resources.getSystem().getString(R.string.pound));
+		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 }
