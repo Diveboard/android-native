@@ -144,7 +144,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button) findViewById(R.id.deleteDiveButton)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((Button) findViewById(R.id.deleteDiveButton)).setTypeface(faceR);
+		((Button) findViewById(R.id.deleteDiveButton)).setTypeface(faceB);
 		((Button) findViewById(R.id.deleteDiveButton))
 				.setOnClickListener(new OnClickListener() {
 					@Override
@@ -157,7 +157,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				});
 		((Button) findViewById(R.id.goToEditButton)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((Button) findViewById(R.id.goToEditButton)).setTypeface(faceR);
+		((Button) findViewById(R.id.goToEditButton)).setTypeface(faceB);
 		((TextView) findViewById(R.id.dive_shop)).setTypeface(faceB);
 		((TextView) findViewById(R.id.dive_shop)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);

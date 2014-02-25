@@ -82,20 +82,35 @@
                     <Button
                         android:id="@+id/goToEditButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+				        android:layout_marginTop="8dp"
+				        android:background="@drawable/login_button_selector"
+				        android:paddingBottom="7dp"
+				        android:paddingLeft="20dp"
+				        android:paddingRight="20dp"
+				        android:paddingTop="7dp"
                         android:layout_alignParentRight="false"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="0.5"
                         android:onClick="goToEditDive"
+                        android:textColor="@drawable/login_button_text_selector"
                         android:text="EDIT" >
                     </Button>
 
                     <Button
                         android:id="@+id/deleteDiveButton"
                         android:layout_width="0dp"
-                        android:layout_height="wrap_content"
+                        android:layout_height="40dp"
+				        android:layout_marginTop="8dp"
+				        android:background="@drawable/login_button_selector"
+				        android:paddingBottom="7dp"
+				        android:paddingLeft="20dp"
+				        android:paddingRight="20dp"
+				        android:paddingTop="7dp"
+                        android:layout_alignParentRight="false"
                         android:layout_marginLeft="10dp"
                         android:layout_weight="0.5"
+                        android:textColor="@drawable/login_button_text_selector"
                         android:text="DELETE" >
                     </Button>
                 </LinearLayout>
