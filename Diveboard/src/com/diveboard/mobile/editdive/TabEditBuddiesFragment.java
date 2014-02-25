@@ -324,9 +324,7 @@ public class					TabEditBuddiesFragment extends Fragment
 			
 			@Override
 			public void onClick(View v) {
-				((EditText)mRootView.findViewById(R.id.search_name_edit)).setText("");
-				((EditText)mRootView.findViewById(R.id.search_email_edit)).setText("");
-				((EditText)mRootView.findViewById(R.id.search_email_edit)).setError(null);
+				
 				if (((EditText)mRootView.findViewById(R.id.search_name_edit)).getText().toString().isEmpty())
 				{
 					((EditText)mRootView.findViewById(R.id.search_name_edit)).setError("The field cannot be empty");
@@ -345,6 +343,9 @@ public class					TabEditBuddiesFragment extends Fragment
 						mBuddies.add(buddy);
 					mModel.getDives().get(mIndex).setBuddies(mBuddies);
 					mAdapter.notifyDataSetChanged();
+					((EditText)mRootView.findViewById(R.id.search_name_edit)).setText("");
+					((EditText)mRootView.findViewById(R.id.search_email_edit)).setText("");
+					((EditText)mRootView.findViewById(R.id.search_email_edit)).setError(null);
 				}
 			}
 		});
