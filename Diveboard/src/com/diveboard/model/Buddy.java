@@ -9,17 +9,18 @@ import android.util.Pair;
 
 public class					Buddy implements IModel
 {
-	private String				_fullpermalink;
-	private String				_nickname;
-	private String				_location;
-	private Picture				_picture_small;
-	private String				_class;
-	private Picture				_picture_large;
-	private Picture				_picture;
-	private Integer				_id;
-	private String				_permalink;
-	private String				_vanity_url;
-	private String				_shaken_id;
+	private String				_fullpermalink = null;
+	private String				_nickname = null;
+	private String				_location = null;
+	private Picture				_picture_small = null;
+	private String				_class = null;
+	private Picture				_picture_large = null;
+	private Picture				_picture = null;
+	private Integer				_id = null;
+	private String				_permalink = null;
+	private String				_vanity_url = null;
+	private String				_shaken_id = null;
+	private String				_email = null;
 	private Boolean				_notify = false;
 	
 	public						Buddy(JSONObject json)
@@ -36,10 +37,16 @@ public class					Buddy implements IModel
 			_id = (json.isNull("id")) ? null : json.getInt("id");
 			_permalink = (json.isNull("permalink")) ? null : json.getString("permalink");
 			_vanity_url = (json.isNull("vanity_url")) ? null : json.getString("vanity_url");
+			_email = (json.isNull("email")) ? null : json.getString("email");
 			_shaken_id = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
+	}
+	
+	public						Buddy()
+	{
+		
 	}
 	
 	public JSONObject				getJson()
@@ -70,6 +77,8 @@ public class					Buddy implements IModel
 				json.put("shaken_id", _shaken_id);
 			if (_notify != null)
 				json.put("notify", _notify);
+			if (_email != null)
+				json.put("email", _email);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -188,5 +197,13 @@ public class					Buddy implements IModel
 	
 	public void setNotify(Boolean notify) {
 		this._notify = notify;
+	}
+
+	public String getEmail() {
+		return _email;
+	}
+
+	public void setEmail(String _email) {
+		this._email = _email;
 	}
 }

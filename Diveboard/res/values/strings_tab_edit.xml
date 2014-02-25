@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="tab_dive_details_title">Dive Details</string>
+    <string name="tab_spot_title">Spot</string>
+    <string name="tab_shop_title">Shop</string>
+    <string name="tab_buddies_title">Buddies</string>
+    
+</resources>

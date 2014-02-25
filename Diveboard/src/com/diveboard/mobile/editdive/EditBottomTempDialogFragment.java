@@ -106,7 +106,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 		}
 		else
 		{
-			if (mModel.getDives().get(getArguments().getInt("index")).getTempBottomUnit().compareTo("C") == 0)
+			if (mModel.getDives().get(getArguments().getInt("index")).getTempBottomUnit().compareTo(getResources().getString(R.string.unit_C)) == 0)
 			{
 				adapter.add(getResources().getString(R.string.unit_C_symbol));
 				adapter.add(getResources().getString(R.string.unit_F_symbol));
