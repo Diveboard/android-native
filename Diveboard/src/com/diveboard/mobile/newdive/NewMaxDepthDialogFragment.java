@@ -94,13 +94,13 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (Units.getDistanceUnit() == Units.Distance.KM)
 		{
-			adapter.add("m");
-			adapter.add("ft");
+			adapter.add(getResources().getString(R.string.unit_m));
+			adapter.add(getResources().getString(R.string.unit_ft));
 		}
 		else
 		{
-			adapter.add("ft");
-			adapter.add("m");
+			adapter.add(getResources().getString(R.string.unit_ft));
+			adapter.add(getResources().getString(R.string.unit_m));
 		}
 		max_depth_label.setAdapter(adapter);
 		

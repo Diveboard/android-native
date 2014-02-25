@@ -352,17 +352,17 @@ EditReviewDialogListener
 			switch (position)
 			{
 			case 0:
-				return "Dive Details";
+				return getResources().getString(R.string.tab_dive_details_menutitle);
 			case 1:
-				return "Spot";
+				return getResources().getString(R.string.tab_spot_menutitle);
 			case 2:
-				return "Shop";
+				return getResources().getString(R.string.tab_shop_menutitle);
 			case 3:
-				return "Buddies";
+				return getResources().getString(R.string.tab_buddies_menutitle);
 			case 4:
-				return "Photos";
+				return getResources().getString(R.string.tab_photos_menutitle);
 			case 5:
-				return "Notes";
+				return getResources().getString(R.string.tab_notes_menutitle);
 			default:
 				return null;
 			}
@@ -484,9 +484,9 @@ EditReviewDialogListener
 		//((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName());
 		String maxdepth_unit = "";
 		if (dive.getMaxdepthUnit() == null)
-			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		else
-			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -496,7 +496,7 @@ EditReviewDialogListener
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(dive.getDuration()) + " min");
+		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -512,10 +512,13 @@ EditReviewDialogListener
 			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
-				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit);
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
+				((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface()) + " " + getResources().getString(R.string.unit_C_symbol));
+			else
+				((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(dive.getTempSurface()) + " " + getResources().getString(R.string.unit_F_symbol));
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -531,10 +534,13 @@ EditReviewDialogListener
 		{
 			String tempbottom_unit = "";
 			if (dive.getTempBottomUnit() == null)
-				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit);
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
+				((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom()) + " " + getResources().getString(R.string.unit_C_symbol));
+			else
+				((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(dive.getTempBottom()) + " " + getResources().getString(R.string.unit_F_symbol));
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -551,9 +557,9 @@ EditReviewDialogListener
 			//			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName());
 			String weights_unit = "";
 			if (dive.getWeightsUnit() == null)
-				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs);
 			else
-				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+				weights_unit = (dive.getWeightsUnit().compareTo(getResources().getString(R.string.unit_kg)) == 0) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs);
 			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(dive.getWeights()) + " " + weights_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
@@ -624,7 +630,7 @@ EditReviewDialogListener
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + "min";
+			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();

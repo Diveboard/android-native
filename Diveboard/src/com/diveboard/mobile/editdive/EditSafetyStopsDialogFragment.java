@@ -81,7 +81,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		text.setTypeface(mFaceR);
 		text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
 		text.setTextSize(30);
-		text.setText("No safety stops");
+		text.setText(getResources().getString(R.string.no_safety_stops));
 		text.setTextColor(getResources().getColor(R.color.dark_grey));
 		text.setGravity(Gravity.CENTER);
 		layout.addView(text);
@@ -109,7 +109,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		depth_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		depth_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		depth_title.setTextSize(30);
-		depth_title.setText("Depth :");
+		depth_title.setText(getResources().getString(R.string.depth_label) +" :");
 		depth.addView(depth_title);
 		
 		mDepthField = new EditText(getActivity().getApplicationContext());
@@ -127,26 +127,26 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		{
 			if (Units.getDistanceUnit() == Units.Distance.KM)
 			{
-				adapter.add("m");
-				adapter.add("ft");
+				adapter.add(getResources().getString(R.string.unit_m));
+				adapter.add(getResources().getString(R.string.unit_ft));
 			}
 			else
 			{
-				adapter.add("ft");
-				adapter.add("m");
+				adapter.add(getResources().getString(R.string.unit_ft));
+				adapter.add(getResources().getString(R.string.unit_m));
 			}
 		}
 		else
 		{
-			if (safetystop_unit.compareTo("m") == 0)
+			if (safetystop_unit.compareTo(getResources().getString(R.string.unit_m)) == 0)
 			{
-				adapter.add("m");
-				adapter.add("ft");
+				adapter.add(getResources().getString(R.string.unit_m));
+				adapter.add(getResources().getString(R.string.unit_ft));
 			}
 			else
 			{
-				adapter.add("ft");
-				adapter.add("m");
+				adapter.add(getResources().getString(R.string.unit_ft));
+				adapter.add(getResources().getString(R.string.unit_m));
 			}
 		}
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
@@ -165,7 +165,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		duration_title.setTypeface(mFaceR);
 		duration_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		duration_title.setTextSize(30);
-		duration_title.setText("Duration :");
+		duration_title.setText(getResources().getString(R.string.duration_label) + " :");
 		duration_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		duration.addView(duration_title);
 		
@@ -181,7 +181,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		duration_label.setTypeface(mFaceR);
 		duration_label.setTextColor(getResources().getColor(R.color.dark_grey));
 		duration_label.setTextSize(30);
-		duration_label.setText("min");
+		duration_label.setText(getResources().getString(R.string.unit_min));
 		duration.addView(duration_label);
 		
 		safetylist.addView(duration);
@@ -246,7 +246,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		depth_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		depth_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		depth_title.setTextSize(30);
-		depth_title.setText("Depth :");
+		depth_title.setText(getResources().getString(R.string.depth_label) + " :");
 		depth.addView(depth_title);
 		
 		mDepthField = new EditText(getActivity().getApplicationContext());
@@ -261,13 +261,13 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
 		if (Units.getDistanceUnit() == Units.Distance.KM)
 		{
-			adapter.add("m");
-			adapter.add("ft");
+			adapter.add(getResources().getString(R.string.unit_m));
+			adapter.add(getResources().getString(R.string.unit_ft));
 		}
 		else
 		{
-			adapter.add("ft");
-			adapter.add("m");
+			adapter.add(getResources().getString(R.string.unit_ft));
+			adapter.add(getResources().getString(R.string.unit_m));
 		}
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		mDepthLabel.setAdapter(adapter);
@@ -285,7 +285,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		duration_title.setTypeface(mFaceR);
 		duration_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		duration_title.setTextSize(30);
-		duration_title.setText("Duration :");
+		duration_title.setText(getResources().getString(R.string.duration_label) + " :");
 		duration_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		duration.addView(duration_title);
 		
@@ -301,7 +301,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		duration_label.setTypeface(mFaceR);
 		duration_label.setTextColor(getResources().getColor(R.color.dark_grey));
 		duration_label.setTextSize(30);
-		duration_label.setText("min");
+		duration_label.setText(getResources().getString(R.string.unit_min));
 		duration.addView(duration_label);
 		
 		safetylist.addView(duration);
@@ -383,7 +383,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 				text.setTypeface(mFaceR);
 				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
 				text.setTextSize(30);
-				text.setText(mSafetyStops.get(i).getDepth() + mSafetyStops.get(i).getUnit() + " - " + mSafetyStops.get(i).getDuration() + "min");
+				text.setText(mSafetyStops.get(i).getDepth() + mSafetyStops.get(i).getUnit() + " - " + mSafetyStops.get(i).getDuration() + getResources().getString(R.string.unit_min));
 				text.setTextColor(getResources().getColor(R.color.dark_grey));
 				text.setGravity(Gravity.CENTER);
 				

@@ -99,26 +99,26 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		{
 			if (Units.getWeightUnit() == Units.Weight.KG)
 			{
-				adapter.add("kg");
-				adapter.add("lbs");
+				adapter.add(getResources().getString(R.string.unit_kg));
+				adapter.add(getResources().getString(R.string.unit_lbs));
 			}
 			else
 			{
-				adapter.add("lbs");
-				adapter.add("kg");
+				adapter.add(getResources().getString(R.string.unit_lbs));
+				adapter.add(getResources().getString(R.string.unit_kg));
 			}
 		}
 		else
 		{
-			if (mModel.getDives().get(getArguments().getInt("index")).getWeightsUnit().compareTo("kg") == 0)
+			if (mModel.getDives().get(getArguments().getInt("index")).getWeightsUnit().compareTo(getResources().getString(R.string.unit_kg)) == 0)
 			{
-				adapter.add("kg");
-				adapter.add("lbs");
+				adapter.add(getResources().getString(R.string.unit_kg));
+				adapter.add(getResources().getString(R.string.unit_lbs));
 			}
 			else
 			{
-				adapter.add("lbs");
-				adapter.add("kg");
+				adapter.add(getResources().getString(R.string.unit_lbs));
+				adapter.add(getResources().getString(R.string.unit_kg));
 			}
 		}
 		weights_label.setAdapter(adapter);

@@ -62,7 +62,7 @@ public class					Weight
 		if (_unit == Units.Weight.KG)
 			return (Resources.getSystem().getString(R.string.unit_kg));
 		if (_unit == Units.Weight.LBS)
-			return (Resources.getSystem().getString(R.string.unit_lb));
+			return (Resources.getSystem().getString(R.string.unit_lbs));
 		return (Resources.getSystem().getString(R.string.unit_not_defined));
 	}
 	

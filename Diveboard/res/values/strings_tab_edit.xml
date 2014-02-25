@@ -1,8 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="tab_dive_details_title">Dive Details</string>
-    <string name="tab_spot_title">Spot</string>
-    <string name="tab_shop_title">Shop</string>
-    <string name="tab_buddies_title">Buddies</string>
-    
+    <string name="tab_dive_details_menutitle">Dive Details</string>
+    <string name="tab_spot_menutitle">Spot</string>
+    <string name="tab_shop_menutitle">Shop</string>
+    <string name="tab_buddies_menutitle">Buddies</string>
+    <string name="tab_photos_menutitle">Photos</string>
+    <string name="tab_notes_menutitle">Notes</string>
+    <string name="empty_field_error">This field must be filled</string>
+    <string name="maxdepth_duration_missing">Max Depth or Duration fields are missing</string>
+    <string name="no_safety_stops">No safety stops</string>
+    <string name="depth_label">Depth</string>
+    <string name="duration_label">Duration</string>
+    <string name="public_label">Public</string>
+    <string name="private_label">Private</string>
+    <string name="date_label">Date</string>
+    <string name="time_in_label">Time in</string>
+    <string name="max_depth_label">Max depth</string>
+    <string name="safety_stops_label">Safety Stops</string>
+    <string name="weights_label">Weights</string>
+    <string name="dive_number_label">Dive number</string>
+    <string name="guide_name_label">Guide name</string>
+    <string name="trip_name_label">Trip name</string>
+    <string name="diving_type_label">Diving type</string>
+    <string name="visibility_label">Visibility</string>
+    <string name="current_label">Current</string>
+    <string name="surface_temperature_label">Surface temperature</string>
+    <string name="bottom_temperature_label">Bottom temperature</string>
+    <string name="altitude_label">Altitude</string>
+    <string name="water_type_label">Water type</string>
+    <string name="dive_privacy_label">Dive privacy</string>
+    <string name="review_label">Review</string>
 </resources>
