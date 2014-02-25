@@ -561,7 +561,7 @@ public class					TabEditBuddiesFragment extends Fragment
                 
                 rl = new LinearLayout(mContext);
                 rl.setOrientation(LinearLayout.VERTICAL);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, mItemHeight + 60);
             	rl.setLayoutParams(params);
             	tv = new TextView(mContext);
             	LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -674,7 +674,7 @@ public class					TabEditBuddiesFragment extends Fragment
                 
                 rl = new LinearLayout(mContext);
                 rl.setOrientation(LinearLayout.VERTICAL);
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.WRAP_CONTENT, mItemHeight + 60);
             	rl.setLayoutParams(params);
             	tv = new TextView(mContext);
             	LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
