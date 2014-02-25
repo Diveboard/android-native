@@ -96,26 +96,26 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 		{
 			if (Units.getTemperatureUnit() == Units.Temperature.C)
 			{
-				adapter.add("°C");
-				adapter.add("°F");
+				adapter.add(getResources().getString(R.string.unit_C_symbol));
+				adapter.add(getResources().getString(R.string.unit_F_symbol));
 			}
 			else
 			{
-				adapter.add("°F");
-				adapter.add("°C");
+				adapter.add(getResources().getString(R.string.unit_F_symbol));
+				adapter.add(getResources().getString(R.string.unit_C_symbol));
 			}
 		}
 		else
 		{
-			if (mDive.getTempSurfaceUnit().compareTo("C") == 0)
+			if (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0)
 			{
-				adapter.add("°C");
-				adapter.add("°F");
+				adapter.add(getResources().getString(R.string.unit_C_symbol));
+				adapter.add(getResources().getString(R.string.unit_F_symbol));
 			}
 			else
 			{
-				adapter.add("°F");
-				adapter.add("°C");
+				adapter.add(getResources().getString(R.string.unit_F_symbol));
+				adapter.add(getResources().getString(R.string.unit_C_symbol));
 			}
 		}
 		temp_label.setAdapter(adapter);

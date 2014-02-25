@@ -210,27 +210,27 @@ public class					TabEditDetailsFragment extends Fragment
     	optionList = (ListView) rootView.findViewById(R.id.optionList);
     	
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
-		elem.add(new EditOption("Date : ", dive.getDate()));
+		elem.add(new EditOption(getResources().getString(R.string.date_label) + " : ", dive.getDate()));
 		String[] time_in = dive.getTimeIn().split("T");
 		String[] time = time_in[1].split(":");
-		elem.add(new EditOption("Time in : ", time[0] + ":" + time[1]));
+		elem.add(new EditOption(getResources().getString(R.string.time_in_label) + " : ", time[0] + ":" + time[1]));
 		//elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth().getDistance()) + " " + dive.getMaxdepth().getSmallName()));
 		String maxdepth_unit = "";
 		if (dive.getMaxdepthUnit() == null)
-			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		else
-			maxdepth_unit = (dive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft";
-		elem.add(new EditOption("Max depth : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
+			maxdepth_unit = (dive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
+		elem.add(new EditOption(getResources().getString(R.string.max_depth_label) + " : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
 		ArrayList<SafetyStop> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + "min";
+			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
-		elem.add(new EditOption("Safety Stops : ", safetydetails));
-		elem.add(new EditOption("Duration : ", Integer.toString(dive.getDuration()) + " min"));
+		elem.add(new EditOption(getResources().getString(R.string.safety_stops_label) + " : ", safetydetails));
+		elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min)));
 		//elem.add(new EditOption("Safety stops : ", "not implemented"));
 //		if (dive.getWeights() != null)
 //			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
@@ -240,22 +240,22 @@ public class					TabEditDetailsFragment extends Fragment
 		{
 			String weights_unit = "";
 			if (dive.getWeightsUnit() == null)
-				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs);
 			else
-				weights_unit = (dive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs"; 
-			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights()) + " " + weights_unit));
+				weights_unit = (dive.getWeightsUnit().compareTo(getResources().getString(R.string.unit_kg)) == 0) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs); 
+			elem.add(new EditOption(getResources().getString(R.string.weights_label) + " : ", Double.toString(dive.getWeights()) + " " + weights_unit));
 		}
 		else
-			elem.add(new EditOption("Weights : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.weights_label) + " : ", ""));
 		if (dive.getNumber() != null)
-			elem.add(new EditOption("Dive number : ", Integer.toString(dive.getNumber())));
+			elem.add(new EditOption(getResources().getString(R.string.dive_number_label) + " : ", Integer.toString(dive.getNumber())));
 		else
-			elem.add(new EditOption("Dive number : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.dive_number_label) + " : ", ""));
 		if (dive.getGuide() != null)
-			elem.add(new EditOption("Guide name : ", dive.getGuide()));
+			elem.add(new EditOption(getResources().getString(R.string.guide_name_label) + " : ", dive.getGuide()));
 		else
-			elem.add(new EditOption("Guide name : ", ""));
-		elem.add(new EditOption("Trip name : ", dive.getTripName()));
+			elem.add(new EditOption(getResources().getString(R.string.guide_name_label) + " : ", ""));
+		elem.add(new EditOption(getResources().getString(R.string.trip_name_label) + " : ", dive.getTripName()));
 		ArrayList<String> divetype = dive.getDivetype();
 		String divetype_string = "";
 		for (int i = 0, length = divetype.size(); i < length; i++)
@@ -264,56 +264,62 @@ public class					TabEditDetailsFragment extends Fragment
 				divetype_string += ", ";
 			divetype_string += divetype.get(i);
 		}
-		elem.add(new EditOption("Diving type : ", divetype_string));
+		elem.add(new EditOption(getResources().getString(R.string.diving_type_label) + " : ", divetype_string));
 		//elem.add(new EditOption("Other divers : ", "not implemented"));
 		//elem.add(new EditOption("Diving type & activities : ", "not implemented"));
 		if (dive.getVisibility() != null)
-			elem.add(new EditOption("Visibility : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
+			elem.add(new EditOption(getResources().getString(R.string.visibility_label) + " : ", dive.getVisibility().substring(0, 1).toUpperCase() + dive.getVisibility().substring(1)));
 		else
-			elem.add(new EditOption("Visibility : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.visibility_label) + " : ", ""));
 		if (dive.getCurrent() != null)
-			elem.add(new EditOption("Current : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
+			elem.add(new EditOption(getResources().getString(R.string.current_label) + " : ", dive.getCurrent().substring(0, 1).toUpperCase() + dive.getCurrent().substring(1)));
 		else
-			elem.add(new EditOption("Current : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.current_label) + " : ", ""));
 		if (dive.getTempSurface() != null)
 		{
 			//elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
-				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface()) + " °" + tempsurface_unit));
+				tempsurface_unit = (dive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
+				elem.add(new EditOption(getResources().getString(R.string.surface_temperature_label) + " : ", Double.toString(dive.getTempSurface()) + " " + getResources().getString(R.string.unit_C_symbol)));
+			else
+				elem.add(new EditOption(getResources().getString(R.string.surface_temperature_label) + " : ", Double.toString(dive.getTempSurface()) + " " + getResources().getString(R.string.unit_F_symbol)));
 		}
 		else
-			elem.add(new EditOption("Surface temperature : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.surface_temperature_label) + " : ", ""));
 		if (dive.getTempBottom() != null)
 		{
 //			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
 			String tempbottom_unit = "";
 			if (dive.getTempBottomUnit() == null)
-				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempbottom_unit = (dive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom()) + " °" + tempbottom_unit));
+				tempbottom_unit = (dive.getTempBottomUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
+				elem.add(new EditOption(getResources().getString(R.string.bottom_temperature_label) + " : ", Double.toString(dive.getTempBottom()) + " " + getResources().getString(R.string.unit_C_symbol)));
+			else
+				elem.add(new EditOption(getResources().getString(R.string.bottom_temperature_label) + " : ", Double.toString(dive.getTempBottom()) + " " + getResources().getString(R.string.unit_F_symbol)));
 		}
 		else
-			elem.add(new EditOption("Bottom temperature : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.bottom_temperature_label) + " : ", ""));
 		if (dive.getAltitude() != null)
-			elem.add(new EditOption("Altitude : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
+			elem.add(new EditOption(getResources().getString(R.string.altitude_label) + " : ", Double.toString(dive.getAltitude().getDistance()) + " " + dive.getAltitude().getSmallName()));
 		else
-			elem.add(new EditOption("Altitude : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.altitude_label) + " : ", ""));
 		if (dive.getWater() != null)
-			elem.add(new EditOption("Water type : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
+			elem.add(new EditOption(getResources().getString(R.string.water_type_label) + " : ", dive.getWater().substring(0, 1).toUpperCase() + dive.getWater().substring(1)));
 		else
-			elem.add(new EditOption("Water type : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.water_type_label) + " : ", ""));
 		if (dive.getPrivacy() == 0)
-			elem.add(new EditOption("Dive privacy : ", "Public", 1));
+			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.public_label), 1));
 		else
-			elem.add(new EditOption("Dive privacy : ", "Private", 1));
+			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.private_label), 1));
 		
 		if (dive.getDiveReviews()== null)
-			elem.add(new EditOption("Review : ", ""));
+			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
 		{
 			

@@ -87,26 +87,26 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 		{
 			if (Units.getDistanceUnit() == Units.Distance.KM)
 			{
-				adapter.add("m");
-				adapter.add("ft");
+				adapter.add(getResources().getString(R.string.unit_m));
+				adapter.add(getResources().getString(R.string.unit_ft));
 			}
 			else
 			{
-				adapter.add("ft");
-				adapter.add("m");
+				adapter.add(getResources().getString(R.string.unit_ft));
+				adapter.add(getResources().getString(R.string.unit_m));
 			}
 		}
 		else
 		{
-			if (maxdepth_unit.compareTo("m") == 0)
+			if (maxdepth_unit.compareTo(getResources().getString(R.string.unit_m)) == 0)
 			{
-				adapter.add("m");
-				adapter.add("ft");
+				adapter.add(getResources().getString(R.string.unit_m));
+				adapter.add(getResources().getString(R.string.unit_ft));
 			}
 			else
 			{
-				adapter.add("ft");
-				adapter.add("m");
+				adapter.add(getResources().getString(R.string.unit_ft));
+				adapter.add(getResources().getString(R.string.unit_m));
 			}
 		}
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);

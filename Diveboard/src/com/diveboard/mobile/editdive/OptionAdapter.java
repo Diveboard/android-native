@@ -8,6 +8,7 @@ import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogLi
 import com.diveboard.model.Dive;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
 import android.support.v4.app.DialogFragment;
@@ -98,8 +99,8 @@ public class					OptionAdapter extends BaseAdapter
 				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optToggle = (ToggleButton) convertView.findViewById(R.id.optToggle);
 				holder.optToggle.setTypeface(faceR);
-				holder.optToggle.setTextOff("Public");
-				holder.optToggle.setTextOn("Private");
+				holder.optToggle.setTextOff(Resources.getSystem().getString(R.string.public_label));
+				holder.optToggle.setTextOn(Resources.getSystem().getString(R.string.private_label));
 				holder.optToggle.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
 					@Override
@@ -112,7 +113,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView.setTag(holder);
 				
 				holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
-				if (option.get(position).getValue().equals("Public"))
+				if (option.get(position).getValue().equals(Resources.getSystem().getString(R.string.public_label)))
 					holder.optToggle.setChecked(false);
 				else
 					holder.optToggle.setChecked(true);
@@ -127,8 +128,8 @@ public class					OptionAdapter extends BaseAdapter
 				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optSwitch = (Switch) convertView.findViewById(R.id.optSwitch);
 				holder.optSwitch.setTypeface(faceR);
-				holder.optSwitch.setTextOff("Private");
-				holder.optSwitch.setTextOn("Public");
+				holder.optSwitch.setTextOff(Resources.getSystem().getString(R.string.private_label));
+				holder.optSwitch.setTextOn(Resources.getSystem().getString(R.string.public_label));
 				holder.optSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
 					@Override
@@ -141,7 +142,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView.setTag(holder);
 				
 				holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
-				if (option.get(position).getValue().equals("Public"))
+				if (option.get(position).getValue().equals(Resources.getSystem().getString(R.string.public_label)))
 					holder.optSwitch.setChecked(true);
 				else
 					holder.optSwitch.setChecked(false);

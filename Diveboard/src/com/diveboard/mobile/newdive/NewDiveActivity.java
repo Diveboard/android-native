@@ -108,13 +108,13 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				case 0:
 					return mNewDetailsFragment;
 				case 1:
-					return mNewShopFragment;
-				case 2:
-					return mNewPhotosFragment;
-				case 3:
-					return mNewNotesFragment;
-				case 4:
 					return mNewSpotsFragment;
+				case 2:
+					return mNewShopFragment;
+				case 3:
+					return mNewPhotosFragment;
+				case 4:
+					return mNewNotesFragment;
 				default:
 					return null;
 			}
@@ -132,15 +132,15 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
         	switch (position)
         	{
         		case 0:
-        			return "Dive Details";
+        			return getResources().getString(R.string.tab_dive_details_menutitle);
         		case 1:
-        			return "Shop";
+        			return getResources().getString(R.string.tab_spot_menutitle);
         		case 2:
-        			return "Photos";
+        			return getResources().getString(R.string.tab_shop_menutitle);
         		case 3:
-        			return "Notes";
+        			return getResources().getString(R.string.tab_photos_menutitle);
         		case 4:
-        			return "Spot";
+        			return getResources().getString(R.string.tab_notes_menutitle);
         		default:
         			return null;
         	}
@@ -218,7 +218,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 					if (2 - optionList.getFirstVisiblePosition() >= 0)
 					{
 						View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
-						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+						((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 					}
 					
@@ -228,7 +228,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 					if (4 - optionList.getFirstVisiblePosition() >= 0)
 					{
 						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
-						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+						((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 					}
 					
@@ -277,7 +277,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				}
 				else
 				{
-					Toast toast = Toast.makeText(getApplicationContext(), "Max Depth or Duration fields are missing", Toast.LENGTH_LONG);
+					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.maxdepth_duration_missing), Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -302,16 +302,16 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 						return ;
 					case 1:
-						mTitle.setText("SHOP");
+						mTitle.setText(getResources().getString(R.string.tab_spots_title));
 						return ;
 					case 2:
-						mTitle.setText("PHOTOS");
+						mTitle.setText(getResources().getString(R.string.tab_shop_title));
 						return ;
 					case 3:
-						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
+						mTitle.setText(getResources().getString(R.string.tab_photos_title));
 						return ;
 					case 4:
-						mTitle.setText(getResources().getString(R.string.tab_spots_title));
+						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
 						return ;
 					default:
 						return ;
@@ -397,9 +397,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		final Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 		String maxdepth_unit = "";
 		if (mDive.getMaxdepthUnit() == null)
-			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "m" : "ft";
+			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		else
-			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "m" : "ft"; 
+			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		((EditOption)mOptionAdapter.getItem(2)).setValue(Double.toString(mDive.getMaxdepth()) + " " + maxdepth_unit);
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -419,7 +419,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		                	{
 		                		View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
 		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-			                	((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
+			                	((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 			        			mError = true;
 		                	}
 		                }
@@ -433,7 +433,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		final Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(mDive.getDuration()) + " min");
+		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 		new Thread(new Runnable() {
@@ -452,7 +452,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		                	{
 		                		View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
 		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-			                	((TextView)view.findViewById(R.id.optTitle)).setError("This filed must be filled");
+			                	((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 			        			mError = true;
 		                	}
 		                	
@@ -474,10 +474,13 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 //			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (mDive.getTempSurfaceUnit() == null)
-				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempSurface()) + " °" + tempsurface_unit);
+				tempsurface_unit = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
+				((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempSurface()) + " " + getResources().getString(R.string.unit_C_symbol));
+			else
+				((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempSurface()) + " " + getResources().getString(R.string.unit_F_symbol));
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -494,10 +497,13 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 //			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
 			String tempbottom_unit = "";
 			if (mDive.getTempBottomUnit() == null)
-				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C" : "F";
+				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
 			else
-				tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C") == 0) ? "C" : "F";
-			((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(mDive.getTempBottom()) + " °" + tempbottom_unit);
+				tempbottom_unit = (mDive.getTempBottomUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
+			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
+				((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(mDive.getTempBottom()) + " " + getResources().getString(R.string.unit_C_symbol));
+			else
+				((EditOption)mOptionAdapter.getItem(13)).setValue(Double.toString(mDive.getTempBottom()) + " " + getResources().getString(R.string.unit_F_symbol));
 		}
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
@@ -514,9 +520,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 //			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights().getWeight()) + " " + mDive.getWeights().getSmallName());
 			String weights_unit = "";
 			if (mDive.getWeightsUnit() == null)
-				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? "kg" : "lbs";
+				weights_unit = (Units.getWeightUnit() == Units.Weight.KG) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs);
 			else
-				weights_unit = (mDive.getWeightsUnit().compareTo("kg") == 0) ? "kg" : "lbs";
+				weights_unit = (mDive.getWeightsUnit().compareTo(getResources().getString(R.string.unit_kg)) == 0) ? getResources().getString(R.string.unit_kg) : getResources().getString(R.string.unit_lbs);
 			((EditOption)mOptionAdapter.getItem(5)).setValue(Double.toString(mDive.getWeights()) + " " + weights_unit);
 		}
 		mOptionAdapter.notifyDataSetChanged();
@@ -595,7 +601,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		{
 			if (i != 0)
 				safetydetails += ", ";
-			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + "min";
+			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
 		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
