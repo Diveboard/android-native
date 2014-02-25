@@ -27,11 +27,10 @@ public class					Buddy implements IModel
 	{
 		try
 		{
-			_fullpermalink = (json.isNull("fullpermalink")) ? null : json.getString("fullpermalink");
-			if (json.isNull("name") != false)
+			_nickname = (json.isNull("nickname")) ? null : json.getString("nickname");
+			if (json.isNull("name") == false)
 				_nickname = json.getString("name");
-			else
-				_nickname = (json.isNull("nickname")) ? null : json.getString("nickname");
+			_fullpermalink = (json.isNull("fullpermalink")) ? null : json.getString("fullpermalink");
 			_location = (json.isNull("location")) ? null : json.getString("location");
 			_picture_small = (json.isNull("picture_small")) ? null : new Picture(json.getString("picture_small"));
 			_class = (json.isNull("class")) ? null : json.getString("class");

@@ -305,7 +305,7 @@ public class					DataManager
 				JSONArray jarray = new JSONArray();
 				ArrayList<Buddy> elem = dive.getBuddies();
 				for (int i = 0, length = elem.size(); i < length; i++)
-					jarray.put(elem.get(i));
+					jarray.put(elem.get(i).getJson());
 				json.put("buddies", jarray);
 			}
 			if (dive.getDiveReviews() != null)

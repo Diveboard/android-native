@@ -114,7 +114,7 @@
 					    android:layout_height="wrap_content"
 					    android:layout_width="0dp"
 					    android:orientation="horizontal">
-					    <EditText
+					    <AutoCompleteTextView
 					        android:id="@+id/search_diveboard_edit"
 					        android:layout_height="wrap_content"
 					        android:layout_width="match_parent"/>

@@ -1562,7 +1562,7 @@ public class					DiveboardModel
 					boolean flag = false;
 					for (int k = 0, result_size = result.size(); k < result_size; k++)
 					{
-						if (result.get(k).getId().equals(buddies.get(j).getId()))
+						if (result.get(k).getNickname().equals(buddies.get(j).getNickname()))
 						{
 							flag = true;
 							break ;
@@ -1601,7 +1601,12 @@ public class					DiveboardModel
 				client.close();
 				ArrayList<Buddy> buddy_list = new ArrayList<Buddy>();
 				for (int i = 0, length = jarray.length(); i < length; i++)
-					buddy_list.add(new Buddy(jarray.getJSONObject(i)));
+				{
+					Buddy buddy = new Buddy(jarray.getJSONObject(i));
+					buddy.set_class("User");
+					buddy_list.add(buddy);
+				}
+					
 				return (buddy_list);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
