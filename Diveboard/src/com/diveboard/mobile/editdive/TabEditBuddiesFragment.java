@@ -3,6 +3,7 @@ package com.diveboard.mobile.editdive;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,7 +22,9 @@ import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -68,6 +71,7 @@ public class					TabEditBuddiesFragment extends Fragment
     ArrayList<Buddy> mBuddies;
     ArrayList<String> mListString = new  ArrayList<String>();
     private ViewGroup mRootView;
+    private LoadPictureTask mLoadPictureTask = null;
     
     public TabEditBuddiesFragment() {
     	
@@ -416,6 +420,34 @@ public class					TabEditBuddiesFragment extends Fragment
         mImageFetcher.closeCache();
     }
     
+    private class LoadPictureTask extends AsyncTask<Void, Void, Bitmap>
+    {
+    	private Buddy mBuddy;
+    	private ImageView mImageView;
+    	
+    	public LoadPictureTask(Buddy buddy, ImageView iv)
+    	{
+    		mBuddy = buddy;
+    		mImageView = iv;
+    	}
+
+		@Override
+		protected Bitmap doInBackground(Void... arg0) {
+			try {
+				return mBuddy.getPicture().getPicture(getActivity());
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		@Override
+		protected void onPostExecute(Bitmap result) {
+			mImageView.setImageBitmap(result);
+		}
+    	
+    }
     
     private class AutoCompleteAdapter extends ArrayAdapter<Buddy> implements Filterable
     {
@@ -431,16 +463,41 @@ public class					TabEditBuddiesFragment extends Fragment
     	@Override
     	public View getView(final int position, final View convertView, final ViewGroup parent)
     	{
-    		final TextView tv;
-    		
+    		final RelativeLayout rl;
+    		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
     		if (convertView != null)
     		{
-    			tv = (TextView) convertView;
+    			rl = (RelativeLayout) convertView;
     		}
     		else
-    			tv = (TextView) mInflater.inflate(android.R.layout.simple_dropdown_item_1line, parent, false);
-    		tv.setText(createFormattedBuddyFromBuddy(getItem(position)));
-    		return tv;
+    		{
+    			rl = (RelativeLayout) mInflater.inflate(R.layout.autocomplete_diveboard, parent, false);
+    		}
+    		((TextView)rl.getChildAt(1)).setTypeface(faceR);
+    		((TextView)rl.getChildAt(1)).setText(createFormattedBuddyFromBuddy(getItem(position)));
+    		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+    		
+            if (((Buddy)getItem(position)).getPicture() == null || ((Buddy)getItem(position)).getPicture()._urlDefault.contains("no_picture"))
+            {
+            	((ImageView)rl.getChildAt(0)).setImageResource(R.drawable.no_picture);
+            } else
+            	mImageFetcher.loadImage(((Buddy)getItem(position)).getPicture()._urlDefault, (ImageView)rl.getChildAt(0));
+            	//mLoadPictureTask = new LoadPictureTask(((Buddy)getItem(position)), ((ImageView)rl.getChildAt(0)));
+//            rl.setOnClickListener(new OnClickListener() {
+//				
+//				@Override
+//				public void onClick(View v) {
+//					((AutoCompleteTextView)mRootView.findViewById(R.id.search_diveboard_edit)).setText("");
+//					Buddy buddy = (Buddy) getItem(position);
+//					buddy.setNotify(((CheckBox)mRootView.findViewById(R.id.notify_diveboard_checkbox)).isChecked());
+//					if (!mBuddies.contains(buddy))
+//						mBuddies.add(buddy);
+//					mModel.getDives().get(mIndex).setBuddies(mBuddies);
+//					mAdapter.notifyDataSetChanged();
+//				}
+//			});
+    		return rl;
     	}
     	
     	private String createFormattedBuddyFromBuddy(final Buddy buddy)
