@@ -73,7 +73,7 @@ public class					EditDurationDialogFragment extends DialogFragment implements On
 		
 		TextView min_label = (TextView) view.findViewById(R.id.min_label);
 		min_label.setTypeface(faceR);
-		min_label.setText(getResources().getString(R.string.duration_label));
+		min_label.setText(getResources().getString(R.string.unit_min));
 		
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);

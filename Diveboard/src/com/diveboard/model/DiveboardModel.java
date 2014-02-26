@@ -70,7 +70,7 @@ public class					DiveboardModel
 {
 	private int					_userId;
 	private String				_shakenId;
-	private Context				_context;
+	public static Context		_context;
 	private User				_user = null;
 	private ConnectivityManager	_connMgr;
 	private DataManager			_cache;

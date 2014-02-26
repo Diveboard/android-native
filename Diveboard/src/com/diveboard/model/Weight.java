@@ -60,18 +60,18 @@ public class					Weight
 	public String				getSmallName()
 	{
 		if (_unit == Units.Weight.KG)
-			return (Resources.getSystem().getString(R.string.unit_kg));
+			return (DiveboardModel._context.getResources().getString(R.string.unit_kg));
 		if (_unit == Units.Weight.LBS)
-			return (Resources.getSystem().getString(R.string.unit_lbs));
-		return (Resources.getSystem().getString(R.string.unit_not_defined));
+			return (DiveboardModel._context.getResources().getString(R.string.unit_lbs));
+		return (DiveboardModel._context.getResources().getString(R.string.unit_not_defined));
 	}
 	
 	public String				getFullName()
 	{
 		if (_unit == Units.Weight.KG)
-			return (Resources.getSystem().getString(R.string.kilogram));
+			return (DiveboardModel._context.getResources().getString(R.string.kilogram));
 		if (_unit == Units.Weight.LBS)
-			return (Resources.getSystem().getString(R.string.pound));
-		return (Resources.getSystem().getString(R.string.unit_not_defined));
+			return (DiveboardModel._context.getResources().getString(R.string.pound));
+		return (DiveboardModel._context.getResources().getString(R.string.unit_not_defined));
 	}
 }

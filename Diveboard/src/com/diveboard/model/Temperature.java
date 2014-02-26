@@ -59,19 +59,19 @@ public class					Temperature
 	public String				getSmallName()
 	{
 		if (_unit == Units.Temperature.C)
-			return (Resources.getSystem().getString(R.string.unit_C));
+			return (DiveboardModel._context.getResources().getString(R.string.unit_C));
 		if (_unit == Units.Temperature.F)
-			return (Resources.getSystem().getString(R.string.unit_F));
-		return (Resources.getSystem().getString(R.string.unit_not_defined));
+			return (DiveboardModel._context.getResources().getString(R.string.unit_F));
+		return (DiveboardModel._context.getResources().getString(R.string.unit_not_defined));
 	}
 	
 	public String				getFullName()
 	{
 		if (_unit == Units.Temperature.C)
-			return (Resources.getSystem().getString(R.string.celcius));
+			return (DiveboardModel._context.getResources().getString(R.string.celcius));
 		if (_unit == Units.Temperature.F)
-			return (Resources.getSystem().getString(R.string.farenheit));
-		return (Resources.getSystem().getString(R.string.unit_not_defined));
+			return (DiveboardModel._context.getResources().getString(R.string.farenheit));
+		return (DiveboardModel._context.getResources().getString(R.string.unit_not_defined));
 	}
 }
 
