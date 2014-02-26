@@ -90,6 +90,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	private TabNewSpotsFragment	mNewSpotsFragment = new TabNewSpotsFragment();
 	private TabNewPhotosFragment	mNewPhotosFragment = new TabNewPhotosFragment();
 	private TabNewShopFragment mNewShopFragment = new TabNewShopFragment();
+	private TabNewBuddiesFragment mNewBuddiesFragment = new TabNewBuddiesFragment();
 	
 	public class			NewPagerAdapter extends FragmentPagerAdapter
 	{
@@ -112,8 +113,10 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				case 2:
 					return mNewShopFragment;
 				case 3:
-					return mNewPhotosFragment;
+					return mNewBuddiesFragment;
 				case 4:
+					return mNewPhotosFragment;
+				case 5:
 					return mNewNotesFragment;
 				default:
 					return null;
@@ -138,8 +141,10 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
         		case 2:
         			return getResources().getString(R.string.tab_shop_menutitle);
         		case 3:
-        			return getResources().getString(R.string.tab_photos_menutitle);
+					return getResources().getString(R.string.tab_buddies_title);
         		case 4:
+        			return getResources().getString(R.string.tab_photos_menutitle);
+        		case 5:
         			return getResources().getString(R.string.tab_notes_menutitle);
         		default:
         			return null;
@@ -308,9 +313,12 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						mTitle.setText(getResources().getString(R.string.tab_shop_title));
 						return ;
 					case 3:
-						mTitle.setText(getResources().getString(R.string.tab_photos_title));
+						mTitle.setText(getResources().getString(R.string.tab_buddies_title));
 						return ;
 					case 4:
+						mTitle.setText(getResources().getString(R.string.tab_photos_title));
+						return ;
+					case 5:
 						mTitle.setText(getResources().getString(R.string.tab_notes_edit_title));
 						return ;
 					default:

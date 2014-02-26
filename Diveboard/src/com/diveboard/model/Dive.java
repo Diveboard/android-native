@@ -130,7 +130,7 @@ public class					Dive implements IModel
 		_guide = null;
 		_pictures = new ArrayList<Picture>();
 		_shop = null;
-		_buddies = null;
+		_buddies = new ArrayList<Buddy>();
 		_diveReviews = null;
 	}
 	

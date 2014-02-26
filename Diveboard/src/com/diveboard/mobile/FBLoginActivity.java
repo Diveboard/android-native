@@ -80,6 +80,7 @@ public class FBLoginActivity extends Activity {
 	      @Override
 	      public void call(Session session, SessionState state, Exception exception) {
 	    	mToken = session.getAccessToken();
+	    	System.out.println("Token = " + mToken);
 	    	if (session.isClosed())
 	    	{
 	    		finish();
