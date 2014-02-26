@@ -255,7 +255,7 @@ public class TabNewPhotosFragment extends Fragment {
 		else
 		{
 			Toast toast = new Toast(getActivity());
-			toast.setText("An internet connection is required for picture upload. Please check your connectivity and try again.");
+			toast.setText(getResources().getString(R.string.check_connectivity));
 			toast.show();
 		}
 		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
@@ -291,7 +291,6 @@ public class TabNewPhotosFragment extends Fragment {
 
 		@Override
 		protected void onPostExecute(Picture result) {
-			System.out.println("TRUC de jean " + result.getJson());
 			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
 			mPhotoView.setVisibility(View.VISIBLE);
 			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());

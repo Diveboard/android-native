@@ -99,8 +99,8 @@ public class					OptionAdapter extends BaseAdapter
 				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optToggle = (ToggleButton) convertView.findViewById(R.id.optToggle);
 				holder.optToggle.setTypeface(faceR);
-				holder.optToggle.setTextOff(Resources.getSystem().getString(R.string.public_label));
-				holder.optToggle.setTextOn(Resources.getSystem().getString(R.string.private_label));
+				holder.optToggle.setTextOff(mContext.getResources().getString(R.string.dive_public_label));
+				holder.optToggle.setTextOn(mContext.getResources().getString(R.string.dive_private_label));
 				holder.optToggle.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
 					@Override
@@ -113,7 +113,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView.setTag(holder);
 				
 				holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
-				if (option.get(position).getValue().equals(Resources.getSystem().getString(R.string.public_label)))
+				if (option.get(position).getValue().equals(mContext.getResources().getString(R.string.dive_public_label)))
 					holder.optToggle.setChecked(false);
 				else
 					holder.optToggle.setChecked(true);
@@ -128,8 +128,8 @@ public class					OptionAdapter extends BaseAdapter
 				holder.optTitle.setTextColor(mContext.getResources().getColor(R.color.dark_grey));
 				holder.optSwitch = (Switch) convertView.findViewById(R.id.optSwitch);
 				holder.optSwitch.setTypeface(faceR);
-				holder.optSwitch.setTextOff(Resources.getSystem().getString(R.string.private_label));
-				holder.optSwitch.setTextOn(Resources.getSystem().getString(R.string.public_label));
+				holder.optSwitch.setTextOff(mContext.getResources().getString(R.string.dive_private_label));
+				holder.optSwitch.setTextOn(mContext.getResources().getString(R.string.dive_public_label));
 				holder.optSwitch.setOnCheckedChangeListener(new OnCheckedChangeListener()
 				{
 					@Override
@@ -142,7 +142,7 @@ public class					OptionAdapter extends BaseAdapter
 				convertView.setTag(holder);
 				
 				holder.optTitle.setText(option.get(position).getTitle().toUpperCase());
-				if (option.get(position).getValue().equals(Resources.getSystem().getString(R.string.public_label)))
+				if (option.get(position).getValue().equals(mContext.getResources().getString(R.string.dive_public_label)))
 					holder.optSwitch.setChecked(true);
 				else
 					holder.optSwitch.setChecked(false);
