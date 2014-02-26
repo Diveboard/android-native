@@ -602,10 +602,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 				// Footer static text
-				((TextView)diveFooter.findViewById(R.id.title_footer)).setText("CURRENTLY VIEWING DIVES FROM LOGBOOK");
+				((TextView)diveFooter.findViewById(R.id.title_footer)).setText(getResources().getString(R.string.title_footer));
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-				((TextView)diveFooter.findViewById(R.id.content_footer)).setText("No dive found!");
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(getResources().getString(R.string.no_dive_found));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 				//We create the pager with the associated pages
@@ -690,7 +690,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 	        		else
-	        			((TextView)findViewById(R.id.left_data)).setText("n/a");
+	        			((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
 			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
 			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
 			        
@@ -817,7 +817,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 								if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 									((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 								else
-									((TextView)findViewById(R.id.left_data)).setText("n/a");
+									((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
@@ -1130,7 +1130,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        		if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 	        		else
-	        			((TextView)findViewById(R.id.left_data)).setText("n/a");
+	        			((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
 	        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
 	            	rl.setBackgroundResource(R.drawable.ic_triangle);
 	            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);

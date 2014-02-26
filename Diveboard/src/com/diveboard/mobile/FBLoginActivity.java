@@ -196,7 +196,7 @@ public class FBLoginActivity extends Activity {
 //			}
 			else
 			{
-				Toast toast = Toast.makeText(FBLoginActivity.this, "Could not connect with the database", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(FBLoginActivity.this, getResources().getString(R.string.could_not_connect_db), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 			}

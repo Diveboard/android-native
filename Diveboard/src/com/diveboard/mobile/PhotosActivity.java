@@ -189,7 +189,7 @@ public class PhotosActivity extends Activity {
 		{
 			Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 			TextView tv = new TextView(this);
-			tv.setText("No Picture in your album!");
+			tv.setText(getResources().getString(R.string.no_picture));
 			tv.setTypeface(face);
 			tv.setGravity(Gravity.CENTER);
 			setContentView(tv);

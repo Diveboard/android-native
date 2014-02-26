@@ -146,7 +146,7 @@ public class FBLoginFragment extends Fragment{
 //			}
 			else
 			{
-				Toast toast = Toast.makeText(getActivity(), "Could not connect with the database", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getActivity(), getResources().getString(R.string.could_not_connect_db), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 			}
