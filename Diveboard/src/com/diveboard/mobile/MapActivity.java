@@ -43,7 +43,7 @@ public class MapActivity extends Activity {
 				|| AC.getModel().getDives().get(mIndex).getLat() == 0 && AC.getModel().getDives().get(mIndex).getLng() == 0)
 		{
 			TextView tv = new TextView(this);
-			tv.setText("No GPS found for actual dive");
+			tv.setText(getResources().getString(R.string.no_gps));
 			tv.setTypeface(face);
 			tv.setGravity(Gravity.CENTER);
 			setContentView(tv);

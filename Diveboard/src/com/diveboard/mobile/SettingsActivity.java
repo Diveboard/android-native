@@ -119,12 +119,12 @@ public class SettingsActivity extends PreferenceActivity {
 			if (UserPreference.getUnits().getString("distance").equals("Km"))
 			{
 				mUnitSetting.setValueIndex(1);
-				mUnitSetting.setValue("Metric");
+				mUnitSetting.setValue(getResources().getString(R.string.metric));
 			}
 			else
 			{
 				mUnitSetting.setValueIndex(0);
-				mUnitSetting.setValue("Imperial");
+				mUnitSetting.setValue(getResources().getString(R.string.imperial));
 			}
 		} catch (JSONException e) {
 			e.printStackTrace();
@@ -139,7 +139,7 @@ public class SettingsActivity extends PreferenceActivity {
 				ListPreference unit = (ListPreference) findPreference("unit");
 				pref.setSummary(newVal.toString());
 				String val = (String) newVal;
-				if (val.equals("Metric"))
+				if (val.equals(getResources().getString(R.string.metric)))
 					mModel.getPreference().setUnits(1);
 				else
 					mModel.getPreference().setUnits(0);
@@ -170,14 +170,14 @@ public class SettingsActivity extends PreferenceActivity {
 		if (UserPreference.getPictureQuality().equals("m_qual"))
 		{
 			mPicQualitySetting.setValueIndex(0);
-			pic_qual_str = "Medium Definition";
-			mPicQualitySetting.setValue("Medium Defition");
+			pic_qual_str = getResources().getString(R.string.medium_definition);
+			mPicQualitySetting.setValue(getResources().getString(R.string.medium_definition));
 		}
 		else
 		{
 			mPicQualitySetting.setValueIndex(1);
-			pic_qual_str = "High Definition";
-			mPicQualitySetting.setValue("High Definition");
+			pic_qual_str = getResources().getString(R.string.high_definition);
+			mPicQualitySetting.setValue(getResources().getString(R.string.high_definition));
 		}
 		
 		mPicQualitySetting.setSummary(pic_qual_str);
@@ -189,7 +189,7 @@ public class SettingsActivity extends PreferenceActivity {
 				ListPreference picqual = (ListPreference) findPreference("picquality");
 				pref.setSummary(newVal.toString());
 				String val = (String) newVal;
-				if (val.equals("Medium Definition"))
+				if (val.equals(getResources().getString(R.string.medium_definition)))
 					mModel.getPreference().setPictureQuality("m_qual");
 				else
 					mModel.getPreference().setPictureQuality("h_qual");
@@ -344,12 +344,12 @@ public class SettingsActivity extends PreferenceActivity {
 					if (clearCacheClickCount < 4)
 					{
 						if (clearCacheClickCount == 0)
-							Toast.makeText(SettingsActivity.this, "Click 5 times to confirm cache cleaning", Toast.LENGTH_SHORT).show();
+							Toast.makeText(SettingsActivity.this, getResources().getString(R.string.click_5_times), Toast.LENGTH_SHORT).show();
 						clearCacheClickCount++;
 					}
 					else
 					{
-						Toast.makeText(SettingsActivity.this, "Cache cleared", Toast.LENGTH_SHORT).show();
+						Toast.makeText(SettingsActivity.this, getResources().getString(R.string.cache_cleared), Toast.LENGTH_SHORT).show();
 						clearCacheClickCount = 0;
 						trimCache(getApplicationContext());
 					}
@@ -373,7 +373,7 @@ public class SettingsActivity extends PreferenceActivity {
 						fileContent.append(new String(buffer));
 					String date = fileContent.toString();
 					fileInputStream.close();
-					db_version.setSummary("Latest update: " + date);
+					db_version.setSummary(getResources().getString(R.string.latest_update) + ": " + date);
 					getPreferenceScreen().addPreference(db_version);
 				} catch (IOException e1) {
 					e1.printStackTrace();
@@ -381,7 +381,7 @@ public class SettingsActivity extends PreferenceActivity {
 			}
 			else
 			{
-				db_version.setSummary("Never updated");
+				db_version.setSummary(getResources().getString(R.string.never_updated));
 				getPreferenceScreen().addPreference(db_version);
 			}
 			

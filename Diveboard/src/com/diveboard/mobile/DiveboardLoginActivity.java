@@ -144,7 +144,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		setContentView(R.layout.activity_login);
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-		((TextView)findViewById(R.id.sign_up)).setText("SIGNUP FOR DIVEBOARD");
+		((TextView)findViewById(R.id.sign_up)).setText(getResources().getString(R.string.signup_for_diveboard));
 		((TextView)findViewById(R.id.sign_up)).setTypeface(faceB);
 		((TextView)findViewById(R.id.sign_up)).setTextSize(TEXT_SIZE_BIG);
 		((TextView)findViewById(R.id.email)).setTypeface(faceR);
@@ -207,7 +207,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		
 		if (ApplicationController.tokenExpired == true)
 		{
-			Toast.makeText(DiveboardLoginActivity.this, "Token expired, please login again", Toast.LENGTH_SHORT).show();
+			Toast.makeText(DiveboardLoginActivity.this, getResources().getString(R.string.token_expired), Toast.LENGTH_SHORT).show();
 			ApplicationController.tokenExpired = false;
 		}
 		EasyTracker.getInstance(this).activityStart(this);
@@ -364,7 +364,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					else
 					{
 						
-						Toast toast = Toast.makeText(getApplicationContext(), "Sorry, wrong login or password.", Toast.LENGTH_SHORT);
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.wrong_login), Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.BOTTOM, 0, 200);
 						toast.show();
 						showProgress(false);
@@ -396,7 +396,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect to Diveboard. Please check your network connectivity.", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.could_not_connect), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
 				showProgress(false);
@@ -442,7 +442,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 //			}
 			else
 			{
-				Toast toast = Toast.makeText(getApplicationContext(), "Could not connect with the database", Toast.LENGTH_SHORT);
+				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.could_not_connect_db), Toast.LENGTH_SHORT);
 				toast.setGravity(Gravity.BOTTOM, 0, 200);
 				toast.show();
 			}

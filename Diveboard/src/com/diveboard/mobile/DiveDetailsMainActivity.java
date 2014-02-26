@@ -120,7 +120,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
 			((TextView) findViewById(R.id.dive_note))
-					.setText("No Note for this dive");
+					.setText(getResources().getString(R.string.no_note));
 		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
 			((TextView) findViewById(R.id.dive_url)).setText("");
 		((TextView) findViewById(R.id.dive_url))
@@ -175,7 +175,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			mDownloadShopLogoTask = new DownloadShopLogoTask(mShopLogo);
 			mDownloadShopLogoTask.execute();
 		} else {
-			((TextView) findViewById(R.id.shop_name)).setText("No shop");
+			((TextView) findViewById(R.id.shop_name)).setText(getResources().getString(R.string.no_shop));
 			((TextView) findViewById(R.id.shop_name)).setTypeface(faceR);
 			((TextView) findViewById(R.id.shop_name)).setTextSize(
 					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
@@ -185,7 +185,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.max_depth_title)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView) findViewById(R.id.max_depth_title)).setText("MAX DEPTH: ");
+		((TextView) findViewById(R.id.max_depth_title)).setText(getResources().getString(R.string.max_depth_label).toUpperCase() + ": ");
 		((TextView) findViewById(R.id.max_depth_title)).setTypeface(faceB);
 		((TextView) findViewById(R.id.max_depth)).setTextSize(
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
@@ -193,8 +193,8 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		// findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance())
 		// + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		String maxdepth_unit = "";
-		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS"
-				: "FEET";
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? getResources().getString(R.string.meters).toUpperCase()
+				: getResources().getString(R.string.feet).toUpperCase();
 
 		/*
 		 * if (mDive.getMaxdepthUnit() == null) maxdepth_unit =
@@ -205,12 +205,12 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		Double maxdepth_value = 0.0;
 		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null) {
 			if (Units.getDistanceUnit() == Units.Distance.KM)
-				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? mDive
 						.getMaxdepth() : Utils.round(Converter.convert(
 						mDive.getMaxdepth(), Units.Distance.FT,
 						Units.Distance.KM), 2);
 			else
-				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_ft)) == 0) ? mDive
 						.getMaxdepth() : Utils.round(Converter.convert(
 						mDive.getMaxdepth(), Units.Distance.KM,
 						Units.Distance.FT), 2);
@@ -260,7 +260,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.duration_content)).setTypeface(faceR);
 		((TextView) findViewById(R.id.duration_content)).setText(mDive
-				.getDuration() + "mins");
+				.getDuration() + getResources().getString(R.string.unit_mins));
 		if (mDive.getVisibility() != null) {
 			((TextView) findViewById(R.id.visibility_content))
 					.setTypeface(faceR);
@@ -286,25 +286,28 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			 * else tempsurface_unit =
 			 * (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
 			 */
-			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C"
-					: "F";
+			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C)
+					: getResources().getString(R.string.unit_F);
 			Double tempsurface_value = 0.0;
 			if (mDive.getTempSurface() != null
 					&& mDive.getTempSurfaceUnit() != null) {
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
 					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(
-							"C") == 0) ? mDive.getTempSurface() : Utils.round(
+							getResources().getString(R.string.unit_C)) == 0) ? mDive.getTempSurface() : Utils.round(
 							Converter.convert(mDive.getTempSurface(),
 									Units.Temperature.F, Units.Temperature.C),
 							2);
 				else
 					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(
-							"F") == 0) ? mDive.getTempSurface() : Utils.round(
+							getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempSurface() : Utils.round(
 							Converter.convert(mDive.getTempSurface(),
 									Units.Temperature.C, Units.Temperature.F),
 							2);
 			}
-			temp = "SURF " + tempsurface_value + "°" + tempsurface_unit;
+			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
+				temp = getResources().getString(R.string.surface_label) + " " + tempsurface_value + getResources().getString(R.string.unit_C_symbol);
+			else
+				temp = getResources().getString(R.string.surface_label) + " " + tempsurface_value + getResources().getString(R.string.unit_F_symbol);
 		} else
 			temp = "-";
 		temp += " | ";
@@ -318,25 +321,28 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			 * else tempbottom_unit = (mDive.getTempBottomUnit().compareTo("C")
 			 * == 0) ? "C" : "F";
 			 */
-			tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? "C"
-					: "F";
+			tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C)
+					: getResources().getString(R.string.unit_F);
 			Double tempbottom_value = 0.0;
 			if (mDive.getTempBottom() != null
 					&& mDive.getTempBottomUnit() != null) {
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
 					tempbottom_value = (mDive.getTempBottomUnit()
-							.compareTo("C") == 0) ? mDive.getTempBottom()
+							.compareTo(getResources().getString(R.string.unit_C)) == 0) ? mDive.getTempBottom()
 							: Utils.round(Converter.convert(
 									mDive.getTempBottom(), Units.Temperature.F,
 									Units.Temperature.C), 2);
 				else
 					tempbottom_value = (mDive.getTempBottomUnit()
-							.compareTo("F") == 0) ? mDive.getTempBottom()
+							.compareTo(getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempBottom()
 							: Utils.round(Converter.convert(
 									mDive.getTempBottom(), Units.Temperature.C,
 									Units.Temperature.F), 2);
 			}
-			temp += "BOTTOM " + tempbottom_value + "°" + tempbottom_unit;
+			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
+				temp += getResources().getString(R.string.bottom_label) + " " + tempbottom_value + getResources().getString(R.string.unit_C_symbol);
+			else
+				temp += getResources().getString(R.string.bottom_label) + " " + tempbottom_value + getResources().getString(R.string.unit_F_symbol);
 		} else
 			temp += "-";
 		if (temp.contentEquals("- | -")) {

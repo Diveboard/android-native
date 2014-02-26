@@ -89,7 +89,7 @@ public class DivesFragment extends Fragment {
 		mFragmentBodyTitle.setLayoutParams(fragment_body_title_params);
 		//Fragment user profile data creation
 		ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText("LOGGED BY:");
+		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setText(getResources().getString(R.string.logged_by) + ":");
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTypeface(faceB);
 		((TextView) mFragmentProfile.findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListProfileBoxHeight() * 20 / 100));
 		if (AC.getModel().getUser().getNickname() != null)
@@ -184,7 +184,7 @@ public class DivesFragment extends Fragment {
 		//Set the banner content
 		if (mDive.getTripName() != null)
 		{
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText("TRIP NAME:");
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText(getResources().getString(R.string.trip_name_label).toUpperCase() + ":");
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
@@ -206,19 +206,19 @@ public class DivesFragment extends Fragment {
 		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + "MINS");
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + getResources().getString(R.string.unit_mins).toUpperCase());
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		String maxdepth_unit = "";
-		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
+		maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? getResources().getString(R.string.meters).toUpperCase() : getResources().getString(R.string.feet).toUpperCase();
 		Double maxdepth_value = 0.0;
 		if (mDive.getMaxdepth() != null && mDive.getMaxdepthUnit() != null)
 		{
 			if (Units.getDistanceUnit() == Units.Distance.KM)
-				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.FT, Units.Distance.KM), 2);
 			else
-				maxdepth_value = (mDive.getMaxdepthUnit().compareTo("ft") == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
+				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_ft)) == 0) ? mDive.getMaxdepth() : Utils.round(Converter.convert(mDive.getMaxdepth(), Units.Distance.KM, Units.Distance.FT), 2);
 		}
 //		if (mDive.getMaxdepthUnit() == null)
 //			maxdepth_unit = (Units.getDistanceUnit() == Units.Distance.KM) ? "METERS" : "FEET";
