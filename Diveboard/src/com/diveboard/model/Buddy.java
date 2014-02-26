@@ -22,6 +22,7 @@ public class					Buddy implements IModel
 	private String				_shaken_id = null;
 	private String				_email = null;
 	private Boolean				_notify = false;
+	private String				_fb_id = null;
 	
 	public						Buddy(JSONObject json)
 	{
@@ -41,6 +42,7 @@ public class					Buddy implements IModel
 			_vanity_url = (json.isNull("vanity_url")) ? null : json.getString("vanity_url");
 			_email = (json.isNull("email")) ? null : json.getString("email");
 			_shaken_id = (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
+			_fb_id = (json.isNull("fb_id")) ? null : json.getString("fb_id"); 
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -81,6 +83,8 @@ public class					Buddy implements IModel
 				json.put("notify", _notify);
 			if (_email != null)
 				json.put("email", _email);
+			if (_fb_id != null)
+				json.put("fb_id", _fb_id);
 		} catch (JSONException e) {
 			e.printStackTrace();
 		}
@@ -207,5 +211,13 @@ public class					Buddy implements IModel
 
 	public void setEmail(String _email) {
 		this._email = _email;
+	}
+	
+	public String getFbId() {
+		return _fb_id;
+	}
+	
+	public void setFbId(String fb_id) {
+		this._fb_id = fb_id;
 	}
 }
