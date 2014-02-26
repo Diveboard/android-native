@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
@@ -38,11 +39,12 @@ import android.widget.RatingBar.OnRatingBarChangeListener;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ImageView.ScaleType;
 import android.widget.TextView.OnEditorActionListener;
 
 public class NewReviewDialogFragment extends DialogFragment implements
-			OnEditorActionListener {
-	
+		OnEditorActionListener {
+
 	public interface EditReviewDialogListener {
 		void onReviewEditComplete(DialogFragment dialog);
 	}
@@ -51,6 +53,8 @@ public class NewReviewDialogFragment extends DialogFragment implements
 	private ListView mReview;
 	private EditReviewDialogListener mListener;
 	private RatingBar overall, difficulty, fish, life, wreck;
+	private TextView hintOverall, hintDifficulty, hintFish, hintLife,
+			hintWreck;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -83,44 +87,403 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		System.out.println("title " + title);
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_review_title));
-		
-		ImageView delete1 = (ImageView) view.findViewById(R.id.DeleteOverall);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
-		ImageView delete2 = (ImageView) view.findViewById(R.id.DeleteDifficulty);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
-		ImageView delete3 = (ImageView) view.findViewById(R.id.DeleteMarine);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
-		ImageView delete4 = (ImageView) view.findViewById(R.id.DeleteBigFish);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
-		ImageView delete5 = (ImageView) view.findViewById(R.id.DeleteWreck);
-		delete1.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
-		
-		//onClick
 
+		ImageView delete1 = (ImageView) view.findViewById(R.id.DeleteOverall);
+		ImageView delete2 = (ImageView) view.findViewById(R.id.DeleteDifficulty);
+		ImageView delete3 = (ImageView) view.findViewById(R.id.DeleteMarine);
+		ImageView delete4 = (ImageView) view.findViewById(R.id.DeleteBigFish);
+		ImageView delete5 = (ImageView) view.findViewById(R.id.DeleteWreck);
+		
+		hintOverall = (TextView) view.findViewById(R.id.OverallHintTV);
+		hintDifficulty = (TextView) view.findViewById(R.id.DifficultyHintTV);
+		hintLife = (TextView) view.findViewById(R.id.LifeHintTV);
+		hintFish = (TextView) view.findViewById(R.id.FishHintTV);
+		hintWreck = (TextView) view.findViewById(R.id.wreck_hintTV);
+
+		delete1.setOnClickListener(deleteReview);
+		delete2.setOnClickListener(deleteReview);
+		delete3.setOnClickListener(deleteReview);
+		delete4.setOnClickListener(deleteReview);
+		delete5.setOnClickListener(deleteReview);
+
+		int rating = 0;
 		overall = (RatingBar) view.findViewById(R.id.OverallRatingBar);
 		difficulty = (RatingBar) view.findViewById(R.id.DifficultyRatingBar);
 		fish = (RatingBar) view.findViewById(R.id.FishRatingBar);
 		life = (RatingBar) view.findViewById(R.id.LifeRatingBar);
 		wreck = (RatingBar) view.findViewById(R.id.WreckRatingBar);
 
+		
+		//We load the previous values of the reviews if there were any
 		if (mDive.getDiveReviews() != null) {
 
-			if (mDive.getDiveReviews().getOverall() != null)
-				overall.setRating(mDive.getDiveReviews().getOverall());
+			if (mDive.getDiveReviews().getOverall() != null) {
+				rating = mDive.getDiveReviews().getOverall();
+				overall.setRating(rating);
+				switch (rating) {
+				case 1:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
 
-			if (mDive.getDiveReviews().getDifficulty() != null)
-				difficulty.setRating(mDive.getDiveReviews().getDifficulty());
+				case 2:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
 
-			if (mDive.getDiveReviews().getBigFish() != null)
-				fish.setRating(mDive.getDiveReviews().getBigFish());
+				case 3:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_average));
+					break;
 
-			if (mDive.getDiveReviews().getMarine() != null)
-				life.setRating(mDive.getDiveReviews().getMarine());
+				case 4:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
 
-			if (mDive.getDiveReviews().getWreck() != null)
-				wreck.setRating(mDive.getDiveReviews().getWreck());
+				case 5:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
 
+				}
+			}
+			if (mDive.getDiveReviews().getDifficulty() != null) {
+				rating = mDive.getDiveReviews().getDifficulty();
+				difficulty.setRating(rating);
+
+				switch (rating) {
+				case 1:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_trivial));
+					break;
+
+				case 2:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_simple));
+					break;
+
+				case 3:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_somewhat_simple));
+					break;
+
+				case 4:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_tricky));
+					break;
+
+				case 5:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_hardcore));
+					break;
+
+				}
+
+			}
+			if (mDive.getDiveReviews().getBigFish() != null) {
+				rating = mDive.getDiveReviews().getBigFish();
+				fish.setRating(rating);
+
+				switch (rating) {
+				case 1:
+					hintFish.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintFish.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintFish.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintFish.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintFish.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				}
+			}
+			if (mDive.getDiveReviews().getMarine() != null) {
+				rating = mDive.getDiveReviews().getMarine();
+				life.setRating(rating);
+
+				switch (rating) {
+				case 1:
+					hintLife.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintLife.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintLife.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintLife.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintLife.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				}
+			}
+			if (mDive.getDiveReviews().getWreck() != null) {
+				rating = mDive.getDiveReviews().getWreck();
+				wreck.setRating(rating);
+
+				switch (rating) {
+				case 1:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+				}
+			}
 		}
+		
+		
+		//Handle dynamically the update of the hints of the review
+		overall.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				final int tempRating = (int) overall.getRating();
+				switch (tempRating) {
+
+				case 1:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintOverall.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				default:
+					break;
+
+				}
+			}
+		});
+
+		difficulty.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				final int tempRating = (int) difficulty.getRating();
+				switch (tempRating) {
+
+				case 1:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_trivial));
+					break;
+
+				case 2:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_simple));
+					break;
+
+				case 3:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_somewhat_simple));
+					break;
+
+				case 4:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_tricky));
+					break;
+
+				case 5:
+					hintDifficulty.setText(getResources().getString(
+							R.string.hint_hardcore));
+					break;
+
+				default:
+					break;
+
+				}
+			}
+		});
+		
+		life.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				final int tempRating = (int) life.getRating();
+				switch (tempRating) {
+
+				case 1:
+					hintLife.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintLife.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintLife.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintLife.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintLife.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				default:
+					break;
+
+				}
+			}
+		});
+		
+		fish.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				final int tempRating = (int) fish.getRating();
+				switch (tempRating) {
+
+				case 1:
+					hintFish.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintFish.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintFish.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintFish.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintFish.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				default:
+					break;
+
+				}
+			}
+		});
+		
+		wreck.setOnRatingBarChangeListener(new OnRatingBarChangeListener() {
+
+			@Override
+			public void onRatingChanged(RatingBar ratingBar, float rating,
+					boolean fromUser) {
+				// TODO Auto-generated method stub
+				final int tempRating = (int) wreck.getRating();
+				switch (tempRating) {
+
+				case 1:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_terrible));
+					break;
+
+				case 2:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_poor));
+					break;
+
+				case 3:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_average));
+					break;
+
+				case 4:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_very_good));
+					break;
+
+				case 5:
+					hintWreck.setText(getResources().getString(
+							R.string.hint_excellent));
+					break;
+
+				default:
+					break;
+
+				}
+			}
+		});
 
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);
@@ -194,5 +557,42 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		// }
 		return false;
 	}
+
+	OnClickListener deleteReview = new OnClickListener() {
+
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+
+			case R.id.DeleteOverall:
+				overall.setRating(0);
+				hintOverall.setText("");
+				break;
+
+			case R.id.DeleteDifficulty:
+				difficulty.setRating(0);
+				hintDifficulty.setText("");
+				break;
+
+			case R.id.DeleteMarine:
+				life.setRating(0);
+				hintLife.setText("");
+				break;
+
+			case R.id.DeleteBigFish:
+				fish.setRating(0);
+				hintFish.setText("");
+				break;
+
+			case R.id.DeleteWreck:
+				wreck.setRating(0);
+				hintWreck.setText("");
+				break;
+
+			}
+
+		}
+	};
 
 }

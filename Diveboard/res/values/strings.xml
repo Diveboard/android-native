@@ -4,7 +4,7 @@
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
-    <string name="maps_app_id_debug">AIzaSyActYnLGFI7NCJ4AKPCQ0wjHrbCVKYaDX0</string>
+    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
@@ -113,4 +113,6 @@
     <string name="edit_guidename_title">Guide Name</string>
     <string name="guidename_hint">Guide Name</string>
     <string name="no_network_connection_toast">No network connection found</string>
+    <string name="new_spot_marker_toast">Drag the actual marker to the position you want or get a new one doing a long click on the map</string>
+    
 </resources>

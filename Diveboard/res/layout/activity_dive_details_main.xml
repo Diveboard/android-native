@@ -363,50 +363,29 @@
             android:orientation="vertical"
             android:paddingBottom="10dp" >
 
-            
-
                 <LinearLayout
+                    android:id="@+id/layout_review"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:id="@+id/layout_review"
-                    android:gravity="center" >
+                    android:gravity="center"
+                    android:orientation="horizontal" >
 
                     <LinearLayout
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal" >
+                        android:layout_height="match_parent"
+                        android:gravity="right"
+                        android:layout_weight="0.35"
+                        android:orientation="vertical" >
 
                         <TextView
                             android:id="@+id/overallTV"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight="0.3"
-                            
                             android:gravity="center"
                             android:paddingTop="5dp"
                             android:text="Overall"
                             android:textColor="#000000" />
-
-                        <RatingBar
-                            android:id="@+id/overall_review"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="end"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal" >
 
                         <TextView
                             android:id="@+id/difficultyTV"
@@ -417,6 +396,56 @@
                             android:paddingTop="5dp"
                             android:text="Difficulty"
                             android:textColor="#000000" />
+
+                        <TextView
+                            android:id="@+id/lifeTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:paddingTop="5dp"
+                            android:text="Marine life quality"
+                            android:textColor="#000000" />
+
+                        <TextView
+                            android:id="@+id/fishTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:paddingTop="5dp"
+                            android:text="Big Fish"
+                            android:textColor="#000000" />
+
+                        <TextView
+                            android:id="@+id/wreckTV"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:paddingTop="5dp"
+                            android:text="Wreck"
+                            android:textColor="#000000" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_weight="0.65"
+                        android:orientation="vertical" >
+
+                        <RatingBar
+                            android:id="@+id/overall_review"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="0.5"
+                            android:numStars="5"
+                            android:paddingTop="5dp"
+                            android:rating="0.0"
+                            android:stepSize="1.0" />
 
                         <RatingBar
                             android:id="@+id/difficulty_review"
@@ -430,30 +459,12 @@
                             android:paddingTop="5dp"
                             android:rating="0.0"
                             android:stepSize="1.0" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/lifeTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Marine life quality"
-                            android:textColor="#000000" />
 
                         <RatingBar
                             android:id="@+id/life_review"
                             style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
                             android:layout_marginLeft="15dp"
                             android:layout_weight="0.5"
                             android:gravity="center"
@@ -461,61 +472,12 @@
                             android:paddingTop="5dp"
                             android:rating="0.0"
                             android:stepSize="1.0" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/wreckTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Wreck"
-                            android:textColor="#000000" />
-
-                        <RatingBar
-                            android:id="@+id/wreck_review"
-                            style="?android:attr/ratingBarStyleSmall"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_gravity="right"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0" />
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:gravity="center_horizontal"
-                        android:orientation="horizontal" >
-
-                        <TextView
-                            android:id="@+id/fishTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Big Fish"
-                            android:textColor="#000000" />
 
                         <RatingBar
                             android:id="@+id/fish_review"
                             style="?android:attr/ratingBarStyleSmall"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_gravity="right"
                             android:layout_marginLeft="15dp"
                             android:layout_weight="0.5"
                             android:gravity="center"
@@ -523,7 +485,22 @@
                             android:paddingTop="5dp"
                             android:rating="0.0"
                             android:stepSize="1.0" />
+
+                        <RatingBar
+                            android:id="@+id/wreck_review"
+                            style="?android:attr/ratingBarStyleSmall"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="15dp"
+                            android:layout_weight="0.5"
+                            android:gravity="center"
+                            android:numStars="5"
+                            android:paddingTop="5dp"
+                            android:rating="0.0"
+                            android:stepSize="1.0" />
+
                     </LinearLayout>
+
                 </LinearLayout>
 
 

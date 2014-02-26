@@ -308,33 +308,33 @@ public class					TabNewShopFragment extends Fragment
 		String pos = "";
 		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "N";
 		}
 		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat()) + "Â° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat()) + "° ";
 			pos += "N";
 		}
 		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() * (-1)) + "Â° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "E";
 		}
 		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng()) + "Â° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng()) + "° ";
 			pos += "E";
 		}
 		else if (((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() * (-1)) + "Â° ";
+			pos += String.valueOf(((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
 		if ((((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == null || ((ApplicationController)getActivity().getApplicationContext()).getTempDive().getShop().getLat() == 0) && 
@@ -392,7 +392,7 @@ public class					TabNewShopFragment extends Fragment
     		@Override
     		public void run()
     		{
-    			ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+    			//ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
     			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
     			result = mModel.searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
     			System.out.println(result);

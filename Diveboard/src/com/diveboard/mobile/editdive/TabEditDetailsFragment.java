@@ -332,8 +332,8 @@ public class					TabEditDetailsFragment extends Fragment
 				fullReview += "Marine life review was " + dive.getDiveReviews().getMarine().toString() + " ,";
 			if (dive.getDiveReviews().getBigFish()!= null)
 				fullReview += "Fish review was " + dive.getDiveReviews().getBigFish().toString() + " ,";
-//			if (dive.getDiveReviews().getOverall()!= null)
-//				fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
+			if (dive.getDiveReviews().getWreck()!= null)
+				fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
 			elem.add(new EditOption("Review : ", fullReview));
 			
 		}
