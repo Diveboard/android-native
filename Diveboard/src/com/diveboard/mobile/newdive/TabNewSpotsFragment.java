@@ -152,6 +152,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		ApplicationController AC = (ApplicationController) getActivity()
 				.getApplicationContext();
 
+		
 		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),
 				"fonts/Quicksand-Regular.otf");
 		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),
@@ -220,6 +221,9 @@ public class TabNewSpotsFragment extends Fragment implements
 							.getSystemService(Context.INPUT_METHOD_SERVICE);
 					imm.toggleSoftInput(0, 0);
 					handled = true;
+					
+					
+					
 				}
 				return handled;
 			}
@@ -520,7 +524,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		mManualMarker = mMap.addMarker(new MarkerOptions() 
 		.position(mMap.getCameraPosition().target)
-		.title("My spot")
+		.title("1: My spot")
 		.draggable(true)
 		.icon(BitmapDescriptorFactory.fromResource(R.drawable.diveboard_marker)));
 		
@@ -869,13 +873,13 @@ public class TabNewSpotsFragment extends Fragment implements
 													.getApplicationContext(),
 											listSpots);
 									lv.setAdapter(adapter);
-									// ImageView remove = (ImageView)
-									// findViewById(R.id.remove_button);
-									// remove.setVisibility(View.VISIBLE);
+									
 									mHasChanged = true;
 									try {
+										//It sets here the selected spot to the tempDive Model
 										mSelectedObject = mArray.getJSONObject(position);
 										((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSelectedObject);
+										
 										System.out.println(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().toString());
 										if (mMyMarker != null)
 											mMyMarker.remove();
@@ -982,7 +986,7 @@ public class TabNewSpotsFragment extends Fragment implements
 			return convertView;
 		}
 
-		private class ViewHolder {
+		private class ViewHolder {	
 			TextView id;
 			TextView name;
 			TextView location_country;
@@ -1000,8 +1004,7 @@ public class TabNewSpotsFragment extends Fragment implements
 			System.err.println("Number could not be rounded properly, provide a different number of decimals");
 			return 0.0;
 		}
-		for(int i=0; i<n; i++)
-			grade *= 10;
+		grade = (int) Math.pow(10.0, n);
 		mRounded = Math.round(number * grade);
 		mRounded = mRounded / grade;
 		

@@ -308,6 +308,10 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						return ;
 					case 1:
 						mTitle.setText(getResources().getString(R.string.tab_spots_title));
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.new_spot_welcome_screen),
+								Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
 						return ;
 					case 2:
 						mTitle.setText(getResources().getString(R.string.tab_shop_title));

@@ -107,7 +107,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
-                            android:layout_marginTop="5dp"
+                            android:layout_marginTop="10dp"
                             android:text="NAME:" />
 
                         <EditText
@@ -134,14 +134,14 @@
                             android:id="@+id/details_country"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:layout_marginLeft="20dp"
                             android:text="COUNTRY:" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/details_country_content"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/details_country"
                             android:text="" />
                     </RelativeLayout>
@@ -160,15 +160,15 @@
                         <TextView
                             android:id="@+id/details_region"
                             android:layout_width="wrap_content"
+                            android:layout_marginTop="10dp"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
                             android:text="REGION:" />
 
-                        <TextView
+                        <EditText
                             android:id="@+id/details_region_content"
-                            android:layout_width="wrap_content"
+                            android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/details_region"
                             android:text="" />
                     </RelativeLayout>

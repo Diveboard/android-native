@@ -1252,58 +1252,6 @@ public class					DiveboardModel
 		return null;
 	}
 	
-//	private class						SpotContainer implements Comparable
-//	{
-//		private Integer					_id;
-//		private String					_name;
-//		private String					_location_name;
-//		private String					_country_name;
-//		private Double					_lat;
-//		private Double					_lng;
-//		private Double					_distance = 0.0;
-//		
-//		public void						setId(Integer id) { this._id = id; }
-//		public Integer					getId() { return this._id; }
-//		public void						setName(String name) { this._name = name; }
-//		public String					getName() { return this._name; }
-//		public void						setLocationName(String location_name) { this._location_name = location_name; }
-//		public String					getLocationName() { return this._location_name; }
-//		public void						setCountryName(String country_name) { this._country_name = country_name; }
-//		public String					getCountryName() { return this._country_name; }
-//		public void						setLat(Double lat) { this._lat = lat; }
-//		public Double					getLat() { return this._lat; }
-//		public void						setLng(Double lng) { this._lng = lng; }
-//		public Double					getLng() { return this._lng; }
-//		public void						setDistance(Double distance) { this._distance = distance; }
-//		public Double					getDistance() { return this._distance; }
-//		
-//		@Override
-//		public int compareTo(Object another) {
-//			SpotContainer other = (SpotContainer) another;
-//			if (this._distance > other.getDistance())
-//				return 1;
-//			else if (this._distance < other.getDistance())
-//				return -1;
-//			return 0;
-//		}
-//	}
-	
-//	private Double						_calculateDistance(Double lat_a, Double lng_a, Double lat_b, Double lng_b)
-//	{
-//		Double a = Math.PI / 180;
-//		Double lat1 = lat_a * a;
-//		Double lat2 = lat_b * a;
-//		Double lng1 = lng_a * a;
-//		Double lng2 = lng_b * a;
-//		
-//		Double t1 = Math.sin(lat1) * Math.sin(lat2);
-//		Double t2 = Math.cos(lat1) * Math.cos(lat2);
-//		Double t3 = Math.cos(lng1 - lng2);
-//		Double t4 = t2 * t3;
-//		Double t5 = t1 + t4;
-//		Double rad_dist = Math.atan(-t5 / Math.sqrt(-t5 * t5 + 1)) + 2 * Math.atan(1);
-//		return (rad_dist * 3437.74677 * 1.1508) * 1.6093470878864446;
-//	}
 	
 	public JSONObject					searchShopText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{

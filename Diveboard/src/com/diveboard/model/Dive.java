@@ -711,30 +711,6 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 
-//	public Temperature getTempBottom() {
-//		for (int i = _editList.size() - 1; i >= 0; i--)
-//		{
-//			if (_editList.get(i).first.contentEquals("temp_bottom"))
-//			{
-//				if (_editList.get(i).second == null)
-//					return null;
-//				Temperature result = new Temperature(Double.parseDouble(_editList.get(i).second), Units.Temperature.C);
-//				return (result);
-//			}
-//		}
-//		return _tempBottom;
-//	}
-//
-//	public void setTempBottom(Temperature _tempBottom) {
-//		//this._tempBottom = _tempBottom;
-//		Pair<String, String> new_elem;
-//		
-//		if (_tempBottom == null)
-//			new_elem = new Pair<String, String>("temp_bottom", null);
-//		else
-//			new_elem = new Pair<String, String>("temp_bottom", Double.toString(_tempBottom.getTemperature(Units.Temperature.C)));
-//		_editList.add(new_elem);
-//	}
 	
 	public Double getTempBottom() {
 		for (int i = _editList.size() - 1; i >= 0; i--)

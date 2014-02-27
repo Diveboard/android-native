@@ -114,5 +114,6 @@
     <string name="guidename_hint">Guide Name</string>
     <string name="no_network_connection_toast">No network connection found</string>
     <string name="new_spot_marker_toast">Drag the actual marker to the position you want or get a new one doing a long click on the map</string>
+    <string name="new_spot_welcome_screen">Search for predefined dive spots or place your own spot by clicking on the left marker icon</string>
     
 </resources>
