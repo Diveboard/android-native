@@ -1322,6 +1322,67 @@ public class					DiveboardModel
 		return null;
 	}
 	
+	public JSONObject					searchRegionLocationText(String latitude, String longitude){
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			// Creating web client
+			HttpParams httpParameters = new BasicHttpParams();
+			int timeoutConnection = DiveboardModel._coTimeout;
+			HttpConnectionParams.setConnectionTimeout(httpParameters, timeoutConnection);
+			int timeoutSocket = DiveboardModel._soTimeout;
+			HttpConnectionParams.setSoTimeout(httpParameters, timeoutSocket);
+			DefaultHttpClient client = new DefaultHttpClient(httpParameters);
+			// Initiate POST request
+			HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/search_region_text");
+			// Adding parameters
+			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+			
+			if (latitude != null)
+				args.add(new BasicNameValuePair("lat", latitude));
+			if (longitude != null)
+				args.add(new BasicNameValuePair("lng", longitude));
+			
+			try
+			{
+				args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+				// Execute request
+				HttpResponse response = client.execute(postRequest);
+				// Get response
+				HttpEntity entity = response.getEntity();
+				String result = ContentExtractor.getASCII(entity);
+				JSONObject json = new JSONObject(result);
+//				System.out.println(json);
+//				client.close();
+				return (json);
+			}
+			catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			} catch (ConnectTimeoutException e) {
+				DiveboardModel._cotimedout = true; //NEEDS TO BE HANDLED FOR OFFLINE MODE
+				return null;
+			} catch (SocketTimeoutException e) {
+				DiveboardModel._sotimedout = true;
+				return null;
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+		else{
+			
+			return null;
+		}
+		
+		return null;
+	}
+	
 	public JSONObject					searchSpotText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();

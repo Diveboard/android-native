@@ -116,7 +116,8 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="20dp"
                             android:layout_toRightOf="@id/nameManualSpotTV"
-                            android:hint="Name of your spot" />
+                            android:hint="Name of your spot"
+                            android:focusableInTouchMode="true" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -138,12 +139,12 @@
                             android:layout_marginLeft="20dp"
                             android:text="COUNTRY:" />
 
-                        <EditText
+                        <Spinner
                             android:id="@+id/details_country_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_toRightOf="@id/details_country"
-                            android:text="" />
+                            />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -165,12 +166,37 @@
                             android:layout_marginLeft="20dp"
                             android:text="REGION:" />
 
-                        <EditText
+                        <Spinner
                             android:id="@+id/details_region_content"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_toRightOf="@id/details_region"
-                            android:text="" />
+                            android:layout_toRightOf="@id/details_region" />
+                    </RelativeLayout>
+                    
+                    <RelativeLayout
+                        android:id="@+id/location_layout"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="5dp"
+                        android:background="@drawable/edit_spot"
+                        android:gravity="center_vertical"
+                        android:visibility="gone" >
+
+                        <TextView
+                            android:id="@+id/details_location"
+                            android:layout_width="wrap_content"
+                            android:layout_marginTop="10dp"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="LOCATION:" />
+
+                        <Spinner
+                            android:id="@+id/details_location_content"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_toRightOf="@id/details_location"/>
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -208,7 +234,7 @@
                         android:layout_marginRight="20dp"
                         android:layout_marginTop="5dp"
                         android:background="@drawable/go_to_search_button"
-                        android:text="SEARCH A SPOT >>" />
+                        android:text="SEARCH A NEARBY SPOT >>" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -250,7 +276,6 @@
                         android:imeOptions="actionSearch"
                         android:inputType="text" >
 
-                        <requestFocus />
                     </EditText>
 
                     <ImageView

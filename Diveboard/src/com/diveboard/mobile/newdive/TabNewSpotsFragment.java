@@ -63,6 +63,7 @@ import android.webkit.WebView.FindListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AbsoluteLayout;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Button;
 import android.widget.EditText;
@@ -72,6 +73,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
@@ -83,6 +85,9 @@ public class TabNewSpotsFragment extends Fragment implements
 	private int mIndex;
 	private JSONObject mSelectedObject = null;
 	private JSONArray mArray;
+	private JSONArray mRegionsArray;
+	private JSONArray mLocationsArray;
+	private JSONArray mCountriesArray;
 	private boolean mError = false;
 	private GoogleMap mMap;
 	private List<Marker> mListMarkers = new ArrayList<Marker>();
@@ -95,6 +100,7 @@ public class TabNewSpotsFragment extends Fragment implements
 	public final int mZoom = 12;
 	private Boolean mHasChanged = false;
 	private SpotsTask mSpotsTask;
+	private RegionLocationTask mRegionLocationTask;
 	private ViewGroup rootView;
 	private boolean manualSpotActivated;
 
@@ -243,6 +249,19 @@ public class TabNewSpotsFragment extends Fragment implements
 				goToSetManualSpot(rootView);
 			}
 		});
+		
+		Spinner mCountries= (Spinner)rootView.findViewById(R.id.details_country_content); 
+		Spinner mRegions= (Spinner)rootView.findViewById(R.id.details_region_content);
+		Spinner mLocations= (Spinner)rootView.findViewById(R.id.details_location_content); 
+		
+		
+		//mRegions.setBackgroundColor(getResources().getColor(R.color.yellow));
+		
+		ArrayAdapter<CharSequence> countriesAdapter = ArrayAdapter.createFromResource((ApplicationController) getActivity().getApplicationContext(), R.array.countries, R.layout.custom_spinner_layout);
+		mCountries.setAdapter(countriesAdapter);
+//		mRegions.setAdapter(countriesAdapter);
+//		mLocations.setAdapter(countriesAdapter);
+		
 		
 		
 
@@ -452,6 +471,10 @@ public class TabNewSpotsFragment extends Fragment implements
 					.setVisibility(View.GONE);
 			((RelativeLayout) rootView.findViewById(R.id.region_layout))
 					.setVisibility(View.GONE);
+			((RelativeLayout) rootView.findViewById(R.id.location_layout))
+					.setVisibility(View.GONE);
+			((RelativeLayout) rootView.findViewById(R.id.gps_layout))
+					.setVisibility(View.VISIBLE);
 			
 			
 		}
@@ -489,9 +512,9 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		((LinearLayout) rootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
 		
-		
-		
 		((RelativeLayout) rootView.findViewById(R.id.details_name_layout))
+				.setVisibility(View.GONE);
+		((RelativeLayout) rootView.findViewById(R.id.gps_layout))
 				.setVisibility(View.GONE);
 		
 		((RelativeLayout) rootView.findViewById(R.id.new_spot_name_layout))
@@ -499,6 +522,8 @@ public class TabNewSpotsFragment extends Fragment implements
 		((RelativeLayout) rootView.findViewById(R.id.country_layout))
 				.setVisibility(View.VISIBLE);
 		((RelativeLayout) rootView.findViewById(R.id.region_layout))
+				.setVisibility(View.VISIBLE);
+		((RelativeLayout) rootView.findViewById(R.id.location_layout))
 				.setVisibility(View.VISIBLE);
 		
 		((TextView) rootView.findViewById(R.id.nameManualSpotTV))
@@ -508,16 +533,14 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		((TextView) rootView.findViewById(R.id.details_country))
 				.setTypeface(mFaceB);
-		((TextView) rootView.findViewById(R.id.details_country_content))
-				.setTypeface(mFaceR);
 		
 		((TextView) rootView.findViewById(R.id.details_region))
 				.setTypeface(mFaceB);
-		((TextView) rootView.findViewById(R.id.details_region_content))
-				.setTypeface(mFaceR);
 		
-		((TextView) rootView.findViewById(R.id.details_gps))
-				.setTypeface(mFaceB);
+		((TextView) rootView.findViewById(R.id.details_location))
+		.setTypeface(mFaceB);
+		
+		
 		
 		
 		
@@ -635,22 +658,9 @@ public class TabNewSpotsFragment extends Fragment implements
 				
 				gpsCoordinates.setText(getCoordinatesDegrees(mManualMarker.getPosition()));
 				
-				Geocoder geocoder = new Geocoder(AC.getApplicationContext(), Locale.ENGLISH);
-				try {
-					  List<Address> addresses = geocoder.getFromLocation(mManualMarker.getPosition().latitude, mManualMarker.getPosition().longitude, 1);
-					 
-					  if(addresses != null && !addresses.isEmpty()) {
-						  Address returnedAddress = addresses.get(0);
-						  
-						  System.out.println("The country of the marker placed is " + returnedAddress.getCountryName());
-					  }
-					  else{
-					   System.out.println("No Address returned!");
-					  }
-				} catch (IOException e) {
-					  // TODO Auto-generated catch block
-					  e.printStackTrace();
-				}
+				RegionLocationTask regionLocation_task = new RegionLocationTask();
+				regionLocation_task.execute(String.valueOf(mMarker.latitude), String.valueOf(mMarker.longitude));
+				
 				
 				System.out.println("New marker whose latitude is " + mManualMarker.getPosition().latitude + " and the longitude is " + mManualMarker.getPosition().longitude);
 	}
@@ -687,7 +697,109 @@ public class TabNewSpotsFragment extends Fragment implements
 		}
 		mListMarkers.clear();
 	}
+	
+	private class RegionLocationTask extends AsyncTask<String, Void, JSONObject>{
+		private JSONObject result;
+		private boolean searchDone = false;
+		
+		
+		private class SearchTimer extends Thread {
+			private String[] query;
 
+			public SearchTimer(String... query) {
+				this.query = query;
+			}
+
+			@Override
+			public void run() {
+				ApplicationController AC = (ApplicationController) getActivity()
+						.getApplicationContext();
+				System.out.println("Region-location API call" + " " + query[0] + " " + query[1]);
+				result = AC.getModel().searchRegionLocationText(query[0], query[1]);
+				System.out.println(result);
+				searchDone = true;
+			}
+		}
+		
+		protected JSONObject doInBackground(String... query) {
+			
+			SearchTimer task = new SearchTimer(query[0], query[1]);
+			task.start();
+			try {
+				task.join(DiveboardModel._searchTimeout);
+				if (searchDone == false) {
+					DiveboardModel._searchtimedout = true;
+					ApplicationController AC = (ApplicationController) getActivity()
+							.getApplicationContext();
+					return null;
+				}
+				return result;
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+			return null;
+		}
+		
+		protected void onPostExecute(JSONObject result) {
+			if (DiveboardModel._searchtimedout == true) {
+				if (AppConfig.DEBUG_MODE == 1) {
+					Toast toast = Toast.makeText(getActivity()
+							.getApplicationContext(), "Spot Search Timeout",
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				DiveboardModel._searchtimedout = false;
+			}
+			if (DiveboardModel._cotimedout == true) {
+				if (AppConfig.DEBUG_MODE == 1) {
+					Toast toast = Toast.makeText(getActivity()
+							.getApplicationContext(), "Connection Timeout",
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				DiveboardModel._cotimedout = false;
+			} else if (DiveboardModel._sotimedout == true) {
+				if (AppConfig.DEBUG_MODE == 1) {
+					Toast toast = Toast.makeText(getActivity()
+							.getApplicationContext(), "Socket Timeout",
+							Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+				DiveboardModel._sotimedout = false;
+			}
+			
+			try{
+				if (result != null && result.getBoolean("success") == true) {
+				
+					mLocationsArray = result.getJSONArray("locations");
+					mRegionsArray = result.getJSONArray("regions");
+					mCountriesArray = result.getJSONArray("countries");
+				
+				}
+				
+				
+				//End of the TEMP CODE
+				
+			}catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+		}
+		
+		@Override
+		protected void onCancelled() {
+			mSpotsTask = null;
+		}
+	}
+
+	
+	
+	
+	
 	private class SpotsTask extends AsyncTask<String, Void, JSONObject> {
 		private JSONObject result;
 		private boolean searchDone = false;
