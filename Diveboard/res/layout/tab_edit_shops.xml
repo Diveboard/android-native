@@ -3,164 +3,186 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
-    android:orientation="vertical">
-<!--     <LinearLayout -->
-<!--         android:layout_width="match_parent" -->
-<!--         android:layout_height="wrap_content" -->
-<!--         android:orientation="horizontal" -->
-<!--         android:background="@drawable/tab_body_background"> -->
-<!--          <TextView -->
-<!--             android:id="@+id/title" -->
-<!--             android:layout_width="0dp" -->
-<!--             android:layout_weight="1" -->
-<!--             android:layout_height="40dp" -->
-<!--             android:paddingLeft="15dp" -->
-<!--             android:textSize="20sp" -->
-<!--             android:textColor="@color/dark_grey"/> -->
-<!--          <Button -->
-<!--              android:id="@+id/save_button" -->
-<!--              android:layout_width="wrap_content" -->
-<!--              android:layout_height="wrap_content" -->
-<!--              android:background="@drawable/edit_save_button_selector" -->
-<!--              android:textColor="@color/white" -->
-<!--              android:padding="15dp" -->
-<!--              android:textSize="15sp" /> -->
-<!--     </LinearLayout> -->
+    android:orientation="vertical" >
+
+    <!-- <LinearLayout -->
+    <!-- android:layout_width="match_parent" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:orientation="horizontal" -->
+    <!-- android:background="@drawable/tab_body_background"> -->
+    <!-- <TextView -->
+    <!-- android:id="@+id/title" -->
+    <!-- android:layout_width="0dp" -->
+    <!-- android:layout_weight="1" -->
+    <!-- android:layout_height="40dp" -->
+    <!-- android:paddingLeft="15dp" -->
+    <!-- android:textSize="20sp" -->
+    <!-- android:textColor="@color/dark_grey"/> -->
+    <!-- <Button -->
+    <!-- android:id="@+id/save_button" -->
+    <!-- android:layout_width="wrap_content" -->
+    <!-- android:layout_height="wrap_content" -->
+    <!-- android:background="@drawable/edit_save_button_selector" -->
+    <!-- android:textColor="@color/white" -->
+    <!-- android:padding="15dp" -->
+    <!-- android:textSize="15sp" /> -->
+    <!-- </LinearLayout> -->
+
     <ScrollView
         android:layout_width="match_parent"
-	    android:layout_height="wrap_content">
-		<LinearLayout
-		    android:orientation="vertical"
-	        android:layout_width="match_parent"
-	        android:layout_height="wrap_content">
-			<fragment
-		        android:id="@+id/mapfragmentshop"
-		        android:layout_width="match_parent"
-		        android:layout_height="@dimen/map"
-		        android:name="com.google.android.gms.maps.SupportMapFragment"/>
-			<LinearLayout
-			    android:id="@+id/view_details"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:orientation="vertical"
-			    android:visibility="gone">
-			    <LinearLayout
-				    android:orientation="vertical"
-				    android:layout_width="match_parent"
-				    android:layout_height="160dp"
-				    android:background="@drawable/tab_body_background"
-				    android:gravity="center">
-				    <RelativeLayout
-				        android:layout_width="match_parent"
-						android:layout_height="40dp"
-						android:background="@drawable/edit_spot"
-						android:layout_marginLeft="20dp"
-						android:layout_marginRight="20dp"
-						android:gravity="center_vertical">
-				        <TextView 
-						    android:id="@+id/details_name"
-						    android:layout_marginLeft="20dp"
-						    android:layout_width="wrap_content"
-						    android:layout_height="wrap_content"
-					   		android:text="NAME:"/>
-				        <TextView 
-						    android:id="@+id/details_name_content"
-						    android:layout_toRightOf="@id/details_name"
-						    android:layout_marginLeft="20dp"
-						    android:layout_width="wrap_content"
-						    android:layout_height="wrap_content"
-					   		android:text=""/>
-				    </RelativeLayout>
-			 		<RelativeLayout
-			 		    android:layout_marginTop="10dp"
-				        android:layout_width="match_parent"
-						android:layout_height="40dp"
-						android:background="@drawable/edit_spot"
-						android:layout_marginLeft="20dp"
-						android:layout_marginRight="20dp"
-						android:gravity="center_vertical">
-				        <TextView 
-						    android:id="@+id/details_gps"
-						    android:layout_marginLeft="20dp"
-						    android:layout_width="wrap_content"
-						    android:layout_height="wrap_content"
-					   		android:text="GPS:"/>
-				        <TextView 
-						    android:id="@+id/details_gps_content"
-						    android:layout_toRightOf="@id/details_gps"
-						    android:layout_marginLeft="20dp"
-						    android:layout_width="wrap_content"
-						    android:layout_height="wrap_content"
-					   		android:text=""/>
-				    </RelativeLayout>
-				    <Button
-				        android:layout_marginTop="10dp"
-					    android:id="@+id/goToSearch"
-					    android:layout_width="match_parent"
-					    android:layout_height="40dp"
-					    android:layout_marginLeft="20dp"
-					    android:layout_marginRight="20dp"
-					    android:background="@drawable/go_to_search_button"
-					    android:text="SEARCH A SHOP >>" />
-				</LinearLayout>
-			</LinearLayout>
-			<LinearLayout
-			    android:id="@+id/view_search"
-			    android:layout_width="match_parent"
-			    android:layout_height="wrap_content"
-			    android:orientation="vertical"
-			    android:visibility="gone">
-				<LinearLayout
-				    android:orientation="horizontal"
-				    android:layout_width="match_parent"
-				    android:layout_height="80dp"
-				    android:background="@drawable/tab_body_background"
-				    android:gravity="center">
-			 		<EditText 
-					    android:id="@+id/search_bar"
-					    android:layout_width="0dp"
-					    android:layout_weight="0.8"
-					    android:layout_height="40dp"
-					    android:layout_marginLeft="20dp"
-					    android:layout_marginRight="20dp"
-					    android:hint="@string/search_hint_shop"
-					    android:inputType="text"
-					    android:imeOptions="actionSearch"
-					    android:background="@drawable/edit_spot"
-					    style="@style/myEditText"
-					    android:drawableRight="@drawable/ic_action_search"
-						android:focusableInTouchMode="true">
-			 			<requestFocus />
-			 		</EditText>
-			 		<ImageView
-			 		    android:id="@+id/GPSImage"
-			 		    android:layout_width="0dp"
-			 		    android:layout_weight="0.2"
-			 		    android:layout_height="40dp"
-			 		    android:layout_marginRight="20dp"
-			 		    android:src="@drawable/ic_action_location_found"
-			 		    android:background="@drawable/edit_spot" />
-				</LinearLayout>
-				<TextView
-				    android:layout_gravity="center"
-				    android:gravity="center"
-				    android:id="@+id/no_shop"
-				    android:text="No shop found"
-				    android:layout_width="match_parent"
-				    android:layout_height="match_parent"
-				    android:visibility="gone"/>
-				<ProgressBar 
-				    android:id="@+id/progressBar"
-				    android:layout_width="wrap_content"
-				    android:layout_height="wrap_content"
-				    android:visibility="gone"
-				    android:layout_gravity="center"/>
-			</LinearLayout>
-		</LinearLayout>
-	</ScrollView>
-	<ListView
-	    android:id="@+id/list_view"
-	    android:background="@color/white"
-	    android:layout_width="match_parent"
-	    android:layout_height="match_parent"/>
+        android:layout_height="wrap_content" >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <fragment
+                android:id="@+id/mapfragmentshop"
+                android:name="com.google.android.gms.maps.SupportMapFragment"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/map" />
+
+            <LinearLayout
+                android:id="@+id/view_details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="160dp"
+                    android:background="@drawable/tab_body_background"
+                    android:gravity="center"
+                    android:orientation="vertical" >
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:background="@drawable/edit_spot"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:id="@+id/details_name"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="NAME:" />
+
+                        <TextView
+                            android:id="@+id/details_name_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/details_name"
+                            android:text="" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/edit_spot"
+                        android:gravity="center_vertical" >
+
+                        <TextView
+                            android:id="@+id/details_gps"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:text="@string/gps_textview" />
+
+                        <TextView
+                            android:id="@+id/details_gps_content"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="20dp"
+                            android:layout_toRightOf="@id/details_gps"
+                            android:text="" />
+                    </RelativeLayout>
+
+                    <Button
+                        android:id="@+id/goToSearch"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/go_to_search_button"
+                        android:text="@string/search_shop_button" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/view_search"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone" >
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="80dp"
+                    android:background="@drawable/tab_body_background"
+                    android:gravity="center"
+                    android:orientation="horizontal" >
+
+                    <EditText
+                        android:id="@+id/search_bar"
+                        style="@style/myEditText"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginLeft="20dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="0.8"
+                        android:background="@drawable/edit_spot"
+                        android:drawableRight="@drawable/ic_action_search"
+                        android:focusableInTouchMode="true"
+                        android:hint="@string/search_hint_shop"
+                        android:imeOptions="actionSearch"
+                        android:inputType="text" >
+
+                        <requestFocus />
+                    </EditText>
+
+                    <ImageView
+                        android:id="@+id/GPSImage"
+                        android:layout_width="0dp"
+                        android:layout_height="40dp"
+                        android:layout_marginRight="20dp"
+                        android:layout_weight="0.2"
+                        android:background="@drawable/edit_spot"
+                        android:src="@drawable/ic_action_location_found" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/no_shop"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    android:gravity="center"
+                    android:text="No shop found"
+                    android:visibility="gone" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white" />
+
 </LinearLayout>

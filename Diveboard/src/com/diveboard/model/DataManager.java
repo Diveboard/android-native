@@ -265,9 +265,25 @@ public class					DataManager
 			json.put("user_id", _model.getUser().getId());
 			if (dive.getSpot() != null)
 			{
+				
 				JSONObject temp = new JSONObject();
-				temp.put("id", dive.getSpot().getId());
-				json.put("spot", temp);
+				if (dive.getSpot().getId() != null){
+					temp.put("id", dive.getSpot().getId());//If Spot exists
+					json.put("spot", temp);
+				}
+				else {
+					temp.put("country_name", dive.getSpot().getCountryName());
+					//temp.put("region_id", dive.getSpot().getRegionId());
+					temp.put("location_name", dive.getSpot().getLocationName());
+					temp.put("lat", dive.getSpot().getLat());
+					temp.put("lng", dive.getSpot().getLng());
+					temp.put("name", dive.getSpot().getName());
+					json.put("spot", temp);
+				}
+				
+				System.out.println("THIS IS the name of the final spot we are going to add: " + dive.getSpot().getName());
+				
+				
 			}
 			if (dive.getShop() != null)
 			{
@@ -555,10 +571,19 @@ public class					DataManager
 								JSONObject checkObject = new JSONObject(elem.second);
 								if (checkObject.isNull("spot") == false)
 								{
+									
 									JSONObject spot = checkObject.getJSONObject("spot");
 									JSONObject temp = new JSONObject();
-									temp.put("id", spot.get("id"));
-									checkObject.put("spot", temp);
+									if(!spot.isNull("id")){
+										temp.put("id", spot.get("id"));
+										checkObject.put("spot", temp);
+									}
+										
+									else{
+										checkObject.put("spot", spot);
+									}
+										
+									
 									args.add(new BasicNameValuePair("arg", checkObject.toString()));
 								}
 								else

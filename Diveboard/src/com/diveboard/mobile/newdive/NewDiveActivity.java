@@ -86,6 +86,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public static ListView		optionList;
 	private boolean				mError = false;
 	public static EditText		mNotes = null;
+	public static boolean 		isNewSpot = false;
 	private TabNewNotesFragment	mNewNotesFragment = new TabNewNotesFragment();
 	private TabNewSpotsFragment	mNewSpotsFragment = new TabNewSpotsFragment();
 	private TabNewPhotosFragment	mNewPhotosFragment = new TabNewPhotosFragment();
@@ -249,8 +250,11 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						JSONObject edit = new JSONObject(); 
 						for (int i = 0, size = editList.size(); i < size; i++)
 							try {
-								if (editList.get(i).first.equals("spot"))
+								if (editList.get(i).first.equals("spot")){
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+									System.out.println("The selected manual spot is " + editList.get(i).second );
+								}
+									
 								else if (editList.get(i).first.equals("shop"))
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
 								else
@@ -308,10 +312,6 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						return ;
 					case 1:
 						mTitle.setText(getResources().getString(R.string.tab_spots_title));
-						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.new_spot_welcome_screen),
-								Toast.LENGTH_LONG);
-						toast.setGravity(Gravity.CENTER, 0, 0);
-						toast.show();
 						return ;
 					case 2:
 						mTitle.setText(getResources().getString(R.string.tab_shop_title));

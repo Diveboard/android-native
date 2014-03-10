@@ -5,6 +5,7 @@
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
     <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
@@ -71,6 +72,7 @@
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
     <string name="add_button">SAVE</string>
+    <string name="confirm_button">Confirm</string>
     <string name="search_hint">Search spot</string>
     <string name="search_hint_shop">Search shop</string>
     <string name="title_activity_empty">EmptyActivity</string>
@@ -109,11 +111,21 @@
     <string name="hint_somewhat_simple">Somewhat simple</string>
     <string name="hint_tricky">Tricky</string>
     <string name="hint_hardcore">Hardcore!</string>
+    <string name="name_spot_hint">Name of your spot</string>
     <string name="sudo_hint">User Id</string>
     <string name="edit_guidename_title">Guide Name</string>
     <string name="guidename_hint">Guide Name</string>
     <string name="no_network_connection_toast">No network connection found</string>
     <string name="new_spot_marker_toast">Drag the actual marker to the position you want or get a new one doing a long click on the map</string>
     <string name="new_spot_welcome_screen">Search for predefined dive spots or place your own spot by clicking on the left marker icon</string>
+    <string name="no_spot_found_spinner">No nearby spot was found</string>
+    <string name="search_spot_button">CHANGE SPOT >></string>
+    <string name="search_shop_button">SEARCH A SHOP >></string>
+    <string name="gps_textview">GPS:</string>
+    <string name="region_textview">REGION:</string>
+    <string name="location_textview">LOCATION:</string>
+    <string name="country_textview">COUNTRY:</string>
+    <string name="name_textview">NAME:</string>
+    <string name="no_coordinates">Coordinates unknown</string>
     
 </resources>

@@ -1,14 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string-array name="countries">
-        <item>Select an item</item>
-        <item>France</item>
-        <item>UK</item>
-        <item>Spain</item>
-        <item>Italy</item>
-        <item>Germany</item>
-        <item>Denmark</item>
-        <item>Belgium</item>
-        <item>Sweden</item>
+        <item>No nearby Spots were found</item>
     </string-array>
 </resources>

@@ -541,6 +541,7 @@ public class					DiveboardModel
 	 */
 	private void				_loadUser(final String json_str, final boolean temp_mode) throws JSONException
 	{
+		
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
 		if (!temp_mode)
@@ -1383,6 +1384,15 @@ public class					DiveboardModel
 		return null;
 	}
 	
+	public JSONObject					obtainNewSpotID(final String mNewManua){
+		
+		JSONObject result = new JSONObject();
+		
+		
+		return result;
+		
+	}
+	
 	public JSONObject					searchSpotText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
@@ -1422,6 +1432,7 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
+				System.out.println(result);
 				JSONObject json = new JSONObject(result);
 //				System.out.println(json);
 //				client.close();

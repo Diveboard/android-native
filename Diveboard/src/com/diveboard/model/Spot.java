@@ -18,6 +18,7 @@ public class					Spot implements IModel
 	private Integer				_locationId;
 	private String				_locationName;
 	private Integer				_regionId;
+	private String				_regionName;
 	private Integer				_countryId;
 	private Integer				_privateUserId;
 	private String				_countryCode;
@@ -41,6 +42,7 @@ public class					Spot implements IModel
 		_locationId = (json.isNull("location_id")) ? null : json.getInt("location_id");
 		_locationName = (json.isNull("location_name")) ? null : json.getString("location_name");
 		_regionId = (json.isNull("region_id")) ? null : json.getInt("region_id");
+		_regionName = (json.isNull("region_name")) ? null : json.getString("region_name");
 		_countryId = (json.isNull("country_id")) ? null : json.getInt("country_id");
 		_privateUserId = (json.isNull("private_user_id")) ? null : json.getInt("private_user_id");
 		_countryCode = (json.isNull("country_code")) ? null : json.getString("country_code");
@@ -123,6 +125,14 @@ public class					Spot implements IModel
 
 	public void setRegionId(Integer _regionId) {
 		this._regionId = _regionId;
+	}
+	
+	public String getRegionName() {
+		return _regionName;
+	}
+
+	public void setRegionName(String _regionName) {
+		this._regionName = _regionName;
 	}
 
 	public int getCountryId() {
