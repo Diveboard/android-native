@@ -544,7 +544,7 @@ public class					DiveboardModel
 		
 		JSONObject json = new JSONObject(json_str);
 		json = json.getJSONObject("result");
-		if (!temp_mode)
+		if (!temp_mode) 
 		{
 //			_preference.setUnits(json.getJSONObject("units"));
 			_user = new User(json);
@@ -1429,6 +1429,7 @@ public class					DiveboardModel
 				args.add(new BasicNameValuePair("lngNE", lngNE));
 			try
 			{
+				args.add(new BasicNameValuePair("auth_token", _token));
 				args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
 				postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
 				// Execute request

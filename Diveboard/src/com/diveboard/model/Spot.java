@@ -52,6 +52,53 @@ public class					Spot implements IModel
 		_cname = (json.isNull("cname")) ? null : json.getString("cname");
 		_location = (json.isNull("location")) ? null : json.getString("location");
 	}
+	
+	public JSONObject				getJson()
+	{
+		JSONObject json = new JSONObject();
+		try {
+			if (_id != null)
+				json.put("id", _id);
+			if (_shakenId != null)
+				json.put("shaken_id", _shakenId);
+			if (_name != null)
+				json.put("name", _name);
+			if (_lat != null)
+				json.put("lat", _lat);
+			if (_lng != null)
+				json.put("lng", _lng);
+			if (_zoom != null)
+				json.put("zoom", _zoom);
+			if (_locationId != null)
+				json.put("location_id", _locationId);
+			if (_locationName != null)
+				json.put("location_name", _locationName);
+			if (_regionId != null)
+				json.put("region_id", _regionId);
+			if (_regionName != null)
+				json.put("region_name", _regionName);
+			if (_countryId != null)
+				json.put("country_id", _countryId);
+			if (_privateUserId != null)
+				json.put("private_user_id", _privateUserId);
+			if (_countryCode != null)
+				json.put("country_code", _countryCode);
+			if (_countryName!= null)
+				json.put("country_name", _countryName);
+			if (_countryFlagBig!= null)
+				json.put("country_flag_big", _countryFlagBig._urlDefault);
+			if (_countryFlagSmall!= null)
+				json.put("country_flag_small", _countryFlagSmall._urlDefault);
+			if (_location!= null)
+				json.put("location", _location);
+			if (_cname!= null)
+				json.put("cname", _cname);
+			
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return json;
+	}
 
 	public Integer getId() {
 		return _id;

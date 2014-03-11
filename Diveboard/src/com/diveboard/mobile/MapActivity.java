@@ -15,11 +15,14 @@ import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class MapActivity extends Activity {
 	private 					GoogleMap mMap;
 	private int					mIndex;
+	private boolean 			earthViewActive = false;
 
 	@Override
 	public void onStart() {
@@ -63,6 +66,25 @@ public class MapActivity extends Activity {
 		        }
 		        else
 		        	System.out.println("Map non safe");
+		        
+		        ((ImageView) findViewById(R.id.ic_change_view)).setOnClickListener(new OnClickListener() {
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						if(!earthViewActive){
+							((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_map_view);
+							earthViewActive = true;
+							System.out.println(String.valueOf(earthViewActive));
+							mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+						}
+						else{
+							((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_earth_view);
+							earthViewActive = false;
+							System.out.println(String.valueOf(earthViewActive));
+							mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+						}				
+					}
+				});
 		        mMap.getUiSettings().setAllGesturesEnabled(true);
 				mMap.getUiSettings().setMyLocationButtonEnabled(true);
 				mMap.getUiSettings().setZoomControlsEnabled(true);

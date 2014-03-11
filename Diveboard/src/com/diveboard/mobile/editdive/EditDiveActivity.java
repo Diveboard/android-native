@@ -113,9 +113,10 @@ EditReviewDialogListener
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
 	private TabEditPhotosFragment	mEditPhotosFragment = new TabEditPhotosFragment();
 	public static EditText			mNotes = null;
-	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment(this);
+	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private TabEditShopFragment		mEditShopFragment = new TabEditShopFragment(this);
 	private TabEditBuddiesFragment	mEditBuddiesFragment = new TabEditBuddiesFragment();
+	public static boolean 			isNewSpot = false;
 	private int		NUM_ITEMS = 6;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;

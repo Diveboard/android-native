@@ -116,7 +116,7 @@
     <string name="edit_guidename_title">Guide Name</string>
     <string name="guidename_hint">Guide Name</string>
     <string name="no_network_connection_toast">No network connection found</string>
-    <string name="new_spot_marker_toast">Drag the actual marker to the position you want or get a new one doing a long click on the map</string>
+    <string name="new_spot_marker_toast">Make a long click in the map to place the Spot</string>
     <string name="new_spot_welcome_screen">Search for predefined dive spots or place your own spot by clicking on the left marker icon</string>
     <string name="no_spot_found_spinner">No nearby spot was found</string>
     <string name="search_spot_button">CHANGE SPOT >></string>
@@ -127,5 +127,6 @@
     <string name="country_textview">COUNTRY:</string>
     <string name="name_textview">NAME:</string>
     <string name="no_coordinates">Coordinates unknown</string>
+    <string name="no_spots_around">We could not find spots around, check your connection or try again later</string>
     
 </resources>
