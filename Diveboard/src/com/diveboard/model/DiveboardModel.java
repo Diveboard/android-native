@@ -638,13 +638,16 @@ public class					DiveboardModel
 			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
 		}
 		dive_str = dive_str.concat("%5D");
-		postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive?arg=".concat(dive_str));
-		args = new ArrayList<NameValuePair>();
-		args.add(new BasicNameValuePair("auth_token", _token));
-		args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
-		args.add(new BasicNameValuePair("flavour", "mobile"));
-		args.add(new BasicNameValuePair("arg", dive_str));
-		postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+		postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive");
+
+		MultipartEntity margs = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+
+		margs.addPart("auth_token", new StringBody(_token));
+		margs.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+		margs.addPart("flavour", new StringBody("mobile"));
+		margs.addPart("arg", new StringBody(dive_str));
+		postRequest.setEntity(margs);
+
 		if (ApplicationController.SudoId == 0)
 			response = client.execute(postRequest);
 		else
