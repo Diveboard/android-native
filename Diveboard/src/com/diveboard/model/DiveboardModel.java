@@ -622,7 +622,7 @@ public class					DiveboardModel
 		// Load dive information
 		JSONObject json = new JSONObject(result);
 		json = json.getJSONObject("result");
-		String dive_str = "%5B";
+		String dive_str = "[";
 		System.out.println(json);
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		if (json.isNull("all_dive_ids"))
@@ -634,13 +634,14 @@ public class					DiveboardModel
 		for (int i = 0, length = jarray.length(); i < length; i++)
 		{
 			if (i != 0)
-				dive_str = dive_str.concat("%2C%20");
-			dive_str = dive_str.concat("%7B%22id%22:").concat(Integer.toString(jarray.getInt(i))).concat("%7D");
+				dive_str = dive_str.concat(", ");
+			dive_str = dive_str.concat("{\"id\":").concat(Integer.toString(jarray.getInt(i))).concat("}");
+	
 		}
-		dive_str = dive_str.concat("%5D");
+		dive_str = dive_str.concat("]");
 		postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/dive");
 
-		MultipartEntity margs = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+		MultipartEntity margs = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE,null,Charset.forName("UTF-8"));
 
 		margs.addPart("auth_token", new StringBody(_token));
 		margs.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
