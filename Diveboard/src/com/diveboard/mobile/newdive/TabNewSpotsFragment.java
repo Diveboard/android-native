@@ -1293,9 +1293,20 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		try {
 			
-			mPosition = new LatLng((Double)(mSpotSelected.get("lat")), (Double)(mSpotSelected.get("lng")));
+			Double mLong;
+			if(mSpotSelected.isNull("cname"))
+				mCountry = mSpotSelected.getString("country_name");
+			else
+				mCountry = mSpotSelected.getString("cname");
+			
+			if (mSpotSelected.isNull("long"))
+				mLong = mSpotSelected.getDouble("lng");
+			else
+				mLong = mSpotSelected.getDouble("long");
+				
+			mPosition = new LatLng((Double) (mSpotSelected.get("lat")),mLong);
 			mSpotName = mSpotSelected.getString("name");
-			mCountry = mSpotSelected.getString("cname");
+			
 			mRegion = mSpotSelected.getString("region");
 			mLocation = mSpotSelected.getString("location");
 			

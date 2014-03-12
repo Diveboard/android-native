@@ -1012,6 +1012,7 @@ public class TabEditSpotsFragment extends Fragment implements
 			try {
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
+					goOfflineMode = true;
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
@@ -1285,6 +1286,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 		mMap.setOnCameraChangeListener(null);
 		removeMarkers();
+		manualSpotActivated = false;
 		if (mManualMarker != null)
 			mManualMarker.remove();
 
@@ -1299,10 +1301,20 @@ public class TabEditSpotsFragment extends Fragment implements
 		String mRegion = "";
 
 		try {
-
-			mPosition = new LatLng((Double) (mSpotSelected.get("lat")),(Double) (mSpotSelected.get("lng")));
+			Double mLong;
+			if(mSpotSelected.isNull("cname"))
+				mCountry = mSpotSelected.getString("country_name");
+			else
+				mCountry = mSpotSelected.getString("cname");
+			
+			if (mSpotSelected.isNull("long"))
+				mLong = mSpotSelected.getDouble("lng");
+			else
+				mLong = mSpotSelected.getDouble("long");
+				
+			mPosition = new LatLng((Double) (mSpotSelected.get("lat")),mLong);
 			mSpotName = mSpotSelected.getString("name");
-			mCountry = mSpotSelected.getString("country_name");
+			
 			mRegion = mSpotSelected.getString("region");
 			mLocation = mSpotSelected.getString("location");
 
