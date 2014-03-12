@@ -248,7 +248,11 @@ public class DivesFragment extends Fragment {
 				if (getActivity() != null)
 				{
 					ApplicationController AC = ((ApplicationController)getActivity().getApplicationContext());
-					result = AC.getModel().getUser().getPictureSmall().getPicture(getActivity().getApplicationContext());
+					result = AC.getModel()
+							.getUser()
+							.getPictureSmall()
+							.getPicture(getActivity()
+									.getApplicationContext());
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

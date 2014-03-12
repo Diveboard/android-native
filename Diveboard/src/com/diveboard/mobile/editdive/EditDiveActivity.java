@@ -33,6 +33,7 @@ import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibility
 import com.diveboard.mobile.editdive.EditWaterDialogFragment.EditWaterDialogListener;
 import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
 import com.diveboard.mobile.editdive.EditReviewDialogFragment.EditReviewDialogListener;
+import com.diveboard.mobile.newdive.TabNewSpotsFragment;
 import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -64,6 +65,7 @@ import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
+import android.view.Gravity;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -203,9 +205,16 @@ EditReviewDialogListener
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
 				if (mNotes != null)
 					dive.setNotes(mNotes.getText().toString());
+				if(TabEditSpotsFragment.manualSpotActivated){
+					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.spot_missing), Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();	
+				}
+				if(!TabEditSpotsFragment.manualSpotActivated){
 				mModel.getDataManager().save(dive);
 				((ApplicationController)getApplicationContext()).setRefresh(2);
 				finish();
+				}
 			}
 		});
 	}

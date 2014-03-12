@@ -94,9 +94,9 @@ public class					DiveboardModel
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
 	private RefreshDataThread	_refreshDataThread = null;
-	public static Integer		_coTimeout = 15000;
-	public static Integer		_soTimeout = 15000;
-	public static Integer		_searchTimeout = 15000;
+	public static Integer		_coTimeout = 10000;
+	public static Integer		_soTimeout = 10000;
+	public static Integer		_searchTimeout = 10000;
 	public static boolean 		_cotimedout = false;
 	public static boolean 		_sotimedout = false;
 	public static boolean 		_searchtimedout = false;

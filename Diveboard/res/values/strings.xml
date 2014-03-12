@@ -128,5 +128,6 @@
     <string name="name_textview">NAME:</string>
     <string name="no_coordinates">Coordinates unknown</string>
     <string name="no_spots_around">We could not find spots around, check your connection or try again later</string>
+    <string name="no_internet_co_new_spot">Sorry but creating a manual spot requires internet connection</string>
     
 </resources>

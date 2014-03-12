@@ -173,6 +173,14 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:visibility="gone" >
+                
+                <ProgressBar
+                    android:id="@+id/progressBarManualSpot"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:minHeight="80dp"
+                    android:layout_gravity="center"
+                    android:visibility="gone" />
 
                 <RelativeLayout
                     android:id="@+id/new_spot_name_layout"

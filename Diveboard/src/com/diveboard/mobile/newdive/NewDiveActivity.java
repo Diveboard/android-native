@@ -215,7 +215,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
 				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				ArrayList<Pair<String, String>> editList = mDive.getEditList();
-				if (mDive.getMaxdepth() == null || mDive.getDuration() == null)
+				if (mDive.getMaxdepth() == null || mDive.getDuration() == null || TabNewSpotsFragment.manualSpotActivated)
 					mError = true;
 				else
 					mError = false;
@@ -286,9 +286,22 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				}
 				else
 				{
-					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.maxdepth_duration_missing), Toast.LENGTH_LONG);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
+					if((mDive.getMaxdepth() == null || mDive.getDuration() == null) && !TabNewSpotsFragment.manualSpotActivated)
+					{
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.maxdepth_duration_missing), Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
+					if((mDive.getMaxdepth() == null || mDive.getDuration() == null) && TabNewSpotsFragment.manualSpotActivated){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.maxdepth_duration_spot_missing), Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
+					if(TabNewSpotsFragment.manualSpotActivated){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.spot_missing), Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();	
+					}
 				}
 			}
 		});

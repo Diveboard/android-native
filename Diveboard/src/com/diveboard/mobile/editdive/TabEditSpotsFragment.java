@@ -45,6 +45,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
@@ -98,13 +99,15 @@ public class TabEditSpotsFragment extends Fragment implements
 	private SpotsTask mSpotsTask;
 	private RegionLocationTask mRegionLocationTask;
 	private ViewGroup mRootView;
-	private boolean manualSpotActivated;
+	static boolean manualSpotActivated;
 	private Spinner mCountrySpinner, mRegionSpinner, mLocationSpinner;
 	private String mSpotTitle = "My Spot";
 	private Integer mRegionId = null;
 	private Integer mLocationId = null;
 	private DiveboardModel mModel = null;
 	private boolean earthViewActive = false;
+	private boolean goOfflineMode;
+	private int toastCount = 0;
 
 	private class myLocationListener implements LocationListener {
 		public void onLocationChanged(Location location) {
@@ -189,6 +192,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		final int width = size.x;
 		final int height = size.y;
 		EditDiveActivity.isNewSpot = false;
+		goOfflineMode = false;
 
 		((TextView) mRootView.findViewById(R.id.no_spot)).setTypeface(mFaceR);
 //		if (mModel.getDives().get(mIndex).getSpot().getId() != 1) {
@@ -518,11 +522,13 @@ public class TabEditSpotsFragment extends Fragment implements
 		Button cancel = (Button) mRootView.findViewById(R.id.cancel_button);
 		Button confirm = (Button) mRootView.findViewById(R.id.confirm_button);
 
-		Toast toast = Toast.makeText(getActivity().getApplicationContext(),
-				getResources().getString(R.string.new_spot_marker_toast),
-				Toast.LENGTH_LONG);
-		toast.setGravity(Gravity.CENTER, 0, 0);
-		toast.show();
+		if(toastCount<1){
+			Toast toast = Toast.makeText(getActivity().getApplicationContext(),getResources().getString(R.string.new_spot_marker_toast),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			toastCount++;
+		}
+		
 
 		EditText editText = (EditText) mRootView
 				.findViewById(R.id.nameManualSpotET);
@@ -631,6 +637,13 @@ public class TabEditSpotsFragment extends Fragment implements
 		countrySpinner.setOnItemSelectedListener(spinnerListener);
 		regionSpinner.setOnItemSelectedListener(spinnerListener);
 		locationSpinner.setOnItemSelectedListener(spinnerListener);
+		
+		((RelativeLayout) mRootView.findViewById(R.id.new_spot_name_layout)).setVisibility(View.GONE);
+		((RelativeLayout) mRootView.findViewById(R.id.country_layout)).setVisibility(View.GONE);
+		((RelativeLayout) mRootView.findViewById(R.id.region_layout)).setVisibility(View.GONE);
+		((RelativeLayout) mRootView.findViewById(R.id.location_layout)).setVisibility(View.GONE);
+		((RelativeLayout) mRootView.findViewById(R.id.buttons_layout)).setVisibility(View.GONE);
+		((ProgressBar) mRootView.findViewById(R.id.progressBarManualSpot)).setVisibility(View.VISIBLE);
 
 		cancel.setOnClickListener(new OnClickListener() {
 
@@ -672,12 +685,12 @@ public class TabEditSpotsFragment extends Fragment implements
 						}
 	
 						mSpot.put("lat", mManualMarker.getPosition().latitude);
-						mSpot.put("long", mManualMarker.getPosition().longitude);
+						mSpot.put("lng", mManualMarker.getPosition().longitude);
+						mSpot.put("name", name);
 						if (mRegionId != null && mLocationId != null) {
 							mSpot.put("region_id", mRegionId);
 							mSpot.put("location_id", mLocationId);
 						}
-						mSpot.put("name", name);
 						System.out.println("gotoSpotSelected with " + mSpot.toString());
 						goToSpotSelected(mRootView, mSpot);
 					} catch (JSONException e) {
@@ -777,8 +790,7 @@ public class TabEditSpotsFragment extends Fragment implements
 				.position(mMarker)
 				.title(mSpotTitle)
 				.draggable(true)
-				.icon(BitmapDescriptorFactory
-						.fromResource(R.drawable.diveboard_marker)));
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 
 		RegionLocationTask regionLocation_task = new RegionLocationTask();
 		regionLocation_task.execute(String.valueOf(mMarker.latitude),
@@ -789,11 +801,10 @@ public class TabEditSpotsFragment extends Fragment implements
 			String longitude, LatLngBounds bounds) {
 		ListView lv = ((ListView) mRootView.findViewById(R.id.list_view));
 		List<Spot> listSpots = new ArrayList<Spot>();
-		SpotAdapter adapter = new SpotAdapter(getActivity()
-				.getApplicationContext(), listSpots);
+		SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
 		lv.setAdapter(adapter);
-		((TextView) mRootView.findViewById(R.id.no_spot))
-				.setVisibility(View.GONE);
+		((ProgressBar) mRootView.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
+		((TextView) mRootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
 		SpotsTask spots_task = new SpotsTask();
 		if (bounds != null)
 			spots_task.execute(swipe, text, latitude, longitude,
@@ -804,7 +815,6 @@ public class TabEditSpotsFragment extends Fragment implements
 		else
 			spots_task.execute(swipe, text, latitude, longitude, null, null,
 					null, null);
-		removeMarkers();
 		if (mMyMarker != null)
 			mMyMarker.remove();
 		// ((TextView)findViewById(R.id.search_bar)).setText("");
@@ -850,8 +860,7 @@ public class TabEditSpotsFragment extends Fragment implements
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity()
-							.getApplicationContext();
+					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return null;
 				}
 				return result;
@@ -935,24 +944,27 @@ public class TabEditSpotsFragment extends Fragment implements
 					}
 					System.out.println(mLocationsIdArray.toString());
 
-					ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>(
-							(ApplicationController) getActivity()
-									.getApplicationContext(),
-							R.layout.custom_spinner_layout, countriesList);
+					ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, countriesList);
 					mCountrySpinner.setAdapter(countryAdapter);
 
-					ArrayAdapter<String> regionAdapter = new ArrayAdapter<String>(
-							(ApplicationController) getActivity()
-									.getApplicationContext(),
-							R.layout.custom_spinner_layout, regionsList);
+					ArrayAdapter<String> regionAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, regionsList);
 					mRegionSpinner.setAdapter(regionAdapter);
 
-					ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(
-							(ApplicationController) getActivity()
-									.getApplicationContext(),
-							R.layout.custom_spinner_layout, locationsList);
+					ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, locationsList);
 					mLocationSpinner.setAdapter(locationAdapter);
+					
+					((RelativeLayout) mRootView.findViewById(R.id.new_spot_name_layout)).setVisibility(View.VISIBLE);
+					((RelativeLayout) mRootView.findViewById(R.id.country_layout)).setVisibility(View.VISIBLE);
+					((RelativeLayout) mRootView.findViewById(R.id.region_layout)).setVisibility(View.VISIBLE);
+					((RelativeLayout) mRootView.findViewById(R.id.location_layout)).setVisibility(View.VISIBLE);
+					((RelativeLayout) mRootView.findViewById(R.id.buttons_layout)).setVisibility(View.VISIBLE);
+					((ProgressBar) mRootView.findViewById(R.id.progressBarManualSpot)).setVisibility(View.GONE);
 
+				}else{
+					goToSearch(mRootView);
+					Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.no_internet_co_new_spot),Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
 				}
 
 			} catch (JSONException e) {
@@ -982,15 +994,13 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity()
-						.getApplicationContext();
-				System.out.println(query[0] + " " + query[1] + " " + query[2]
-						+ " " + query[3] + " " + query[4] + " " + query[5]
-						+ " " + query[6]);
-				result = AC.getModel().searchSpotText(query[0], query[1],
-						query[2], query[3], query[4], query[5], query[6]);
-				System.out.println(result);
-				searchDone = true;
+				if (!goOfflineMode) {
+					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+					System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
+					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
+					System.out.println(result);
+					searchDone = true;
+				}
 			}
 		}
 
@@ -1003,11 +1013,8 @@ public class TabEditSpotsFragment extends Fragment implements
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity()
-							.getApplicationContext();
-					return AC.getModel().offlineSearchSpotText(query[1],
-							query[2], query[3], query[4], query[5], query[6],
-							query[7]);
+					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+					return AC.getModel().offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -1059,6 +1066,7 @@ public class TabEditSpotsFragment extends Fragment implements
 							Spot spot = new Spot(mArray.getJSONObject(i));
 							listSpots.add(spot);
 						}
+						removeMarkers();
 						if (listSpots.size() == 0) {
 							((TextView) mRootView.findViewById(R.id.no_spot))
 									.setVisibility(View.VISIBLE);

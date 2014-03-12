@@ -8,6 +8,8 @@
     <string name="tab_notes_menutitle">Notes</string>
     <string name="empty_field_error">This field must be filled</string>
     <string name="maxdepth_duration_missing">Max Depth or Duration fields are missing</string>
+    <string name="maxdepth_duration_spot_missing">Max Depth, Duration or Spot fields are missing</string>
+    <string name="spot_missing">You have not confirmed your Spot</string>
     <string name="no_safety_stops">No safety stops</string>
     <string name="depth_label">Depth</string>
     <string name="duration_label">Duration</string>
