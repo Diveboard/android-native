@@ -433,37 +433,37 @@ public class TabNewSpotsFragment extends Fragment implements
 		String pos = "";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLat() == null) {
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat())
-					+ "Â° ";
+					+ "° ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat()
-					* (-1)) + "Â° ";
+					* (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLng() == null) {
-			pos += "0Â° ";
+			pos += "° ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng())
-					+ "Â° ";
+					+ "° ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng()
-					* (-1)) + "Â° ";
+					* (-1)) + "° ";
 			pos += "W";
 		}
 		if ((((ApplicationController) getActivity().getApplicationContext())
@@ -483,14 +483,14 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		String mCoordinates ="";
 		if(position.latitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "Â°N, ";
+			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "°N, ";
 		else
-			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "Â°S, ";
+			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "°S, ";
 		
 		if(position.longitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "Â°E";
+			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "°E";
 		else
-			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "Â°W";
+			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "°W";
 		
 		return mCoordinates;
 	}

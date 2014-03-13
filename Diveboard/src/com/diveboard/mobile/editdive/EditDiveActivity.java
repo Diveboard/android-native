@@ -12,6 +12,9 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
@@ -36,6 +39,7 @@ import com.diveboard.mobile.editdive.EditReviewDialogFragment.EditReviewDialogLi
 import com.diveboard.mobile.newdive.TabNewSpotsFragment;
 import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
+import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;
 import com.diveboard.model.Picture;
@@ -119,6 +123,7 @@ EditReviewDialogListener
 	private TabEditShopFragment		mEditShopFragment = new TabEditShopFragment(this);
 	private TabEditBuddiesFragment	mEditBuddiesFragment = new TabEditBuddiesFragment();
 	public static boolean 			isNewSpot = false;
+	private boolean					mError = false;
 	private int		NUM_ITEMS = 6;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;
@@ -200,23 +205,56 @@ EditReviewDialogListener
 		{
 			@Override
 			public void onClick(View v)
-			{
+			{	
+				mError = false;
 				mModel = ((ApplicationController)getApplicationContext()).getModel();
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
+				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
+				ArrayList<Pair<String, String>> editList = dive.getEditList();
 				if (mNotes != null)
 					dive.setNotes(mNotes.getText().toString());
 				if(TabEditSpotsFragment.manualSpotActivated){
 					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.spot_missing), Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();	
+					mError = true;
 				}
-				if(!TabEditSpotsFragment.manualSpotActivated){
-				mModel.getDataManager().save(dive);
-				((ApplicationController)getApplicationContext()).setRefresh(2);
-				finish();
+				if(!mError){
+			
+					if (editList != null && editList.size() > 0)
+					{
+						JSONObject edit = new JSONObject(); 
+						for (int i = 0, size = editList.size(); i < size; i++)
+							try {
+								System.out.println("Value of editList" + editList.get(i).first.toString()+ editList.get(i).second.toString());
+								if (editList.get(i).first.equals("spot")){
+									//System.out.println("Akkii");
+									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+									//System.out.println("The selected manual spot is:: " + editList.get(i).second );
+								}
+									
+								else if (editList.get(i).first.equals("shop"))
+									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+								else
+									edit.put(editList.get(i).first, editList.get(i).second);
+							} catch (JSONException e) {
+								e.printStackTrace();
+							}
+//						try {
+//							dive.applyEdit(edit);
+//							System.out.println("Value of spot after applyedit" + dive.getSpot().getJson().toString());
+//						} catch (JSONException e) {
+//							e.printStackTrace();
+//						}
+//						dive.clearEditList();
+					}
+					
+					mModel.getDataManager().save(dive);
+					((ApplicationController)getApplicationContext()).setRefresh(2);
+					finish();
 				}
 			}
-		});
+		}); 
 	}
 	
 

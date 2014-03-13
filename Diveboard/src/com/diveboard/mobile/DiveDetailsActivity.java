@@ -208,7 +208,7 @@ public class DiveDetailsActivity extends TabActivity {
 					((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
 				}
 				String place_name = "";
-				if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getId() != 1 && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
+				if (!mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getJson().isNull("id") && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
 					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
 				else if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() == null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
 					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();

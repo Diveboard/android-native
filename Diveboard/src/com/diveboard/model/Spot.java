@@ -148,7 +148,7 @@ public class					Spot implements IModel
 		this._zoom = _zoom;
 	}
 
-	public int getLocationId() {
+	public Integer getLocationId() {
 		return _locationId;
 	}
 

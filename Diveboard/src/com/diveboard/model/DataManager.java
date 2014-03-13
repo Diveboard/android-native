@@ -212,11 +212,13 @@ public class					DataManager
 			{
 				if (((Dive)object).getId() < 0 && (((Dive)object).getEditList() == null || ((Dive)object).getEditList().size() == 0))
 				{
+					System.out.println("Entered in _addDive");
 					_addDive(object);
 					commit();
 				}
 				else
 				{
+					System.out.println("Entered in _saveDive");
 					_saveDive(object);
 					commit();
 				}
@@ -341,18 +343,47 @@ public class					DataManager
 	
 	private void				_saveDive(Object object)
 	{
-		ArrayList<Pair<String, String>> edit_list = ((IModel)object).getEditList();
+//		ArrayList<Pair<String, String>> edit_list = ((IModel)object).getEditList();
 		Dive dive = (Dive) object;
+		ArrayList<Pair<String, String>> edit_list = dive.getEditList();
+		JSONObject				jsono = new JSONObject();
 		
 		for (int i = 0, length = edit_list.size(); i < length; i++)
 		{
 			String json = "{\"id\":\"" + dive.getId() + "\"}";
+			
 			try
 			{
 				JSONObject obj = new JSONObject(json);
-				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
-				if (edit_list.get(i).first.equals("spot"))
-					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				System.out.println("SAVE DIVE@ : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				if (edit_list.get(i).first.equals("spot")){
+					JSONObject temp = new JSONObject(edit_list.get(i).second);
+					Spot mSpot = new Spot(temp);
+					JSONObject resul = new JSONObject();
+					JSONObject loc = new JSONObject();
+					JSONObject reg = new JSONObject();
+					if(mSpot.getLocationId() != null && mSpot.getRegionId() != null)
+					{
+						loc.put("id", mSpot.getLocationId());
+						reg.put("id", mSpot.getRegionId());
+						resul.put("location", loc);
+						resul.put("region", reg);
+					}
+					//temp.put("region_id", dive.getSpot().getRegionId());
+					
+					resul.put("country_name", mSpot.getCountryName());
+					resul.put("lat", mSpot.getLat());
+					resul.put("lng", mSpot.getLng());
+					resul.put("name", mSpot.getName());
+					if(!temp.isNull("id"))
+					{
+						
+						resul.put("id", mSpot.getId());
+					}
+					System.out.println("THIS IS IT " + resul.toString());
+					obj.put(edit_list.get(i).first, resul);
+				}
+					
 				else if (edit_list.get(i).first.equals("shop"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("divetype"))

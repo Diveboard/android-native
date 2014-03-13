@@ -8,7 +8,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Typeface;
@@ -18,20 +17,16 @@ import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -54,7 +49,6 @@ import android.widget.Toast;
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Spot;
 import com.google.android.gms.maps.CameraUpdate;
@@ -359,34 +353,41 @@ public class TabEditSpotsFragment extends Fragment implements
 				// Spot ID is 1 when there is no spot assigned yet
 				if (mModel.getDives().get(mIndex).getSpot().getId() != 1) {
 					
-					goToSpotSelected(mRootView, mModel.getDives().get(mIndex).getSpot().getJson());
+					//goToSpotSelected(mRootView, mModel.getDives().get(mIndex).getSpot().getJson());
 					// Then we show the "selected spot" controls
-//					((LinearLayout) mRootView.findViewById(R.id.manual_spot_layout)).setVisibility(View.GONE);
-//					((LinearLayout) mRootView.findViewById(R.id.on_spot_selected_layout)).setVisibility(View.VISIBLE);
-//					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
-////					((TextView) mRootView.findViewById(R.id.details_name_content)).setText(mSpotName);
-////					((TextView) mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-//
-//					if (!manualSpotActivated)
-//						mMyMarker = mMap.addMarker(new MarkerOptions()
-//										.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
-//										.title(mModel.getDives().get(mIndex).getSpot().getName())
-//										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-//
-//					else
-//
-//						mMyMarker = mMap.addMarker(new MarkerOptions()
-//										.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
-//										.title(mModel.getDives().get(mIndex).getSpot().getName())
-//										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey)));
-//
-//					
-//					Integer zoom = mModel.getDives().get(mIndex).getSpot().getZoom();
-//					if (zoom == null || zoom > mZoom)
-//						zoom = mZoom;
-//					if (mModel.getDives().get(mIndex).getSpot().getLat() != null && mModel.getDives().get(mIndex).getSpot().getLng() != null)
-//						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-//								new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
+					((LinearLayout) mRootView.findViewById(R.id.manual_spot_layout)).setVisibility(View.GONE);
+					((LinearLayout) mRootView.findViewById(R.id.on_spot_selected_layout)).setVisibility(View.VISIBLE);
+					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
+//					((TextView) mRootView.findViewById(R.id.details_name_content)).setText(mSpotName);
+//					((TextView) mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
+
+					if (!manualSpotActivated)
+						mMyMarker = mMap.addMarker(new MarkerOptions()
+										.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
+										.title(mModel.getDives().get(mIndex).getSpot().getName())
+										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+
+					else
+
+						mMyMarker = mMap.addMarker(new MarkerOptions()
+										.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
+										.title(mModel.getDives().get(mIndex).getSpot().getName())
+										.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey)));
+
+					if (mModel.getDives().get(mIndex).getSpot() != null){
+						((TextView) mRootView.findViewById(R.id.details_gps_content)).setText(getCoordinatesDegrees(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng())));
+						((TextView) mRootView.findViewById(R.id.nameSelectedSpotTV)).setText(mModel.getDives().get(mIndex).getSpot().getName());
+						((TextView) mRootView.findViewById(R.id.countrySelectedTV)).setText(mModel.getDives().get(mIndex).getSpot().getCountryName());
+						
+					}
+						
+
+					Integer zoom = mModel.getDives().get(mIndex).getSpot().getZoom();
+						
+					if (zoom == null || zoom > mZoom)
+						zoom = mZoom;
+					if (mModel.getDives().get(mIndex).getSpot().getLat() != null && mModel.getDives().get(mIndex).getSpot().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
 
 				} else {
 					goToSearch(mRootView);
@@ -687,6 +688,8 @@ public class TabEditSpotsFragment extends Fragment implements
 						mSpot.put("lat", mManualMarker.getPosition().latitude);
 						mSpot.put("lng", mManualMarker.getPosition().longitude);
 						mSpot.put("name", name);
+//						if(mModel.getDives().get(mIndex).getSpot().getId() != 1)
+//							mSpot.put("id", mModel.getDives().get(mIndex).getSpot().getId());
 						if (mRegionId != null && mLocationId != null) {
 							mSpot.put("region_id", mRegionId);
 							mSpot.put("location_id", mLocationId);
@@ -1286,7 +1289,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 		mMap.setOnCameraChangeListener(null);
 		removeMarkers();
-		manualSpotActivated = false;
+		
 		if (mManualMarker != null)
 			mManualMarker.remove();
 
@@ -1315,8 +1318,8 @@ public class TabEditSpotsFragment extends Fragment implements
 			mPosition = new LatLng((Double) (mSpotSelected.get("lat")),mLong);
 			mSpotName = mSpotSelected.getString("name");
 			
-			mRegion = mSpotSelected.getString("region");
-			mLocation = mSpotSelected.getString("location");
+//			mRegion = mSpotSelected.getString("region");
+//			mLocation = mSpotSelected.getString("location");
 
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -1344,9 +1347,12 @@ public class TabEditSpotsFragment extends Fragment implements
 				.title(mSpotName)
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 
-		// It sets here the selected spot to the tempDive Model
+		// It sets here the selected spot to the Dive Model
+		
 		mModel.getDives().get(mIndex).setSpot(mSpotSelected);
 		System.out.println("~~~SetSpot with " + mSpotSelected.toString());
+		
+		manualSpotActivated = false;
 
 	}
 
