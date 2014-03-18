@@ -1171,7 +1171,6 @@ public class					DiveboardModel
 //		lngSW = "-13.183000099999958";
 //		latNE = "59.095806348000615";
 //		lngNE = "16.17246865000004";
-		System.err.println("OFFLINE SEARCH of SPOTS");
 		if (lng != null)
 		{
 			Double lng_d = Double.parseDouble(lng);
@@ -1181,11 +1180,8 @@ public class					DiveboardModel
 		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
 		String DB_NAME = "spots.db";
 		File file_db = new File(DB_PATH + DB_NAME);
-		if (!file_db.exists()){
-			
+		if (!file_db.exists())
 			return null;
-		}
-			
 		SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
 		String condition_str = "";
 		if (term != null)
@@ -1261,185 +1257,6 @@ public class					DiveboardModel
 		return null;
 	}
 	
-	public JSONObject					offlineSearchRegionLocationText(String lat, String lng, String dist)
-	{
-
-		System.err.println("OFFLINE SEARCH OF REGIONS/LOCATIONS");
-		if(lat != null && lng != null && dist != null)
-		{
-			String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
-			String DB_NAME = "spots.db";
-			File file_db = new File(DB_PATH + DB_NAME);
-			if (!file_db.exists())
-				return null;
-			SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-			String condition_str_country = "";
-			String condition_str_reg = "";
-			String condition_str_loc = "";
-			String NElat = "";
-			String SWlat = "";
-			String NElng = "";
-			String SWlng = "";
-			Double lat_d = Double.parseDouble(lat);
-			Double lng_d = Double.parseDouble(lng);
-			Double dist_d = Double.parseDouble(dist);
-			boolean onEdge = false; 
-			
-					//Calculate the space of search
-			//Check adding the distance does not take the search coordinate "out of the map"
-			if(lat_d + dist_d < 90.0){
-				NElat = String.valueOf(lat_d + dist_d);
-			}
-			else{
-				NElat = "90.0";
-			}
-				
-			if(lat_d - dist_d > -90.0){
-				SWlat = String.valueOf(lat_d - dist_d);
-			}
-			else{
-				SWlat = "-90.0";
-			}		
-			
-			if(lng_d + dist_d < 180.0){
-				NElng = String.valueOf(lng_d + dist_d);
-			}
-			else{
-				onEdge = true;
-				Double add = lng_d + dist_d - 180.0;
-				NElng = String.valueOf((180.0 - add) * (-1));
-			}
-			
-			if(lng_d - dist_d > -180.0){
-				SWlng = String.valueOf(lng_d - dist_d);
-			}
-			else{
-				onEdge = true;
-				Double add = lng_d - dist_d + 180.0;
-				SWlng = String.valueOf(180.0 + add);
-			}
-		
-			if(!onEdge)
-			{
-				condition_str_country += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-				condition_str_reg += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-				condition_str_loc += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-			}
-			else
-			{
-				condition_str_country += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-				condition_str_reg += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-				condition_str_loc += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
-			}
-			
-			if (lat != null && lng != null)
-			{
-				Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
-				condition_str_country +=  " GROUP BY spots.country_id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
-				condition_str_reg += 	 		" GROUP BY regions.id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
-				condition_str_loc +=     " GROUP BY spots.location_id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
-			}
-			
-//			if (SWlat != null && NElat != null && SWlng != null && NElng != null)
-//			{
-//				if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
-//				{
-//					if (condition_str.length() == 0)
-//						condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-//					else
-//						condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-//				}
-//				if (condition_str.length() == 0)
-//					condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-//				else
-//					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-//			}
-//			if (condition_str.length() == 0)
-//				condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
-//			else
-//				condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
-//			if (lat != null && lng != null)
-//			{
-//				Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
-//				condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
-//			}
-			JSONObject result = new JSONObject();
-			try {
-				result.put("success", true);
-				JSONArray jCountries = new JSONArray();
-				JSONArray jRegions = new JSONArray();
-				JSONArray jLocations = new JSONArray();
-				Cursor c, r, l;
-				System.out.println("Country Query with|||| SELECT spots.country_id, spots.country_name FROM spots WHERE " + condition_str_country + " LIMIT 10");
-				System.out.println("REGION Query with|||| SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10");
-				System.out.println("LOCATION Query with|||| SELECT spots.location_id, spots.location_name FROM spots WHERE " + condition_str_loc + " LIMIT 10");
-				
-				c = mDataBase.query("spots", new String[] {"country_id", "country_name"}, condition_str_country + " LIMIT 10", null, null, null, null);
-				r = mDataBase.rawQuery("SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10", null);
-				l = mDataBase.query("spots", new String[] {"location_id", "location_name"}, condition_str_loc + " LIMIT 10", null, null, null, null);
-				
-				if (c.getCount() == 0)
-				{
-					System.out.println("NO Countries were found");
-					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));	
-				}
-				if (r.getCount() == 0)
-				{
-					System.out.println("NO Regions were found");
-					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
-				}
-				if (l.getCount() == 0)
-				{
-					System.out.println("NO Locations were found");
-					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
-				}
-				
-				while (c.moveToNext())
-				{
-					if(!c.getString(1).trim().isEmpty()){
-						JSONObject country = new JSONObject();
-						country.put("id", c.getInt(0));
-						country.put("name", c.getString(1));
-						jCountries.put(country);
-					}
-					
-				}
-				
-				while (r.moveToNext()){
-					if(!r.getString(1).trim().isEmpty()){
-						JSONObject region = new JSONObject();
-						region.put("id", r.getInt(0));
-						region.put("name", r.getString(1));
-						jRegions.put(region);
-					}
-					
-				}
-				
-				while (l.moveToNext()){
-					if(!l.getString(1).trim().isEmpty()){
-						JSONObject location = new JSONObject();
-						location.put("id", l.getInt(0));
-						location.put("name", l.getString(1));
-						jLocations.put(location);
-					}
-					
-				}
-				
-				result.put("countries", jCountries);
-				result.put("regions", jRegions);
-				result.put("locations", jLocations);
-				
-				System.out.println("The result is " + result.toString());
-				
-				return result;
-				
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		} 
-		return null;
-	}
-	
 	
 	public JSONObject					searchShopText(final String term, final String lat, final String lng, final String latSW, final String latNE, final String lngSW, final String lngNE)
 	{
@@ -1504,6 +1321,7 @@ public class					DiveboardModel
 		}
 		else
 		{
+			//return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			return null;
 		}
 		return null;
@@ -1564,7 +1382,7 @@ public class					DiveboardModel
 		}
 		else{
 			
-			return offlineSearchRegionLocationText(latitude, longitude, String.valueOf(2.0));
+			return null;
 		}
 		
 		return null;

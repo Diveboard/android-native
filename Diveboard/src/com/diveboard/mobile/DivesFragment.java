@@ -194,12 +194,9 @@ public class DivesFragment extends Fragment {
 		else
 			mFragmentBannerHeight.setVisibility(View.INVISIBLE);
 		//Set the title details content
-		if (mDive.getSpot() != null && mDive.getSpot().getId() != null)
+		if (mDive.getSpot() != null && mDive.getSpot().getId() != 1)
 		{
-			if(mDive.getSpot().getLocationName() != null)
-				((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
-			else 
-				((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName());
+			((TextView) mFragment.findViewById(R.id.dive_place)).setText(mDive.getSpot().getCountryName() + " - " + mDive.getSpot().getLocationName());
 			((TextView) mFragment.findViewById(R.id.dive_place)).setTypeface(faceB);
 			((TextView) mFragment.findViewById(R.id.dive_place)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 			((TextView) mFragment.findViewById(R.id.dive_name)).setText(mDive.getSpot().getName().toUpperCase());

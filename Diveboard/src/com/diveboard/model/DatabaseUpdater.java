@@ -42,22 +42,11 @@ public class					DatabaseUpdater
 		@Override
 		public void run()
 		{
-			try{
-					ConnectivityManager connMgr = null;
-				connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-				NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-				NetworkInfo dataNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-				if(connMgr != null)
-					if (wifiNetwork.isConnected() == false && dataNetwork.isConnected() == false){
-						return ;
-				}
-			}catch (NullPointerException e){
-				
-				e.printStackTrace();
-				return;
-			}
-			
-			
+			ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+			NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+			NetworkInfo dataNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
+			if (wifiNetwork.isConnected() == false && dataNetwork.isConnected() == false)
+				return ;
 			try {
 				URL url = new URL(AppConfig.SERVER_URL + "/assets/mobilespots.db.gz");
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
