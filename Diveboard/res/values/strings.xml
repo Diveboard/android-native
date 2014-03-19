@@ -4,8 +4,8 @@
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
-    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
-    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <string name="maps_app_id_debug_dos">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <string name="maps_app_id_debug">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
