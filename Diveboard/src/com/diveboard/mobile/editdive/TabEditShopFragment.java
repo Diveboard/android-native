@@ -403,9 +403,9 @@ public class					TabEditShopFragment extends Fragment
     		public void run()
     		{
     			ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
+//    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
     			result = mModel.searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
-    			System.out.println(result);
+//    			System.out.println(result);
     			searchDone = true;
     		}
     	}

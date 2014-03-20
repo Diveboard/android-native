@@ -348,44 +348,14 @@ public class TabEditSpotsFragment extends Fragment implements
 					}
 				});
 				
-				// Spot ID is 1 when there is no spot assigned yet
-				if (mModel.getDives().get(mIndex).getSpot().getId() != null || (mModel.getDives().get(mIndex).getSpot().getLat() != null && mModel.getDives().get(mIndex).getSpot().getLng() != null)) {
+				// //Load the previously selected spot if so, and if it is a new spot whose spotID is null we load it too
+				if (mModel.getDives().get(mIndex).getSpot().getId() == null || mModel.getDives().get(mIndex).getSpot().getId() != 1) {
 					
-					// Then we show the "selected spot" controls
-					((LinearLayout) mRootView.findViewById(R.id.manual_spot_layout)).setVisibility(View.GONE);
-					((LinearLayout) mRootView.findViewById(R.id.on_spot_selected_layout)).setVisibility(View.VISIBLE);
-					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
-
-					if (!manualSpotActivated)
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
-								.title(mModel.getDives().get(mIndex).getSpot().getName())
-								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-
-					else
-
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-								.position(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()))
-								.title(mModel.getDives().get(mIndex).getSpot().getName())
-								.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey)));		
-
-					if (mModel.getDives().get(mIndex).getSpot() != null){
-						((TextView) mRootView.findViewById(R.id.details_gps_content)).setText(getCoordinatesDegrees(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng())));
-						((TextView) mRootView.findViewById(R.id.nameSelectedSpotTV)).setText(mModel.getDives().get(mIndex).getSpot().getName());
-						((TextView) mRootView.findViewById(R.id.countrySelectedTV)).setText(mModel.getDives().get(mIndex).getSpot().getCountryName());
-						
-					}
-						
-
-					Integer zoom = mModel.getDives().get(mIndex).getSpot().getZoom();
-						
-					if (zoom == null || zoom > mZoom)
-						zoom = mZoom;
-					if (mModel.getDives().get(mIndex).getSpot().getLat() != null && mModel.getDives().get(mIndex).getSpot().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mModel.getDives().get(mIndex).getSpot().getLat(),mModel.getDives().get(mIndex).getSpot().getLng()), zoom));
+					goToSpotSelected(mRootView, mModel.getDives().get(mIndex).getSpot().getJson());
 
 				} else {
 					goToSearch(mRootView);
+					activeGPS(mRootView);
 				}
 					//if (!manualSpotActivated) {
 //					System.out.println("activeGPS");
@@ -465,9 +435,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		mMap.clear();
 
 		if (manualSpotActivated) {
-
 			manualSpotActivated = false;
-
 		}
 
 		mLatitude = mMap.getCameraPosition().target.latitude;
@@ -490,6 +458,17 @@ public class TabEditSpotsFragment extends Fragment implements
 				doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
 			}
 		});
+		
+		JSONObject no_spot = new JSONObject();
+		try {
+			no_spot.put("id", 1);
+			mModel.getDives().get(mIndex).setSpot(no_spot);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 
 	}
 
@@ -666,7 +645,10 @@ public class TabEditSpotsFragment extends Fragment implements
 							mSpot.put("region_id", mRegionId);
 							mSpot.put("location_id", mLocationId);
 						}
-						System.out.println("gotoSpotSelected with " + mSpot.toString());
+						
+						// It sets here the selected spot to the Dive Model
+						mModel.getDives().get(mIndex).setSpot(mSpot);
+						System.out.println("~~~SetSpot with " + mSpot.toString());
 						goToSpotSelected(mRootView, mSpot);
 					} catch (JSONException e) {
 						// TODO Auto-generated catch block
@@ -831,9 +813,8 @@ public class TabEditSpotsFragment extends Fragment implements
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					JSONObject r = AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
-					System.err.println("WHAT HAPPENED" + r.toString());
-					return r;
+					return AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
+					
 					
 				}
 				return result;
@@ -970,9 +951,9 @@ public class TabEditSpotsFragment extends Fragment implements
 			public void run() {
 				if (!goOfflineMode) {
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
+					//System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
 					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
-					System.out.println(result);
+					//System.out.println(result);
 					searchDone = true;
 				}
 			}
@@ -1067,7 +1048,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 								@Override
 								public boolean onMarkerClick(Marker marker) {
-									if (!marker.equals(mMyMarker)) {
+									if (!manualSpotActivated) {
 										int id = Integer.valueOf(marker.getTitle().substring(0,marker.getTitle().indexOf(":")));
 										System.out.println(id);
 										lv.smoothScrollToPosition(id);
@@ -1128,14 +1109,16 @@ public class TabEditSpotsFragment extends Fragment implements
 
 									try {
 
-										mSelectedObject = mArray
-												.getJSONObject(position);
+										mSelectedObject = mArray.getJSONObject(position);
 
 									} catch (JSONException e1) {
 										// TODO Auto-generated catch block
 
 										e1.printStackTrace();
 									}
+									// It sets here the selected spot to the Dive Model
+									mModel.getDives().get(mIndex).setSpot(mSelectedObject);
+									System.out.println("~~~SetSpot with " + mSelectedObject.toString());
 									goToSpotSelected(mRootView, mSelectedObject);
 
 								}
@@ -1282,11 +1265,6 @@ public class TabEditSpotsFragment extends Fragment implements
 				.title(mSpotName)
 				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 
-		// It sets here the selected spot to the Dive Model
-		
-		mModel.getDives().get(mIndex).setSpot(mSpotSelected);
-		System.out.println("~~~SetSpot with " + mSpotSelected.toString());
-		
 		manualSpotActivated = false;
 
 	}

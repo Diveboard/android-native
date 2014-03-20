@@ -114,8 +114,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				"fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(),
 				"fonts/Quicksand-Bold.otf");
-		mDive = AC.getModel().getDives()
-				.get(getIntent().getIntExtra("index", 0));
+		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
@@ -123,30 +122,21 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 					.setText(getResources().getString(R.string.no_note));
 		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
 			((TextView) findViewById(R.id.dive_url)).setText("");
-		((TextView) findViewById(R.id.dive_url))
-				.setPaintFlags(((TextView) findViewById(R.id.dive_url))
-						.getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
+		((TextView) findViewById(R.id.dive_url)).setPaintFlags(((TextView) findViewById(R.id.dive_url)).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
 		((TextView) findViewById(R.id.dive_note)).setTypeface(faceR);
-		((TextView) findViewById(R.id.dive_note)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView) findViewById(R.id.logged_by)).setText(AC.getModel()
-				.getUser().getNickname());
+		((TextView) findViewById(R.id.dive_note)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.logged_by)).setText(AC.getModel().getUser().getNickname());
 		((TextView) findViewById(R.id.logged_by)).setTypeface(faceB);
-		((TextView) findViewById(R.id.logged_by)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.logged_by)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		if (AC.getModel().getUser().getCountryName() != null)
-			((TextView) findViewById(R.id.user_country)).setText(AC.getModel()
-					.getUser().getCountryName());
+			((TextView) findViewById(R.id.user_country)).setText(AC.getModel().getUser().getCountryName());
 		else
 			((TextView) findViewById(R.id.user_country)).setText("");
 		((TextView) findViewById(R.id.user_country)).setTypeface(faceR);
-		((TextView) findViewById(R.id.user_country)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((Button) findViewById(R.id.deleteDiveButton)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.user_country)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button) findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button) findViewById(R.id.deleteDiveButton)).setTypeface(faceB);
-		((Button) findViewById(R.id.deleteDiveButton))
-				.setOnClickListener(new OnClickListener() {
+		((Button) findViewById(R.id.deleteDiveButton)).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
 						DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
@@ -155,12 +145,10 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 								"DeleteConfirmDialogFragment");
 					}
 				});
-		((Button) findViewById(R.id.goToEditButton)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((Button) findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button) findViewById(R.id.goToEditButton)).setTypeface(faceB);
 		((TextView) findViewById(R.id.dive_shop)).setTypeface(faceB);
-		((TextView) findViewById(R.id.dive_shop)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.dive_shop)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		if (mDive.getShopName() != null) {
 			((TextView) findViewById(R.id.shop_name)).setText(mDive
 					.getShopName().toUpperCase());
@@ -181,14 +169,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		}
 		((TextView) findViewById(R.id.depth_graph)).setTypeface(faceB);
-		((TextView) findViewById(R.id.depth_graph)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-		((TextView) findViewById(R.id.max_depth_title)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.depth_graph)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.max_depth_title)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.max_depth_title)).setText(getResources().getString(R.string.max_depth_label).toUpperCase() + ": ");
 		((TextView) findViewById(R.id.max_depth_title)).setTypeface(faceB);
-		((TextView) findViewById(R.id.max_depth)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.max_depth)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		// ((TextView)
 		// findViewById(R.id.max_depth)).setText(String.valueOf(mDive.getMaxdepth().getDistance())
 		// + " " + mDive.getMaxdepth().getFullName().toUpperCase());
@@ -222,57 +207,38 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				((ImageView) findViewById(R.id.graph)));
 		mDownloadGraphTask.execute();
 		((TextView) findViewById(R.id.date)).setTypeface(faceB);
-		((TextView) findViewById(R.id.date)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.date)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.water)).setTypeface(faceB);
-		((TextView) findViewById(R.id.water)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.water)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.duration)).setTypeface(faceB);
-		((TextView) findViewById(R.id.duration)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.duration)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.visibility)).setTypeface(faceB);
-		((TextView) findViewById(R.id.visibility)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.visibility)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.temp)).setTypeface(faceB);
-		((TextView) findViewById(R.id.temp)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.temp)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.dive_type)).setTypeface(faceB);
-		((TextView) findViewById(R.id.dive_type)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.dive_type)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.date_content)).setTypeface(faceR);
-		((TextView) findViewById(R.id.date_content)).setText(mDive.getDate()
-				+ " " + mDive.getTime());
-		((TextView) findViewById(R.id.date_content)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.date_content)).setText(mDive.getDate()+ " " + mDive.getTime());
+		((TextView) findViewById(R.id.date_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		if (mDive.getWater() != null) {
 			((TextView) findViewById(R.id.water_content)).setTypeface(faceR);
-			((TextView) findViewById(R.id.water_content)).setTextSize(
-					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			((TextView) findViewById(R.id.water_content)).setText(Character
-					.toUpperCase(mDive.getWater().charAt(0))
-					+ mDive.getWater().substring(1));
+			((TextView) findViewById(R.id.water_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView) findViewById(R.id.water_content)).setText(Character.toUpperCase(mDive.getWater().charAt(0))+ mDive.getWater().substring(1));
 		} else {
 			((TextView) findViewById(R.id.water)).setVisibility(View.GONE);
-			((TextView) findViewById(R.id.water_content))
-					.setVisibility(View.GONE);
+			((TextView) findViewById(R.id.water_content)).setVisibility(View.GONE);
 		}
-		((TextView) findViewById(R.id.duration_content)).setTextSize(
-				TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		((TextView) findViewById(R.id.duration_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((TextView) findViewById(R.id.duration_content)).setTypeface(faceR);
-		((TextView) findViewById(R.id.duration_content)).setText(mDive
-				.getDuration() + getResources().getString(R.string.unit_mins));
+		((TextView) findViewById(R.id.duration_content)).setText(mDive.getDuration() + getResources().getString(R.string.unit_mins));
 		if (mDive.getVisibility() != null) {
-			((TextView) findViewById(R.id.visibility_content))
-					.setTypeface(faceR);
-			((TextView) findViewById(R.id.visibility_content)).setTextSize(
-					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			((TextView) findViewById(R.id.visibility_content))
-					.setText(Character.toUpperCase(mDive.getVisibility()
-							.charAt(0)) + mDive.getVisibility().substring(1));
+			((TextView) findViewById(R.id.visibility_content)).setTypeface(faceR);
+			((TextView) findViewById(R.id.visibility_content)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((TextView) findViewById(R.id.visibility_content)).setText(Character.toUpperCase(mDive.getVisibility().charAt(0)) + mDive.getVisibility().substring(1));
 		} else {
 			((TextView) findViewById(R.id.visibility)).setVisibility(View.GONE);
-			((TextView) findViewById(R.id.visibility_content))
-					.setVisibility(View.GONE);
+			((TextView) findViewById(R.id.visibility_content)).setVisibility(View.GONE);
 		}
 
 		String temp;
@@ -286,23 +252,18 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			 * else tempsurface_unit =
 			 * (mDive.getTempSurfaceUnit().compareTo("C") == 0) ? "C" : "F";
 			 */
-			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C)
-					: getResources().getString(R.string.unit_F);
+			tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C): getResources().getString(R.string.unit_F);
 			Double tempsurface_value = 0.0;
 			if (mDive.getTempSurface() != null
 					&& mDive.getTempSurfaceUnit() != null) {
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
-					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(
-							getResources().getString(R.string.unit_C)) == 0) ? mDive.getTempSurface() : Utils.round(
-							Converter.convert(mDive.getTempSurface(),
-									Units.Temperature.F, Units.Temperature.C),
-							2);
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) 
+					? mDive.getTempSurface() 
+					: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.F, Units.Temperature.C),2);
 				else
-					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(
-							getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempSurface() : Utils.round(
-							Converter.convert(mDive.getTempSurface(),
-									Units.Temperature.C, Units.Temperature.F),
-							2);
+					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_F)) == 0) 
+					? mDive.getTempSurface() 
+					: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.C, Units.Temperature.F),2);
 			}
 			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
 				temp = getResources().getString(R.string.surface_label) + " " + tempsurface_value + getResources().getString(R.string.unit_C_symbol);
@@ -329,15 +290,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
 					tempbottom_value = (mDive.getTempBottomUnit()
 							.compareTo(getResources().getString(R.string.unit_C)) == 0) ? mDive.getTempBottom()
-							: Utils.round(Converter.convert(
-									mDive.getTempBottom(), Units.Temperature.F,
-									Units.Temperature.C), 2);
+							: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.F,Units.Temperature.C), 2);
 				else
 					tempbottom_value = (mDive.getTempBottomUnit()
 							.compareTo(getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempBottom()
-							: Utils.round(Converter.convert(
-									mDive.getTempBottom(), Units.Temperature.C,
-									Units.Temperature.F), 2);
+							: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.C,Units.Temperature.F), 2);
 			}
 			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
 				temp += getResources().getString(R.string.bottom_label) + " " + tempbottom_value + getResources().getString(R.string.unit_C_symbol);
@@ -347,8 +304,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			temp += "-";
 		if (temp.contentEquals("- | -")) {
 			((TextView) findViewById(R.id.temp)).setVisibility(View.GONE);
-			((TextView) findViewById(R.id.temp_content))
-					.setVisibility(View.GONE);
+			((TextView) findViewById(R.id.temp_content)).setVisibility(View.GONE);
 		} else {
 			((TextView) findViewById(R.id.temp_content)).setTypeface(faceR);
 			((TextView) findViewById(R.id.temp_content)).setTextSize(
@@ -391,18 +347,14 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 
 		if (mDive.getDiveReviews() != null) {
 			if (mDive.getDiveReviews().getOverall() == null) {
-				((TextView) findViewById(R.id.overallTV))
-						.setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.overall_review))
-						.setVisibility(View.GONE);
+				((TextView) findViewById(R.id.overallTV)).setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.overall_review)).setVisibility(View.GONE);
 			} else {
 				mOverall.setRating(mDive.getDiveReviews().getOverall());
 			}
 			if (mDive.getDiveReviews().getDifficulty() == null) {
-				((TextView) findViewById(R.id.difficultyTV))
-						.setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.difficulty_review))
-						.setVisibility(View.GONE);
+				((TextView) findViewById(R.id.difficultyTV)).setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.difficulty_review)).setVisibility(View.GONE);
 			} else {
 
 				mDifficulty.setRating(mDive.getDiveReviews().getDifficulty());
@@ -419,8 +371,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			}
 			if (mDive.getDiveReviews().getMarine() == null) {
 				((TextView) findViewById(R.id.lifeTV)).setVisibility(View.GONE);
-				((RatingBar) findViewById(R.id.life_review))
-						.setVisibility(View.GONE);
+				((RatingBar) findViewById(R.id.life_review)).setVisibility(View.GONE);
 			} else {
 
 				mLife.setRating(mDive.getDiveReviews().getMarine());

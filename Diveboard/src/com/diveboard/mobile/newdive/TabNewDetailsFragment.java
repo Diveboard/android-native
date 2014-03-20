@@ -170,83 +170,6 @@ public class					TabNewDetailsFragment extends Fragment
     	
 	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
 	    
-//	    Button save = (Button) findViewById(R.id.save_button);
-//	    save.setTypeface(faceB);
-//	    save.setText(getResources().getString(R.string.add_button));
-//	    save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
-//				ArrayList<Pair<String, String>> editList = mDive.getEditList();
-//				if (mDive.getMaxdepth() == null || mDive.getDuration() == null)
-//					mError = true;
-//				else
-//					mError = false;
-//				if (mDive.getMaxdepth() == null)
-//				{
-//					if (2 - optionList.getFirstVisiblePosition() >= 0)
-//					{
-//						View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
-//						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-//						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-//					}
-//					
-//				}
-//				if (mDive.getDuration() == null)
-//				{
-//					if (4 - optionList.getFirstVisiblePosition() >= 0)
-//					{
-//						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
-//						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-//						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-//					}
-//					
-//				}
-//				if (mError == false)
-//				{
-//					WaitDialogFragment dialog = new WaitDialogFragment();
-//					dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//					if (editList != null && editList.size() > 0)
-//					{
-//						JSONObject edit = new JSONObject(); 
-//						for (int i = 0, size = editList.size(); i < size; i++)
-//							try {
-//								if (editList.get(i).first.equals("spot"))
-//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-//								else
-//									edit.put(editList.get(i).first, editList.get(i).second);
-//							} catch (JSONException e) {
-//								e.printStackTrace();
-//							}
-//						try {
-//							mDive.applyEdit(edit);
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//						mDive.clearEditList();
-//					}
-//					dives.add(0, mDive);
-//					((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
-//						@Override
-//						public void onDiveCreateComplete() {
-//							finish();
-//						}
-//					});
-//					((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
-//					((ApplicationController)getApplicationContext()).setRefresh(1);
-//					((ApplicationController)getApplicationContext()).setTempDive(null);
-//				}
-//				else
-//				{
-//					Toast toast = Toast.makeText(getApplicationContext(), "Max Depth or Duration fields are missing", Toast.LENGTH_LONG);
-//					toast.setGravity(Gravity.CENTER, 0, 0);
-//					toast.show();
-//				}
-//			}
-//		});
-	    
     	NewDiveActivity.optionList = (ListView)rootView.findViewById(R.id.optionList);
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
 		elem.add(new EditOption(getResources().getString(R.string.date_label) + " : ", mDive.getDate()));
@@ -357,7 +280,6 @@ public class					TabNewDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
 		{
-			
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ",elem.get(17).getValue()));	
 		}
 		

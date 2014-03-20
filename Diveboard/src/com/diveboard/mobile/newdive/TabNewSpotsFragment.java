@@ -360,52 +360,15 @@ public class TabNewSpotsFragment extends Fragment implements
 					}
 				});
 				
-				//Spot ID is 1 when there is no spot assigned yet
+				//Load the previously selected spot if so
 				if (((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1) {
 					
-					//Then we show the "selected spot" controls
-					((LinearLayout) mRootView.findViewById(R.id.manual_spot_layout)).setVisibility(View.GONE);
-					((LinearLayout) mRootView.findViewById(R.id.on_spot_selected_layout)).setVisibility(View.VISIBLE);
-					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
-					
-					((TextView) mRootView.findViewById(R.id.details_name_content)).setText(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getName());
-					((TextView) mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-					
-					
-					if (!manualSpotActivated)
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(),
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
-						.title(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-					
-					else 
-					
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(),
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
-						.title(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey)));
-						
-					System.out.println(((ApplicationController) getActivity()
-							.getApplicationContext()).getTempDive().getSpot()
-							.getId());
-					Integer zoom = ((ApplicationController) getActivity()
-							.getApplicationContext()).getTempDive().getSpot()
-							.getZoom();
-					if (zoom == null || zoom > mZoom)
-						zoom = mZoom;
-					if (((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getLat() != null 
-							&& ((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(
-										((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getLat(),
-										((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getLng()), zoom));
-
-				} else 
+					goToSpotSelected(mRootView, AC.getTempDive().getSpot().getJson());
+				} else {
 					goToSearch(mRootView);
-				
+					activeGPS(mRootView);
+				}
+						
 			}
 			
 		}
@@ -527,7 +490,15 @@ public class TabNewSpotsFragment extends Fragment implements
 			}
 		});
 		
-		
+		JSONObject no_spot = new JSONObject();
+		try {
+			no_spot.put("id", 1);
+			((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(no_spot);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void goToSetManualSpot(View view){
@@ -683,7 +654,7 @@ public class TabNewSpotsFragment extends Fragment implements
 							System.out.println("comparing regions: " + mRegionsIdArray.getJSONObject(i).getString("region_name") + " with " + mSpot.get("region"));
 							if(mRegionsIdArray.getJSONObject(i).getString("region_name").equals(mSpot.get("region"))){
 								mRegionId = mRegionsIdArray.getJSONObject(i).getInt("region_id");
-								
+								break;
 							}
 								
 						
@@ -692,7 +663,7 @@ public class TabNewSpotsFragment extends Fragment implements
 							System.out.println("comparing locations: " + mLocationsIdArray.getJSONObject(i).getString("location_name") + " with " + mSpot.get("location"));
 							if(mLocationsIdArray.getJSONObject(i).getString("location_name").equals(mSpot.get("location"))){
 								mLocationId = mLocationsIdArray.getJSONObject(i).getInt("location_id");
-								
+								break;
 							}
 								
 						}
@@ -704,7 +675,9 @@ public class TabNewSpotsFragment extends Fragment implements
 							mSpot.put("region_id", mRegionId);
 							mSpot.put("location_id", mLocationId);
 						}
-						System.out.println("gotoSpotSelected with " + mSpot.toString());
+						// It sets here the selected spot to the Dive Model
+						((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSpot);
+						System.out.println("~~~SetSpot with " + mSpot.toString());
 						goToSpotSelected(mRootView, mSpot);
 						
 					} catch (JSONException e) {
@@ -1013,9 +986,9 @@ public class TabNewSpotsFragment extends Fragment implements
 			public void run() {
 				if (!goOfflineMode) {
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
+					//System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
 					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
-					System.out.println(result);
+					//System.out.println(result);
 					searchDone = true;
 				}
 			}
@@ -1170,6 +1143,10 @@ public class TabNewSpotsFragment extends Fragment implements
 										
 										e1.printStackTrace();
 									}
+									
+									// It sets here the selected spot to the Dive Model
+									((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSelectedObject);
+									System.out.println("~~~SetSpot with " + mSelectedObject.toString());
 									goToSpotSelected(mRootView, mSelectedObject);
 									
 									
@@ -1316,10 +1293,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mPosition.latitude, mPosition.longitude), zoom));
 		mMyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mPosition.latitude, mPosition.longitude)).title(mSpotName).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 		
-		//It sets here the selected spot to the tempDive Model
-		((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSpotSelected);
-		System.out.println("~~~SetSpot with " + mSpotSelected.toString());
-		
+				
 	}
 	
 	public double roundToN(double number, int n){

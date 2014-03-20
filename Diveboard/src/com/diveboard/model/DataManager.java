@@ -377,7 +377,6 @@ public class					DataManager
 					resul.put("name", mSpot.getName());
 					if(!temp.isNull("id"))
 					{
-						
 						resul.put("id", mSpot.getId());
 					}
 					System.out.println("THIS IS IT " + resul.toString());

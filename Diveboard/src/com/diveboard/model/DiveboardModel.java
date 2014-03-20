@@ -1239,8 +1239,11 @@ public class					DiveboardModel
 			}
 			else
 				c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
-			if (c.getCount() == 0)
+			if (c.getCount() == 0){
+				c.close();
 				return null;
+			}
+				
 			while (c.moveToNext())
 			{
 				JSONObject new_elem = new JSONObject();
@@ -1252,7 +1255,7 @@ public class					DiveboardModel
 				new_elem.put("lng", c.getDouble(5));
 				jarray.put(new_elem);
 			}
-			
+			c.close();
 			result.put("spots", jarray);
 			return result;
 		} catch (JSONException e) {
@@ -1380,16 +1383,19 @@ public class					DiveboardModel
 				
 				if (c.getCount() == 0)
 				{
+					c.close();
 					System.out.println("NO Countries were found");
 					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));	
 				}
 				if (r.getCount() == 0)
 				{
+					r.close();
 					System.out.println("NO Regions were found");
 					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
 				}
 				if (l.getCount() == 0)
 				{
+					l.close();
 					System.out.println("NO Locations were found");
 					return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
 				}
@@ -1430,7 +1436,9 @@ public class					DiveboardModel
 				result.put("locations", jLocations);
 				
 				System.out.println("The result is " + result.toString());
-				
+				c.close();
+				r.close();
+				l.close();
 				return result;
 				
 			} catch (JSONException e) {

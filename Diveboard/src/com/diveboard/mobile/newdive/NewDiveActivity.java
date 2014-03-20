@@ -660,19 +660,89 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 		
 		Dive mDive = ((ApplicationController) getApplicationContext()).getTempDive();
 		String fullReview = "";
-		Integer overall, difficulty, life, fish, wreck = 0;
 		if (mDive.getDiveReviews().getOverall()!= null)
-			fullReview += "The Overall review was " + mDive.getDiveReviews().getOverall().toString() + " ,";
+			fullReview += "Overall: " + _getReviewHintGeneral(mDive.getDiveReviews().getOverall()).toLowerCase() + ". ";
 		if (mDive.getDiveReviews().getDifficulty()!= null)
-			fullReview += "Difficulty was " + mDive.getDiveReviews().getDifficulty().toString() + " ,";
+			fullReview += "Dive difficulty: " + _getReviewHintDifficulty(mDive.getDiveReviews().getDifficulty()).toLowerCase() + ". ";
 		if (mDive.getDiveReviews().getMarine()!= null)
-			fullReview += "Marine life review was " + mDive.getDiveReviews().getMarine().toString() + " ,";
+			fullReview += "Marine life: " + _getReviewHintGeneral(mDive.getDiveReviews().getMarine()).toLowerCase() + ". ";
 		if (mDive.getDiveReviews().getBigFish()!= null)
-			fullReview += "Fish review was " + mDive.getDiveReviews().getBigFish().toString() + " ,";
+			fullReview += "Big fish sighted:  " + _getReviewHintGeneral(mDive.getDiveReviews().getBigFish()).toLowerCase() + ". ";
 		if (mDive.getDiveReviews().getWreck()!= null)
-			fullReview += "Wreck review was " + mDive.getDiveReviews().getWreck().toString() + " ,";
+			fullReview += "Wrecks sighted: " + _getReviewHintGeneral(mDive.getDiveReviews().getWreck()).toLowerCase() + ". ";
 		((EditOption)mOptionAdapter.getItem(17)).setValue(fullReview);
 		mOptionAdapter.notifyDataSetChanged();
 		
+	}
+	private String _getReviewHintGeneral(int rating) {
+		String resul = "";
+		switch (rating) {
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_terrible);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_poor);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_average);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_very_good);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_excellent);
+			break;
+
+		default:
+			break;
+		}
+		return resul;
+	}
+    
+	private String 				_getReviewHintDifficulty(int rating) {
+
+		String resul = "";
+
+		switch (rating) {
+
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_trivial);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_simple);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_somewhat_simple);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_tricky);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_hardcore);
+			break;
+
+		default:
+			break;
+
+		}
+
+		return resul;
+
 	}
 }
