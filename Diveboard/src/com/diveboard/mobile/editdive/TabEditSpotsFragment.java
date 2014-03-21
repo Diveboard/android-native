@@ -281,7 +281,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		mLocationSpinner = (Spinner) mRootView.findViewById(R.id.details_location_content);
 
 		// We initialize the spinners
-		ArrayAdapter<CharSequence> countriesAdapter = ArrayAdapter.createFromResource((ApplicationController) getActivity().getApplicationContext(), R.array.countries,R.layout.custom_spinner_layout);
+		ArrayAdapter<CharSequence> countriesAdapter = ArrayAdapter.createFromResource(mContext, R.array.countries,R.layout.custom_spinner_layout);
 		mCountrySpinner.setAdapter(countriesAdapter);
 		mRegionSpinner.setAdapter(countriesAdapter);
 		mLocationSpinner.setAdapter(countriesAdapter);
@@ -656,7 +656,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					}
 				}
 				else{
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString((R.string.no_spots_around)),Toast.LENGTH_LONG);
+					Toast toast = Toast.makeText(mContext, getResources().getString((R.string.no_spots_around)),Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -757,7 +757,7 @@ public class TabEditSpotsFragment extends Fragment implements
 			String longitude, LatLngBounds bounds) {
 		ListView lv = ((ListView) mRootView.findViewById(R.id.list_view));
 		List<Spot> listSpots = new ArrayList<Spot>();
-		SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+		SpotAdapter adapter = new SpotAdapter(mContext, listSpots);
 		lv.setAdapter(adapter);
 		((ProgressBar) mRootView.findViewById(R.id.progressBar)).setVisibility(View.VISIBLE);
 		((TextView) mRootView.findViewById(R.id.no_spot)).setVisibility(View.GONE);
@@ -827,8 +827,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		protected void onPostExecute(JSONObject result) {
 			if (DiveboardModel._searchtimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Spot Search Timeout",
+					Toast toast = Toast.makeText(mContext, "Spot Search Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -837,8 +836,7 @@ public class TabEditSpotsFragment extends Fragment implements
 			}
 			if (DiveboardModel._cotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Connection Timeout",
+					Toast toast = Toast.makeText(mContext, "Connection Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -846,8 +844,7 @@ public class TabEditSpotsFragment extends Fragment implements
 				DiveboardModel._cotimedout = false;
 			} else if (DiveboardModel._sotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Socket Timeout",
+					Toast toast = Toast.makeText(mContext, "Socket Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -899,13 +896,13 @@ public class TabEditSpotsFragment extends Fragment implements
 					}
 					System.out.println(mLocationsIdArray.toString());
 
-					ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, countriesList);
+					ArrayAdapter<String> countryAdapter = new ArrayAdapter<String>(mContext,R.layout.custom_spinner_layout, countriesList);
 					mCountrySpinner.setAdapter(countryAdapter);
 
-					ArrayAdapter<String> regionAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, regionsList);
+					ArrayAdapter<String> regionAdapter = new ArrayAdapter<String>(mContext,R.layout.custom_spinner_layout, regionsList);
 					mRegionSpinner.setAdapter(regionAdapter);
 
-					ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>((ApplicationController) getActivity().getApplicationContext(),R.layout.custom_spinner_layout, locationsList);
+					ArrayAdapter<String> locationAdapter = new ArrayAdapter<String>(mContext,R.layout.custom_spinner_layout, locationsList);
 					mLocationSpinner.setAdapter(locationAdapter);
 					
 					((RelativeLayout) mRootView.findViewById(R.id.new_spot_name_layout)).setVisibility(View.VISIBLE);
@@ -917,7 +914,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 				}else{
 					goToSearch(mRootView);
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.no_internet_co_new_spot),Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_new_spot),Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
@@ -982,8 +979,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		protected void onPostExecute(JSONObject result) {
 			if (DiveboardModel._searchtimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Spot Search Timeout",
+					Toast toast = Toast.makeText(mContext, "Spot Search Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -992,8 +988,7 @@ public class TabEditSpotsFragment extends Fragment implements
 			}
 			if (DiveboardModel._cotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Connection Timeout",
+					Toast toast = Toast.makeText(mContext, "Connection Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
@@ -1001,8 +996,7 @@ public class TabEditSpotsFragment extends Fragment implements
 				DiveboardModel._cotimedout = false;
 			} else if (DiveboardModel._sotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(getActivity()
-							.getApplicationContext(), "Socket Timeout",
+					Toast toast = Toast.makeText(mContext, "Socket Timeout",
 							Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();

@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
+import com.facebook.internal.Validate;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -272,7 +273,7 @@ public class					DataManager
 					temp.put("id", dive.getSpot().getId());//If Spot exists
 					json.put("spot", temp);
 				}
-				else {
+				if(dive.getSpot().getLocationId() != null && dive.getSpot().getRegionId() != null){
 					JSONObject loc = new JSONObject();
 					JSONObject reg = new JSONObject();
 					loc.put("id", dive.getSpot().getLocationId());
@@ -280,14 +281,14 @@ public class					DataManager
 					//temp.put("region_id", dive.getSpot().getRegionId());
 					temp.put("location", loc);
 					temp.put("region", reg);
+				}
 					temp.put("country_name", dive.getSpot().getCountryName());
 					temp.put("lat", dive.getSpot().getLat());
 					temp.put("lng", dive.getSpot().getLng());
 					temp.put("name", dive.getSpot().getName());
 					json.put("spot", temp);
-				}
 				
-				System.out.println("THIS IS the final spot we are going to add: " + json.toString());
+				System.out.println("ADDED spot on _addDive " + json.toString());
 				
 				
 			}
@@ -346,7 +347,6 @@ public class					DataManager
 //		ArrayList<Pair<String, String>> edit_list = ((IModel)object).getEditList();
 		Dive dive = (Dive) object;
 		ArrayList<Pair<String, String>> edit_list = dive.getEditList();
-		JSONObject				jsono = new JSONObject();
 		
 		for (int i = 0, length = edit_list.size(); i < length; i++)
 		{
@@ -355,7 +355,7 @@ public class					DataManager
 			try
 			{
 				JSONObject obj = new JSONObject(json);
-				System.out.println("SAVE DIVE@ : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot")){
 					JSONObject temp = new JSONObject(edit_list.get(i).second);
 					Spot mSpot = new Spot(temp);
@@ -369,7 +369,6 @@ public class					DataManager
 						resul.put("location", loc);
 						resul.put("region", reg);
 					}
-					//temp.put("region_id", dive.getSpot().getRegionId());
 					
 					resul.put("country_name", mSpot.getCountryName());
 					resul.put("lat", mSpot.getLat());
@@ -379,7 +378,7 @@ public class					DataManager
 					{
 						resul.put("id", mSpot.getId());
 					}
-					System.out.println("THIS IS IT " + resul.toString());
+					System.out.println("ADDED spot on _saveDive " + resul.toString());
 					obj.put(edit_list.get(i).first, resul);
 				}
 					
@@ -433,10 +432,22 @@ public class					DataManager
 		{
 			file.createNewFile();
 			outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+			System.err.println("Storing editlist in cache: \n");
 			for (int i = 0, length = _editList.size(); i < length; i++)
 			{
-				String new_line = _editList.get(i).first + "#SEP#" + _editList.get(i).second + "#END#";
-				outputStream.write(new_line.getBytes());
+				boolean error = false;
+				try{
+					new JSONObject(_editList.get(i).second);
+				}catch (JSONException e){
+					error = true;
+					e.printStackTrace();
+				}
+				if(!error){
+					String new_line = _editList.get(i).first + "#SEP#" + _editList.get(i).second + "#END#";
+					System.err.println(new_line);
+					outputStream.write(new_line.getBytes());
+				}
+				
 			}
 			outputStream.close();
 		}
@@ -733,6 +744,7 @@ public class					DataManager
 		 */
 		private void					_refreshNewDiveEditList(int id, JSONObject json) throws JSONException
 		{
+			System.err.println("Entering _refreshNewDiveEditList: " + _editList);
 			ArrayList<Dive> dives = _model.getDives();
 			System.out.println("REFRESH : " + json);
 			JSONObject new_dive = json.getJSONObject("result");

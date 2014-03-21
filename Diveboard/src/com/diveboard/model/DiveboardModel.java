@@ -91,6 +91,7 @@ public class					DiveboardModel
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
+	private final Object		_lock_el = new Object();
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
 	private RefreshDataThread	_refreshDataThread = null;
@@ -426,7 +427,7 @@ public class					DiveboardModel
 			if (_user == null)
 				refreshData();
 			else
-				_applyEdit();
+				synchronized (_lock_el) {_applyEdit();}
 		}
 	}
 	
@@ -778,29 +779,24 @@ public class					DiveboardModel
 		return _cache;
 	}
 	
-	private void				_applyEdit()
-	{
-		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
-		try
-		{
-			for (int i = 0, length = edit_list.size(); i < length; i++)
-			{
-				System.out.println("EDIT ITEM : " + edit_list.get(i).first);
-				String[] info = edit_list.get(i).first.split(":");
-				if (info[0].compareTo("Dive") == 0)
-					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
-				else if (info[0].equals("Dive_delete"))
-					_applyDeleteDive(Integer.parseInt(info[1]));
+	private void _applyEdit() {
+		
+		
+		
+		
+			try {
+				ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+				for (int i = 0, length = edit_list.size(); i < length; i++) {
+					System.out.println("EDIT ITEM : " + edit_list.get(i).first + " whose content is: " + edit_list.get(i).second);
+					String[] info = edit_list.get(i).first.split(":");
+					if (info[0].compareTo("Dive") == 0)
+						_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
+					else if (info[0].equals("Dive_delete"))
+						_applyDeleteDive(Integer.parseInt(info[1]));
+				}
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
 			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace();
-		}
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	private void				_applyDeleteDive(final int id)
@@ -815,7 +811,7 @@ public class					DiveboardModel
 			}
 	}
 	
-	private void				_applyEditDive(final int id, final String json) throws JSONException
+	private void				_applyEditDive(final int id, final String json) 
 	{
 		ArrayList<Dive> dives = getDives();
 		boolean exist = false;
@@ -832,21 +828,26 @@ public class					DiveboardModel
 		//if (id == -1)
 		if (exist == false)
 		{
-			Dive new_dive = new Dive(new JSONObject(json));
-			new_dive.setId(id);
-			dives.add(0, new_dive);
+			try {
+				Dive new_dive = new Dive(new JSONObject(json));
+				new_dive.setId(id);
+				dives.add(0, new_dive);
+			} catch (JSONException e){
+				e.printStackTrace();
+				System.err.println("Dive " + id + " could not be added to the dives list");
+			}
+			
+			
 		}
 		else
 		{
-			// Apply edit if edit type
-//			for (int i = 0, length = dives.size(); i < length; i++)
-//			{
-//				if (dives.get(i).getId() == id)
-//				{
-					dives.get(i).applyEdit(new JSONObject(json));
-//					break ;
-//				}
-//			}
+			try {
+				System.err.println("Applying edit list to the dive: " + i + " with this EDIT LIST " + json.toString());
+				dives.get(i).applyEdit(new JSONObject(json));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 	
@@ -1228,13 +1229,13 @@ public class					DiveboardModel
 			condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
 		}
 		JSONObject result = new JSONObject();
+		Cursor c = null;
 		try {
 			result.put("success", true);
 			JSONArray jarray = new JSONArray();
-			Cursor c;
+			
 			if (term == null)
 			{
-				System.out.println();
 				c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
 			}
 			else
@@ -1260,7 +1261,9 @@ public class					DiveboardModel
 			return result;
 		} catch (JSONException e) {
 			e.printStackTrace();
+			c.close();
 		}
+		
 		return null;
 	}
 	
@@ -1367,12 +1370,15 @@ public class					DiveboardModel
 //				condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
 //			}
 			JSONObject result = new JSONObject();
+			Cursor c = null;
+			Cursor r = null;
+			Cursor l = null;
 			try {
 				result.put("success", true);
 				JSONArray jCountries = new JSONArray();
 				JSONArray jRegions = new JSONArray();
 				JSONArray jLocations = new JSONArray();
-				Cursor c, r, l;
+				
 				System.out.println("Country Query with|||| SELECT spots.country_id, spots.country_name FROM spots WHERE " + condition_str_country + " LIMIT 10");
 				System.out.println("REGION Query with|||| SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10");
 				System.out.println("LOCATION Query with|||| SELECT spots.location_id, spots.location_name FROM spots WHERE " + condition_str_loc + " LIMIT 10");
@@ -1443,8 +1449,12 @@ public class					DiveboardModel
 				
 			} catch (JSONException e) {
 				e.printStackTrace();
+				c.close();
+				r.close();
+				l.close();
 			}
 		} 
+		
 		return null;
 	}
 	
