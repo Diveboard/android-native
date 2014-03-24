@@ -71,17 +71,13 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		WaitDialogFragment dialog = new WaitDialogFragment();
 		dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 		AC.setRefresh(3);
-		AC.getModel().getDataManager()
-				.setOnDiveDeleteComplete(new DiveDeleteListener() {
+		AC.getModel().getDataManager().setOnDiveDeleteComplete(new DiveDeleteListener() {
 					@Override
 					public void onDiveDeleteComplete() {
 						finish();
 					}
 				});
-		AC.getModel()
-				.getDataManager()
-				.delete(AC.getModel().getDives()
-						.get(getIntent().getIntExtra("index", 0)));
+		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)));
 	}
 
 	public void goToURL(View view) {
@@ -488,8 +484,10 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			try {
 				if (DiveDetailsMainActivity.this != null) {
 					ApplicationController AC = ((ApplicationController) getApplicationContext());
-					return AC.getModel().getUser().getPictureSmall()
-							.getPicture(getApplicationContext());
+					if(AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext()) != null )
+						return AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext());
+					else 
+						return null;
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block

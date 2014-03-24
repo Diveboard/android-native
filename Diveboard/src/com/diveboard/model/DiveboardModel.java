@@ -427,7 +427,7 @@ public class					DiveboardModel
 			if (_user == null)
 				refreshData();
 			else
-				synchronized (_lock_el) {_applyEdit();}
+				_applyEdit();
 		}
 	}
 	

@@ -162,11 +162,24 @@ public class					DataManager
 				String[] edit_list = fileContent.toString().split("#END#");
 				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
 				{
+					boolean error = false;
 					String[] elem_value = edit_list[j].split("#SEP#");
 					if (elem_value.length != 2)
 						continue ;
-					Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
-					_editList.add(new_elem);
+					try  //Check  
+					{
+						JSONObject jerr = new JSONObject(elem_value[1]);
+					}catch (JSONException e){
+						e.printStackTrace();
+						error= true;
+					}
+					
+					if(!error){
+						Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
+						System.err.println("New elem added to the EDIT LIST loaded from CACHE: " + elem_value[0] + " - " + elem_value[1]);
+						_editList.add(new_elem);
+					}
+					
 				}
 			}
 		}
@@ -194,7 +207,7 @@ public class					DataManager
 			if (object.getClass() == Dive.class)
 				_deleteDive(object);
 		}
-		commit();
+		//commit();
 	}
 	
 	private void				_deleteDive(Object object)
@@ -335,6 +348,7 @@ public class					DataManager
 				json.put("dive_reviews", dive.getDiveReviews().getJson());
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
+			System.err.println("New elem added to the EDIT LIST in _addDive: " + new_elem.first +" - " + new_elem.second);
 			_editList.add(new_elem);
 		}
 		catch (JSONException e) {
@@ -401,6 +415,7 @@ public class					DataManager
 				}
 				dive.applyEdit(obj);
 				Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), obj.toString());
+				System.err.println("New elem added to the EDIT LIST in _saveDive: " + new_elem.first +" - " + new_elem.second);
 				_editList.add(new_elem);
 			}
 			catch (JSONException e)
@@ -436,11 +451,16 @@ public class					DataManager
 			for (int i = 0, length = _editList.size(); i < length; i++)
 			{
 				boolean error = false;
-				try{
-					new JSONObject(_editList.get(i).second);
-				}catch (JSONException e){
-					error = true;
-					e.printStackTrace();
+				if (_editList.get(i).first.compareTo("Dive") == 0)
+				{
+					
+					try  //Check  
+					{
+						JSONObject j = new JSONObject(_editList.get(i).second);
+					}catch (JSONException e){
+						e.printStackTrace();
+						error= true;
+					}
 				}
 				if(!error){
 					String new_line = _editList.get(i).first + "#SEP#" + _editList.get(i).second + "#END#";
@@ -682,6 +702,10 @@ public class					DataManager
 					// Fire dive created event
 					for (DiveCreateListener listener : _diveCreateListeners)
 						listener.onDiveCreateComplete();
+					
+					for (DiveDeleteListener listener : _diveDeleteListeners)
+						listener.onDiveDeleteComplete();
+					
 					break ;
 				}
 			}
