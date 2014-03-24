@@ -203,7 +203,7 @@ public class DivesFragment extends Fragment {
 			if(mDive.getSpot().getCountryName() != null){
 				mDivePlace += mDive.getSpot().getCountryName();
 			}
-			if(mDive.getSpot().getLocationName() != null){
+			if((mDive.getSpot().getId() != null && mDive.getSpot().getId() != 1) && mDive.getSpot().getLocationName() != null){
 				if(mDivePlace.trim().isEmpty())
 					mDivePlace += mDive.getSpot().getLocationName();
 				else

@@ -622,7 +622,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					mNbPages = mModel.getDives().size();
 					//Pager size setting
 					mPager = (ViewPager) findViewById(R.id.pager);
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight() - mScreenSetup.getDiveListWhiteSpace4() - - mScreenSetup.getDiveListWhiteSpace3());
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
+							android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+							mScreenSetup.getScreenHeight()
+									- mScreenSetup.getDiveListFooterHeight()
+									- mScreenSetup.getDiveListSeekBarHeight()
+									- mScreenSetup.getDiveListWhiteSpace4()
+									- -mScreenSetup.getDiveListWhiteSpace3());
 					mPager.setLayoutParams(params);
 					//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 					//Each circle must be white with a transparent circle in the center
@@ -1140,7 +1146,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
 	            	rl.setLayoutParams(lp);
 	            	
-	            	BitmapDrawable bd=(BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
+	            	Bitmap bubImg = (Bitmap) ImageHelper.getRoundedLayerSmall(mScreenSetup);
+	            	ImageView diveIV = new ImageView(DivesActivity.this); 
+	            	try {
+						diveIV.setImageBitmap(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getThumbnailImageUrl().getPicture(getApplicationContext()));
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+	            	diveIV.setId(2000);
+	            	
+	            	BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
 	            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
 	            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
 	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.bubble_width), (int) getResources().getDimension(R.dimen.bubble_height));
@@ -1165,8 +1181,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName());
 	            		else
 	            			place.setText("");
-	            		place.setEllipsize(TextUtils.TruncateAt.END);
-	            		place.setLines(1);
+//	            		place.setEllipsize(TextUtils.TruncateAt.END);
+//	            		place.setLines(1);
+	            		place.setMaxLines(3);
                 	}
 	            	else
 	            	{
@@ -1177,25 +1194,35 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName());
 	            		else
 	            			place.setText("");
-	            		place.setEllipsize(TextUtils.TruncateAt.END);
-	            		place.setLines(1);
+//	            		place.setEllipsize(TextUtils.TruncateAt.END);
+//	            		place.setLines(1);
+	            		place.setMaxLines(3);
 	            	}
 	            		
 	            	//tv.setText(mModel.getDives().get(mPager.getCurrentItem()).getDate());
 	            	tv.setTextColor(Color.WHITE);
 	            	RelativeLayout.LayoutParams lp_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	            	lp_tv.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	lp_tv.addRule(RelativeLayout.RIGHT_OF, 2000);
 	            	tv.setLayoutParams(lp_tv);
 	            	place.setTextColor(getResources().getColor(R.color.gray_light));
 	            	RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	            	lp2.addRule(RelativeLayout.CENTER_HORIZONTAL);
 	            	lp2.addRule(RelativeLayout.BELOW, 1000);
+	            	lp2.addRule(RelativeLayout.RIGHT_OF, 2000);
+	            	RelativeLayout.LayoutParams lp_img = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//	            	lp_img.addRule(RelativeLayout.LEFT_OF, 1000);
+	            	lp_img.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+	            	lp_img.addRule(RelativeLayout.CENTER_VERTICAL);
+	            	lp_img.setMargins(0, 0, 20, 0);
 	            	place.setLayoutParams(lp2);
 	            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 	            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 	            	tv.setTypeface(faceB);
 	            	place.setTypeface(faceB);
 	            	//tv.setGravity(Gravity.CENTER_HORIZONTAL);tv.setPadding(3, 3, 3, 3);
+	            	diveIV.setLayoutParams(lp_img);
+	            	bubble.addView(diveIV);
 	            	bubble.addView(tv);
 	            	bubble.addView(place);
 	            	
