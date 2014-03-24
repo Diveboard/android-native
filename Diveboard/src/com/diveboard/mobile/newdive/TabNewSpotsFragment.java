@@ -645,7 +645,7 @@ public class TabNewSpotsFragment extends Fragment implements
 				String name = ((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString(); 
 				name = (name.trim().isEmpty()) ? mSpotTitle : ((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString();
 								
-				if (mRegionsIdArray != null && !mSpot.isNull("region") && !mSpot.isNull("location")){
+				if (!mSpot.isNull("location")){
 				
 					try {
 						System.out.println("1 " + mSpot.get("region").toString());
@@ -946,9 +946,13 @@ public class TabNewSpotsFragment extends Fragment implements
 				}
 				else{
 					goToSearch(mRootView);
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.no_internet_co_new_spot),Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
+					if(result.getString("error").contains("DB")){
+						Toast toast = Toast.makeText(getActivity()
+								.getApplicationContext(), getResources().getString(R.string.no_db),
+								Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
 				}
 					
 				
@@ -1158,8 +1162,16 @@ public class TabNewSpotsFragment extends Fragment implements
 						e.printStackTrace();
 					}
 				} else {
-					((TextView) mRootView.findViewById(R.id.no_spot))
-							.setVisibility(View.VISIBLE);
+					((TextView) mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+					if(result.getString("error")
+							.contains("DB")){
+						Toast toast = Toast.makeText(getActivity()
+								.getApplicationContext(), getResources().getString(R.string.no_db),
+								Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
+						
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
