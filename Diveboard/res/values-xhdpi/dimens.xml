@@ -4,7 +4,7 @@
 <!--     <dimen name="bubble_width">90dp</dimen> -->
 <!-- 	<dimen name="bubble_height">30dp</dimen> -->
 <!-- 	<dimen name="space_bubble_bar">3dp</dimen> -->
-	 <dimen name="bubble_width">120dp</dimen>
-	<dimen name="bubble_height">60dp</dimen>
+	 <dimen name="bubble_width">300dp</dimen>
+	<dimen name="bubble_height">160dp</dimen>
 	<dimen name="space_bubble_bar">5dp</dimen>
 </resources>

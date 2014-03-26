@@ -17,6 +17,7 @@ import com.diveboard.config.AppConfig;
 
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
@@ -76,12 +77,17 @@ public class					DatabaseUpdater
 		        mOutput.close();
 		        mInput.close();
 		        zis.close();
-		        file = new File(_context.getFilesDir() + "_db_update_date");
-				file.createNewFile();
-				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
-				Date date = new Date();
-				outputStream.write(dateFormat.format(date).getBytes());
+		        
+		        if(SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY) != null){
+		        	file = new File(_context.getFilesDir() + "_db_update_date");
+					file.createNewFile();
+					FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+					DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm");
+					Date date = new Date();
+					outputStream.write(dateFormat.format(date).getBytes());
+		        }
+		       
+				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

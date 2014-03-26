@@ -492,7 +492,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				
+			} catch (RuntimeException e){
+				e.printStackTrace();
 			}
+			
 			return null;
 		}
 

@@ -2,7 +2,13 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+
 import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
@@ -15,6 +21,7 @@ import com.diveboard.model.ScreenSetup;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -24,6 +31,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore.Images.Thumbnails;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -80,6 +88,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private PagerAdapter mPagerAdapter;
 	private ViewGroup mLayout;
 	private SeekBar mSeekBar;
+	
 	private RelativeLayout mScreen;
 	private ImageView mBackground1;
 	private ImageView mBackground2;
@@ -145,6 +154,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	// Model to display
 	private DiveboardModel mModel;
 	private DownloadImageTask mBackgroundImageTask = null;
+	private DownloadTickerImage mTickerImage = null;
+	private Bitmap strokeThumbnail = null;
+	
+	private Context mContext;
 	
 	@Override
 	protected void onResume()
@@ -194,7 +207,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public void onStop() {
 		super.onStop();
 		EasyTracker.getInstance(this).activityStop(this);
-	}
+	} 
 	
 	@Override
 	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
@@ -215,7 +228,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         // application context and an implementation of
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,new MyGestureListener());
-        
+        //Instantiate the current context so that we dont have to access everytime is needed
+        mContext = getApplicationContext();
 		if (AC.isDataReady() == false)
 			loadData();
 		else
@@ -587,6 +601,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 		    	AC.setPageIndex(mModel.getDives().size() - 1);
 		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+		        
 		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
 		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
@@ -689,7 +704,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			        ((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
 			        RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
 			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
 			        ((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
 			        ((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
 			        //((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
@@ -1122,9 +1137,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         }
 
 		@Override
-		public boolean onScroll(MotionEvent event1, MotionEvent event2,
-				float distanceX, float distanceY) {
+		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
 			{
+				int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
+				int bubbleWidth;
+				if(mScreenSetup.getScreenWidth()> mScreenSetup.getScreenHeight()){
+					bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 4 );
+				}
+				else
+					bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 3);
 				int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
 				if (stroke_selected != 0)
 				{
@@ -1146,38 +1167,78 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
 	            	rl.setLayoutParams(lp);
 	            	
-	            	Bitmap bubImg = (Bitmap) ImageHelper.getRoundedLayerSmall(mScreenSetup);
-	            	ImageView diveIV = new ImageView(DivesActivity.this); 
-	            	try {
-						diveIV.setImageBitmap(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getThumbnailImageUrl().getPicture(getApplicationContext()));
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-	            	diveIV.setId(2000);
+//	            	ImageView diveIV = new ImageView(DivesActivity.this); 
+//	            	
+//					boolean flag = false;
+//					mTickerImage = new DownloadTickerImage();
+//					mTickerImage.execute(position_stroke);
+//					try {
+//						//waits for the thread 1 sec and if it didnt download the thumbnail pic then it doesnt set it to the view
+//						mTickerImage.get(600, TimeUnit.MILLISECONDS);
+//						flag = true;
+//					} catch (InterruptedException e) {
+//						// TODO Auto-generated catch block
+//						flag = false;
+//						e.printStackTrace();
+//					} catch (ExecutionException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//						flag = false;
+//					} catch (TimeoutException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//						flag = false;
+//					}
+//					if (flag)
+//						diveIV.setImageBitmap(strokeThumbnail);
+//					else
+//						System.err.println("Thumbnail picture could not be downloaded");
+//	            	diveIV.setId(2000);
 	            	
 	            	BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
 	            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
+	            	RelativeLayout.LayoutParams dateLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	dateLP.bottomMargin = ((int) (bubbleHeight / 15)); 
+	            	dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	
+	            	RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//	            	placeLP.topMargin = ((int) (bubbleHeight / 3));
+	            	placeLP.addRule(RelativeLayout.BELOW, 1000);
+	            	placeLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	RelativeLayout text = new RelativeLayout(DivesActivity.this);
+	            	text.setGravity(Gravity.CENTER);
+//	            	RelativeLayout pic = new RelativeLayout(DivesActivity.this);
+	            	
 	            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
-	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.bubble_width), (int) getResources().getDimension(R.dimen.bubble_height));
+//	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams((int) getResources().getDimension(R.dimen.bubble_width), (int) getResources().getDimension(R.dimen.bubble_height));
+	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
 	            	bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	            	bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar) + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
-	            	bubble_params.leftMargin = (int)event2.getX() - (int) getResources().getDimension(R.dimen.bubble_width) / 2;
-	            	bubble.setPadding((int) getResources().getDimension(R.dimen.space_bubble_bar) * 2, (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) getResources().getDimension(R.dimen.space_bubble_bar) * 2, (int) getResources().getDimension(R.dimen.space_bubble_bar));
+	            	bubble_params.leftMargin = (int)event2.getX() - bubbleWidth / 2;
+	            	bubble.setPadding((int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar));
+	            	//bubble_params.setMargins((int) (bubbleWidth * 15/100), (int) (bubbleHeight * 10/100), (int) (bubbleWidth * 15/100), (int) (bubbleWidth * 10/100));
 	            	bubble.setLayoutParams(bubble_params);
-	            	//bubble.setGravity(Gravity.CENTER);
+	            	bubble.setGravity(Gravity.CENTER);
+	            	
+	            	
 	            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 					Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 	            	TextView tv = new TextView(DivesActivity.this);
 	            	tv.setGravity(Gravity.CENTER_HORIZONTAL);
 	            	tv.setId(1000);
 	            	TextView place = new TextView(DivesActivity.this);
+	            	place.setGravity(Gravity.CENTER_HORIZONTAL);
+	            	
 	            	if (position_stroke == 1)
                 	{
-	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
+	            		
+	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpotId() != 1)
+	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate() + " -- " + mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getCountryName().toUpperCase());
+	            		else
+	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
 	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName());
-	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpotId() != 1 && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
+	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName());
 	            		else
 	            			place.setText("");
@@ -1187,10 +1248,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
                 	}
 	            	else
 	            	{
-	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
+	            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpotId() != 1)
+	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate() + " -- " + mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getCountryName().toUpperCase());
+	            		else
+	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
 	            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName());
-	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpotId() != 1 && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
+	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName());
 	            		else
 	            			place.setText("");
@@ -1202,39 +1266,64 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            	//tv.setText(mModel.getDives().get(mPager.getCurrentItem()).getDate());
 	            	tv.setTextColor(Color.WHITE);
 	            	RelativeLayout.LayoutParams lp_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	            	lp_tv.addRule(RelativeLayout.CENTER_HORIZONTAL);
-	            	lp_tv.addRule(RelativeLayout.RIGHT_OF, 2000);
-	            	tv.setLayoutParams(lp_tv);
+	            	lp_tv.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+//	            	lp_tv.addRule(RelativeLayout.RIGHT_OF, 2000);
+	            	tv.setLayoutParams(dateLP);
 	            	place.setTextColor(getResources().getColor(R.color.gray_light));
 	            	RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 	            	lp2.addRule(RelativeLayout.CENTER_HORIZONTAL);
 	            	lp2.addRule(RelativeLayout.BELOW, 1000);
-	            	lp2.addRule(RelativeLayout.RIGHT_OF, 2000);
-	            	RelativeLayout.LayoutParams lp_img = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//	            	lp_img.addRule(RelativeLayout.LEFT_OF, 1000);
-	            	lp_img.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-	            	lp_img.addRule(RelativeLayout.CENTER_VERTICAL);
-	            	lp_img.setMargins(0, 0, 20, 0);
-	            	place.setLayoutParams(lp2);
+//	            	lp2.addRule()
+//	            	RelativeLayout.LayoutParams lp_img = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+//	            	lp_img.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+//	            	lp_img.addRule(RelativeLayout.CENTER_VERTICAL);
+//	            	lp_img.setMargins(0, 0, 20, 0);
+	            	place.setLayoutParams(placeLP);
 	            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 	            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 	            	tv.setTypeface(faceB);
 	            	place.setTypeface(faceB);
 	            	//tv.setGravity(Gravity.CENTER_HORIZONTAL);tv.setPadding(3, 3, 3, 3);
-	            	diveIV.setLayoutParams(lp_img);
-	            	bubble.addView(diveIV);
-	            	bubble.addView(tv);
-	            	bubble.addView(place);
+//	            	diveIV.setLayoutParams(lp_img);
+	            	//pic.addView(diveIV);
+	            	text.addView(tv);
+	            	text.addView(place);
+//	            	bubble.addView(pic);
+	            	bubble.addView(text);
 	            	
 	            	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
 	            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
 	            	//System.out.println(mScreenSetup.getDiveListWhiteSpace4());
-
+	            	
 				}
 				
 			}
 			return true;
 		}
+    }
+    
+    private class DownloadTickerImage extends AsyncTask<Integer, Void, Bitmap> {
+
+		@Override
+		protected Bitmap doInBackground(Integer... stroke) {
+			// TODO Auto-generated method stub
+			Bitmap result = null;
+			ApplicationController AC = ((ApplicationController)getApplicationContext());
+			try {
+				result = mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getThumbnailImageUrl().getPicture(mContext);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			return result;
+		}
+
+		protected void onPostExecute(Bitmap result){
+			
+			strokeThumbnail = result;
+		}
+    	
     }
     
     @Override

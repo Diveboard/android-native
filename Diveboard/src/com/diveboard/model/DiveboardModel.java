@@ -626,7 +626,7 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(result);
 		json = json.getJSONObject("result");
 		String dive_str = "[";
-		System.out.println(json);
+		System.out.println("Data loaded " + json);
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		if (json.isNull("all_dive_ids"))
 		{
@@ -1269,6 +1269,9 @@ public class					DiveboardModel
 			} catch (JSONException e) {
 				e.printStackTrace();
 				c.close();
+			} catch(SQLiteException e){
+				e.printStackTrace();
+				c.close();
 			}
 		}
 		//DB does not exist or was not loaded properly
@@ -1278,7 +1281,9 @@ public class					DiveboardModel
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+			
 		}
+		
 		return result;
 	}
 	
@@ -1287,6 +1292,7 @@ public class					DiveboardModel
 
 		System.err.println("OFFLINE SEARCH OF REGIONS/LOCATIONS");
 		JSONObject result = new JSONObject();
+		
 		if(lat != null && lng != null && dist != null)
 		{
 			String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
@@ -1406,10 +1412,6 @@ public class					DiveboardModel
 					JSONArray jRegions = new JSONArray();
 					JSONArray jLocations = new JSONArray();
 					
-					System.out.println("Country Query with|||| SELECT spots.country_id, spots.country_name FROM spots WHERE " + condition_str_country + " LIMIT 10");
-					System.out.println("REGION Query with|||| SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10");
-					System.out.println("LOCATION Query with|||| SELECT spots.location_id, spots.location_name FROM spots WHERE " + condition_str_loc + " LIMIT 10");
-					
 					c = mDataBase.query("spots", new String[] {"country_id", "country_name"}, condition_str_country + " LIMIT 10", null, null, null, null);
 					r = mDataBase.rawQuery("SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10", null);
 					l = mDataBase.query("spots", new String[] {"location_id", "location_name"}, condition_str_loc + " LIMIT 10", null, null, null, null);
@@ -1475,6 +1477,11 @@ public class					DiveboardModel
 					return result;
 					
 				} catch (JSONException e) {
+					e.printStackTrace();
+					c.close();
+					r.close();
+					l.close();
+				}catch(SQLiteException e){
 					e.printStackTrace();
 					c.close();
 					r.close();
@@ -1594,8 +1601,8 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
+				System.out.println("Server raw response " + result);
 				JSONObject json = new JSONObject(result);
-//				System.out.println(json);
 //				client.close();
 				return (json);
 			}
@@ -1672,7 +1679,7 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
-				System.out.println(result);
+				//System.out.println(result);
 				JSONObject json = new JSONObject(result);
 //				System.out.println(json);
 //				client.close();

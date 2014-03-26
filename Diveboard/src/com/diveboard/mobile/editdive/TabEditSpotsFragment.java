@@ -914,8 +914,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 				}else{
 					goToSearch(mRootView);
-					if(result.getString("error")
-							.contains("DB")){
+					if(result!= null && !result.isNull("error") && result.getString("error").contains("DB")){ 
 						Toast toast = Toast.makeText(getActivity()
 								.getApplicationContext(), getResources().getString(R.string.no_db),
 								Toast.LENGTH_SHORT);
