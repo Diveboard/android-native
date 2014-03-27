@@ -1164,47 +1164,62 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            	lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
 	            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
 	            	rl.setLayoutParams(lp);
-	            	
 	            	BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
-	            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
-	            	RelativeLayout.LayoutParams dateLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	            	dateLP.bottomMargin = ((int) (bubbleHeight / 15)); 
-	            	dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
 	            	
-	            	RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	            	placeLP.addRule(RelativeLayout.BELOW, 1000);
-	            	placeLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
 	            	RelativeLayout text = new RelativeLayout(DivesActivity.this);
-	            	text.setGravity(Gravity.CENTER);
+	            	RelativeLayout.LayoutParams dateLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	RelativeLayout.LayoutParams countryLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
+//	            	dateLP.topMargin = ((int) (bubbleHeight / 15)); 
+	            	
+	            	dateLP.topMargin = (int) (bubbleHeight * 15/100);
+	            	dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	placeLP.addRule(RelativeLayout.BELOW, 2000);
+	            	placeLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	
+//	            	text.setGravity(Gravity.CENTER);
 	            	
 	            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
-	            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
 	            	bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 	            	bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar) + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
 	            	bubble_params.leftMargin = (int)event2.getX() - bubbleWidth / 2;
 	            	bubble.setPadding((int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar));
 	            	bubble.setLayoutParams(bubble_params);
-	            	bubble.setGravity(Gravity.CENTER);
-	            	
+	            	bubble.setGravity(Gravity.CENTER_HORIZONTAL);
 	            	
 	            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 					Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 	            	TextView tv = new TextView(DivesActivity.this);
 	            	TextView country = new TextView(DivesActivity.this);
+	            	TextView place = new TextView(DivesActivity.this);
 	            	tv.setGravity(Gravity.CENTER_HORIZONTAL);
 	            	country.setGravity(Gravity.CENTER_HORIZONTAL);
+	            	place.setGravity(Gravity.CENTER_HORIZONTAL);
 	            	tv.setId(1000);
 	            	country.setId(2000);
-	            	TextView place = new TextView(DivesActivity.this);
-	            	place.setGravity(Gravity.CENTER_HORIZONTAL);
-	            	
+	            	tv.setTextColor(Color.WHITE);
+	            	country.setTextColor(Color.WHITE);
+	            	place.setTextColor(getResources().getColor(R.color.gray_light));
+	            	countryLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+	            	countryLP.addRule(RelativeLayout.BELOW, 1000);
+	            	tv.setLayoutParams(dateLP);
+	            	country.setLayoutParams(countryLP);
+	            	place.setLayoutParams(placeLP);
+	            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+	            	country.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+	            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+	            	tv.setTypeface(faceB);
+	            	country.setTypeface(faceB);
+	            	place.setTypeface(faceB);
 	            	if (position_stroke == 1)
                 	{
 	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
-	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpotId() != 1)
-	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate() + " -- " + mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getCountryName().toUpperCase());
-	            		else
-	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
+	            		
+	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != 1)
+	            			country.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getCountryName().toUpperCase());
+	            		
 	            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName());
 	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
@@ -1215,10 +1230,11 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
                 	}
 	            	else
 	            	{
-	            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpotId() != 1)
-	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate() + " -- " + mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getCountryName().toUpperCase());
-	            		else
-	            			tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
+	            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
+	            		
+						if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != 1)
+	            			country.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getCountryName().toUpperCase());
+	            		
 	            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName() != null)
 	            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName());
 	            		else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
@@ -1227,25 +1243,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	            			place.setText("");
 	            		place.setMaxLines(3);
 	            	}
-	            		
-	            	tv.setTextColor(Color.WHITE);
-	            	RelativeLayout.LayoutParams lp_tv = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	            	lp_tv.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-	            	tv.setLayoutParams(dateLP);
-	            	place.setTextColor(getResources().getColor(R.color.gray_light));
-	            	RelativeLayout.LayoutParams lp2 = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-	            	lp2.addRule(RelativeLayout.CENTER_HORIZONTAL);
-	            	lp2.addRule(RelativeLayout.BELOW, 1000);
-	            	place.setLayoutParams(placeLP);
-	            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-	            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-	            	tv.setTypeface(faceB);
-	            	place.setTypeface(faceB);
 	            	text.addView(tv);
 	            	text.addView(place);
 	            	text.addView(country);
 	            	bubble.addView(text);
-	            	
 	            	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
 	            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
 	            	
