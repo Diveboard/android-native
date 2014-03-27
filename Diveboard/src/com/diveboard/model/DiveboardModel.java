@@ -1169,6 +1169,7 @@ public class					DiveboardModel
 	public JSONObject					offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
 	{
 		JSONObject result = new JSONObject();
+		boolean errorDB = false;
 		System.err.println("OFFLINE SEARCH of SPOTS");
 		if (lng != null)
 		{
@@ -1272,16 +1273,19 @@ public class					DiveboardModel
 			} catch(SQLiteException e){
 				e.printStackTrace();
 				c.close();
+				errorDB = true;
 			}
 		}
-		//DB does not exist or was not loaded properly
-		try {
-			result.put("success", false);
-			result.put("error", _context.getResources().getString(R.string.no_db)); 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(errorDB){
+			//DB does not exist or was not loaded properly
+			try {
+				result.put("success", false);
+				result.put("error", _context.getResources().getString(R.string.no_db)); 
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			
+			}
 		}
 		
 		return result;
@@ -1292,6 +1296,7 @@ public class					DiveboardModel
 
 		System.err.println("OFFLINE SEARCH OF REGIONS/LOCATIONS");
 		JSONObject result = new JSONObject();
+		boolean errorDB = false;
 		
 		if(lat != null && lng != null && dist != null)
 		{
@@ -1323,6 +1328,7 @@ public class					DiveboardModel
 				Double lng_d = Double.parseDouble(lng);
 				Double dist_d = Double.parseDouble(dist);
 				boolean onEdge = false; 
+				
 				
 						//Calculate the space of search
 				//Check adding the distance does not take the search coordinate "out of the map"
@@ -1486,16 +1492,19 @@ public class					DiveboardModel
 					c.close();
 					r.close();
 					l.close();
+					errorDB = true;
 				}
 			} 
 		}
-		//DB does not exist or was not loaded properly
-		try {
-			result.put("success", false);
-			result.put("error", _context.getResources().getString(R.string.no_db)); 
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		if(errorDB){
+			//DB does not exist or was not loaded properly
+			try {
+				result.put("success", false);
+				result.put("error", _context.getResources().getString(R.string.no_db)); 
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 		return result;
 	}

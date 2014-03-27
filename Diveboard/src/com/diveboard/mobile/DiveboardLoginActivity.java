@@ -198,6 +198,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		EasyTracker.getInstance(this).activityStart(this);
 		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
 		dbUpdater.launchUpdate();
+		System.out.println("Attempting to download DB");
 	}
 
 	@Override

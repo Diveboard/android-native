@@ -168,7 +168,11 @@ public class					DataManager
 						continue ;
 					try  //Check  
 					{
-						JSONObject jerr = new JSONObject(elem_value[1]);
+						
+						if(elem_value[0].compareTo("Dive") == 0){
+							JSONObject jerr = new JSONObject(elem_value[1]);
+						}
+							
 					}catch (JSONException e){
 						e.printStackTrace();
 						error= true;

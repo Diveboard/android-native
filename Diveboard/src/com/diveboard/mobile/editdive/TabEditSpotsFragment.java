@@ -240,7 +240,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 					String stringToSearch = ((TextView) mRootView.findViewById(R.id.search_bar)).getText().toString();
 
-					if (!stringToSearch.trim().isEmpty()) {
+					if (!stringToSearch.trim().isEmpty() && stringToSearch.trim().length() > 2) {
 						doMySearch("search", stringToSearch, null, null, null);
 						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.toggleSoftInput(0, 0);
@@ -438,12 +438,11 @@ public class TabEditSpotsFragment extends Fragment implements
 			manualSpotActivated = false;
 		}
 
-		mLatitude = mMap.getCameraPosition().target.latitude;
-		mLongitude = mMap.getCameraPosition().target.longitude;
-		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-		doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(),
-				bounds);
-
+//		mLatitude = mMap.getCameraPosition().target.latitude;
+//		mLongitude = mMap.getCameraPosition().target.longitude;
+//		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+		//doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(),bounds);
+		mMap.setOnCameraChangeListener(null);
 		mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
@@ -455,7 +454,11 @@ public class TabEditSpotsFragment extends Fragment implements
 						+ " " + Double.toString(bounds.northeast.longitude));
 				mLatitude = mMap.getCameraPosition().target.latitude;
 				mLongitude = mMap.getCameraPosition().target.longitude;
-				doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+				String stringToSearch = ((TextView) mRootView.findViewById(R.id.search_bar)).getText().toString();
+				if(stringToSearch.trim().isEmpty()){
+					doMySearch("swipe", null, mLatitude.toString(),mLongitude.toString(), bounds);
+					System.out.println("doMySearch with NO term in goToSearch");
+				}
 			}
 		});
 		
@@ -523,9 +526,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		mLongitude = mMap.getCameraPosition().target.longitude;
 		RegionLocationTask regionLocation_task = new RegionLocationTask();
 		regionLocation_task.execute(mLatitude.toString(),mLongitude.toString());
-
-		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-		doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(),bounds);
+		mMap.setOnCameraChangeListener(null);
 		mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
@@ -703,21 +704,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 				@Override
 				public void onFinish() {
-					LatLngBounds bounds = mMap.getProjection()
-							.getVisibleRegion().latLngBounds;
-					doMySearch("swipe", null, mLatitude.toString(),
-							mLongitude.toString(), bounds);
-					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-						@Override
-						public void onCameraChange(CameraPosition pos) {
-							LatLngBounds bounds = mMap.getProjection()
-									.getVisibleRegion().latLngBounds;
-							mLatitude = mMap.getCameraPosition().target.latitude;
-							mLongitude = mMap.getCameraPosition().target.longitude;
-							doMySearch("swipe", null, mLatitude.toString(),
-									mLongitude.toString(), bounds);
-						}
-					});
+					
 				}
 
 				@Override
@@ -796,11 +783,16 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity()
-						.getApplicationContext();
-				System.out.println("Region-location API call" + " " + query[0]+ " " + query[1]);
-				result = AC.getModel().searchRegionLocationText(query[0],query[1]);
-				searchDone = true;
+				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+				if(!goOfflineMode){
+					System.out.println("Region-location API call" + " " + query[0]+ " " + query[1]);
+					result = AC.getModel().searchRegionLocationText(query[0],query[1]);
+					searchDone = true;
+				}
+				else{
+					result = AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
+					searchDone = true;
+				}
 			}
 		}
 
@@ -814,10 +806,9 @@ public class TabEditSpotsFragment extends Fragment implements
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
-					
-					
 				}
-				return result;
+				else
+					return result;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -833,6 +824,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._searchtimedout = false;
+				goOfflineMode = true;
 			}
 			if (DiveboardModel._cotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
@@ -842,6 +834,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._cotimedout = false;
+				goOfflineMode = true;
 			} else if (DiveboardModel._sotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
 					Toast toast = Toast.makeText(mContext, "Socket Timeout",
@@ -850,6 +843,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._sotimedout = false;
+				goOfflineMode = true;
 			}
 
 			try {
@@ -950,11 +944,13 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
+				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if (!goOfflineMode) {
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					//System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
 					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
-					//System.out.println(result);
+					searchDone = true;
+				}
+				else {
+					result = AC.getModel().offlineSearchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
 				}
 			}
@@ -962,8 +958,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 		protected JSONObject doInBackground(String... query) {
 			swipe = query[0];
-			SearchTimer task = new SearchTimer(query[1], query[2], query[3],
-					query[4], query[5], query[6], query[7]);
+			SearchTimer task = new SearchTimer(query[1], query[2], query[3],query[4], query[5], query[6], query[7]);
 			task.start();
 			try {
 				task.join(DiveboardModel._searchTimeout);
@@ -972,8 +967,8 @@ public class TabEditSpotsFragment extends Fragment implements
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
-				}
-				return result;
+				}else
+					return result;
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -983,12 +978,12 @@ public class TabEditSpotsFragment extends Fragment implements
 		protected void onPostExecute(JSONObject result) {
 			if (DiveboardModel._searchtimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
-					Toast toast = Toast.makeText(mContext, "Spot Search Timeout",
-							Toast.LENGTH_SHORT);
+					Toast toast = Toast.makeText(mContext, "Spot Search Timeout", Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
 				DiveboardModel._searchtimedout = false;
+				goOfflineMode = true;
 			}
 			if (DiveboardModel._cotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
@@ -998,6 +993,8 @@ public class TabEditSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._cotimedout = false;
+				goOfflineMode = true;
+				
 			} else if (DiveboardModel._sotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
 					Toast toast = Toast.makeText(mContext, "Socket Timeout",
@@ -1006,9 +1003,10 @@ public class TabEditSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._sotimedout = false;
+				goOfflineMode = true;
 			}
-			((ProgressBar) mRootView.findViewById(R.id.progressBar))
-					.setVisibility(View.GONE);
+			
+			((ProgressBar) mRootView.findViewById(R.id.progressBar)).setVisibility(View.GONE);
 			try {
 				if (result != null && result.getBoolean("success") == true) {
 					try {
@@ -1127,8 +1125,7 @@ public class TabEditSpotsFragment extends Fragment implements
 						e.printStackTrace();
 					}
 				} else {
-					((TextView) mRootView.findViewById(R.id.no_spot))
-							.setVisibility(View.VISIBLE);
+					((TextView) mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
