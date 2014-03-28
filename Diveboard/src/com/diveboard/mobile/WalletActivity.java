@@ -61,12 +61,10 @@ public class WalletActivity extends Activity {
 	{
 		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		
-		
 		System.out.println("There are " + mListPictures.size() + " photos");
 		
 		int screenWidth;
 		int screenheight;
-
 
 		screenWidth = findViewById(R.id.tablelayout).getMeasuredWidth();
 		screenheight = findViewById(R.id.tablelayout).getMeasuredHeight();
