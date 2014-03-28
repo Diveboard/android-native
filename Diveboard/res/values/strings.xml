@@ -82,6 +82,7 @@
     <string name="title_activity_map">MapActivity</string>
     <string name="title_activity_test">TestActivity</string>
     <string name="title_activity_graph_image">GraphImageActivity</string>
+    <string name="title_activity_wallet">WalletActivity</string>
     <string name="delete_confirm_title">Delete dive</string>
     <string name="delete_confirm_message">You are about to delete this dive. This cannot be recovered. Are you sure ?</string>
     <string name="delete_button">Delete</string>
@@ -130,5 +131,12 @@
     <string name="no_spots_around">We could not find spots around, check your connection or try again later</string>
     <string name="no_internet_co_new_spot">Sorry but creating a manual spot requires internet connection</string>
     <string name="no_db">Spots DB does not exist or it was never downloaded previously</string>
+    <string name="share_msg">Share it!</string>
+    <string name="menu_refresh">Refresh</string>
+    <string name="menu_new_dive">New dive</string>
+    <string name="menu_settings">Settings</string>
+    <string name="menu_report_bug">Report a bug</string>
+    <string name="menu_wallet">See your wallet</string>
+    <string name="menu_logout">Logout</string>
     
 </resources>

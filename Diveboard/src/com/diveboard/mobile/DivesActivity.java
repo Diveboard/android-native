@@ -311,6 +311,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					AC.setModel(null);
 					finish();
 					return true;
+				case R.id.see_wallet:
+					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
+					startActivity(walletActivity);
+					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 		    	    startActivity(newDiveActivity);

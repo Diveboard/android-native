@@ -465,14 +465,6 @@ public class TabEditPhotosFragment extends Fragment {
 			mPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
 			mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
 			mPhotoView.setContentDescription(String.valueOf(i));
-			//imageView.setVisibility(View.GONE);
-			//								StateListDrawable states = new StateListDrawable();
-			//								Drawable nameDrawableSelected = getActivity().getResources().getDrawable(R.drawable.ic_add_grey);
-			//								Drawable nameDrawableUnselected = getActivity().getResources().getDrawable(R.drawable.ic_add);
-			//								states.addState(new int[] {android.R.attr.state_pressed},
-			//										nameDrawableSelected);
-			//								states.addState(new int[] { },
-			//										nameDrawableUnselected);
 			mPhotoView.setImageResource(R.drawable.ic_add);
 			mPhotoView.setOnClickListener(new OnClickListener() {
 
