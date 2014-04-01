@@ -11,37 +11,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DivesActivity;
-import com.diveboard.mobile.GalleryCarouselActivity;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.SettingsActivity;
-import com.diveboard.mobile.WaitDialogFragment;
-import com.diveboard.mobile.editdive.EditDiveActivity;
-import com.diveboard.mobile.newdive.NewDiveActivity;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.Picture;
-import com.diveboard.model.Picture.Size;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.uservoice.uservoicesdk.Config;
-import com.uservoice.uservoicesdk.UserVoice;
-
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.ColorStateList;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -51,46 +24,52 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.graphics.drawable.StateListDrawable;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Build;
+import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.util.Pair;
 import android.view.ContextMenu;
+import android.view.ContextMenu.ContextMenuInfo;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.AnimationUtils;
-import android.widget.AdapterView;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.AdapterView.OnItemClickListener;
-import android.widget.ProgressBar;
-import android.widget.PopupMenu.OnMenuItemClickListener;
-import android.widget.RelativeLayout.LayoutParams;
-import android.widget.BaseAdapter;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.GalleryCarouselActivity;
+import com.diveboard.mobile.R;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Picture;
+import com.diveboard.model.Picture.Size;
 
 public class TabEditPhotosFragment extends Fragment {
 
@@ -146,9 +125,7 @@ public class TabEditPhotosFragment extends Fragment {
 				mRootView.post(new Runnable() {
 					public void run()
 					{
-						
 						generateTableLayout();
-						
 					}
 				});
 			}

@@ -2,28 +2,39 @@ package com.diveboard.mobile;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.List;
 
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.diveboard.model.Wallet;
 
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Point;
 import android.graphics.Typeface;
 import android.util.Pair;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
 import android.view.View.OnClickListener;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -33,11 +44,13 @@ import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 
 public class WalletActivity extends Activity {
 
 	private DiveboardModel 				mModel;
+	private Context						mContext;
 	public ArrayList<Picture>			mListPictures = null;
 	ArrayList<Pair<ImageView, Picture>> arrayPair = new ArrayList<Pair<ImageView, Picture>>();
 	public final int 					SELECT_PICTURE = 1;
@@ -46,28 +59,60 @@ public class WalletActivity extends Activity {
 	private int 						nbPicture;
 	private Size 						mSizePicture;
 	public ImageView 					mPhotoView;
+	private DownloadImageTask			mDownloadImageTask;
+	private View						mView;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		mView = findViewById(R.layout.activity_wallet);
 		setContentView(R.layout.activity_wallet);
 		ApplicationController AC = (ApplicationController) getApplicationContext();
-		mModel = AC.getModel();
-		mModel.getUser().getId();
-		generateTableLayout();
+		mModel = AC.getModel(); 
+		mContext = getApplicationContext();
+		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			if (!mModel.getUser().getWallet().hasPictures)
+				mListPictures = mModel.getUser().getWallet().downloadWalletPictures(this);
+			else 
+				mListPictures = mModel.getUser().getWallet().getPicturesList();
+			generateTableLayout();
+		}
+		else{
+			Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			finish();
+		}
+			
 	}
 	
 	public void generateTableLayout()
 	{
 		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		
-		System.out.println("There are " + mListPictures.size() + " photos");
+		System.out.println("There are " + mModel.getUser().getWallet().getSize() + " photos");
 		
 		int screenWidth;
-		int screenheight;
+		int screenHeight;
 
-		screenWidth = findViewById(R.id.tablelayout).getMeasuredWidth();
-		screenheight = findViewById(R.id.tablelayout).getMeasuredHeight();
+		WindowManager wm = (WindowManager) getSystemService(Context.WINDOW_SERVICE);
+		Display display = wm.getDefaultDisplay();
+		Point mSize = new Point();
+		
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
+			display.getSize(mSize);
+				screenWidth = mSize.x;
+				screenHeight = mSize.y;
+		}else
+		{
+			display = wm.getDefaultDisplay();
+			screenWidth = display.getWidth();
+			screenHeight = display.getHeight();
+		}
 		((TextView) findViewById(R.id.drop_text)).setTypeface(mFaceB);
 		RelativeLayout.LayoutParams dropitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 		dropitemparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
@@ -79,7 +124,7 @@ public class WalletActivity extends Activity {
 		((RelativeLayout) findViewById(R.id.share_item)).setLayoutParams(shareLP);
 
 		mChangeItem = (RelativeLayout) findViewById(R.id.change_item);
-		RelativeLayout.LayoutParams changeitemparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, screenheight / 5);
+		RelativeLayout.LayoutParams changeitemparams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
 		mChangeItem.setLayoutParams(changeitemparams);
 		if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
 		{
@@ -87,12 +132,12 @@ public class WalletActivity extends Activity {
 		}
 		else
 		{
-			double temp = ((double)screenWidth / (double)screenheight);
+			double temp = ((double)screenWidth / (double)screenHeight);
 			nbPicture = (int) (temp * 3.0);
-			System.out.println(screenWidth + " " + screenheight + " " + nbPicture);
+			System.out.println(screenWidth + " " + screenHeight + " " + nbPicture);
 			nbPicture = 5;
 		}
-		System.out.println("screenheight = " + screenheight);
+		System.out.println("screenheight = " + screenHeight);
 		System.out.println("screenwidth = " + screenWidth);
 		System.out.println("taille = " + screenWidth / nbPicture);
 		if (screenWidth / nbPicture > 240)
@@ -112,14 +157,14 @@ public class WalletActivity extends Activity {
 		tableLayout.removeAllViews();
 		arrayPair.clear();
 		int i = 0;
-		while (i < mListPictures.size())
+		while (i < mModel.getUser().getWallet().getSize())
 		{
 			TableRow row = new TableRow(getApplicationContext());
-			for (int j = 0; j < nbPicture && i < mListPictures.size(); j++)
+			for (int j = 0; j < nbPicture && i < mModel.getUser().getWallet().getSize(); j++)
 			{
-				int size = ((TableLayout)( findViewById(R.id.tablelayout))).getMeasuredWidth();
+				int size = screenWidth;
 				LinearLayout linearLayout = new LinearLayout(getApplicationContext());
-				TableRow.LayoutParams tbLP = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
+				TableRow.LayoutParams tbLP = new TableRow.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 				tbLP.gravity = Gravity.CENTER;
 				linearLayout.setGravity(Gravity.CENTER);
 				linearLayout.setLayoutParams(tbLP);
@@ -130,10 +175,8 @@ public class WalletActivity extends Activity {
 				imageView.setVisibility(View.GONE);
 //				imageView.setOnLongClickListener(new MyTouchListener(i));       /* Create this listener */
 				
-				Wallet myWallet = new Wallet();
 				
-				ApplicationController AC = (ApplicationController) getApplicationContext();
-				if (myWallet.getPictures() != null)
+				if (mModel.getUser().getWallet().getPicturesIds() != null)
 				{
 					Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mListPictures.get(i));
 					arrayPair.add(pair);
@@ -156,10 +199,11 @@ public class WalletActivity extends Activity {
 				});
 				linearLayout.addView(imageView);
 				ProgressBar bar = new ProgressBar(getApplicationContext());
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (size / nbPicture), size / nbPicture );
+				params.addRule(Gravity.CENTER);
 				bar.setVisibility(View.VISIBLE);
 				bar.setLayoutParams(params);
-				linearLayout.addView(new ProgressBar(getApplicationContext()));
+				linearLayout.addView(bar);
 				row.addView(linearLayout);
 				i++;
 			}
@@ -243,13 +287,11 @@ public class WalletActivity extends Activity {
 //			((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
 //			
 //		}
-//		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
-//		if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
-//				&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
-//		{
-//			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, getActivity().getApplicationContext(),  mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)), 0);
-//			mDownloadImageTask.execute();
-//		}
+		if (mModel.getUser().getWallet().getPicturesIds() != null && mModel.getUser().getWallet().getPicturesIds().length != 0)
+		{
+			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, mContext, 0);
+			mDownloadImageTask.execute();
+		}
 	}
 	
 	public void goToMenuV3(View view)
@@ -297,6 +339,75 @@ public class WalletActivity extends Activity {
 
 		});
 
+	}
+	
+	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
+	{
+		private final WeakReference<ImageView> imageViewReference;
+		private boolean isPicture = false;
+		private Context mContext;
+		private int mPosition;
+		private List<Picture> mListPictures;
+		private ArrayList<Pair<ImageView, Picture>> mArrayPair;
+
+		public DownloadImageTask(ArrayList<Pair<ImageView, Picture>> arrayPair, List<Picture> listPictures, Context context, int position)
+		{
+			imageViewReference = new WeakReference<ImageView>(
+					arrayPair.get(position)
+					.first);
+			mContext = context;
+			mPosition = position;
+			mListPictures = listPictures;
+			mArrayPair = arrayPair;
+		}
+
+		protected Bitmap doInBackground(Void... voids)
+		{
+			try {
+				if (mContext != null)
+				{
+					Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
+					System.out.println("Wallet Picture renderized and returned properly");
+					return rs;
+				}
+
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			return null;
+		}
+
+		protected void onPostExecute(Bitmap result)
+		{
+			if (imageViewReference != null)
+			{
+				final ImageView imageView = imageViewReference.get();
+				if (result != null && imageView != null)
+				{	
+					System.out.println("Trying to assign bitmap to imageview");
+					imageView.setImageBitmap(result);
+					imageView.setVisibility(View.VISIBLE);
+					LinearLayout rl = (LinearLayout)(imageView.getParent());
+					ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+					bar.setVisibility(View.GONE);
+					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null)
+					{
+						mDownloadImageTask = new DownloadImageTask(
+								mArrayPair,
+								mListPictures, getApplicationContext(),
+								mPosition + 1);
+						mDownloadImageTask.execute();
+						System.out.println("position = " + mPosition);
+					}
+				}
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mDownloadImageTask = null;
+		}
 	}
 
 	@Override

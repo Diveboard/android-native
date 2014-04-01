@@ -1140,12 +1140,10 @@ public class					DiveboardModel
 						String[] savedPictureArray = fileContent.toString().split(";");
 						
 						for (int i = 0, length = savedPictureArray.length; i < length; i++)
-						{
-							//System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
+						{ 
 							DiveboardModel.savedPictureList.add(savedPictureArray[i]);
 						}
-						
-						//DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+						 
 						DiveboardModel.savedPictureLock.release();
 					}
 					catch (InterruptedException e) {

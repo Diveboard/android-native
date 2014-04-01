@@ -81,20 +81,43 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 {
 
 	// Number of pages in Dives
-	private int mNbPages = 1;
+	private int 							mNbPages = 1;
 	
 	// All you need to make the carousel
-	private ScreenSetup mScreenSetup;
-	private ViewPager mPager;
-	private PagerAdapter mPagerAdapter;
-	private ViewGroup mLayout;
-	private SeekBar mSeekBar;
+	private ScreenSetup 					mScreenSetup;
+	private ViewPager 						mPager;
+	private PagerAdapter 					mPagerAdapter;
+	private ViewGroup 						mLayout;
+	private SeekBar 						mSeekBar;
 	
-	private RelativeLayout mScreen;
-	private ImageView mBackground1;
-	private ImageView mBackground2;
-	private	 int mBackground = 1;
-	private TokenExpireListener mTokenExpireListener;
+	private RelativeLayout 					mScreen;
+	private ImageView 						mBackground1;
+	private ImageView 						mBackground2;
+	private	int 							mBackground = 1;
+	private TokenExpireListener 			mTokenExpireListener;
+	
+	private Integer 						max_strokes_possible;
+	private Double 							nb_dives_per_stroke;
+	private Integer 						nb_strokes = 0;
+	private Integer 						position_stroke;
+	private static final String 			DEBUG_TAG = "Gestures";
+    private GestureDetectorCompat			mDetector;
+    private OnTouchListener 				mGestureListener;
+    private boolean 						mIsScrolling = false;
+    private ArrayList<TrackingBarPosition> 	mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
+	
+	// Thread for the data loading & the views associated
+	private TaskFragment 					mTaskFragment;
+	private View 							mLoadDataFormView;
+	private View 							mLoadDataStatusView;
+	private TextView 						mLoadDataStatusMessageView;
+	// Model to display
+	private DownloadTickerImage 			mTickerImage = null;
+	private Bitmap 							strokeThumbnail = null;
+	private DiveboardModel 					mModel;
+	private DownloadImageTask 				mBackgroundImageTask = null;
+	static ArrayList<Picture> 				mWalletPictures = null;
+	private Context 						mContext;
 	
 	//Tracking bar
 	public class TrackingBarPosition
@@ -136,29 +159,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		}
 
 	}
-	private Integer max_strokes_possible;
-	private Double nb_dives_per_stroke;
-	private Integer nb_strokes = 0;
-	private Integer position_stroke;
-	private static final String DEBUG_TAG = "Gestures";
-    private GestureDetectorCompat mDetector;
-    private OnTouchListener mGestureListener;
-    private boolean mIsScrolling = false;
-    private ArrayList<TrackingBarPosition> mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
 	
-	// Thread for the data loading & the views associated
-	private TaskFragment mTaskFragment;
-	//private LoadDataTask mAuthTask = null;
-	private View mLoadDataFormView;
-	private View mLoadDataStatusView;
-	private TextView mLoadDataStatusMessageView;
-	// Model to display
-	private DiveboardModel mModel;
-	private DownloadImageTask mBackgroundImageTask = null;
-	private DownloadTickerImage mTickerImage = null;
-	private Bitmap strokeThumbnail = null;
-	
-	private Context mContext;
 	
 	@Override
 	protected void onResume()
@@ -235,6 +236,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			loadData();
 		else
 			createPages();
+		
+		
 	}
 	
 	public void logout()
@@ -914,6 +917,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				}
 		    }
 		});
+		
 	}
 
 	public final void upperStroke(final int index)
@@ -1282,6 +1286,38 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			
 			strokeThumbnail = result;
 		}
+    	
+    }
+    
+    private class DownloadWalletPictures extends AsyncTask<Void, Void, ArrayList<Picture>>{
+
+		@Override
+		protected ArrayList<Picture> doInBackground(Void... params) {
+			// TODO Auto-generated method stub
+						
+			try{
+				return mModel.getUser().getWallet().downloadWalletPictures(getApplicationContext());
+			}catch (RuntimeException e){
+				e.printStackTrace();
+			}
+			return null;
+		}
+    	
+    	@Override
+    	protected void onPostExecute(ArrayList<Picture> result) {
+    		// TODO Auto-generated method stub
+    		super.onPostExecute(result);
+    		if (result != null)
+    			mWalletPictures = result;
+    		else
+    		{
+//				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet_co_wallet), Toast.LENGTH_SHORT);
+//				toast.setGravity(Gravity.CENTER, 0, 0);
+//				toast.show();
+    		}
+    	}
+
+		
     	
     }
     
