@@ -1,12 +1,15 @@
 package com.diveboard.mobile;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
@@ -52,7 +55,7 @@ public class WalletActivity extends Activity {
 	private DiveboardModel 				mModel;
 	private Context						mContext;
 	public ArrayList<Picture>			mListPictures = null;
-	ArrayList<Pair<ImageView, Picture>> arrayPair = new ArrayList<Pair<ImageView, Picture>>();
+	ArrayList <ImageView> 				mImageArray = new ArrayList<ImageView>();
 	public final int 					SELECT_PICTURE = 1;
 	public final int 					TAKE_PICTURE = 2;
 	private RelativeLayout 				mChangeItem;
@@ -60,25 +63,25 @@ public class WalletActivity extends Activity {
 	private Size 						mSizePicture;
 	public ImageView 					mPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
-	private View						mView;
+	private UploadPictureTask 			mUploadPictureTask = null;
+	public boolean 						isAddingPic = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		mView = findViewById(R.layout.activity_wallet);
 		setContentView(R.layout.activity_wallet);
 		ApplicationController AC = (ApplicationController) getApplicationContext();
-		mModel = AC.getModel(); 
+		mModel = AC.getModel();
 		mContext = getApplicationContext();
+		mImageArray.clear();
 		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
-			if (!mModel.getUser().getWallet().hasPictures)
-				mListPictures = mModel.getUser().getWallet().downloadWalletPictures(this);
-			else 
+			if (mModel.getUser().getWallet().isDownloaded)
 				mListPictures = mModel.getUser().getWallet().getPicturesList();
+			
 			generateTableLayout();
 		}
 		else{
@@ -89,6 +92,126 @@ public class WalletActivity extends Activity {
 		}
 			
 	}
+	
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data)
+	{
+		//System.out.println(REQUEST_CODE + "=" + requestCode + ", " + Activity.RESULT_OK+"=" + resultCode);
+		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			isAddingPic = true;
+			if (resultCode == Activity.RESULT_OK)
+			{
+				if (requestCode == TAKE_PICTURE)
+				{
+					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+					File file = new File(dir+"diveboard.jpg");
+					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
+					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+					ProgressBar bar = new ProgressBar(getApplicationContext());
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+					bar.setVisibility(View.VISIBLE);
+					bar.setLayoutParams(params);
+					parent.addView(bar);
+					mPhotoView.setVisibility(View.GONE);
+					mUploadPictureTask = new UploadPictureTask(file);
+					mUploadPictureTask.execute();
+				}
+				else if (requestCode == SELECT_PICTURE)
+				{
+					InputStream stream;
+					try {
+						stream = getContentResolver().openInputStream(data.getData());
+						System.out.println(data.getData());
+						//InputStream stream = getContentResolver().openInputStream(data.getData());
+						//final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+						final File file = new File(getCacheDir(), "temp_photo.jpg");
+						final OutputStream output = new FileOutputStream(file);
+						final byte[] buffer = new byte[1024];
+						int read;
+						while ((read = stream.read(buffer)) != -1)
+							output.write(buffer, 0, read);
+						output.flush();
+						output.close();
+						stream.close();
+
+						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
+						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+						ProgressBar bar = new ProgressBar(getApplicationContext());
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+						bar.setVisibility(View.VISIBLE);
+						bar.setLayoutParams(params);
+						parent.addView(bar);
+						mPhotoView.setVisibility(View.GONE);
+						mUploadPictureTask = new UploadPictureTask(file);
+						mUploadPictureTask.execute();
+					} catch (FileNotFoundException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					} catch (IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+				}
+
+			}
+		}
+		else
+		{
+			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.check_connectivity),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+			
+		}
+		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
+		//	        if (resultCode == RESULT_OK) {
+		//	        	// Video captured and saved to fileUri specified in the Intent
+		//	            Toast.makeText(this, "Video saved to:\n" +
+		//	                     data.getData(), Toast.LENGTH_LONG).show();
+		//	        } else if (resultCode == RESULT_CANCELED) {
+		//	            // User cancelled the video capture
+		//	        } else {
+		//	            // Video capture failed, advise user
+		//	        }
+		//	    }
+		super.onActivityResult(requestCode, resultCode, data);
+	}
+	
+	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
+	{
+		private File mFile;
+
+		public UploadPictureTask(File file)
+		{
+			mFile = file;
+		}
+
+		@Override
+		protected Picture doInBackground(Void... arg0) {
+
+			Picture picture = mModel.uploadPicture(mFile);
+			return picture;
+		}
+
+		@Override
+		protected void onPostExecute(Picture result) {
+			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			mPhotoView.setVisibility(View.VISIBLE);
+			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
+			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+			bar.setVisibility(View.GONE);
+			mListPictures.add(result);
+			mModel.getUser().getWallet().setPicturesList(mListPictures);
+			generateTableLayout();
+			isAddingPic = false;
+		}
+
+	}
+	
 	
 	public void generateTableLayout()
 	{
@@ -151,11 +274,8 @@ public class WalletActivity extends Activity {
 			mSizePicture = Size.SMALL; // small
 		}
 		
-		
-		
 		TableLayout tableLayout = (TableLayout) findViewById(R.id.tablelayout);
 		tableLayout.removeAllViews();
-		arrayPair.clear();
 		int i = 0;
 		while (i < mModel.getUser().getWallet().getSize())
 		{
@@ -176,10 +296,10 @@ public class WalletActivity extends Activity {
 //				imageView.setOnLongClickListener(new MyTouchListener(i));       /* Create this listener */
 				
 				
-				if (mModel.getUser().getWallet().getPicturesIds() != null)
+				if (mModel.getUser().getWallet().getSize() > 0)
 				{
-					Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mListPictures.get(i));
-					arrayPair.add(pair);
+//					Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mListPictures.get(i));
+					mImageArray.add(imageView);
 				}
 				imageView.setOnClickListener(new OnClickListener() {
 
@@ -210,7 +330,7 @@ public class WalletActivity extends Activity {
 			tableLayout.addView(row);
 		}
 		
-		if (mListPictures.size() % nbPicture == 0)
+		if (mModel.getUser().getWallet().getSize() % nbPicture == 0)
 		{
 
 			// Add a new line
@@ -249,7 +369,7 @@ public class WalletActivity extends Activity {
 		else
 		{
 			// Use the same row
-			TableRow row = (TableRow)((TableLayout)(findViewById(R.id.tablelayout))).getChildAt(mListPictures.size() / nbPicture);
+			TableRow row = (TableRow)((TableLayout)(findViewById(R.id.tablelayout))).getChildAt(mModel.getUser().getWallet().getSize() / nbPicture);
 			int size = ((TableLayout)(findViewById(R.id.tablelayout))).getMeasuredWidth();
 			LinearLayout linearLayout = new LinearLayout(getApplicationContext());
 			TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
@@ -287,11 +407,12 @@ public class WalletActivity extends Activity {
 //			((RelativeLayout)(mRootView.findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
 //			
 //		}
-		if (mModel.getUser().getWallet().getPicturesIds() != null && mModel.getUser().getWallet().getPicturesIds().length != 0)
-		{
-			mDownloadImageTask = new DownloadImageTask(arrayPair, mListPictures, mContext, 0);
+		
+		if(mListPictures == null){
+			mDownloadImageTask = new DownloadImageTask(mImageArray, mContext, 0);
 			mDownloadImageTask.execute();
 		}
+		
 	}
 	
 	public void goToMenuV3(View view)
@@ -347,25 +468,27 @@ public class WalletActivity extends Activity {
 		private boolean isPicture = false;
 		private Context mContext;
 		private int mPosition;
-		private List<Picture> mListPictures;
-		private ArrayList<Pair<ImageView, Picture>> mArrayPair;
+		private ArrayList<ImageView> mImageViewArray;
 
-		public DownloadImageTask(ArrayList<Pair<ImageView, Picture>> arrayPair, List<Picture> listPictures, Context context, int position)
+		public DownloadImageTask(ArrayList<ImageView> imageArray, Context context, int position)
 		{
-			imageViewReference = new WeakReference<ImageView>(
-					arrayPair.get(position)
-					.first);
+			imageViewReference = new WeakReference<ImageView>(mImageArray.get(position));
 			mContext = context;
 			mPosition = position;
-			mListPictures = listPictures;
-			mArrayPair = arrayPair;
+			mImageViewArray = imageArray;
 		}
 
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
 				if (mContext != null)
-				{
+				{	
+					if(mListPictures == null){
+						System.out.println("Downloading URL's of wallet pictures");
+						mListPictures = mModel.getUser().getWallet().downloadWalletPictures(mContext);
+					}
+						
+					System.out.println("Trying to assign bitmap to imageview " + mPosition);
 					Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
 					System.out.println("Wallet Picture renderized and returned properly");
 					return rs;
@@ -385,17 +508,17 @@ public class WalletActivity extends Activity {
 				final ImageView imageView = imageViewReference.get();
 				if (result != null && imageView != null)
 				{	
-					System.out.println("Trying to assign bitmap to imageview");
+					
 					imageView.setImageBitmap(result);
 					imageView.setVisibility(View.VISIBLE);
 					LinearLayout rl = (LinearLayout)(imageView.getParent());
 					ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 					bar.setVisibility(View.GONE);
-					if (mPosition < mArrayPair.size() - 1 && mModel != null && mArrayPair != null)
+					if (mPosition < mImageViewArray.size() - 1 && mModel != null && mImageViewArray != null)
 					{
 						mDownloadImageTask = new DownloadImageTask(
-								mArrayPair,
-								mListPictures, getApplicationContext(),
+								mImageViewArray,
+								getApplicationContext(),
 								mPosition + 1);
 						mDownloadImageTask.execute();
 						System.out.println("position = " + mPosition);

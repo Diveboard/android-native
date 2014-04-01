@@ -31,7 +31,7 @@ public class Wallet {
 	private ArrayList<Picture> 		mPicturesList;
 	private Integer []		 		mPicturesIDS;
 	private Integer					mSize;
-	public boolean					hasPictures;
+	public boolean					isDownloaded;
 	
 	
 	public Wallet(){
@@ -39,7 +39,7 @@ public class Wallet {
 		mPicturesList = null;
 		mPicturesIDS = null;
 		mSize = 0;
-		hasPictures = false;
+		isDownloaded = false;
 	}
 	
 	public Wallet(final JSONObject new_wallet) throws JSONException{
@@ -78,17 +78,66 @@ public class Wallet {
 
 	public ArrayList<Picture>  downloadWalletPictures (Context context){
 		
-		Integer [] picsIds = mPicturesIDS;
-		DownloadWalletPicsTask downloadWalletPics = new DownloadWalletPicsTask(context, picsIds);
-		try {
-			return downloadWalletPics.execute().get();
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExecutionException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		Integer [] 					picsIds = mPicturesIDS;
+		final ArrayList<Picture> 	mPicturesArray = new ArrayList<Picture>();
+//		DownloadWalletPicsTask downloadWalletPics = new DownloadWalletPicsTask(context, picsIds);
+//		try {
+//			return downloadWalletPics.execute().get();
+//		} catch (InterruptedException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		} catch (ExecutionException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+//		return null;
+		
+		ConnectivityManager _connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			for (int i = 0; i < picsIds.length; i++){
+				try {
+					// Creating web client
+					AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
+					// Initiate POST request
+					HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/picture/" + picsIds[i].toString());
+					// Adding parameters
+					ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
+//					args.add(new BasicNameValuePair("auth_token", _token));
+					args.add(new BasicNameValuePair("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF"));
+					args.add(new BasicNameValuePair("flavour", "mobile"));
+					postRequest.setEntity(new UrlEncodedFormEntity(args, "UTF-8"));
+					// Execute request
+					HttpResponse response = client.execute(postRequest);
+					// Get response
+					HttpEntity entity = response.getEntity();
+					String result = ContentExtractor.getASCII(entity);
+					JSONObject json = new JSONObject(result);
+					client.close();
+					
+					System.err.println("SERVER RESPONSE for picture " + i + " " + result);
+					if (!json.isNull("success") && !json.isNull("result")){
+						Picture mPicture = new Picture(json.getJSONObject("result"));
+						mPicturesArray.add(mPicture);
+					}
+					
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+				} catch (IOException e) {
+					e.printStackTrace();
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+			isDownloaded = true;
+			setPicturesList(mPicturesArray);
+			return mPicturesArray;
 		}
+		
 		return null;
 		
 	}
@@ -154,7 +203,7 @@ public class Wallet {
 						e.printStackTrace();
 					}
 				}
-				hasPictures = true;
+				isDownloaded = true;
 				setPicturesList(mPicturesArray);
 				return mPicturesArray;
 			}

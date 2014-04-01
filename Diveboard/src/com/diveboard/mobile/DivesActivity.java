@@ -1289,39 +1289,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     	
     }
     
-    private class DownloadWalletPictures extends AsyncTask<Void, Void, ArrayList<Picture>>{
-
-		@Override
-		protected ArrayList<Picture> doInBackground(Void... params) {
-			// TODO Auto-generated method stub
-						
-			try{
-				return mModel.getUser().getWallet().downloadWalletPictures(getApplicationContext());
-			}catch (RuntimeException e){
-				e.printStackTrace();
-			}
-			return null;
-		}
-    	
-    	@Override
-    	protected void onPostExecute(ArrayList<Picture> result) {
-    		// TODO Auto-generated method stub
-    		super.onPostExecute(result);
-    		if (result != null)
-    			mWalletPictures = result;
-    		else
-    		{
-//				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet_co_wallet), Toast.LENGTH_SHORT);
-//				toast.setGravity(Gravity.CENTER, 0, 0);
-//				toast.show();
-    		}
-    	}
-
-		
-    	
-    }
-    
-	    
     @Override
     public boolean onKeyDown(int keycode, KeyEvent e) {
         switch(keycode) {
