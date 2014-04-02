@@ -73,6 +73,7 @@ public class Wallet {
 
 	public void setPicturesList(ArrayList<Picture> mPicturesList) {
 		this.mPicturesList = mPicturesList;
+		this.mSize = mPicturesList.size();
 		
 	}
 

@@ -38,9 +38,10 @@
         <RelativeLayout
             android:id="@+id/change_item"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="wrap_content" 
             android:background="@color/dark_grey"
-            android:visibility="gone" >
+            android:layout_alignParentTop="true"
+            android:visibility="visible" >
 
             <RelativeLayout
                 android:id="@+id/drop_item"
@@ -94,7 +95,7 @@
         </RelativeLayout>
 
         <ScrollView
-            android:id="@+id/scroll"
+            android:id="@+id/scroll" 
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/dark_grey"
