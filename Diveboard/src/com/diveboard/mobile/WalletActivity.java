@@ -8,13 +8,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.Picture;
-import com.diveboard.model.Picture.Size;
-import com.diveboard.model.Wallet;
-
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.content.res.Configuration;
+import android.graphics.Bitmap;
+import android.graphics.Point;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.Uri;
@@ -23,32 +24,30 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.content.res.Configuration;
-import android.graphics.Bitmap;
-import android.graphics.Point;
-import android.graphics.Typeface;
-import android.util.Pair;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
+import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
+import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.PopupMenu.OnMenuItemClickListener;
+
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.Picture;
+import com.diveboard.model.Picture.Size;
+import com.diveboard.model.ScreenSetup;
 
 public class WalletActivity extends Activity {
 
@@ -74,6 +73,7 @@ public class WalletActivity extends Activity {
 		mModel = AC.getModel();
 		mContext = getApplicationContext();
 		mImageArray.clear();
+		
 		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -81,16 +81,15 @@ public class WalletActivity extends Activity {
 		{
 			if (mModel.getUser().getWallet().isDownloaded)
 				mListPictures = mModel.getUser().getWallet().getPicturesList();
-			
 			generateTableLayout();
 		}
-		else{
+		else {
 			Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 			finish();
 		}
-			
+		
 	}
 	
 	@Override
@@ -216,7 +215,12 @@ public class WalletActivity extends Activity {
 	public void generateTableLayout()
 	{
 		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		
+		TextView mTitle = (TextView) findViewById(R.id.title);
+		mTitle.setTypeface(mFaceB);
+		mTitle.setText(getResources().getString(R.string.title_banner_wallet));
+		Button save = (Button) findViewById(R.id.save_button);
+		save.setTypeface(mFaceB);
+		save.setText(getResources().getString(R.string.save_button));
 		System.out.println("There are " + mModel.getUser().getWallet().getSize() + " photos");
 		
 		int screenWidth;
@@ -408,11 +412,8 @@ public class WalletActivity extends Activity {
 //			
 //		}
 		
-		if(mListPictures == null){
 			mDownloadImageTask = new DownloadImageTask(mImageArray, mContext, 0);
 			mDownloadImageTask.execute();
-		}
-		
 	}
 	
 	public void goToMenuV3(View view)
@@ -497,7 +498,12 @@ public class WalletActivity extends Activity {
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (RuntimeException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.err.println("There was an error downloading the picture, check connection");
 			}
+			
 			return null;
 		}
 

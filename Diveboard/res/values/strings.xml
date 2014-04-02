@@ -69,6 +69,7 @@
     <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
     <string name="title_activity_fblogin">FBLoginActivity</string>
     <string name="title_activity_intro">IntroActivity</string>
+    <string name="title_banner_wallet">MY WALLET</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
     <string name="add_button">SAVE</string>
