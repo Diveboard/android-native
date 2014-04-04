@@ -86,7 +86,7 @@ public class					DiveboardModel
 	private String				_token;
 	private String				_unitPreferences;
 	private UserPreference		_preference;
-	
+	private Wallet 				_wallet = null;
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static ArrayList<String>	savedPictureList;
 	public static Semaphore		savedPictureLock;
@@ -713,6 +713,13 @@ public class					DiveboardModel
 		return _user;
 	}
 	
+	public Wallet getWallet() {
+		return _wallet;
+	}
+
+	public void setWallet(Wallet _wallet) {
+		this._wallet = _wallet;
+	}
 	/*
 	 * Method getDives : void
 	 * Returns default user's dives data (default user ID from constructor)
@@ -960,37 +967,53 @@ public class					DiveboardModel
 						{
 							synchronized (_lock1)
 							{
-								//System.out.println("Loading pictures " + i);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run || !wifiNetwork.isConnected())
+								if(UserPreference.getPictureQuality().equals("m_qual")){
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run || !wifiNetwork.isConnected())
+								}
+								else{
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								}
+//								//System.out.println("Loading pictures " + i);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+								
+								
 							}
 						}
 						else if (_locknb == 2)
 						{
 							synchronized (_lock2)
 							{
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run || !wifiNetwork.isConnected())
+								if(UserPreference.getPictureQuality().equals("m_qual")){
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run || !wifiNetwork.isConnected())
+								}
+								else{
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								}
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
 						}
 					}
@@ -1022,18 +1045,23 @@ public class					DiveboardModel
 					//System.out.println("Loading pictures " + i);
 					try
 					{
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+//						if (!_run || !wifiNetwork.isConnected())
+//							break ;
+//						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//						if (!_run || !wifiNetwork.isConnected())
+//							break ;
+//						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+						if(UserPreference.getPictureQuality().equals("m_qual")){
+							if (!_run || !wifiNetwork.isConnected())
+								break ;
+							pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+						}
+						else{
+							if (!_run || !wifiNetwork.isConnected())
+								break ;
+							pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+						}
+						
 					}
 					catch (IOException e)
 					{
@@ -1794,10 +1822,55 @@ public class					DiveboardModel
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();
 				String result = ContentExtractor.getASCII(entity_response);
+				System.out.println("PICTURE UPLOADED SUCCESSFULLY!\n " + result);
 				JSONObject json = new JSONObject(result);
 				if (json.getBoolean("success") == false)
 					return null;
 				return (new Picture(json.getJSONObject("result")));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public JSONObject						uploadWalletPicture(File picture_file)
+	{
+		HttpClient							httpClient = new DefaultHttpClient();
+		HttpContext							localContext = new BasicHttpContext();
+		HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+				byte[] b = baos.toByteArray();
+				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+				entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+				entity.addPart("auth_token", new StringBody(_token));
+				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("flavour", new StringBody("private"));
+				entity.addPart("album", new StringBody("wallet"));
+				httpPost.setEntity(entity);
+				HttpResponse response = httpClient.execute(httpPost, localContext);
+				HttpEntity entity_response = response.getEntity();
+				String result = ContentExtractor.getASCII(entity_response);
+				System.out.println("WALLET PICTURE UPLOADED SUCCESSFULLY!\n" + result);
+				JSONObject json = new JSONObject(result);
+				if (json.getBoolean("success") == false)
+					return null;
+				return (json);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {

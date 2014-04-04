@@ -119,48 +119,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	static ArrayList<Picture> 				mWalletPictures = null;
 	private Context 						mContext;
 	
-	//Tracking bar
-	public class TrackingBarPosition
-	{
-		int x;
-		int y;
-		int X;
-		int Y;
-		public TrackingBarPosition(int x, int X, int y, int Y)
-		{
-			this.x = x;
-			this.y = y;
-			this.X = X;
-			this.Y = Y;
-		}
-		public int getx() {
-			return x;
-		}
-		public void setx(int x) {
-			this.x = x;
-		}
-		public int gety() {
-			return y;
-		}
-		public void sety(int y) {
-			this.y = y;
-		}
-		public int getX() {
-			return X;
-		}
-		public void setX(int x) {
-			X = x;
-		}
-		public int getY() {
-			return Y;
-		}
-		public void setY(int y) {
-			Y = y;
-		}
-
-	}
-	
-	
 	@Override
 	protected void onResume()
 	{
@@ -1264,6 +1222,47 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			return true;
 		}
     }
+    
+  //Tracking bar
+  	public class TrackingBarPosition
+  	{
+  		int x;
+  		int y;
+  		int X;
+  		int Y;
+  		public TrackingBarPosition(int x, int X, int y, int Y)
+  		{
+  			this.x = x;
+  			this.y = y;
+  			this.X = X;
+  			this.Y = Y;
+  		}
+  		public int getx() {
+  			return x;
+  		}
+  		public void setx(int x) {
+  			this.x = x;
+  		}
+  		public int gety() {
+  			return y;
+  		}
+  		public void sety(int y) {
+  			this.y = y;
+  		}
+  		public int getX() {
+  			return X;
+  		}
+  		public void setX(int x) {
+  			X = x;
+  		}
+  		public int getY() {
+  			return Y;
+  		}
+  		public void setY(int y) {
+  			Y = y;
+  		}
+
+  	}
     
     private class DownloadTickerImage extends AsyncTask<Integer, Void, Bitmap> {
 

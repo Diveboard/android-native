@@ -33,6 +33,7 @@ public class					User implements IModel, Cloneable
 	private Wallet 										_wallet;
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
+	private ArrayList<Pair<String, String>>				_editList = new ArrayList<Pair<String, String>>();
 	private String										_countryName;
 	private Units										_unitPreferences;
 	private Integer										_admin_rights;
@@ -236,14 +237,13 @@ public class					User implements IModel, Cloneable
 
 	@Override
 	public ArrayList<Pair<String, String>> getEditList() {
-		// TODO Auto-generated method stub
-		return null;
+		return _editList;
 	}
 
 	@Override
 	public void clearEditList() {
-		// TODO Auto-generated method stub
-		
+		_editList = null;
+		_editList = new ArrayList<Pair<String, String>>();
 	}
 
 	@Override
@@ -278,5 +278,15 @@ public class					User implements IModel, Cloneable
 
 	public void setWallet(Wallet wallet) {
 		this._wallet = wallet;
+		Pair<String, String> new_elem;
+		if(!wallet.getPicturesIds().isEmpty())
+			new_elem = new Pair<String, String>("wallet_picture_ids", wallet.getPicturesIds().toString());
+		else
+			new_elem = new Pair<String, String>("wallet_picture_ids", new JSONArray().toString());
+		
+		//We add the walletPicturesIds so that they can be updated in the server
+		 
+		System.out.println("ADDED new_elem to USER EDIT LIST\n" + new_elem.first + new_elem.second);
+		_editList.add(new_elem);
 	}
 }

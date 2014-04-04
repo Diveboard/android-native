@@ -52,7 +52,12 @@ public class GalleryCarouselActivity extends FragmentActivity {
 		if (AC.handleLowMemory() == true)
 			return ;
 		mModel = AC.getModel();
-		List<Picture> items = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures();
+		List<Picture> items;
+		String previousActivity = getIntent().getStringExtra("activity");
+		if(previousActivity != null && previousActivity.compareTo("wallet") == 0)
+			items = mModel.getUser().getWallet().getPicturesList();
+		else
+			items = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures();
 		
 //		for (int i = 0; i < mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size(); i++)
 //		{

@@ -54,7 +54,7 @@ public class					DatabaseUpdater
 				NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 				NetworkInfo dataNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
 				if(connMgr != null)
-					if (wifiNetwork.isConnected() == false && dataNetwork.isConnected() == false){
+					if (wifiNetwork.isConnected() == false){
 						return ;
 				}
 			}catch (NullPointerException e){
