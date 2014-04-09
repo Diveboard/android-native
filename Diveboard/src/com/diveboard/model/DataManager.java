@@ -183,7 +183,9 @@ public class					DataManager
 							continue ;
 						try  //Check  
 						{
-							if(elem_value[0].startsWith("Dive:")){
+							if(!elem_value[0].startsWith("Dive:") && !elem_value[0].startsWith("User:") && !elem_value[0].startsWith("Dive_delete:"))
+								continue;
+							if(elem_value[0].startsWith("Dive:") || elem_value[0].startsWith("User:")){
 								JSONObject jerr = new JSONObject(elem_value[1]);
 							}
 						}catch (JSONException e){
