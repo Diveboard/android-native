@@ -110,25 +110,28 @@ public class					DataManager
 	public void					commitCache() throws IOException
 	{
 		_rwlock.writeLock().lock();
-		FileOutputStream		outputStream;
-		
-		for (int i = 0, length = _cacheData.size(); i < length; i++)
-		{
-			HashMap<String, String> elem = _cacheData.valueAt(i);
-			Iterator<String> keyset = elem.keySet().iterator();
-			while (keyset.hasNext())
+		try{
+			FileOutputStream		outputStream;
+			for (int i = 0, length = _cacheData.size(); i < length; i++)
 			{
-				String key = keyset.next();
-				//Open file /[userid]_[category]
-				File file = new File(_context.getFilesDir() + "_" + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(elem.get(key).getBytes());
-				System.err.println("GET BYTES = " + elem.get(key));
-				outputStream.close();
+				HashMap<String, String> elem = _cacheData.valueAt(i);
+				Iterator<String> keyset = elem.keySet().iterator();
+				while (keyset.hasNext())
+				{
+					String key = keyset.next();
+					//Open file /[userid]_[category]
+					File file = new File(_context.getFilesDir() + "_" + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
+					file.createNewFile();
+					outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+					outputStream.write(elem.get(key).getBytes());
+					System.err.println("GET BYTES = " + elem.get(key));
+					outputStream.close();
+				}
 			}
+		}finally{
+			_rwlock.writeLock().unlock();
 		}
-		_rwlock.writeLock().unlock();
+		
 	}
 	
 	/*
@@ -138,66 +141,71 @@ public class					DataManager
 	public void					loadCache(final int userId) throws IOException
 	{
 		_rwlock.readLock().lock();
-		FileInputStream			fileInputStream;
-		File file = _context.getFilesDir();
-		String[] file_list = file.list();
-		HashMap<String, String> elem = new HashMap<String, String>();
-		
-		for (int i = 0, length = file_list.length; i < length; i++)
-		{
-			// If file name starts with files_[userId]_ and is not a picture and is not edit list
-			if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0)
-					&& (file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") != 0))
+		try{
+			FileInputStream			fileInputStream;
+			File file = _context.getFilesDir();
+			String[] file_list = file.list();
+			HashMap<String, String> elem = new HashMap<String, String>();
+			
+			for (int i = 0, length = file_list.length; i < length; i++)
 			{
-				String[] name_split = file_list[i].split("_");
-				fileInputStream = _context.openFileInput(file_list[i]);
-				StringBuffer fileContent = new StringBuffer("");
-				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
-				elem.put(name_split[2], fileContent.toString());
-				fileInputStream.close();
-			}
-			else if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") == 0))
-			{
-				// If it's an edit list file
-				_editList = null;
-				_editList = new ArrayList<Pair<String, String>>();
-				fileInputStream = _context.openFileInput(file_list[i]);
-				StringBuffer fileContent = new StringBuffer("");
-				int n;
-				byte[] buffer = new byte[1024];
-				while ((n=fileInputStream.read(buffer)) != -1)
-					fileContent.append(new String(buffer, 0, n));
-				System.err.println("@" + fileContent);
-				String[] edit_list = fileContent.toString().split("#END#");
-				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
+				// If file name starts with files_[userId]_ and is not a picture and is not edit list
+				if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0)
+						&& (file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") != 0))
 				{
-					boolean error = false;
-					String[] elem_value = edit_list[j].split("#SEP#");
-					if (elem_value.length != 2)
-						continue ;
-					try  //Check  
+					String[] name_split = file_list[i].split("_");
+					fileInputStream = _context.openFileInput(file_list[i]);
+					StringBuffer fileContent = new StringBuffer("");
+					byte[] buffer = new byte[1024];
+					while (fileInputStream.read(buffer) != -1)
+						fileContent.append(new String(buffer));
+					elem.put(name_split[2], fileContent.toString());
+					fileInputStream.close();
+				}
+				else if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") == 0))
+				{
+					// If it's an edit list file
+					_editList = null;
+					_editList = new ArrayList<Pair<String, String>>();
+					fileInputStream = _context.openFileInput(file_list[i]);
+					StringBuffer fileContent = new StringBuffer("");
+					int n;
+					byte[] buffer = new byte[1024];
+					while ((n=fileInputStream.read(buffer)) != -1)
+						fileContent.append(new String(buffer, 0, n));
+					System.err.println("@" + fileContent);
+					String[] edit_list = fileContent.toString().split("#END#");
+					for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
 					{
-						if(elem_value[0].compareTo("Dive") == 0){
-							JSONObject jerr = new JSONObject(elem_value[1]);
+						boolean error = false;
+						String[] elem_value = edit_list[j].split("#SEP#");
+						if (elem_value.length != 2)
+							continue ;
+						try  //Check  
+						{
+							if(elem_value[0].compareTo("Dive") == 0){
+								JSONObject jerr = new JSONObject(elem_value[1]);
+							}
+						}catch (JSONException e){
+							e.printStackTrace();
+							error= true;
 						}
-					}catch (JSONException e){
-						e.printStackTrace();
-						error= true;
-					}
-					
-					if(!error){
-						Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
-						System.err.println("New elem added to the EDIT LIST loaded from CACHEE: " + elem_value[0] + " - " + elem_value[1]);
-						_editList.add(new_elem);
+						
+						if(!error){
+							Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
+							System.err.println("New elem added to the EDIT LIST loaded from CACHEE: " + elem_value[0] + " - " + elem_value[1]);
+							_editList.add(new_elem);
+						}
 					}
 				}
 			}
+			if (elem.size() != 0)
+				_cacheData.put(userId, elem);
+	
+		}finally{
+			_rwlock.readLock().unlock();
 		}
-		if (elem.size() != 0)
-			_cacheData.put(userId, elem);
-		_rwlock.readLock().unlock();
+		
 	}
 	
 	/*
@@ -454,42 +462,45 @@ public class					DataManager
 	private void				_cacheEditList()
 	{
 		_rwlock.writeLock().lock();
+		try{
 		FileOutputStream		outputStream;
 		
-		File file = new File(_context.getFilesDir() + "_" + Integer.toString(_userId) + "_edit");
-		try
-		{
-			file.createNewFile();
-			outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-			System.err.println("Storing editlist in cache: \n");
-			for (int i = 0, length = _editList.size(); i < length; i++)
-			{
-				boolean error = false;
-				if (_editList.get(i).first.compareTo("Dive") == 0)
-				{
-					
-					try  //Check  
-					{
-						JSONObject j = new JSONObject(_editList.get(i).second);
-					}catch (JSONException e){
-						e.printStackTrace();
-						error= true;
+			File file = new File(_context.getFilesDir() + "_"
+					+ Integer.toString(_userId) + "_edit");
+			try {
+				file.createNewFile();
+				outputStream = _context.openFileOutput(file.getName(),Context.MODE_PRIVATE);
+				System.err.println("Storing editlist in cache: \n");
+				for (int i = 0, length = _editList.size(); i < length; i++) {
+					boolean error = false;
+					if (_editList.get(i).first.compareTo("Dive") == 0) {
+
+						try // Check
+						{
+							JSONObject j = new JSONObject(
+									_editList.get(i).second);
+						} catch (JSONException e) {
+							e.printStackTrace();
+							error = true;
+						}
 					}
+					if (!error) {
+						String new_line = _editList.get(i).first + "#SEP#"
+								+ _editList.get(i).second + "#END#";
+						System.err.println(new_line);
+						outputStream.write(new_line.getBytes());
+					}
+
 				}
-				if(!error){
-					String new_line = _editList.get(i).first + "#SEP#" + _editList.get(i).second + "#END#";
-					System.err.println(new_line);
-					outputStream.write(new_line.getBytes());
-				}
-				
+				outputStream.close();
+			} catch (IOException e) {
+				System.err.println("Error: Saving edit list on cache");
 			}
-			outputStream.close();
+		
+		} finally {
+			_rwlock.writeLock().unlock();
 		}
-		catch (IOException e)
-		{
-			System.err.println("Error: Saving edit list on cache");
-		}
-		_rwlock.writeLock().unlock();
+		
 	}
 	
 	public ArrayList<Pair<String, String>>	getEditList()
