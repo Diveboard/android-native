@@ -1,6 +1,5 @@
 package com.diveboard.mobile;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -9,7 +8,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import android.app.Activity;
 import android.content.ClipData;
@@ -40,15 +38,15 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -65,7 +63,6 @@ import android.widget.Toast;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
-import com.diveboard.model.ScreenSetup;
 
 public class WalletActivity extends Activity {
 
