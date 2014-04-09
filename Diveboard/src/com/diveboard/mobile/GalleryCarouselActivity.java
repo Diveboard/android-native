@@ -55,7 +55,7 @@ public class GalleryCarouselActivity extends FragmentActivity {
 		List<Picture> items;
 		String previousActivity = getIntent().getStringExtra("activity");
 		if(previousActivity != null && previousActivity.compareTo("wallet") == 0)
-			items = mModel.getUser().getWallet().getPicturesList();
+			items = mModel.getUser().getWalletPictures();
 		else
 			items = mModel.getDives().get(getIntent().getIntExtra("index", 0)).getPictures();
 		

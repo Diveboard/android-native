@@ -111,10 +111,7 @@ public class WalletActivity extends Activity {
 //		}
 		mPicturesIDS = mModel.getUser().getWallet().getPicturesIds();
 		mListPictures = mModel.getUser().getWalletPictures();
-		if (mModel.getUser().getWallet().isDownloaded){
-			mListPictures = mModel.getUser().getWallet().getPicturesList();
-			System.out.println("Loading pics");
-		}
+		
 		_connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		networkInfo = _connMgr.getActiveNetworkInfo();
 		generateTableLayout();
@@ -327,7 +324,7 @@ public class WalletActivity extends Activity {
 					@Override
 					public void onClick(View v) {    //Access to the wallet pictures of the current user
 						ApplicationController AC = (ApplicationController) getApplicationContext();
-						if (mModel.getUser().getWallet().getPicturesList() != null && mModel.getUser().getWallet().getSize() != 0)
+						if (mModel.getUser().getWalletPictures() != null && mModel.getUser().getWalletPictures().size() != 0)
 						{
 							Intent galleryCarousel = new Intent( getApplicationContext(), GalleryCarouselActivity.class);
 							galleryCarousel.putExtra("activity", "wallet");

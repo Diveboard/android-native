@@ -156,8 +156,9 @@ public class					DataManager
 				_editList = new ArrayList<Pair<String, String>>();
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
+				int n;
 				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
+				while ((n=fileInputStream.read(buffer)) != -1)
 					fileContent.append(new String(buffer));
 				String[] edit_list = fileContent.toString().split("#END#");
 				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
@@ -682,7 +683,7 @@ public class					DataManager
 								_editList.remove(0);
 								_cacheEditList();
 								continue ;
-							}else if(info[0].compareTo("Wallet") == 0){
+							}else if(info[0].compareTo("User") == 0){
 								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/");
 							}
 							else

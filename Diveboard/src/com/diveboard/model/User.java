@@ -317,28 +317,28 @@ public class					User implements IModel, Cloneable
 	
 	public ArrayList<Picture> getWalletPictures()
 	{
-//		for (int i = _editList.size() - 1; i >= 0; i--)
-//		{
-//			if (_editList.get(i).first.contentEquals("wallet_pictures"))
-//			{
-//				if (_editList.get(i).second == null)
-//					return null;
-//				ArrayList<Picture> result = new ArrayList<Picture>();
-//				JSONArray jarray;
-//				try {
-//					jarray = new JSONArray(_editList.get(i).second);
-//					for (int j = 0, length = jarray.length(); j < length; j++)
-//					{
-//						result.add(new Picture(jarray.getJSONObject(j)));
-//					}
-//					return (result);
-//				} catch (JSONException e) {
-//					e.printStackTrace();
-//				}
-//			}
-//		}
-//		if(_wallet_pictures != null)
-//			return (ArrayList<Picture>) _wallet_pictures.clone();
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("wallet_pictures"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<Picture> result = new ArrayList<Picture>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+					{
+						result.add(new Picture(jarray.getJSONObject(j)));
+					}
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		if(_wallet_pictures != null)
+			return (ArrayList<Picture>) _wallet_pictures.clone();
 //		return null;
 		return _wallet_pictures;
 	}
