@@ -782,17 +782,23 @@ public class					DiveboardModel
 	}
 	
 	private void _applyEdit() {
-		
-		
-		
-		
 			try {
 				ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
 				for (int i = 0, length = edit_list.size(); i < length; i++) {
 					System.out.println("EDIT ITEM : " + edit_list.get(i).first + " whose content is: " + edit_list.get(i).second);
 					String[] info = edit_list.get(i).first.split(":");
-					if (info[0].compareTo("Dive") == 0)
-						_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
+					if (info[0].compareTo("Dive") == 0){
+						try{ 
+							//Checking the edit_list contains indeed a JSONObject well parsed
+							JSONObject temp = new JSONObject(edit_list.get(i).second);
+							_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
+						}catch(JSONException e){
+							e.printStackTrace();
+							continue;
+						}
+						
+					}
+						
 					else if (info[0].equals("Dive_delete"))
 						_applyDeleteDive(Integer.parseInt(info[1]));
 				}
@@ -843,13 +849,18 @@ public class					DiveboardModel
 		}
 		else
 		{
+			JSONObject temp = null;
 			try {
-				System.err.println("Applying edit list to the dive: " + i + " with this EDIT LIST " + json.toString());
-				dives.get(i).applyEdit(new JSONObject(json));
+				System.err.println("Attempting to apply edit list to the dive: " + i + " with this EDIT LIST " + json.toString());
+				temp = new JSONObject(json);
+				dives.get(i).applyEdit(temp);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				System.err.println("Error while parsing the JSONObject");
+				return;
 			}
+				
 		}
 	}
 	

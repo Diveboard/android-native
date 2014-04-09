@@ -9,6 +9,8 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -49,6 +51,7 @@ public class					DataManager
 	private SparseArray<HashMap<String, String>>	_cacheData; // <UserId, <Category, JSON>>
 	private ArrayList<Pair<String, String>>			_editList = new ArrayList<Pair<String, String>>();
 	private final Object							_lock = new Object(); // Lock for _editList
+	private ReentrantReadWriteLock					_rwlock = new ReentrantReadWriteLock();
 	private int										_userId;
 	private String									_token;
 	private DiveboardModel							_model;
@@ -82,6 +85,8 @@ public class					DataManager
 		HashMap<String, String>	userElem;
 		String key = new String(category);
 		String value = new String(json);
+
+		System.err.println("Trying to save values in the local cache " + value);
 		
 		if ((userElem = _cacheData.get(userId)) == null)
 		{
@@ -104,6 +109,7 @@ public class					DataManager
 	 */
 	public void					commitCache() throws IOException
 	{
+		_rwlock.writeLock().lock();
 		FileOutputStream		outputStream;
 		
 		for (int i = 0, length = _cacheData.size(); i < length; i++)
@@ -118,9 +124,11 @@ public class					DataManager
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(elem.get(key).getBytes());
+				System.err.println("GET BYTES = " + elem.get(key));
 				outputStream.close();
 			}
 		}
+		_rwlock.writeLock().unlock();
 	}
 	
 	/*
@@ -129,6 +137,7 @@ public class					DataManager
 	 */
 	public void					loadCache(final int userId) throws IOException
 	{
+		_rwlock.readLock().lock();
 		FileInputStream			fileInputStream;
 		File file = _context.getFilesDir();
 		String[] file_list = file.list();
@@ -156,9 +165,11 @@ public class					DataManager
 				_editList = new ArrayList<Pair<String, String>>();
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
+				int n;
 				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
+				while ((n=fileInputStream.read(buffer)) != -1)
+					fileContent.append(new String(buffer, 0, n));
+				System.err.println("@" + fileContent);
 				String[] edit_list = fileContent.toString().split("#END#");
 				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
 				{
@@ -168,11 +179,9 @@ public class					DataManager
 						continue ;
 					try  //Check  
 					{
-						
 						if(elem_value[0].compareTo("Dive") == 0){
 							JSONObject jerr = new JSONObject(elem_value[1]);
 						}
-							
 					}catch (JSONException e){
 						e.printStackTrace();
 						error= true;
@@ -180,15 +189,15 @@ public class					DataManager
 					
 					if(!error){
 						Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
-						System.err.println("New elem added to the EDIT LIST loaded from CACHE: " + elem_value[0] + " - " + elem_value[1]);
+						System.err.println("New elem added to the EDIT LIST loaded from CACHEE: " + elem_value[0] + " - " + elem_value[1]);
 						_editList.add(new_elem);
 					}
-					
 				}
 			}
 		}
 		if (elem.size() != 0)
 			_cacheData.put(userId, elem);
+		_rwlock.readLock().unlock();
 	}
 	
 	/*
@@ -444,6 +453,7 @@ public class					DataManager
 	
 	private void				_cacheEditList()
 	{
+		_rwlock.writeLock().lock();
 		FileOutputStream		outputStream;
 		
 		File file = new File(_context.getFilesDir() + "_" + Integer.toString(_userId) + "_edit");
@@ -479,6 +489,7 @@ public class					DataManager
 		{
 			System.err.println("Error: Saving edit list on cache");
 		}
+		_rwlock.writeLock().unlock();
 	}
 	
 	public ArrayList<Pair<String, String>>	getEditList()
@@ -694,10 +705,14 @@ public class					DataManager
 								break ;
 							}
 							client.close();
-							// Remove edit from cache
-							_editList.remove(0);
-							// Save edit in cache
-							_cacheEditList();
+							
+							synchronized (_lock) {
+								// Remove edit from cache
+								_editList.remove(0);
+								// Save edit in cache
+								_cacheEditList();
+							}
+							
 						}
 					}
 				}
