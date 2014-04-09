@@ -183,7 +183,7 @@ public class					DataManager
 							continue ;
 						try  //Check  
 						{
-							if(elem_value[0].compareTo("Dive") == 0){
+							if(elem_value[0].startsWith("Dive:")){
 								JSONObject jerr = new JSONObject(elem_value[1]);
 							}
 						}catch (JSONException e){
