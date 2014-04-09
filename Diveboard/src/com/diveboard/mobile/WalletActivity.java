@@ -95,19 +95,14 @@ public class WalletActivity extends Activity {
 		
 		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected())
-		{
-			if (mModel.getUser().getWallet().isDownloaded)
-				mListPictures = mModel.getUser().getWallet().getPicturesList();
-			generateTableLayout();
-		}
-		else {
-			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-			finish();
-		}
+		mListPictures = mModel.getUser().getWalletPictures();
+		generateTableLayout();
+//		else {
+//			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
+//			toast.setGravity(Gravity.CENTER, 0, 0);
+//			toast.show();
+//			finish();
+//		}
 		
 	}
 	
@@ -484,8 +479,7 @@ public class WalletActivity extends Activity {
 				if (mContext != null)
 				{	
 					if(mListPictures == null){
-						System.out.println("Downloading URL's of wallet pictures");
-						mListPictures = mModel.getUser().getWallet().downloadWalletPictures(mContext);
+						System.err.println("There was an error downloading the picture, check connection");
 					}
 					System.out.println("Trying to assign bitmap to imageview " + mPosition);
 					Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
@@ -498,7 +492,6 @@ public class WalletActivity extends Activity {
 			} catch (RuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.err.println("There was an error downloading the picture, check connection");
 			}
 			
 			return null;

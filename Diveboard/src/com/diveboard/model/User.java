@@ -31,6 +31,7 @@ public class					User implements IModel, Cloneable
 	private String										_nickname;
 	private ArrayList<UserGear>							_userGears;
 	private Wallet 										_wallet;
+	private ArrayList<Picture>							_wallet_pictures;
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private String										_countryName;
@@ -94,6 +95,16 @@ public class					User implements IModel, Cloneable
 		}
 		else
 			_wallet = null;
+		if(!json.isNull("wallet_pictures")){
+			_wallet_pictures = new ArrayList<Picture>();
+			JSONArray temp = json.getJSONArray("wallet_pictures");
+			for(int i = 0; i < temp.length(); i++){
+				_wallet_pictures.add(new Picture(temp.getJSONObject(i)));
+			}
+			System.err.println("|||| new wallet pictures received " + temp.toString());
+		}
+		else
+			_wallet_pictures = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
@@ -278,5 +289,13 @@ public class					User implements IModel, Cloneable
 
 	public void setWallet(Wallet wallet) {
 		this._wallet = wallet;
+	}
+
+	public ArrayList<Picture> getWalletPictures() {
+		return _wallet_pictures;
+	}
+
+	public void setWalletPictures(ArrayList<Picture> _wallet_pictures) {
+		this._wallet_pictures = _wallet_pictures;
 	}
 }
