@@ -301,9 +301,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        	}
 		        	else
 		        	{
+		        		
 		        		Intent intent = new Intent(Intent.ACTION_SEND);
 		        		intent.setType("text/plain");
 		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+		        		String deviceInfo = (String.format(mModel.getUser().getId() + " - I found a bug in my %s %s ,%s", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE));
+		        		intent.putExtra(Intent.EXTRA_SUBJECT, deviceInfo);
 		        		startActivity(Intent.createChooser(intent, "Send Email"));
 		        	}
 		            return true;

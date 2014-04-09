@@ -31,6 +31,7 @@ public class					User implements IModel, Cloneable
 	private String										_nickname;
 	private ArrayList<UserGear>							_userGears;
 	private Wallet 										_wallet;
+	private ArrayList<Picture>							_wallet_pictures = new ArrayList<Picture>();
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private ArrayList<Pair<String, String>>				_editList = new ArrayList<Pair<String, String>>();
@@ -95,6 +96,19 @@ public class					User implements IModel, Cloneable
 		}
 		else
 			_wallet = null;
+		if (!json.isNull("wallet_pictures"))
+		{
+			JSONArray jarray;
+			_wallet_pictures = new ArrayList<Picture>();
+			jarray = json.getJSONArray("wallet_pictures");
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				Picture new_elem = new Picture(jarray.getJSONObject(i));
+				_wallet_pictures.add(new_elem);
+			}
+		}
+		else
+			_wallet_pictures = null;
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
@@ -288,5 +302,44 @@ public class					User implements IModel, Cloneable
 		 
 		System.out.println("ADDED new_elem to USER EDIT LIST\n" + new_elem.first + new_elem.second);
 		_editList.add(new_elem);
+	}
+	
+	public void setWalletPictures(ArrayList<Picture> _pictures)
+	{
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		for (int i = 0, size = _pictures.size(); i < size; i++)
+			jarray.put(_pictures.get(i).getJson());
+		new_elem = new Pair<String, String>("wallet_pictures", jarray.toString());
+		_editList.add(new_elem);
+		_wallet_pictures = _pictures;
+	}
+	
+	public ArrayList<Picture> getWalletPictures()
+	{
+//		for (int i = _editList.size() - 1; i >= 0; i--)
+//		{
+//			if (_editList.get(i).first.contentEquals("wallet_pictures"))
+//			{
+//				if (_editList.get(i).second == null)
+//					return null;
+//				ArrayList<Picture> result = new ArrayList<Picture>();
+//				JSONArray jarray;
+//				try {
+//					jarray = new JSONArray(_editList.get(i).second);
+//					for (int j = 0, length = jarray.length(); j < length; j++)
+//					{
+//						result.add(new Picture(jarray.getJSONObject(j)));
+//					}
+//					return (result);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		if(_wallet_pictures != null)
+//			return (ArrayList<Picture>) _wallet_pictures.clone();
+//		return null;
+		return _wallet_pictures;
 	}
 }

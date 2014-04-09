@@ -139,7 +139,7 @@ public class Wallet {
 				}
 			}
 			isDownloaded = true;
-			setPicturesList(mPicturesArray);
+//			setPicturesList(mPicturesArray);
 			return mPicturesArray;
 		}
 		

@@ -713,13 +713,6 @@ public class					DiveboardModel
 		return _user;
 	}
 	
-	public Wallet getWallet() {
-		return _wallet;
-	}
-
-	public void setWallet(Wallet _wallet) {
-		this._wallet = _wallet;
-	}
 	/*
 	 * Method getDives : void
 	 * Returns default user's dives data (default user ID from constructor)
@@ -789,10 +782,6 @@ public class					DiveboardModel
 	}
 	
 	private void _applyEdit() {
-		
-		
-		
-		
 			try {
 				ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
 				for (int i = 0, length = edit_list.size(); i < length; i++) {
@@ -802,6 +791,9 @@ public class					DiveboardModel
 						_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
 					else if (info[0].equals("Dive_delete"))
 						_applyDeleteDive(Integer.parseInt(info[1]));
+					else if (info[0].equals("Wallet"))
+						_applyEditUser(edit_list.get(i).second);
+					
 				}
 			} catch (NumberFormatException e) {
 				e.printStackTrace();
@@ -818,6 +810,22 @@ public class					DiveboardModel
 				dives.remove(i);
 				break ;
 			}
+	}
+	
+	private void 				_applyEditUser(final String json){
+		
+		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
+		JSONObject user = new JSONObject();
+		try {
+			user = new JSONObject(json);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		if (!user.isNull("wallet_pictures")){
+			System.out.println("Assigning wallet_pictures from Cache to current user");
+			_user.setWalletPictures(mWalletPics);
+		}
 	}
 	
 	private void				_applyEditDive(final int id, final String json) 

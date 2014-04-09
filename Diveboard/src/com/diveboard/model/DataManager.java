@@ -449,6 +449,8 @@ public class					DataManager
 				
 				if (edit_list.get(i).first.equals("wallet_picture_ids"))     
 					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				if (edit_list.get(i).first.equals("wallet_pictures"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
 				
 //				user.applyEdit(obj);
 				Pair<String, String> new_elem = new Pair<String, String>("User:" + Integer.toString(user.getId()), obj.toString());
@@ -490,7 +492,6 @@ public class					DataManager
 				boolean error = false;
 				if (_editList.get(i).first.compareTo("Dive") == 0)
 				{
-					
 					try  //Check  
 					{
 						JSONObject j = new JSONObject(_editList.get(i).second);
@@ -609,6 +610,28 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("Wallet"))
+		{
+			String result = get(_userId, "wallet_pictures");
+			JSONObject json;
+			try
+			{
+				json = new JSONObject(result);
+//					JSONObject temp = jarray.getJSONObject(i);
+					if (json.getInt("id") == Integer.parseInt(info[1]))
+					{
+						
+						saveCache(_userId, "wallet_pictures",result_obj.toString());
+						commitCache();
+						return ;
+					}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -659,7 +682,7 @@ public class					DataManager
 								_editList.remove(0);
 								_cacheEditList();
 								continue ;
-							}else if(info[0].compareTo("User") == 0){
+							}else if(info[0].compareTo("Wallet") == 0){
 								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/");
 							}
 							else

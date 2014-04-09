@@ -79,7 +79,8 @@ public class WalletActivity extends Activity {
 	private Context						mContext;
 	public ArrayList<Picture>			mListPictures = new ArrayList<Picture>();
 	public ArrayList<Integer>			mPicturesIDS = new ArrayList<Integer>();
-	ArrayList <ImageView> 				mImageArray = new ArrayList<ImageView>();
+	private ArrayList <ImageView> 		mImageArray = new ArrayList<ImageView>();
+	
 	public final int 					SELECT_PICTURE = 1;
 	public final int 					TAKE_PICTURE = 2;
 	private RelativeLayout 				mChangeItem;
@@ -91,6 +92,9 @@ public class WalletActivity extends Activity {
 	private UploadPictureTask 			mUploadPictureTask = null;
 	public boolean 						isAddingPic = false;
 	public int 							mImageSelected;
+	public static int					mUploadProgress;
+	ConnectivityManager 				_connMgr;
+	NetworkInfo 						networkInfo;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,26 +110,20 @@ public class WalletActivity extends Activity {
 //			System.err.println(test.get(i).first + " :: " + test.get(i).second + "##end");
 //		}
 		mPicturesIDS = mModel.getUser().getWallet().getPicturesIds();
-		mListPictures = mModel.getUser().getWallet().getPicturesList();
-		ConnectivityManager _connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-		// Test connectivity
-		if (networkInfo != null && networkInfo.isConnected() || mModel.getUser().getWallet().isDownloaded)
-		{
-			if (mModel.getUser().getWallet().isDownloaded){
-				mListPictures = mModel.getUser().getWallet().getPicturesList();
-				
-				System.out.println("Loading pics");
-			}
-				
-			generateTableLayout();
+		mListPictures = mModel.getUser().getWalletPictures();
+		if (mModel.getUser().getWallet().isDownloaded){
+			mListPictures = mModel.getUser().getWallet().getPicturesList();
+			System.out.println("Loading pics");
 		}
-		else {
-			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
-			toast.setGravity(Gravity.CENTER, 0, 0);
-			toast.show();
-			finish();
-		}
+		_connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+		networkInfo = _connMgr.getActiveNetworkInfo();
+		generateTableLayout();
+//		else {
+//			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
+//			toast.setGravity(Gravity.CENTER, 0, 0);
+//			toast.show();
+//			finish();
+//		}
 		
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setOnClickListener(new OnClickListener() {
@@ -277,9 +275,9 @@ public class WalletActivity extends Activity {
 		}
 		else
 		{
-			double temp = ((double)screenWidth / (double)screenHeight);
-			nbPicture = (int) (temp * 3.0);
-			System.out.println(screenWidth + " " + screenHeight + " " + nbPicture);
+//			double temp = ((double)screenWidth / (double)screenHeight);
+//			nbPicture = (int) (temp * 3.0);
+//			System.out.println(screenWidth + " " + screenHeight + " " + nbPicture);
 			nbPicture = 5;
 		}
 		System.out.println("screenheight = " + screenHeight);
@@ -351,7 +349,7 @@ public class WalletActivity extends Activity {
 			}
 			tableLayout.addView(row);
 		}
-		
+		//We add the + icon
 		if (mModel.getUser().getWallet().getSize() % nbPicture == 0)
 		{
 
@@ -507,25 +505,38 @@ public class WalletActivity extends Activity {
 			mContext = context;
 			mPosition = position;
 			mImageViewArray = imageArray;
+			_connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+			networkInfo = _connMgr.getActiveNetworkInfo();
 		}
 
 		protected Bitmap doInBackground(Void... voids)
 		{
 			try {
-				if (mContext != null)
-				{	
-					if(mListPictures == null){
+				if (mContext != null){	
+					if(mListPictures == null && networkInfo != null && networkInfo.isConnected()){
 						System.out.println("Downloading URL's of wallet pictures");
-						Wallet w = mModel.getUser().getWallet();
+//						Wallet w = mModel.getUser().getWallet();
 						mListPictures = mModel.getUser().getWallet().downloadWalletPictures(mContext);
-						w.setPicturesList(mListPictures);
-						mModel.getUser().setWallet(w);
-					
+						if(mListPictures != null){
+							mModel.getUser().setWalletPictures(mListPictures);
+//							mModel.getUser().setWallet(w);
+						}
+							
+						else
+							mListPictures = mModel.getUser().getWalletPictures();
 					}
+					if(mListPictures== null){
+						System.out.println("mListPictures is null");
+					}
+					else
+						System.out.println("mListPictures is NOT null");
+					
 					System.out.println("Trying to assign bitmap to imageview " + mPosition);
 					Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
 					System.out.println("Wallet Picture renderized and returned properly");
 					return rs;
+					
+					
 				}
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
@@ -541,7 +552,7 @@ public class WalletActivity extends Activity {
 
 		protected void onPostExecute(Bitmap result)
 		{
-			if (imageViewReference != null)
+			if (imageViewReference != null && result != null)
 			{
 				final ImageView imageView = imageViewReference.get();
 				if (result != null && imageView != null)
@@ -553,14 +564,16 @@ public class WalletActivity extends Activity {
 					bar.setVisibility(View.GONE);
 					if (mPosition < mImageViewArray.size() - 1 && mModel != null && mImageViewArray != null)
 					{
-						mDownloadImageTask = new DownloadImageTask(
-								mImageViewArray,
-								mContext,
-								mPosition + 1);
+						mDownloadImageTask = new DownloadImageTask(mImageViewArray, mContext, mPosition + 1);
 						mDownloadImageTask.execute();
 						System.out.println("position = " + mPosition);
 					}
 				}
+			}else{
+				Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_internet_co_wallet),Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+				finish();
 			}
 		}
 
@@ -570,14 +583,18 @@ public class WalletActivity extends Activity {
 		}
 	}
 	
-	private class UploadPictureTask extends AsyncTask<Void, Void, JSONObject>
+	private class UploadPictureTask extends AsyncTask<Void, Integer, JSONObject>
 	{
 		private File mFile;
 		private Picture picture = null;
 		private Integer pictureId = null;
-
+		LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
+		ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+		
+		
 		public UploadPictureTask(File file)
 		{
+			mUploadProgress = 0;
 			mFile = file;
 		}
 
@@ -586,8 +603,9 @@ public class WalletActivity extends Activity {
 
 			System.out.println("Uploading picture to the server ");
 			JSONObject result = mModel.uploadWalletPicture(mFile);
-//			
-//			try {
+			
+				
+			//			try {
 //				if(result.getBoolean("success") == true){
 //					picture = new Picture(result.getJSONObject("result"));
 //					pictureId = result.getJSONObject("picture").getInt("id");
@@ -603,13 +621,10 @@ public class WalletActivity extends Activity {
 //				System.out.println("Picture received and stored by the server ");
 			return result;
 		}
-
+		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
 			mPhotoView.setVisibility(View.VISIBLE);
-			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
-			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 			bar.setVisibility(View.GONE);
 			
 			try{
@@ -624,6 +639,9 @@ public class WalletActivity extends Activity {
 					mModel.getUser().setWallet(tmp);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
 					mModel.getUser().getWallet().setPicturesList(mListPictures);
+					if(mListPictures != null)
+						mModel.getUser().setWalletPictures(mListPictures);
+					
 				}
 			}catch (JSONException e){
 				e.printStackTrace();
@@ -715,31 +733,34 @@ public class WalletActivity extends Activity {
 				mChoosenImage = (ImageView) event.getLocalState();
 //				Intent share = new Intent(Intent.ACTION_SEND);
 //				startActivity(Intent.createChooser(share, "Share Image"));
-				System.out.println("Sharing object");
+//				System.out.println(Integer.valueOf(v.getContentDescription().toString()));
 
-//				Bitmap icon = null;
-//				try {
-//					icon = mListPictures.get(Integer.parseInt(v.getContentDescription().toString())).getPicture(mContext);
-//				} catch (NumberFormatException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
+				Bitmap icon = null;
+				try {
+					icon = mListPictures.get(Integer.valueOf(mChoosenImage.getContentDescription().toString()))
+							.getPicture(mContext);
+				} catch (NumberFormatException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 				Intent share = new Intent(Intent.ACTION_SEND);
 				share.setType("image/jpeg");
-//				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-//				icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
-//				File f = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
-//				try {
-//					f.createNewFile();
-//					FileOutputStream fo = new FileOutputStream(f);
-//					fo.write(bytes.toByteArray());
-//				} catch (IOException e) {
-//					e.printStackTrace();
-//				}
-//				share.putExtra(Intent.EXTRA_STREAM,Uri.parse("file:///sdcard/temporary_file.jpg"));
+				ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+				icon.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+				File f = new File(Environment.getExternalStorageDirectory() + File.separator + "temporary_file.jpg");
+				try {
+					f.createNewFile();
+					FileOutputStream fo = new FileOutputStream(f);
+					fo.write(bytes.toByteArray());
+					fo.flush();
+					fo.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				share.putExtra(Intent.EXTRA_STREAM,Uri.parse("file:///sdcard/temporary_file.jpg"));
 				startActivity(Intent.createChooser(share, "Share Image"));
 				
 				break;
@@ -789,6 +810,8 @@ public class WalletActivity extends Activity {
 				tmp.setPicturesList(mListPictures);
 				tmp.setPicturesIDS(mPicturesIDS);
 				mModel.getUser().setWallet(tmp);
+				if(mListPictures != null)
+					mModel.getUser().setWalletPictures(mListPictures);
 				
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
