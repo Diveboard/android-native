@@ -9,14 +9,16 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.Dialog;
+import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -36,7 +38,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.util.Pair;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.Gravity;
@@ -44,15 +45,16 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.Window;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
-import android.view.animation.Animation.AnimationListener;
+import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.animation.Animation;
+import android.view.animation.Animation.AnimationListener;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -66,10 +68,10 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
-import com.diveboard.model.ScreenSetup;
 import com.diveboard.model.User;
 import com.diveboard.model.Wallet;
 
@@ -87,6 +89,7 @@ public class WalletActivity extends Activity {
 	public int 							mMenuType = 0;
 	private int 						nbPicture;
 	private Size 						mSizePicture;
+	private int							mWalletSize;
 	public ImageView 					mPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
 	private UploadPictureTask 			mUploadPictureTask = null;
@@ -103,14 +106,12 @@ public class WalletActivity extends Activity {
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getApplicationContext();
-//		ArrayList<Pair<String,String>> test = new ArrayList<Pair<String,String>>();
-//		test = ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList();
-//		System.out.println("Here is the first EDIT LIST: ");
-//		for(int i = 0; i<test.size(); i ++){
-//			System.err.println(test.get(i).first + " :: " + test.get(i).second + "##end");
-//		}
-		mPicturesIDS = mModel.getUser().getWallet().getPicturesIds();
-		mListPictures = mModel.getUser().getWalletPictures();
+		if(mModel.getUser().getWalletPictureIds() != null){
+			mPicturesIDS = mModel.getUser().getWalletPictureIds();
+			mListPictures = mModel.getUser().getWalletPictures();
+			mWalletSize = mListPictures.size();
+		}
+		
 		
 		_connMgr = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
 		networkInfo = _connMgr.getActiveNetworkInfo();
@@ -234,7 +235,7 @@ public class WalletActivity extends Activity {
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setTypeface(mFaceB);
 		save.setText(getResources().getString(R.string.save_button));
-		System.out.println("There are " + mModel.getUser().getWallet().getSize() + " photos");
+		System.out.println("There are " + mModel.getUser().getWalletPictures().size() + " photos");
 		
 		int screenWidth;
 		int screenHeight;
@@ -294,10 +295,10 @@ public class WalletActivity extends Activity {
 		TableLayout tableLayout = (TableLayout) findViewById(R.id.tablelayout);
 		tableLayout.removeAllViews();
 		int i = 0;
-		while (i < mModel.getUser().getWallet().getSize())
+		while (i < mListPictures.size())
 		{
 			TableRow row = new TableRow(mContext);
-			for (int j = 0; j < nbPicture && i < mModel.getUser().getWallet().getSize(); j++)
+			for (int j = 0; j < nbPicture && i < mListPictures.size(); j++)
 			{
 				int size = screenWidth;
 				LinearLayout linearLayout = new LinearLayout(mContext);
@@ -314,7 +315,7 @@ public class WalletActivity extends Activity {
 //				imageView.setPadding(6, 6, 6, 6);
 				imageView.setOnLongClickListener(new MyTouchListener(i));       /* Create this listener */
 				
-				if (mModel.getUser().getWallet().getSize() > 0)
+				if (mListPictures.size() > 0)
 				{
 //					Pair<ImageView, Picture> pair = new Pair<ImageView, Picture>(imageView, mListPictures.get(i));
 					mImageArray.add(imageView);
@@ -331,23 +332,24 @@ public class WalletActivity extends Activity {
 							galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
 							startActivity(galleryCarousel);
 						}	
-
 					}
 				});
 				linearLayout.addView(imageView);
+				LinearLayout parent = (LinearLayout) imageView.getParent();
 				ProgressBar bar = new ProgressBar(mContext);
-				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams((int) (size / nbPicture ), (int) (size / nbPicture) );
-//				params.addRule(Gravity.CENTER);
+				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+				params.addRule(Gravity.CENTER);
 				bar.setVisibility(View.VISIBLE);
 				bar.setLayoutParams(params);
-				linearLayout.addView(bar);
+//				linearLayout.addView(bar);
+				parent.addView(bar);
 				row.addView(linearLayout);
 				i++;
 			}
 			tableLayout.addView(row);
 		}
 		//We add the + icon
-		if (mModel.getUser().getWallet().getSize() % nbPicture == 0)
+		if (mListPictures.size() % nbPicture == 0)
 		{
 
 			// Add a new line
@@ -387,8 +389,7 @@ public class WalletActivity extends Activity {
 		else
 		{
 			// Use the same row
-			TableRow row = (TableRow)((TableLayout)(findViewById(R.id.tablelayout))).getChildAt(mModel.getUser().getWallet().getSize() / nbPicture);
-//			int size = ((TableLayout)(findViewById(R.id.tablelayout))).getMeasuredWidth();
+			TableRow row = (TableRow)((TableLayout)(findViewById(R.id.tablelayout))).getChildAt(mListPictures.size() / nbPicture);
 			int size = screenWidth;
 			LinearLayout linearLayout = new LinearLayout(mContext);
 			TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
@@ -426,11 +427,9 @@ public class WalletActivity extends Activity {
 			((RelativeLayout)(findViewById(R.id.drop_item))).setOnDragListener(new MyDropDragListener());
 			
 		}
-		if(mModel.getUser().getWallet().getSize() > 0){
+		
 			mDownloadImageTask = new DownloadImageTask(mImageArray, mContext, 0);
 			mDownloadImageTask.execute();
-		}
-			
 	}
 	
 	public void goToMenuV2(View view)
@@ -510,28 +509,28 @@ public class WalletActivity extends Activity {
 		{
 			try {
 				if (mContext != null){	
-					if(mListPictures == null && networkInfo != null && networkInfo.isConnected()){
-						System.out.println("Downloading URL's of wallet pictures");
-//						Wallet w = mModel.getUser().getWallet();
-						mListPictures = mModel.getUser().getWallet().downloadWalletPictures(mContext);
-						if(mListPictures != null){
-							mModel.getUser().setWalletPictures(mListPictures);
-//							mModel.getUser().setWallet(w);
-						}
-							
-						else
-							mListPictures = mModel.getUser().getWalletPictures();
+//					if(mListPictures == null && networkInfo != null && networkInfo.isConnected()){
+//						System.out.println("Downloading URL's of wallet pictures");
+//						mListPictures = mModel.getUser().getWallet().downloadWalletPictures(mContext);
+//						if(mListPictures != null){
+//							mModel.getUser().setWalletPictures(mListPictures);
+//						}
+//							
+//						else
+//							mListPictures = mModel.getUser().getWalletPictures();
+//					}
+//					if(mListPictures== null){
+//						System.out.println("mListPictures is null");
+//					}
+//					else
+//						System.out.println("mListPictures is NOT null");
+					if(mListPictures.size() == mPicturesIDS.size() && mListPictures.size() > 0 && networkInfo.isConnected()){
+						System.out.println("Trying to assign bitmap to imageview " + mPosition);
+						Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
+						System.out.println("Wallet Picture renderized and returned properly");
+						return rs;
 					}
-					if(mListPictures== null){
-						System.out.println("mListPictures is null");
-					}
-					else
-						System.out.println("mListPictures is NOT null");
 					
-					System.out.println("Trying to assign bitmap to imageview " + mPosition);
-					Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
-					System.out.println("Wallet Picture renderized and returned properly");
-					return rs;
 					
 					
 				}
@@ -541,9 +540,8 @@ public class WalletActivity extends Activity {
 			} catch (RuntimeException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				System.err.println("There was an error downloading the picture, check connection");
 			}
-			
+			System.err.println("There was an error downloading the picture, check connection");
 			return null;
 		}
 
@@ -626,24 +624,18 @@ public class WalletActivity extends Activity {
 			
 			try{
 				if(result.getBoolean("success")){
-					Wallet tmp = mModel.getUser().getWallet();
+//					Wallet tmp = mModel.getUser().getWallet();
 					picture = new Picture(result.getJSONObject("result"));
 					pictureId = result.getJSONObject("picture").getInt("id");
 					mListPictures.add(picture);
 					mPicturesIDS.add(pictureId);
-					tmp.setPicturesList(mListPictures);
-					tmp.setPicturesIDS(mPicturesIDS);
-					mModel.getUser().setWallet(tmp);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
-					mModel.getUser().getWallet().setPicturesList(mListPictures);
-					if(mListPictures != null)
-						mModel.getUser().setWalletPictures(mListPictures);
-					
+					mModel.getUser().setWalletPictures(mListPictures);
 				}
 			}catch (JSONException e){
 				e.printStackTrace();
 			}
-			mModel.refreshData();
+//			mModel.refreshData();
 			generateTableLayout();
 			isAddingPic = false;
 		}
@@ -801,14 +793,11 @@ public class WalletActivity extends Activity {
 				// Dropped, reassign View to ViewGroup
 				System.out.println("drop picture");
 				System.out.println("index =" + mImageSelected);
-				Wallet tmp = mModel.getUser().getWallet();
+//				Wallet tmp = mModel.getUser().getWallet();
 				mListPictures.remove(mImageSelected);
 				mPicturesIDS.remove(mImageSelected);
-				tmp.setPicturesList(mListPictures);
-				tmp.setPicturesIDS(mPicturesIDS);
-				mModel.getUser().setWallet(tmp);
-				if(mListPictures != null)
-					mModel.getUser().setWalletPictures(mListPictures);
+				mModel.getUser().setWalletPictures(mListPictures);
+				mModel.getUser().setWalletPictureIds(mPicturesIDS);
 				
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
@@ -849,6 +838,62 @@ public class WalletActivity extends Activity {
 				break;
 			}
 			return true;
+		}
+	}
+	
+	@Override
+	public void onBackPressed()
+	{
+		if (mModel.getUser().getEditList().size() > 0)
+		{
+			SaveChangesDialog dialog = new SaveChangesDialog(this);
+			dialog.show();
+		}
+		else
+		{
+			finish();
+		}
+	};
+	
+	public class SaveChangesDialog extends Dialog implements android.view.View.OnClickListener{
+		public SaveChangesDialog(Activity a) {
+			super(a);
+		}
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+//			View view = findViewById(R.layout.dialog_edit_confirm);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			setContentView(R.layout.dialog_edit_confirm);
+			TextView title = (TextView) findViewById(R.id.title);
+			title.setTypeface(faceR);
+			title.setText(getResources().getString(R.string.edit_confirm_title));
+	        
+			Button cancel = (Button) findViewById(R.id.cancel);
+			cancel.setTypeface(faceR);
+			cancel.setText(getResources().getString(R.string.cancel));
+			cancel.setOnClickListener(this);
+			Button save = (Button) findViewById(R.id.save);
+			save.setTypeface(faceR);
+			save.setText(getResources().getString(R.string.save));
+			save.setOnClickListener(this);
+		}
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+		    case R.id.cancel:
+		      break;
+		    case R.id.save:
+		    	mModel.getUser().clearEditList();
+				Intent intent = new Intent(mContext, DivesActivity.class);
+				startActivity(intent);
+				finish();
+		      break;
+		    default:
+		      break;
+		    }
+		    dismiss();
 		}
 	}
 

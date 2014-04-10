@@ -30,7 +30,8 @@ public class					User implements IModel, Cloneable
 	private String										_location;
 	private String										_nickname;
 	private ArrayList<UserGear>							_userGears;
-	private Wallet 										_wallet;
+//	private Wallet 										_wallet;
+	private ArrayList<Integer>							_wallet_picture_ids = new ArrayList<Integer>();
 	private ArrayList<Picture>							_wallet_pictures = new ArrayList<Picture>();
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
@@ -85,17 +86,21 @@ public class					User implements IModel, Cloneable
 			_userGears = null;
 		if (!json.isNull("wallet_picture_ids"))
 		{
-			JSONObject wallet = new JSONObject();
-			JSONArray array = new JSONArray();
-			wallet.put("user_id", _id); 
-			wallet.put("size", json.optJSONArray("wallet_picture_ids").length());
-			wallet.put("wallet_picture_ids", json.getJSONArray("wallet_picture_ids"));
-			Wallet new_wallet = new Wallet(wallet);
-			_wallet = new_wallet;
-			System.err.println("@@@@@@@@@@@@ new wallet added " + wallet.toString());
+			
+			JSONArray ids = new JSONArray();
+			ids = json.getJSONArray("wallet_picture_ids");
+			for(int i = 0; i < ids.length(); i ++)
+				_wallet_picture_ids.add(ids.getInt(i)); 
+			//			JSONObject ids = new JSONObject();
+//			JSONArray array = new JSONArray();
+//			wallet.put("user_id", _id); 
+//			wallet.put("size", json.optJSONArray("wallet_picture_ids").length());
+//			wallet.put("wallet_picture_ids", json.getJSONArray("wallet_picture_ids"));
+//			Wallet new_wallet = new Wallet(wallet);
+//			_wallet = new_wallet;
 		}
 		else
-			_wallet = null;
+			_wallet_picture_ids = null;
 		if (!json.isNull("wallet_pictures"))
 		{
 			JSONArray jarray;
@@ -286,59 +291,67 @@ public class					User implements IModel, Cloneable
 		return _admin_rights;
 	}
 
-	public Wallet getWallet() {
-		return _wallet;
+//	public Wallet getWallet() {
+//		return _wallet;
+//	}
+//
+//	public void setWallet(Wallet wallet) {
+//		this._wallet = wallet;
+//		Pair<String, String> new_elem;
+//		if(!wallet.getPicturesIds().isEmpty())
+//			new_elem = new Pair<String, String>("wallet_picture_ids", wallet.getPicturesIds().toString());
+//		else
+//			new_elem = new Pair<String, String>("wallet_picture_ids", new JSONArray().toString());
+//		
+//		//We add the walletPicturesIds so that they can be updated in the server
+//		 
+//		System.out.println("ADDED new_elem to USER EDIT LIST\n" + new_elem.first + new_elem.second);
+//		_editList.add(new_elem);
+//	}
+	
+	public ArrayList<Integer> getWalletPictureIds() {
+		return _wallet_picture_ids;
 	}
 
-	public void setWallet(Wallet wallet) {
-		this._wallet = wallet;
-		Pair<String, String> new_elem;
-		if(!wallet.getPicturesIds().isEmpty())
-			new_elem = new Pair<String, String>("wallet_picture_ids", wallet.getPicturesIds().toString());
-		else
-			new_elem = new Pair<String, String>("wallet_picture_ids", new JSONArray().toString());
-		
-		//We add the walletPicturesIds so that they can be updated in the server
-		 
-		System.out.println("ADDED new_elem to USER EDIT LIST\n" + new_elem.first + new_elem.second);
-		_editList.add(new_elem);
+	public void setWalletPictureIds(ArrayList<Integer> _wallet_picture_ids) {
+		this._wallet_picture_ids = _wallet_picture_ids;
 	}
-	
+
 	public void setWalletPictures(ArrayList<Picture> _pictures)
 	{
-		Pair<String, String> new_elem;
-		JSONArray jarray = new JSONArray();
-		for (int i = 0, size = _pictures.size(); i < size; i++)
-			jarray.put(_pictures.get(i).getJson());
-		new_elem = new Pair<String, String>("wallet_pictures", jarray.toString());
-		_editList.add(new_elem);
+//		Pair<String, String> new_elem;
+//		JSONArray jarray = new JSONArray();
+//		for (int i = 0, size = _pictures.size(); i < size; i++)
+//			jarray.put(_pictures.get(i).getJson());
+//		new_elem = new Pair<String, String>("wallet_pictures", jarray.toString());
+//		_editList.add(new_elem);
 		_wallet_pictures = _pictures;
 	}
 	
 	public ArrayList<Picture> getWalletPictures()
 	{
-		for (int i = _editList.size() - 1; i >= 0; i--)
-		{
-			if (_editList.get(i).first.contentEquals("wallet_pictures"))
-			{
-				if (_editList.get(i).second == null)
-					return null;
-				ArrayList<Picture> result = new ArrayList<Picture>();
-				JSONArray jarray;
-				try {
-					jarray = new JSONArray(_editList.get(i).second);
-					for (int j = 0, length = jarray.length(); j < length; j++)
-					{
-						result.add(new Picture(jarray.getJSONObject(j)));
-					}
-					return (result);
-				} catch (JSONException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-		if(_wallet_pictures != null)
-			return (ArrayList<Picture>) _wallet_pictures.clone();
+//		for (int i = _editList.size() - 1; i >= 0; i--)
+//		{
+//			if (_editList.get(i).first.contentEquals("wallet_pictures"))
+//			{
+//				if (_editList.get(i).second == null)
+//					return null;
+//				ArrayList<Picture> result = new ArrayList<Picture>();
+//				JSONArray jarray;
+//				try {
+//					jarray = new JSONArray(_editList.get(i).second);
+//					for (int j = 0, length = jarray.length(); j < length; j++)
+//					{
+//						result.add(new Picture(jarray.getJSONObject(j)));
+//					}
+//					return (result);
+//				} catch (JSONException e) {
+//					e.printStackTrace();
+//				}
+//			}
+//		}
+//		if(_wallet_pictures != null)
+//			return (ArrayList<Picture>) _wallet_pictures.clone();
 //		return null;
 		return _wallet_pictures;
 	}
