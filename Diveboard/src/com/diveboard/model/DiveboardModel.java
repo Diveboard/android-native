@@ -815,17 +815,23 @@ public class					DiveboardModel
 	private void 				_applyEditUser(final String json){
 		
 		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
+		ArrayList<Integer> mWalletPicIds = new ArrayList<Integer>();
 		JSONObject user = new JSONObject();
+		User tmp = null;
 		try {
 			user = new JSONObject(json);
+			tmp = new User(user);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (!user.isNull("wallet_pictures")){
-			System.out.println("Assigning wallet_pictures from Cache to current user");
+		if (!user.isNull("wallet_pictures") && !user.isNull("wallet_picture_ids")){
+			System.out.println("Assigning wallet_pictures and pictures_ids from Cache to current user");
+			mWalletPics.addAll(tmp.getWalletPictures());
+			mWalletPicIds.addAll(tmp.getWalletPictureIds());
 			_user.setWalletPictures(mWalletPics);
 		}
+		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user");
 	}
 	
 	private void				_applyEditDive(final int id, final String json) 
@@ -1869,7 +1875,7 @@ public class					DiveboardModel
 				entity.addPart("auth_token", new StringBody(_token));
 				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
 				entity.addPart("flavour", new StringBody("private"));
-				entity.addPart("album", new StringBody("wallet"));
+//				entity.addPart("album", new StringBody("wallet"));
 				httpPost.setEntity(entity);
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();

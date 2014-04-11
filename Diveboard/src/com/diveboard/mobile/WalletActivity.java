@@ -79,8 +79,8 @@ public class WalletActivity extends Activity {
 
 	private DiveboardModel 				mModel;
 	private Context						mContext;
-	public ArrayList<Picture>			mListPictures = new ArrayList<Picture>();
-	public ArrayList<Integer>			mPicturesIDS = new ArrayList<Integer>();
+	private ArrayList<Picture>			mListPictures;
+	private ArrayList<Integer>			mPicturesIDS;
 	private ArrayList <ImageView> 		mImageArray = new ArrayList<ImageView>();
 	
 	public final int 					SELECT_PICTURE = 1;
@@ -90,14 +90,15 @@ public class WalletActivity extends Activity {
 	private int 						nbPicture;
 	private Size 						mSizePicture;
 	private int							mWalletSize;
-	public ImageView 					mPhotoView;
+	private ImageView 					mPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
 	private UploadPictureTask 			mUploadPictureTask = null;
 	public boolean 						isAddingPic = false;
-	public int 							mImageSelected;
+	private int 						mImageSelected;
 	public static int					mUploadProgress;
 	ConnectivityManager 				_connMgr;
 	NetworkInfo 						networkInfo;
+	private User						mUser;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -106,10 +107,15 @@ public class WalletActivity extends Activity {
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getApplicationContext();
+		mListPictures = new ArrayList<Picture>();
+		mPicturesIDS = new ArrayList<Integer>();
+		mWalletSize = mListPictures.size();
 		if(mModel.getUser().getWalletPictureIds() != null){
-			mPicturesIDS = mModel.getUser().getWalletPictureIds();
-			mListPictures = mModel.getUser().getWalletPictures();
-			mWalletSize = mListPictures.size();
+			for(int i = 0; i < mModel.getUser().getWalletPictureIds().size(); i++){
+				mListPictures.add(mModel.getUser().getWalletPictures().get(i));
+				mPicturesIDS.add(mModel.getUser().getWalletPictureIds().get(i));
+			}
+			
 		}
 		
 		
@@ -125,13 +131,23 @@ public class WalletActivity extends Activity {
 		
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setOnClickListener(new OnClickListener() {
-			
+
 			@Override
 			public void onClick(View arg0) {
 				// TODO Auto-generated method stub
 				User user = mModel.getUser();
+//				try {
+//					
+//					JSONObject aux = new JSONObject();
+//					aux.put("wallet_pictures", mListPictures);
+//					aux.put("wallet_picture_ids", mPicturesIDS);
+//					user.applyEdit(aux);
+//				} catch (JSONException e) {
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
 				mModel.getDataManager().save(user);
-				mModel.refreshData();
+				((ApplicationController)getApplicationContext()).setRefresh(5);
 				finish();
 			}
 		});
@@ -428,8 +444,11 @@ public class WalletActivity extends Activity {
 			
 		}
 		
+		if(mListPictures.size() > 0){
 			mDownloadImageTask = new DownloadImageTask(mImageArray, mContext, 0);
 			mDownloadImageTask.execute();
+		}
+			
 	}
 	
 	public void goToMenuV2(View view)
@@ -524,7 +543,7 @@ public class WalletActivity extends Activity {
 //					}
 //					else
 //						System.out.println("mListPictures is NOT null");
-					if(mListPictures.size() == mPicturesIDS.size() && mListPictures.size() > 0 && networkInfo.isConnected()){
+					if(mListPictures.size() == mPicturesIDS.size() && mListPictures.size() > 0){
 						System.out.println("Trying to assign bitmap to imageview " + mPosition);
 						Bitmap rs = mListPictures.get(mPosition).getPicture(mContext, mSizePicture);
 						System.out.println("Wallet Picture renderized and returned properly");
@@ -599,13 +618,6 @@ public class WalletActivity extends Activity {
 			System.out.println("Uploading picture to the server ");
 			JSONObject result = mModel.uploadWalletPicture(mFile);
 			
-				
-			//			try {
-//				if(result.getBoolean("success") == true){
-//					picture = new Picture(result.getJSONObject("result"));
-//					pictureId = result.getJSONObject("picture").getInt("id");
-//				}
-//				
 //			} catch (JSONException e) {
 //				// TODO Auto-generated catch block
 //				e.printStackTrace();
@@ -631,6 +643,7 @@ public class WalletActivity extends Activity {
 					mPicturesIDS.add(pictureId);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
 					mModel.getUser().setWalletPictures(mListPictures);
+					mModel.getUser().setWalletPictureIds(mPicturesIDS);
 				}
 			}catch (JSONException e){
 				e.printStackTrace();
@@ -886,8 +899,8 @@ public class WalletActivity extends Activity {
 		      break;
 		    case R.id.save:
 		    	mModel.getUser().clearEditList();
-				Intent intent = new Intent(mContext, DivesActivity.class);
-				startActivity(intent);
+//				Intent intent = new Intent(mContext, DivesActivity.class);
+//				startActivity(intent);
 				finish();
 		      break;
 		    default:
