@@ -108,8 +108,8 @@ public class TabEditPhotosFragment extends Fragment {
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
 		mModel = AC.getModel();
-		System.out.println("LIST PICTURE : " + mListPictures);
 		mListPictures = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
+		System.out.println("LIST PICTURE : " + mListPictures);
 //		for (int i = 0; i < EditDiveActivity.mListPictures.size(); i++)
 //		{
 //			System.out.println(EditDiveActivity.mListPictures.get(i).getJson());

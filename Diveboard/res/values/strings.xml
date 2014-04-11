@@ -114,7 +114,6 @@
     <string name="hint_tricky">Tricky</string>
     <string name="hint_hardcore">Hardcore!</string>
     <string name="name_spot_hint">Name of your spot</string>
-    <string name="sudo_hint">User Id</string>
     <string name="edit_guidename_title">Guide Name</string>
     <string name="guidename_hint">Guide Name</string>
     <string name="no_network_connection_toast">No network connection found</string>

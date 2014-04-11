@@ -29,7 +29,7 @@ public class Wallet {
 
 	private Integer 				mUserId;
 	private ArrayList<Picture> 		mPicturesList;
-	private Integer []		 		mPicturesIDS;
+	private ArrayList<Integer> 		mPicturesIDS;
 	private Integer					mSize;
 	public boolean					isDownloaded;
 	
@@ -48,15 +48,19 @@ public class Wallet {
 		mUserId = new_wallet.getInt("user_id");
 		mSize = new_wallet.getInt("size");
 		JSONArray array = new_wallet.optJSONArray("wallet_picture_ids");
-		mPicturesIDS = new Integer [array.length()];
+		mPicturesIDS = new ArrayList<Integer>();
 		for (int i = 0; i < array.length(); i++) {
-			mPicturesIDS[i] = array.optInt(i);
+			mPicturesIDS.add(array.optInt(i));
 		}
 			
 	}
 	
-	public Integer [] getPicturesIds (){
+	public ArrayList<Integer> getPicturesIds (){
 		return mPicturesIDS;
+	}
+
+	public void setPicturesIDS(ArrayList<Integer> mPicturesIDS) {
+		this.mPicturesIDS = mPicturesIDS;
 	}
 
 	public Integer getSize() {
@@ -79,7 +83,7 @@ public class Wallet {
 
 	public ArrayList<Picture>  downloadWalletPictures (Context context){
 		
-		Integer [] 					picsIds = mPicturesIDS;
+		final ArrayList<Integer> 	picsIds = mPicturesIDS;
 		final ArrayList<Picture> 	mPicturesArray = new ArrayList<Picture>();
 //		DownloadWalletPicsTask downloadWalletPics = new DownloadWalletPicsTask(context, picsIds);
 //		try {
@@ -98,12 +102,12 @@ public class Wallet {
 		// Test connectivity
 		if (networkInfo != null && networkInfo.isConnected())
 		{
-			for (int i = 0; i < picsIds.length; i++){
+			for (int i = 0; i < picsIds.size(); i++){
 				try {
 					// Creating web client
 					AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 					// Initiate POST request
-					HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/picture/" + picsIds[i].toString());
+					HttpPost postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/picture/" + picsIds.get(i).toString());
 					// Adding parameters
 					ArrayList<NameValuePair> args = new ArrayList<NameValuePair>();
 //					args.add(new BasicNameValuePair("auth_token", _token));
@@ -135,7 +139,7 @@ public class Wallet {
 				}
 			}
 			isDownloaded = true;
-			setPicturesList(mPicturesArray);
+//			setPicturesList(mPicturesArray);
 			return mPicturesArray;
 		}
 		
@@ -190,10 +194,7 @@ public class Wallet {
 						if (!json.isNull("success") && !json.isNull("result")){
 							mPicture = new Picture(json.getJSONObject("result"));
 							mPicturesArray.add(mPicture);
-							
 						}
-							
-						
 					} catch (UnsupportedEncodingException e) {
 						e.printStackTrace();
 					} catch (ClientProtocolException e) {

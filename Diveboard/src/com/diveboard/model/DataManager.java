@@ -156,8 +156,9 @@ public class					DataManager
 				_editList = new ArrayList<Pair<String, String>>();
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
+				int n;
 				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
+				while ((n=fileInputStream.read(buffer)) != -1)
 					fileContent.append(new String(buffer));
 				String[] edit_list = fileContent.toString().split("#END#");
 				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
@@ -240,6 +241,10 @@ public class					DataManager
 					_saveDive(object);
 					commit();
 				}
+			}else if(object.getClass() == User.class){
+				System.out.println("Entered in _saveUser");
+				_saveUser(object);
+				commit();
 			}
 			((IModel)object).clearEditList();
 		}
@@ -429,6 +434,37 @@ public class					DataManager
 		}
 	}
 	
+	private void				_saveUser(Object object)
+	{
+		User user = (User) object;
+		ArrayList<Pair<String, String>> edit_list = user.getEditList();
+		
+		for (int i = 0, length = edit_list.size(); i < length; i++)
+		{
+			String json = "{\"id\":\"" + user.getId() + "\"}";
+			
+			try
+			{
+				JSONObject obj = new JSONObject(json);
+				System.out.println("SAVE USER : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				
+				if (edit_list.get(i).first.equals("wallet_picture_ids"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				if (edit_list.get(i).first.equals("wallet_pictures"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				
+//				user.applyEdit(obj);
+				Pair<String, String> new_elem = new Pair<String, String>("User:" + Integer.toString(user.getId()), obj.toString());
+				System.err.println("New elem added to the DataManager EDIT LIST in _saveUser: " + new_elem.first +" - " + new_elem.second);
+				_editList.add(new_elem);
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/*
 	 * Method commit
 	 * Save all change of the model into cache and online server
@@ -457,7 +493,6 @@ public class					DataManager
 				boolean error = false;
 				if (_editList.get(i).first.compareTo("Dive") == 0)
 				{
-					
 					try  //Check  
 					{
 						JSONObject j = new JSONObject(_editList.get(i).second);
@@ -576,6 +611,28 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("Wallet"))
+		{
+			String result = get(_userId, "wallet_pictures");
+			JSONObject json;
+			try
+			{
+				json = new JSONObject(result);
+//					JSONObject temp = jarray.getJSONObject(i);
+					if (json.getInt("id") == Integer.parseInt(info[1]))
+					{
+						
+						saveCache(_userId, "wallet_pictures",result_obj.toString());
+						commitCache();
+						return ;
+					}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -626,9 +683,12 @@ public class					DataManager
 								_editList.remove(0);
 								_cacheEditList();
 								continue ;
+							}else if(info[0].compareTo("User") == 0){
+								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/");
 							}
 							else
 								postRequest = null;
+							
 							if (postRequest == null)
 								break ;
 							try
