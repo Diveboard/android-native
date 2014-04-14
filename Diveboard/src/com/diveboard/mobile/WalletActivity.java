@@ -143,7 +143,9 @@ public class WalletActivity extends Activity {
 //					e.printStackTrace();
 //				}
 				mModel.getDataManager().save(user);
-				((ApplicationController)getApplicationContext()).setRefresh(5);
+//				mModel.refreshData();
+//				mModel.loadData();
+//				((ApplicationController)getApplicationContext()).setRefresh(1);
 				finish();
 			}
 		});
