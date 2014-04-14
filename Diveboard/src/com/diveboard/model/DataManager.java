@@ -611,18 +611,25 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
-		else if (info[0].equals("Wallet"))
+		else if (info[0].equals("User"))
 		{
-			String result = get(_userId, "wallet_pictures");
-			JSONObject json;
+			String result = get(_userId, "user");
+//			String picturesIds = get(_userId, "wallet_picture_ids");
+//			JSONObject pics;
+			JSONObject res;
+//			JSONArray res;
 			try
 			{
-				json = new JSONObject(result);
+				res = new JSONObject(result);
+//				ids = new JSONObject(picturesIds);
+				
 //					JSONObject temp = jarray.getJSONObject(i);
-					if (json.getInt("id") == Integer.parseInt(info[1]))
+					if (res.getJSONObject("result").getInt("id") == Integer.parseInt(info[1]))
 					{
-						
-						saveCache(_userId, "wallet_pictures",result_obj.toString());
+//						res = result_obj.getJSONArray("wallet_pictures");
+						JSONObject tmp = new JSONObject();
+						tmp.put("result", result_obj);
+						saveCache(_userId, "user",tmp.toString());
 						commitCache();
 						return ;
 					}
@@ -709,9 +716,10 @@ public class					DataManager
 									else{
 										checkObject.put("spot", spot);
 									}
+									
 									args.add(new BasicNameValuePair("arg", checkObject.toString()));
 								}
-								else
+								else 
 									args.add(new BasicNameValuePair("arg", elem.second));
 								args.add(new BasicNameValuePair("flavour", "mobile"));
 								// Set parameters
@@ -733,9 +741,11 @@ public class					DataManager
 									// New Dive segment
 									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
-								if (ApplicationController.SudoId == 0)
+								if (ApplicationController.SudoId == 0){
 									_applyEditCache(elem.first, json.getJSONObject("result"));
-								// Fire dive created event
+									_model.updateUser();
+								}
+									// Fire dive created event
 								for (DiveCreateListener listener : _diveCreateListeners)
 									listener.onDiveCreateComplete();
 							}
@@ -884,4 +894,5 @@ public class					DataManager
 	{
 		_diveCreateListeners.add(listener);
 	}
+	
 }

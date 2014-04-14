@@ -433,10 +433,21 @@ public class					DiveboardModel
 		}
 	}
 	
+	public void 				updateUser(){
+		System.out.println("Entered in updateUser");
+		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+		for (int i = 0, length = edit_list.size(); i < length; i++) {
+			String[] info = edit_list.get(i).first.split(":");
+			if (info[0].equals("User"))
+				_applyEditUser(edit_list.get(i).second);
+		}
+	}
+	
 	public synchronized void	refreshData()
 	{
 		if (_refreshDataThread == null)
 		{
+			System.out.println("Refresh data thread has JUST BEEN LAUNCHED");
 			_refreshDataThread = new RefreshDataThread();
 			_refreshDataThread.start();
 			// Wait synchronously for data refresh end
@@ -446,6 +457,8 @@ public class					DiveboardModel
 				e.printStackTrace();
 			}
 		}
+		else
+			System.out.println("Refresh data thread was still running...");
 	}
 	
 	public void					refreshData(boolean sync)
@@ -791,7 +804,7 @@ public class					DiveboardModel
 						_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
 					else if (info[0].equals("Dive_delete"))
 						_applyDeleteDive(Integer.parseInt(info[1]));
-					else if (info[0].equals("Wallet"))
+					else if (info[0].equals("User"))
 						_applyEditUser(edit_list.get(i).second);
 					
 				}
@@ -813,25 +826,37 @@ public class					DiveboardModel
 	}
 	
 	private void 				_applyEditUser(final String json){
-		
+		System.out.println("####Object received in_applyEditUser: " + json);
 		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
 		ArrayList<Integer> mWalletPicIds = new ArrayList<Integer>();
-		JSONObject user = new JSONObject();
-		User tmp = null;
+//		JSONObject changes = new JSONObject();
+		JSONObject j = new JSONObject();
 		try {
-			user = new JSONObject(json);
-			tmp = new User(user);
+			JSONObject changes = new JSONObject(json);
+		if (!changes.isNull("wallet_pictures")){
+			j.put("wallet_pictures", new JSONArray(changes.getString("wallet_pictures")));
+			System.out.println("Value of j " + j);
+			JSONArray array = j.getJSONArray("wallet_pictures");
+			for (int i = 0; i < array.length(); i++){
+				JSONObject p = array.getJSONObject(i);
+				mWalletPics.add(new Picture(p));
+			}
+			_user.setWalletPictures(mWalletPics);
+		}
+		if(!changes.isNull("wallet_picture_ids")){
+			System.out.println("####Assigning wallet_pictures_ids from Cache to current user:");
+			j.put("wallet_picture_ids", new JSONArray(changes.getString("wallet_picture_ids")));
+			JSONArray array = j.getJSONArray("wallet_picture_ids");
+			for (int i = 0; i < array.length(); i++){
+				mWalletPicIds.add(array.getInt(i));
+			}
+			_user.setWalletPictureIds(mWalletPicIds);
+		}
+		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user: \n" + json);
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		if (!user.isNull("wallet_pictures") && !user.isNull("wallet_picture_ids")){
-			System.out.println("Assigning wallet_pictures and pictures_ids from Cache to current user");
-			mWalletPics.addAll(tmp.getWalletPictures());
-			mWalletPicIds.addAll(tmp.getWalletPictureIds());
-			_user.setWalletPictures(mWalletPics);
-		}
-		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user");
 	}
 	
 	private void				_applyEditDive(final int id, final String json) 
@@ -1234,7 +1259,6 @@ public class					DiveboardModel
 		}
 		
 		if(SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY) != null){
-			
 		
 			SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
 			String condition_str = "";
