@@ -196,7 +196,7 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
-		//System.out.println("Saving picture: " + file.getAbsolutePath());
+//		System.out.println("Saving picture: " + file.getAbsolutePath());
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file

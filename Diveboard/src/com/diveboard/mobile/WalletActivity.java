@@ -20,6 +20,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -60,6 +61,7 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -86,6 +88,7 @@ public class WalletActivity extends Activity {
 	private RelativeLayout 				mChangeItem;
 	public int 							mMenuType = 0;
 	private int 						nbPicture;
+	private int 						size;
 	private Size 						mSizePicture;
 	private int							mWalletSize;
 	private ImageView 					mPhotoView;
@@ -171,11 +174,23 @@ public class WalletActivity extends Activity {
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
 					ProgressBar bar = new ProgressBar(mContext);
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+					RelativeLayout newObj = new RelativeLayout(mContext);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					params.addRule(RelativeLayout.CENTER_IN_PARENT);
 					bar.setVisibility(View.VISIBLE);
 					bar.setLayoutParams(params);
-					parent.addView(bar);
+					bar.setId(1000);
+					newObj.setGravity(Gravity.CENTER);
 					mPhotoView.setVisibility(View.GONE);
+					ImageView newPic = new ImageView(mContext);
+					newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+					newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
+					newPic.setAlpha((float)(0.5));
+					Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+					newPic.setImageBitmap(b);
+					newObj.addView(newPic);
+					newObj.addView(bar);
+					parent.addView(newObj);
 					mUploadPictureTask = new UploadPictureTask(file);
 					mUploadPictureTask.execute();
 				}
@@ -200,10 +215,23 @@ public class WalletActivity extends Activity {
 						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
 						ProgressBar bar = new ProgressBar(mContext);
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+						RelativeLayout newObj = new RelativeLayout(mContext);
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.CENTER_IN_PARENT);
 						bar.setVisibility(View.VISIBLE);
 						bar.setLayoutParams(params);
-						parent.addView(bar);
+						ImageView newPic = new ImageView(mContext);
+						newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+						newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
+						bar.setId(1000);
+						newObj.setGravity(Gravity.CENTER);
+						newObj.setLayoutParams(params);
+						newPic.setAlpha((float)(0.5));
+						Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+						newPic.setImageBitmap(b);
+						newObj.addView(newPic);
+						newObj.addView(bar);
+						parent.addView(newObj);
 						mPhotoView.setVisibility(View.GONE);
 						mUploadPictureTask = new UploadPictureTask(file);
 						mUploadPictureTask.execute();
@@ -314,7 +342,7 @@ public class WalletActivity extends Activity {
 			TableRow row = new TableRow(mContext);
 			for (int j = 0; j < nbPicture && i < mListPictures.size(); j++)
 			{
-				int size = screenWidth;
+				size = screenWidth;
 				LinearLayout linearLayout = new LinearLayout(mContext);
 				TableRow.LayoutParams tbLP = new TableRow.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT);
 				tbLP.gravity = Gravity.CENTER;
@@ -598,7 +626,7 @@ public class WalletActivity extends Activity {
 		private Picture picture = null;
 		private Integer pictureId = null;
 		LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
-		ProgressBar bar = (ProgressBar)rl.getChildAt(1);
+		ProgressBar bar = (ProgressBar)findViewById(1000);
 		
 		
 		public UploadPictureTask(File file)
