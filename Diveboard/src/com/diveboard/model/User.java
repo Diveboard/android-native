@@ -31,6 +31,7 @@ public class					User implements IModel, Cloneable
 	private String										_nickname;
 	private ArrayList<UserGear>							_userGears;
 //	private Wallet 										_wallet;
+	private ArrayList<String>							_trip_names = new ArrayList<String>();
 	private ArrayList<Integer>							_wallet_picture_ids = new ArrayList<Integer>();
 	private ArrayList<Picture>							_wallet_pictures = new ArrayList<Picture>();
 	private Integer										_totalExtDives;
@@ -114,6 +115,12 @@ public class					User implements IModel, Cloneable
 		}
 		else
 			_wallet_pictures = null;
+		if(!json.isNull("trip_names")){
+			JSONArray array = json.getJSONArray("trip_names");
+			for(int i = 0; i < array.length(); i ++)
+				_trip_names.add(array.getString(i));
+		}
+			
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
@@ -389,5 +396,13 @@ public class					User implements IModel, Cloneable
 //			return (ArrayList<Picture>) _wallet_pictures.clone();
 //		return null;
 		return _wallet_pictures;
+	}
+
+	public ArrayList<String> getTripNames() {
+		return _trip_names;
+	}
+
+	public void setTripNames(ArrayList<String> _trip_names) {
+		this._trip_names = _trip_names;
 	}
 }
