@@ -91,7 +91,7 @@ public class WalletActivity extends Activity {
 	private int 						size;
 	private Size 						mSizePicture;
 	private int							mWalletSize;
-	private ImageView 					mPhotoView;
+	private ImageView 					mAddPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
 	private UploadPictureTask 			mUploadPictureTask = null;
 	public boolean 						isAddingPic = false;
@@ -146,6 +146,7 @@ public class WalletActivity extends Activity {
 //					e.printStackTrace();
 //				}
 				mModel.getDataManager().save(user);
+				mModel.updateUser();
 //				mModel.refreshData();
 //				mModel.loadData();
 //				((ApplicationController)getApplicationContext()).setRefresh(1);
@@ -172,7 +173,7 @@ public class WalletActivity extends Activity {
 					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/DiveboardPictures/"; 
 					File file = new File(dir+"diveboard.jpg");
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
-					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+					LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
 					ProgressBar bar = new ProgressBar(mContext);
 					RelativeLayout newObj = new RelativeLayout(mContext);
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -181,7 +182,7 @@ public class WalletActivity extends Activity {
 					bar.setLayoutParams(params);
 					bar.setId(1000);
 					newObj.setGravity(Gravity.CENTER);
-					mPhotoView.setVisibility(View.GONE);
+					mAddPhotoView.setVisibility(View.GONE);
 					ImageView newPic = new ImageView(mContext);
 					newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
 					newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -213,7 +214,7 @@ public class WalletActivity extends Activity {
 						stream.close();
 
 						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
-						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
+						LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
 						ProgressBar bar = new ProgressBar(mContext);
 						RelativeLayout newObj = new RelativeLayout(mContext);
 						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
@@ -232,7 +233,7 @@ public class WalletActivity extends Activity {
 						newObj.addView(newPic);
 						newObj.addView(bar);
 						parent.addView(newObj);
-						mPhotoView.setVisibility(View.GONE);
+						mAddPhotoView.setVisibility(View.GONE);
 						mUploadPictureTask = new UploadPictureTask(file);
 						mUploadPictureTask.execute();
 					} catch (FileNotFoundException e) {
@@ -403,12 +404,12 @@ public class WalletActivity extends Activity {
 			tbparam.gravity = Gravity.CENTER;
 			linearLayout.setGravity(Gravity.CENTER);
 			linearLayout.setLayoutParams(tbparam);
-			mPhotoView = new ImageView(mContext);
-			mPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
-			mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-			mPhotoView.setContentDescription(String.valueOf(i));
-			mPhotoView.setImageResource(R.drawable.ic_add);
-			mPhotoView.setOnClickListener(new OnClickListener() {
+			mAddPhotoView = new ImageView(mContext);
+			mAddPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+			mAddPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			mAddPhotoView.setContentDescription(String.valueOf(i));
+			mAddPhotoView.setImageResource(R.drawable.ic_add);
+			mAddPhotoView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
@@ -424,7 +425,7 @@ public class WalletActivity extends Activity {
 						
 				}
 			});
-			linearLayout.addView(mPhotoView);
+			linearLayout.addView(mAddPhotoView);
 			row.addView(linearLayout);
 			tableLayout.addView(row);
 		}
@@ -438,12 +439,12 @@ public class WalletActivity extends Activity {
 			tbparam.gravity = Gravity.CENTER;
 			linearLayout.setGravity(Gravity.CENTER);
 			linearLayout.setLayoutParams(tbparam);
-			mPhotoView = new ImageView(mContext);
-			mPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
-			mPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-			mPhotoView.setContentDescription(String.valueOf(i));
-			mPhotoView.setImageResource(R.drawable.ic_add);
-			mPhotoView.setOnClickListener(new OnClickListener() {
+			mAddPhotoView = new ImageView(mContext);
+			mAddPhotoView.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+			mAddPhotoView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			mAddPhotoView.setContentDescription(String.valueOf(i));
+			mAddPhotoView.setImageResource(R.drawable.ic_add);
+			mAddPhotoView.setOnClickListener(new OnClickListener() {
 
 				@Override
 				public void onClick(View v) {
@@ -459,7 +460,7 @@ public class WalletActivity extends Activity {
 						
 				}
 			});
-			linearLayout.addView(mPhotoView);
+			linearLayout.addView(mAddPhotoView);
 			row.addView(linearLayout);
 		}
 		
@@ -625,7 +626,7 @@ public class WalletActivity extends Activity {
 		private File mFile;
 		private Picture picture = null;
 		private Integer pictureId = null;
-		LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
+		LinearLayout rl = (LinearLayout)(mAddPhotoView.getParent());
 		ProgressBar bar = (ProgressBar)findViewById(1000);
 		
 		
@@ -654,7 +655,7 @@ public class WalletActivity extends Activity {
 		
 		@Override
 		protected void onPostExecute(JSONObject result) {
-			mPhotoView.setVisibility(View.VISIBLE);
+			mAddPhotoView.setVisibility(View.VISIBLE);
 			bar.setVisibility(View.GONE);
 			
 			try{
