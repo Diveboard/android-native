@@ -97,7 +97,6 @@ public class					Picture
 		//ApplicationController AC = (ApplicationController)context;
 		//NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			URL url;
@@ -142,7 +141,6 @@ public class					Picture
 			size = Size.LARGE;
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
 		if (!_loadCachePicture(context, size) || (_uniqId != null && networkInfo != null && networkInfo.isConnected()))
 		{
 			if (!loadPicture(context, size))
@@ -164,7 +162,6 @@ public class					Picture
 	{
 		String[] picture_name;
 		String url;
-		
 		switch (size)
 		{
 			case LARGE:
@@ -202,7 +199,7 @@ public class					Picture
 		// Compress the image and put into file
 		if (outputStream != null)
 		{
-			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
+			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream))
 				file.delete();
 		}
 		//System.out.println("Saving picture complete : " + file.getAbsolutePath());
