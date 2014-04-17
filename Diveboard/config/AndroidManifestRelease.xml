@@ -151,7 +151,10 @@
         <activity
             android:name="com.diveboard.mobile.TestActivity"
             android:label="@string/title_activity_graph_image">
-            
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.WalletActivity"
+            android:label="@string/title_activity_wallet" >
         </activity>
     </application>
 
