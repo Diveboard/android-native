@@ -7,8 +7,22 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.mime.HttpMultipartMode;
+import org.apache.http.entity.mime.MultipartEntity;
+import org.apache.http.entity.mime.content.ByteArrayBody;
+import org.apache.http.entity.mime.content.StringBody;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.protocol.BasicHttpContext;
+import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import android.app.Activity;
@@ -68,7 +82,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
+import com.diveboard.model.ContentExtractor;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
@@ -99,7 +115,7 @@ public class WalletActivity extends Activity {
 	public static int					mUploadProgress;
 	ConnectivityManager 				_connMgr;
 	NetworkInfo 						networkInfo;
-	private User						mUser;
+	private boolean						mIsUploading = false;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -133,24 +149,18 @@ public class WalletActivity extends Activity {
 
 			@Override
 			public void onClick(View arg0) {
-				// TODO Auto-generated method stub
-				User user = mModel.getUser();
-//				try {
-//					
-//					JSONObject aux = new JSONObject();
-//					aux.put("wallet_pictures", mListPictures);
-//					aux.put("wallet_picture_ids", mPicturesIDS);
-//					user.applyEdit(aux);
-//				} catch (JSONException e) {
-//					// TODO Auto-generated catch block
-//					e.printStackTrace();
-//				}
-				mModel.getDataManager().save(user);
-				mModel.updateUser();
-//				mModel.refreshData();
-//				mModel.loadData();
-//				((ApplicationController)getApplicationContext()).setRefresh(1);
-				finish();
+				if(!mIsUploading){
+					User user = mModel.getUser();
+					mModel.getDataManager().save(user);
+					mModel.updateUser();
+					finish();
+				}
+				else{
+					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
+					
 			}
 		});
 		
@@ -174,7 +184,7 @@ public class WalletActivity extends Activity {
 					File file = new File(dir+"diveboard.jpg");
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
-					ProgressBar bar = new ProgressBar(mContext);
+					ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
 					RelativeLayout newObj = new RelativeLayout(mContext);
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 					params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -215,7 +225,7 @@ public class WalletActivity extends Activity {
 
 						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 						LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
-						ProgressBar bar = new ProgressBar(mContext);
+						ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
 						RelativeLayout newObj = new RelativeLayout(mContext);
 						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 						params.addRule(RelativeLayout.CENTER_IN_PARENT);
@@ -381,9 +391,10 @@ public class WalletActivity extends Activity {
 				LinearLayout parent = (LinearLayout) imageView.getParent();
 				ProgressBar bar = new ProgressBar(mContext);
 				RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
-				params.addRule(Gravity.CENTER);
+				params.addRule(RelativeLayout.CENTER_IN_PARENT);
 				bar.setVisibility(View.VISIBLE);
 				bar.setLayoutParams(params);
+				bar.setIndeterminate(false);
 //				linearLayout.addView(bar);
 				parent.addView(bar);
 				row.addView(linearLayout);
@@ -621,60 +632,141 @@ public class WalletActivity extends Activity {
 		}
 	}
 	
-	private class UploadPictureTask extends AsyncTask<Void, Integer, JSONObject>
+	private class UploadPictureTask extends AsyncTask<Void, Integer, Void>
 	{
 		private File mFile;
 		private Picture picture = null;
 		private Integer pictureId = null;
 		LinearLayout rl = (LinearLayout)(mAddPhotoView.getParent());
 		ProgressBar bar = (ProgressBar)findViewById(1000);
+		JSONObject result = new JSONObject();
 		
 		
 		public UploadPictureTask(File file)
 		{
 			mUploadProgress = 0;
 			mFile = file;
+//			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_circle));
+			bar.setIndeterminate(false);
+			bar.setProgress(0);
+			bar.setMax(100);
+			mIsUploading = false;
 		}
 
 		@Override
-		protected JSONObject doInBackground(Void... arg0) {
+		protected Void doInBackground(Void... arg0) {
 
 			System.out.println("Uploading picture to the server ");
-			JSONObject result = mModel.uploadWalletPicture(mFile);
+//			JSONObject result = mModel.uploadWalletPicture(mFile);
 			
-//			} catch (JSONException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			if(picture == null || pictureId == null){
-//				System.out.println("Error while uploading the picture ");
-//			}else
-//				System.out.println("Picture received and stored by the server ");
-			return result;
-		}
-		
-		@Override
-		protected void onPostExecute(JSONObject result) {
-			mAddPhotoView.setVisibility(View.VISIBLE);
-			bar.setVisibility(View.GONE);
+			
+			File picture_file = mFile;
+			HttpClient							httpClient = new DefaultHttpClient();
+			HttpContext							localContext = new BasicHttpContext();
+			HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+			
+			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+			// Test connectivity
+			if (networkInfo != null && networkInfo.isConnected())
+			{
+				try {
+					mIsUploading = true;
+					MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+					Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+					mUploadProgress += 5;
+					publishProgress(mUploadProgress);
+					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+					mUploadProgress += 5;
+					publishProgress(mUploadProgress);
+					bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+					mUploadProgress += 10;
+					publishProgress(mUploadProgress);
+					byte[] b = baos.toByteArray();
+					//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+					entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+					entity.addPart("auth_token", new StringBody(mModel.getToken()));
+					entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+					entity.addPart("flavour", new StringBody("private"));
+//					entity.addPart("album", new StringBody("wallet"));
+					httpPost.setEntity(entity);
+					mUploadProgress += 20;
+					publishProgress(mUploadProgress);
+					HttpResponse response = httpClient.execute(httpPost, localContext);
+					mUploadProgress += 20;
+					publishProgress(mUploadProgress);
+					HttpEntity entity_response = response.getEntity();
+					String res = ContentExtractor.getASCII(entity_response);
+					System.out.println("WALLET PICTURE UPLOADED SUCCESSFULLY!\n" + res);
+					mUploadProgress += 10;
+					publishProgress(mUploadProgress);
+					JSONObject json = new JSONObject(res);
+					if (json.getBoolean("success") == false)
+						result = null;
+					result = json;
+//					return (json);
+				} catch (UnsupportedEncodingException e) {
+					e.printStackTrace();
+					result = null;
+				} catch (ClientProtocolException e) {
+					e.printStackTrace();
+					result = null;
+				} catch (IOException e) {
+					e.printStackTrace();
+					result = null;
+				} catch (JSONException e) {
+					e.printStackTrace();
+					result = null;
+				}finally{
+					
+				}
+			}
+			else
+				result = null;
+			
+			
 			
 			try{
-				if(result.getBoolean("success")){
+				if(result != null && result.getBoolean("success")){
 //					Wallet tmp = mModel.getUser().getWallet();
 					picture = new Picture(result.getJSONObject("result"));
+					picture.storePicture(mContext);
+					mUploadProgress += 20;
+					publishProgress(mUploadProgress);
 					pictureId = result.getJSONObject("picture").getInt("id");
 					mListPictures.add(picture);
 					mPicturesIDS.add(pictureId);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
 					mModel.getUser().setWalletPictures(mListPictures);
 					mModel.getUser().setWalletPictureIds(mPicturesIDS);
+					mUploadProgress += 10;
+					publishProgress(mUploadProgress);
 				}
 			}catch (JSONException e){
 				e.printStackTrace();
+			}catch (IOException e){
+				e.printStackTrace();
+			}finally{
+				mIsUploading = false;
 			}
-//			mModel.refreshData();
-			generateTableLayout();
-			isAddingPic = false;
+			
+			return null;
+		}
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			// TODO Auto-generated method stub
+			super.onProgressUpdate(values);
+			bar.setIndeterminate(false);
+			bar.setProgress(values[0]);
+//			bar.incrementProgressBy(values[0]);
+			System.out.println("Progress of " + bar.getProgress() + "%");
+		}
+		
+		@Override
+		protected void onPostExecute(Void result) {
+				mAddPhotoView.setVisibility(View.VISIBLE);
+				bar.setVisibility(View.GONE);
+				generateTableLayout();
+				isAddingPic = false;
 		}
 
 	}

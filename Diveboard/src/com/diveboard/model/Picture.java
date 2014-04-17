@@ -152,6 +152,24 @@ public class					Picture
 		return bitmap;
 	}
 	
+	
+	/*Stores the picture in the local cache and updates the list of saved pictures */
+	public Bitmap							storePicture(final Context context) throws IOException{
+		final Size size;
+		if(loadPicture(context)){
+			if (UserPreference.getPictureQuality().equals("m_qual"))
+				size = Size.MEDIUM;
+			else
+				size = Size.LARGE;
+			_savePicture(context, size);
+			Bitmap bitmap = _bitmap;
+			_bitmap = null;
+			return bitmap;
+		}
+		else
+			return null;
+	}
+	
 	/*
 	 * Private Method _savePicture
 	 * Save the picture into local cache
@@ -199,7 +217,7 @@ public class					Picture
 		// Compress the image and put into file
 		if (outputStream != null)
 		{
-			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.JPEG, 100, outputStream))
+			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream))
 				file.delete();
 		}
 		//System.out.println("Saving picture complete : " + file.getAbsolutePath());

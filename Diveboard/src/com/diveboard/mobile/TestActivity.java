@@ -64,7 +64,6 @@ public class TestActivity extends Activity {
 		setContentView(R.layout.activity_test);
 		findViewById(R.id.imageView).setOnTouchListener(new MyTouchListener());
 		findViewById(R.id.layout).setOnDragListener(new MyDragListener());
-		findViewById(R.id.layout1).setOnDragListener(new MyDragListener());
 	}
 
 	private final class MyTouchListener implements OnTouchListener {

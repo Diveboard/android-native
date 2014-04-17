@@ -1835,6 +1835,10 @@ public class					DiveboardModel
 		return _preference;
 	}
 	
+	public String							getToken(){
+		return _token;
+	}
+	
 	public Picture							uploadPicture(File picture_file)
 	{
 		HttpClient							httpClient = new DefaultHttpClient();
