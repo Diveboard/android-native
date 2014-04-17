@@ -106,10 +106,12 @@ public class					NewTripNameDialogFragment extends DialogFragment implements OnE
 				// TODO Auto-generated method stub
 				System.out.println("start " + start + " before " + before + " count " +count);
 				if(count > 1){
-					lv.setVisibility(View.VISIBLE);
+					lv.setVisibility(View.GONE);
 					mAdapter.getFilter().filter(s);
+					lv.setVisibility(View.VISIBLE);
 				}
-					
+				else
+					lv.setVisibility(View.GONE);
 			}
 			
 			@Override
