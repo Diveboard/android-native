@@ -239,16 +239,18 @@ public class ImageFetcher extends ImageResizer {
             }
         }
 
-        Bitmap bitmap = null;
-        if (fileDescriptor != null) {
-            bitmap = decodeSampledBitmapFromDescriptor(fileDescriptor, mImageWidth,
-                    mImageHeight, getImageCache());
-        }
-        if (fileInputStream != null) {
-            try {
-                fileInputStream.close();
-            } catch (IOException e) {}
-        }
+		Bitmap bitmap = null;
+		if (fileInputStream != null) {
+			try {
+				fileInputStream.close();
+				if (fileDescriptor != null) {
+					bitmap = decodeSampledBitmapFromDescriptor(fileDescriptor,
+							mImageWidth, mImageHeight, getImageCache());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
         return bitmap;
     }
 

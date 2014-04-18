@@ -275,14 +275,14 @@ public class					User implements IModel, Cloneable
 	@Override
 	public void applyEdit(JSONObject json) throws JSONException {
 		// TODO Auto-generated method stub
-//		if (!json.isNull("wallet_pictures") && !json.isNull("wallet_picture_ids")){
-//			JSONArray tmp = new JSONArray();
-//			for(int i = 0; i < tmp.length(); i++){
-//				_wallet_picture_ids.add(json.getJSONArray("wallet_picture_ids").getInt(i));
-//				_wallet_pictures.add(new Picture(json.getJSONArray("wallet_pictures").getJSONObject(i)));
-//			}
-//			tmp = null;
-//		}
+		if (!json.isNull("wallet_pictures") && !json.isNull("wallet_picture_ids")){
+			JSONArray tmp = new JSONArray();
+			for(int i = 0; i < tmp.length(); i++){
+				_wallet_picture_ids.add(json.getJSONArray("wallet_picture_ids").getInt(i));
+				_wallet_pictures.add(new Picture(json.getJSONArray("wallet_pictures").getJSONObject(i)));
+			}
+			tmp = null;
+		}
 			
 	}
 

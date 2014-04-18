@@ -840,36 +840,36 @@ public class					DiveboardModel
 	
 	private void 				_applyEditUser(final String json){
 		System.out.println("####Object received in_applyEditUser: " + json);
-		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
-		ArrayList<Integer> mWalletPicIds = new ArrayList<Integer>();
-//		JSONObject changes = new JSONObject();
-		JSONObject j = new JSONObject();
-		try {
-			JSONObject changes = new JSONObject(json);
-		if (!changes.isNull("wallet_pictures")){
-			j.put("wallet_pictures", new JSONArray(changes.getString("wallet_pictures")));
-			System.out.println("Value of j " + j);
-			JSONArray array = j.getJSONArray("wallet_pictures");
-			for (int i = 0; i < array.length(); i++){
-				JSONObject p = array.getJSONObject(i);
-				mWalletPics.add(new Picture(p));
-			}
-			_user.setWalletPictures(mWalletPics);
-		}
-		if(!changes.isNull("wallet_picture_ids")){
-			System.out.println("####Assigning wallet_pictures_ids from Cache to current user:");
-			j.put("wallet_picture_ids", new JSONArray(changes.getString("wallet_picture_ids")));
-			JSONArray array = j.getJSONArray("wallet_picture_ids");
-			for (int i = 0; i < array.length(); i++){
-				mWalletPicIds.add(array.getInt(i));
-			}
-			_user.setWalletPictureIds(mWalletPicIds);
-		}
-		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user: \n" + json);
-		} catch (JSONException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+//		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
+//		ArrayList<Integer> mWalletPicIds = new ArrayList<Integer>();
+////		JSONObject changes = new JSONObject();
+//		JSONObject j = new JSONObject();
+//		try {
+//			JSONObject changes = new JSONObject(json);
+//		if (!changes.isNull("wallet_pictures")){
+//			j.put("wallet_pictures", new JSONArray(changes.getString("wallet_pictures")));
+//			System.out.println("Value of j " + j);
+//			JSONArray array = j.getJSONArray("wallet_pictures");
+//			for (int i = 0; i < array.length(); i++){
+//				JSONObject p = array.getJSONObject(i);
+//				mWalletPics.add(new Picture(p));
+//			}
+//			_user.setWalletPictures(mWalletPics);
+//		}
+//		if(!changes.isNull("wallet_picture_ids")){
+//			System.out.println("####Assigning wallet_pictures_ids from Cache to current user:");
+//			j.put("wallet_picture_ids", new JSONArray(changes.getString("wallet_picture_ids")));
+//			JSONArray array = j.getJSONArray("wallet_picture_ids");
+//			for (int i = 0; i < array.length(); i++){
+//				mWalletPicIds.add(array.getInt(i));
+//			}
+//			_user.setWalletPictureIds(mWalletPicIds);
+//		}
+//		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user: \n" + json);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
 	}
 	
 	private void				_applyEditDive(final int id, final String json) 
