@@ -183,7 +183,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	        }
 	    };
 
-//		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
+		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 	}
 	
 	@Override
