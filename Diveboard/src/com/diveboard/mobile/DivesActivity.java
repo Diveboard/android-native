@@ -1120,8 +1120,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
 		@Override
 		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
-			if(mDataLoaded){
-				System.out.println("Value of mDAtaloaded is true");
+//			if(mDataLoaded){
+//				System.out.println("Value of mDAtaloaded is true");
 				{	
 					int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
 					int bubbleWidth;
@@ -1240,9 +1240,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					
 				}
 				
-			}
-			else
-				System.out.println("Value of mDAtaloaded is false");
+//			}
+//			else
+//				System.out.println("Value of mDAtaloaded is false");
 			return true;
 		}
     }
