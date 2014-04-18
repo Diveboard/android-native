@@ -17,14 +17,4 @@
             android:src="@drawable/ic_facebook_btn" />
     </LinearLayout>
 
-    <ProgressBar
-        android:id="@+id/progressBar1"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/layout"
-        android:layout_centerHorizontal="true"
-        android:layout_marginTop="149dp"
-        android:progressDrawable="@drawable/progress_circle" />
-
 </RelativeLayout>
