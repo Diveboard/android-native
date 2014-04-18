@@ -743,6 +743,9 @@ public class					DataManager
 								}
 								if (ApplicationController.SudoId == 0){
 									_applyEditCache(elem.first, json.getJSONObject("result"));
+									if(info[0].equals("User"))
+										_model.refreshUser(result);
+					
 //									_model.updateUser();
 								}
 									// Fire dive created event

@@ -570,6 +570,19 @@ public class					DiveboardModel
 	}
 	
 	/*
+	 * Method refreshUser
+	 * Takes a JSON with the new user and updates the user data to model
+	 */
+	public void				refreshUser(final String json_str) throws JSONException
+	{
+		
+		JSONObject json = new JSONObject(json_str);
+		json = json.getJSONObject("result");
+		_user = new User(json);
+		
+	}
+	
+	/*
 	 * Method _loadDives
 	 * Takes a JSON and load dives data to model
 	 */

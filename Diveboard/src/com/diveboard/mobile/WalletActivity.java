@@ -152,7 +152,7 @@ public class WalletActivity extends Activity {
 				if(!mIsUploading){
 					User user = mModel.getUser();
 					mModel.getDataManager().save(user);
-					mModel.updateUser();
+//					mModel.updateUser();
 					finish();
 				}
 				else{
