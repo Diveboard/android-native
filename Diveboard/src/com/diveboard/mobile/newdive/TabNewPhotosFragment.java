@@ -254,9 +254,11 @@ public class TabNewPhotosFragment extends Fragment {
 		}
 		else
 		{
-			Toast toast = new Toast(getActivity());
-			toast.setText(getResources().getString(R.string.check_connectivity));
+			
+			Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.check_connectivity),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
+			
 		}
 		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
 		//	        if (resultCode == RESULT_OK) {

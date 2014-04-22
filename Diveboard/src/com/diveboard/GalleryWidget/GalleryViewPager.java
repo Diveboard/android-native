@@ -83,7 +83,8 @@ public class GalleryViewPager extends ViewPager {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent event) {
-        if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP)
+        try{
+        	if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_UP)
         {
             super.onInterceptTouchEvent(event);
         }
@@ -106,6 +107,9 @@ public class GalleryViewPager extends ViewPager {
             {
                 return super.onInterceptTouchEvent(event);
             }
+        }
+        }catch (IllegalArgumentException e){
+        	e.printStackTrace();
         }
         return false;
     }

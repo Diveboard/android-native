@@ -1,10 +1,15 @@
 package com.diveboard.mobile.editdive;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 
 import android.support.v4.app.DialogFragment;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -17,9 +22,13 @@ import android.view.Window;
 import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.AdapterView.OnItemClickListener;
 import android.widget.TextView.OnEditorActionListener;
 
 public class					EditTripNameDialogFragment extends DialogFragment implements OnEditorActionListener
@@ -29,9 +38,11 @@ public class					EditTripNameDialogFragment extends DialogFragment implements On
         void					onTripNameEditComplete(DialogFragment dialog);
     }
 	
-	private EditText			mTripName;
-	private DiveboardModel		mModel;
-	EditTripNameDialogListener	mListener;
+	private EditText				mTripName;
+	private DiveboardModel			mModel;
+	EditTripNameDialogListener		mListener;
+	private ArrayList<String>		mHints = new ArrayList<String>();
+	private ArrayAdapter<String> 	mAdapter;
 	
 	 @Override
 	 public void onAttach(Activity activity)
@@ -58,18 +69,64 @@ public class					EditTripNameDialogFragment extends DialogFragment implements On
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
+		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_tripname_title));
+		
+		mHints.addAll(((ApplicationController) getActivity().getApplicationContext()).getModel().getUser().getTripNames());		
+	    final ListView lv;
+	    lv = (ListView) view.findViewById(R.id.hintsList);
+	    mAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, mHints);
+	    lv.setAdapter(mAdapter);
+	    lv.setOnItemClickListener(new OnItemClickListener() {
+
+			@Override
+			public void onItemClick(AdapterView<?> arg0, View v, int arg2,
+					long arg3) {
+				// TODO Auto-generated method stub
+				mTripName.setText(((TextView) v.findViewById(R.id.itemTV)).getText());
+				lv.setVisibility(View.GONE);
+//				System.out.println("Prueba");
+				
+			}
+		});
 		
 		mTripName = (EditText) view.findViewById(R.id.tripname);
 		mTripName.setTypeface(faceR);
 		mTripName.setText(mModel.getDives().get(getArguments().getInt("index")).getTripName());
 		mTripName.requestFocus();
 		
-        getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
         mTripName.setOnEditorActionListener(this);
+        mTripName.addTextChangedListener(new TextWatcher() {
+			
+			@Override
+			public void onTextChanged(CharSequence s, int start, int before, int count) {
+				// TODO Auto-generated method stub
+				System.out.println("start " + start + " before " + before + " count " +count);
+				if(count > 1){
+					lv.setVisibility(View.GONE);
+					mAdapter.getFilter().filter(s);
+					lv.setVisibility(View.VISIBLE);
+				}
+				else
+					lv.setVisibility(View.GONE);	
+			}
+			
+			@Override
+			public void beforeTextChanged(CharSequence s, int start, int count,
+					int after) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+			@Override
+			public void afterTextChanged(Editable s) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
         
         Button cancel = (Button) view.findViewById(R.id.cancel);
         cancel.setTypeface(faceR);

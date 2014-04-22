@@ -9,8 +9,6 @@ import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -51,7 +49,6 @@ public class					DataManager
 	private SparseArray<HashMap<String, String>>	_cacheData; // <UserId, <Category, JSON>>
 	private ArrayList<Pair<String, String>>			_editList = new ArrayList<Pair<String, String>>();
 	private final Object							_lock = new Object(); // Lock for _editList
-	private ReentrantReadWriteLock					_rwlock = new ReentrantReadWriteLock();
 	private int										_userId;
 	private String									_token;
 	private DiveboardModel							_model;
@@ -109,8 +106,6 @@ public class					DataManager
 	 */
 	public void					commitCache() throws IOException
 	{
-		_rwlock.writeLock().lock();
-		try{
 			FileOutputStream		outputStream;
 			for (int i = 0, length = _cacheData.size(); i < length; i++)
 			{
@@ -128,10 +123,6 @@ public class					DataManager
 					outputStream.close();
 				}
 			}
-		}finally{
-			_rwlock.writeLock().unlock();
-		}
-		
 	}
 	
 	/*
@@ -140,8 +131,6 @@ public class					DataManager
 	 */
 	public void					loadCache(final int userId) throws IOException
 	{
-		_rwlock.readLock().lock();
-		try{
 			FileInputStream			fileInputStream;
 			File file = _context.getFilesDir();
 			String[] file_list = file.list();
@@ -153,15 +142,16 @@ public class					DataManager
 				if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0)
 						&& (file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") != 0))
 				{
-					String[] name_split = file_list[i].split("_");
-					fileInputStream = _context.openFileInput(file_list[i]);
-					StringBuffer fileContent = new StringBuffer("");
-					byte[] buffer = new byte[1024];
-					while (fileInputStream.read(buffer) != -1)
-						fileContent.append(new String(buffer));
-					elem.put(name_split[2], fileContent.toString());
-					fileInputStream.close();
-				}
+				String[] name_split = file_list[i].split("_");
+				fileInputStream = _context.openFileInput(file_list[i]);
+				StringBuffer fileContent = new StringBuffer("");
+				byte[] buffer = new byte[1024];
+				int n;
+				while ((n=fileInputStream.read(buffer)) != -1)
+					fileContent.append(new String(buffer, 0, n));
+				elem.put(name_split[2], fileContent.toString());
+				fileInputStream.close();
+			}
 				else if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") == 0))
 				{
 					// If it's an edit list file
@@ -173,7 +163,7 @@ public class					DataManager
 					byte[] buffer = new byte[1024];
 					while ((n=fileInputStream.read(buffer)) != -1)
 						fileContent.append(new String(buffer, 0, n));
-					System.err.println("@" + fileContent);
+//					System.err.println("@" + fileContent);
 					String[] edit_list = fileContent.toString().split("#END#");
 					for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
 					{
@@ -203,11 +193,6 @@ public class					DataManager
 			}
 			if (elem.size() != 0)
 				_cacheData.put(userId, elem);
-	
-		}finally{
-			_rwlock.readLock().unlock();
-		}
-		
 	}
 	
 	/*
@@ -259,6 +244,10 @@ public class					DataManager
 					_saveDive(object);
 					commit();
 				}
+			}else if(object.getClass() == User.class){
+				System.out.println("Entered in _saveUser");
+				_saveUser(object);
+				commit();
 			}
 			((IModel)object).clearEditList();
 		}
@@ -448,6 +437,37 @@ public class					DataManager
 		}
 	}
 	
+	private void				_saveUser(Object object)
+	{
+		User user = (User) object;
+		ArrayList<Pair<String, String>> edit_list = user.getEditList();
+		
+		for (int i = 0, length = edit_list.size(); i < length; i++)
+		{
+			String json = "{\"id\":\"" + user.getId() + "\"}";
+			
+			try
+			{
+				JSONObject obj = new JSONObject(json);
+				System.out.println("SAVE USER : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				
+				if (edit_list.get(i).first.equals("wallet_picture_ids"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				if (edit_list.get(i).first.equals("wallet_pictures"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				
+//				user.applyEdit(obj);
+				Pair<String, String> new_elem = new Pair<String, String>("User:" + Integer.toString(user.getId()), obj.toString());
+				System.err.println("New elem added to the DataManager EDIT LIST in _saveUser: " + new_elem.first +" - " + new_elem.second);
+				_editList.add(new_elem);
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
 	/*
 	 * Method commit
 	 * Save all change of the model into cache and online server
@@ -461,48 +481,37 @@ public class					DataManager
 		commitEditOnline();
 	}
 	
-	private void				_cacheEditList()
-	{
-		_rwlock.writeLock().lock();
-		try{
-		FileOutputStream		outputStream;
-		
-			File file = new File(_context.getFilesDir() + "_"
-					+ Integer.toString(_userId) + "_edit");
-			try {
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(),Context.MODE_PRIVATE);
-				System.err.println("Storing editlist in cache: \n");
-				for (int i = 0, length = _editList.size(); i < length; i++) {
-					boolean error = false;
-					if (_editList.get(i).first.compareTo("Dive") == 0) {
-
-						try // Check
-						{
-							JSONObject j = new JSONObject(
-									_editList.get(i).second);
-						} catch (JSONException e) {
-							e.printStackTrace();
-							error = true;
-						}
+	private void				_cacheEditList() {
+		FileOutputStream outputStream;
+		File file = new File(_context.getFilesDir() + "_"
+				+ Integer.toString(_userId) + "_edit");
+		try {
+			file.createNewFile();
+			outputStream = _context.openFileOutput(file.getName(),
+					Context.MODE_PRIVATE);
+			System.err.println("Storing editlist in cache: \n");
+			for (int i = 0, length = _editList.size(); i < length; i++) {
+				boolean error = false;
+				if (_editList.get(i).first.compareTo("Dive") == 0) {
+					try // Check
+					{
+						JSONObject j = new JSONObject(_editList.get(i).second);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						error = true;
 					}
-					if (!error) {
-						String new_line = _editList.get(i).first + "#SEP#"
-								+ _editList.get(i).second + "#END#";
-						System.err.println(new_line);
-						outputStream.write(new_line.getBytes());
-					}
-
 				}
-				outputStream.close();
-			} catch (IOException e) {
-				System.err.println("Error: Saving edit list on cache");
+				if (!error) {
+					String new_line = _editList.get(i).first + "#SEP#"
+							+ _editList.get(i).second + "#END#";
+					System.err.println(new_line);
+					outputStream.write(new_line.getBytes());
+				}
 			}
-		
-		} finally {
-			_rwlock.writeLock().unlock();
+			outputStream.close();
+		} catch (IOException e) {
+			System.err.println("Error: Saving edit list on cache");
 		}
-		
 	}
 	
 	public ArrayList<Pair<String, String>>	getEditList()
@@ -600,6 +609,35 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("User"))
+		{
+			String result = get(_userId, "user");
+//			String picturesIds = get(_userId, "wallet_picture_ids");
+//			JSONObject pics;
+			JSONObject res;
+//			JSONArray res;
+			try
+			{
+				res = new JSONObject(result);
+//				ids = new JSONObject(picturesIds);
+				
+//					JSONObject temp = jarray.getJSONObject(i);
+					if (res.getJSONObject("result").getInt("id") == Integer.parseInt(info[1]))
+					{
+//						res = result_obj.getJSONArray("wallet_pictures");
+						JSONObject tmp = new JSONObject();
+						tmp.put("result", result_obj);
+						saveCache(_userId, "user",tmp.toString());
+						commitCache();
+						return ;
+					}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -650,9 +688,12 @@ public class					DataManager
 								_editList.remove(0);
 								_cacheEditList();
 								continue ;
+							}else if(info[0].compareTo("User") == 0){
+								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/");
 							}
 							else
 								postRequest = null;
+							
 							if (postRequest == null)
 								break ;
 							try
@@ -673,9 +714,10 @@ public class					DataManager
 									else{
 										checkObject.put("spot", spot);
 									}
+									
 									args.add(new BasicNameValuePair("arg", checkObject.toString()));
 								}
-								else
+								else 
 									args.add(new BasicNameValuePair("arg", elem.second));
 								args.add(new BasicNameValuePair("flavour", "mobile"));
 								// Set parameters
@@ -697,9 +739,14 @@ public class					DataManager
 									// New Dive segment
 									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
-								if (ApplicationController.SudoId == 0)
+								if (ApplicationController.SudoId == 0){
 									_applyEditCache(elem.first, json.getJSONObject("result"));
-								// Fire dive created event
+									if(info[0].equals("User"))
+										_model.refreshUser(result);
+					
+//									_model.updateUser();
+								}
+									// Fire dive created event
 								for (DiveCreateListener listener : _diveCreateListeners)
 									listener.onDiveCreateComplete();
 							}
@@ -852,4 +899,5 @@ public class					DataManager
 	{
 		_diveCreateListeners.add(listener);
 	}
+	
 }

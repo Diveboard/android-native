@@ -30,6 +30,7 @@ import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Menu;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -340,7 +341,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		mFish = (RatingBar) findViewById(R.id.fish_review);
 		mLife = (RatingBar) findViewById(R.id.life_review);
 		mWreck = (RatingBar) findViewById(R.id.wreck_review);
-
+		mOverall.setIsIndicator(true);
+		mDifficulty.setIsIndicator(true);
+		mFish.setIsIndicator(true);
+		mWreck.setIsIndicator(true);
+		mLife.setIsIndicator(true);
 		if (mDive.getDiveReviews() != null) {
 			if (mDive.getDiveReviews().getOverall() == null) {
 				((TextView) findViewById(R.id.overallTV)).setVisibility(View.GONE);
