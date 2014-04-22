@@ -199,6 +199,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         // application context and an implementation of
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,new MyGestureListener());
+        
         //Instantiate the current context so that we dont have to access everytime is needed
         mContext = getApplicationContext();
 		if (AC.isDataReady() == false)
@@ -1077,12 +1078,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
     @Override 
     public boolean onTouchEvent(MotionEvent event){ 
-    	if(mDataLoaded){
-        this.mDetector.onTouchEvent(event);
+//    	if(mDataLoaded){
+        this.
+        mDetector.
+        onTouchEvent
+        (event);
         // Be sure to call the superclass implementation
         return super.onTouchEvent(event);
-    	}
-    	else return false;
+//    	}
+//    	else 
+//    		return false;
     }
 
 	public int stroke_selected(int x, int y)
@@ -1137,6 +1142,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
 					if (stroke_selected != 0)
 					{
+						System.out.println("Stroke selected is " + stroke_selected);
 						ApplicationController AC = ((ApplicationController)getApplicationContext());
 						lowerStroke(position_stroke);
 		        		position_stroke = stroke_selected;

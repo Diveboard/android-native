@@ -81,7 +81,6 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		TextView title = (TextView) view.findViewById(R.id.title);
-		System.out.println("title " + title);
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_review_title));
 

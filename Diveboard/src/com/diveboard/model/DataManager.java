@@ -144,8 +144,9 @@ public class					DataManager
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
 				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
+				int n;
+				while ((n=fileInputStream.read(buffer)) != -1)
+					fileContent.append(new String(buffer, 0, n));
 				elem.put(name_split[2], fileContent.toString());
 				fileInputStream.close();
 			}
@@ -159,7 +160,7 @@ public class					DataManager
 				int n;
 				byte[] buffer = new byte[1024];
 				while ((n=fileInputStream.read(buffer)) != -1)
-					fileContent.append(new String(buffer));
+					fileContent.append(new String(buffer, 0, n));
 				String[] edit_list = fileContent.toString().split("#END#");
 				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
 				{

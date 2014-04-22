@@ -2,6 +2,7 @@ package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -256,6 +257,14 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 								}
 									
 								else if (editList.get(i).first.equals("shop"))
+									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+								else if (editList.get(i).first.equals("divetype"))
+									edit.put(editList.get(i).first, new JSONArray(editList.get(i).second));
+								else if (editList.get(i).first.equals("pictures"))
+									edit.put(editList.get(i).first, new JSONArray(editList.get(i).second));
+								else if (editList.get(i).first.equals("buddies"))
+									edit.put(editList.get(i).first, new JSONArray(editList.get(i).second));
+								else if (editList.get(i).first.equals("dive_reviews"))
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
 								else
 									edit.put(editList.get(i).first, editList.get(i).second);
