@@ -444,7 +444,10 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0" 
+                            android:clickable="false"
+                            android:isIndicator="false"
+                            />
 
                         <RatingBar
                             android:id="@+id/difficulty_review"
@@ -457,7 +460,8 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                         <RatingBar
                             android:id="@+id/life_review"
@@ -470,7 +474,8 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                         <RatingBar
                             android:id="@+id/fish_review"
@@ -479,11 +484,12 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
                             android:layout_weight="0.5"
-                            android:gravity="center"
+                            android:gravity="center" 
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0" 
+                            android:clickable="false"/>
 
                         <RatingBar
                             android:id="@+id/wreck_review"
@@ -496,7 +502,8 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                     </LinearLayout>
 

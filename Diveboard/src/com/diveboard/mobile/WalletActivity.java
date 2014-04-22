@@ -887,7 +887,6 @@ public class WalletActivity extends Activity {
 				((ImageView) v.findViewById(R.id.share_icon)).setColorFilter(null);
 				((TextView) v.findViewById(R.id.share_text)).setTextColor(Color.WHITE);
 				
-				
 			default:
 				break;
 			}

@@ -11,6 +11,7 @@ import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.animation.Animator;
@@ -44,6 +45,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -62,8 +64,21 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
-		findViewById(R.id.imageView).setOnTouchListener(new MyTouchListener());
-		findViewById(R.id.layout).setOnDragListener(new MyDragListener());
+		Button play = (Button) findViewById(R.id.button1);
+		play.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			
+				String videourl = "http://st0.diveboard.com/30/V_41905_51f6e4f53d99b40cdffb427841448da7.mp4";
+				Uri uri = Uri.parse(videourl);
+				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+				intent.setDataAndType(uri, "video/mp4");
+				startActivity(intent);
+				
+			}
+		});
 	}
 
 	private final class MyTouchListener implements OnTouchListener {

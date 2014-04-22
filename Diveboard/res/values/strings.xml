@@ -138,6 +138,7 @@
     <string name="menu_settings">Settings</string>
     <string name="menu_report_bug">Report a bug</string>
     <string name="menu_wallet">See your wallet</string>
+    <string name="menu_test">Go and play</string>
     <string name="menu_logout">Logout</string>
     <string name="choose_gallery">Choose from gallery</string>
     <string name="take_picture">Take a picture</string>
