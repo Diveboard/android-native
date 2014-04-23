@@ -65,17 +65,27 @@ public class TestActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
 		Button play = (Button) findViewById(R.id.button1);
+//		play.setBackground(getResources().getDrawable(android.R.drawable.ic_media_play));
 		play.setOnClickListener(new OnClickListener() {
 			
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 			
-				String videourl = "http://st0.diveboard.com/30/V_41905_51f6e4f53d99b40cdffb427841448da7.mp4";
-				Uri uri = Uri.parse(videourl);
-				Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-				intent.setDataAndType(uri, "video/mp4");
-				startActivity(intent);
+				String videourl = getIntent().getStringExtra("video_url");
+				System.out.println("URL received to be played is: " + videourl);
+				if (videourl == null){
+					Toast toast = Toast.makeText(getApplicationContext(), "Sorry buddy but the video can't be played :(", Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();	
+				}
+				else{
+					Uri uri = Uri.parse(videourl);
+					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+					intent.setDataAndType(uri, "video/mp4");
+					startActivity(intent);
+				}
+				
 				
 			}
 		});
