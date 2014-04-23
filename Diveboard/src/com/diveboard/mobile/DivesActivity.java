@@ -288,10 +288,10 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
 					startActivity(walletActivity);
 					return true;
-//				case R.id.see_test:
-//					Intent test = new Intent(DivesActivity.this, TestActivity.class);
-//					startActivity(test);
-//					return true;
+				case R.id.see_test:
+					Intent test = new Intent(DivesActivity.this, TestActivity.class);
+					startActivity(test);
+					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
 		    	    startActivity(newDiveActivity);

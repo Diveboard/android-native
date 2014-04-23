@@ -4,8 +4,8 @@
           android:title="@string/menu_refresh" />
     <item android:id="@+id/see_wallet"
           android:title="@string/menu_wallet" />
-<!--     <item android:id="@+id/see_test" -->
-<!--           android:title="@string/menu_test" /> -->
+    <item android:id="@+id/see_test"
+          android:title="@string/menu_test" />
     <item android:id="@+id/add_dive"
           android:title="@string/menu_new_dive" />
     <item android:id="@+id/menu_settings"
