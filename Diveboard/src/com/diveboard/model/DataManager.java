@@ -200,9 +200,8 @@ public class					DataManager
 			
 	}
 	
-	public void 				getAppSize(){
+	public long 				getMemoryUsed(){
 		File file = _context.getFilesDir();
-		
 		long size = 0;
 
 	    //clear SD cache
@@ -222,6 +221,7 @@ public class					DataManager
 	    Long l = Long.valueOf(size);
 	    Double s = l.doubleValue()/1024/1024;
 		System.err.println("THE SIZE OF THE PACKAGE PATH IS: " + s + "MB");
+		return size;
 	}
 	
 	/*

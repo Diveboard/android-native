@@ -297,7 +297,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(newDiveActivity);
 		    	    return true;
 				case R.id.menu_settings:
-					mModel.getDataManager().getAppSize();
+					mModel.getDataManager().getMemoryUsed();
 		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
 		    	    startActivity(settingsActivity);
 		    	    return true;
@@ -318,7 +318,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        	}
 		        	else
 		        	{
-		        		
 		        		Intent intent = new Intent(Intent.ACTION_SEND);
 		        		intent.setType("text/plain");
 		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
