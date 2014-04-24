@@ -288,7 +288,7 @@ public class WalletActivity extends Activity {
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setTypeface(mFaceB);
 		save.setText(getResources().getString(R.string.save_button));
-		System.out.println("There are " + mModel.getUser().getWalletPictures().size() + " photos");
+		System.out.println("There are " + mListPictures.size() + " photos");
 		
 		int screenWidth;
 		int screenHeight;

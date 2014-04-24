@@ -42,6 +42,7 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.BaseAdapter;
@@ -55,6 +56,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 public class TestActivity extends Activity {
 
@@ -80,13 +82,23 @@ public class TestActivity extends Activity {
 					toast.show();	
 				}
 				else{
-					Uri uri = Uri.parse(videourl);
-					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-					intent.setDataAndType(uri, "video/mp4");
-					startActivity(intent);
+					
+//					Uri uri = Uri.parse(videourl);
+//					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//					intent.setDataAndType(uri, "video/mp4");
+//					startActivity(intent);
+
+					String LINK = videourl;
+					VideoView videoView = (VideoView) findViewById(R.id.videoView1);
+					MediaController mc = new MediaController(getApplicationContext());
+					mc.setAnchorView(videoView);
+					mc.setMediaPlayer(videoView);
+					Uri video = Uri.parse(LINK);
+					videoView.setMediaController(mc);
+					videoView.setVideoURI(video);
+					videoView.start();
+					videoView.requestFocus(); 
 				}
-				
-				
 			}
 		});
 	}

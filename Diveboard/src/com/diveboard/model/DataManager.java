@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import org.apache.commons.*;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
@@ -131,8 +132,11 @@ public class					DataManager
 	 */
 	public void					loadCache(final int userId) throws IOException
 	{
+			
 			FileInputStream			fileInputStream;
 			File file = _context.getFilesDir();
+			System.err.println("LOADING FILES FROM CACHE FROM PATH: " + file.getAbsolutePath());
+			
 			String[] file_list = file.list();
 			HashMap<String, String> elem = new HashMap<String, String>();
 			
@@ -193,6 +197,31 @@ public class					DataManager
 			}
 			if (elem.size() != 0)
 				_cacheData.put(userId, elem);
+			
+	}
+	
+	public void 				getAppSize(){
+		File file = _context.getFilesDir();
+		
+		long size = 0;
+
+	    //clear SD cache
+	    File[] files = file.listFiles();
+	    for (File f:files) {
+	    		size = size+f.length();
+	    }
+	    
+//	    File cacheDir = _context.getCacheDir();
+//	    File[] cachefiles = cacheDir.listFiles();
+//	    long tmpSize;
+//	    for (File a:cachefiles) {
+//	    	tmpSize = a.length();
+//	        size = size + tmpSize;
+//	    }
+	    
+	    Long l = Long.valueOf(size);
+	    Double s = l.doubleValue()/1024/1024;
+		System.err.println("THE SIZE OF THE PACKAGE PATH IS: " + s + "MB");
 	}
 	
 	/*

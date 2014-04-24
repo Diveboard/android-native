@@ -297,6 +297,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(newDiveActivity);
 		    	    return true;
 				case R.id.menu_settings:
+					mModel.getDataManager().getAppSize();
 		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
 		    	    startActivity(settingsActivity);
 		    	    return true;
