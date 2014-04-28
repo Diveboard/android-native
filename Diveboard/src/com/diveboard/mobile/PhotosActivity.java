@@ -153,52 +153,48 @@ public class PhotosActivity extends Activity {
 											if (AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures() != null
 													&& AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)).getPictures().size() != 0)
 											{
-												String url;
-												//there is a video
-												if(!arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson().isNull("player")){
-													System.out.println(arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson());
-													try{
-														url = arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson().getString("player");
-														System.out.println("The video url is " + url);
-														String strToFind = "src=";
-														int subInd = url.indexOf(strToFind, strToFind.length());
-														if (subInd != -1){
-															System.out.println("The video url starts at: " + url.substring(subInd));
-															String [] tmp = url.substring(subInd).split("'");
-															url = tmp[1];
-															System.out.println("URL PARSED: " + url);
-															
-														} 
-//														else {
-//															subInd = url.indexOf(strToFind, )
-//														}
-														
-														Intent testIntent = new Intent(getApplicationContext(), TestActivity.class);
-														testIntent.putExtra("index", getIntent().getIntExtra("index", 0));
-														testIntent.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
-														testIntent.putExtra("video_url", url);
-														startActivity(testIntent);
-													}catch (JSONException e){
-														e.printStackTrace();
-														url = null;
-													}catch (IllegalArgumentException e){
-														e.printStackTrace();
-														url = null;
-													}
-//													Intent testIntent = new Intent(getApplicationContext(), TestActivity.class);
-//													testIntent.putExtra("index", getIntent().getIntExtra("index", 0));
-//													testIntent.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
-//													testIntent.putExtra("video_url", url);
-//													startActivity(testIntent);
-													
-												}
-												//it is a Picture
-												else{
-													Intent galleryCarousel = new Intent(getApplicationContext(), GalleryCarouselActivity.class);
-													galleryCarousel.putExtra("index", getIntent().getIntExtra("index", 0));
-													galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
-													startActivity(galleryCarousel);
-												}
+												Intent galleryCarousel = new Intent(getApplicationContext(), GalleryCarouselActivity.class);
+												galleryCarousel.putExtra("index", getIntent().getIntExtra("index", 0));
+												galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
+												startActivity(galleryCarousel);
+												
+//												String url;
+//												//there is a video
+//												if(!arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson().isNull("player")){
+//													System.out.println(arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson());
+//													try{
+//														url = arrayPair.get(Integer.valueOf(v.getContentDescription().toString())).second.getJson().getString("player");
+//														System.out.println("The video url is " + url);
+//														String strToFind = "src=";
+//														int subInd = url.indexOf(strToFind, strToFind.length());
+//														if (subInd != -1){
+//															System.out.println("The video url starts at: " + url.substring(subInd));
+//															String [] tmp = url.substring(subInd).split("'");
+//															url = tmp[1];
+//															System.out.println("URL PARSED: " + url);
+//														} 
+//														
+//														Intent testIntent = new Intent(getApplicationContext(), TestActivity.class);
+//														testIntent.putExtra("index", getIntent().getIntExtra("index", 0));
+//														testIntent.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
+//														testIntent.putExtra("video_url", url);
+//														startActivity(testIntent);
+//													}catch (JSONException e){
+//														e.printStackTrace();
+//														url = null;
+//													}catch (IllegalArgumentException e){
+//														e.printStackTrace();
+//														url = null;
+//													}
+//													
+//												}
+//												//it is a Picture
+//												else{
+//													Intent galleryCarousel = new Intent(getApplicationContext(), GalleryCarouselActivity.class);
+//													galleryCarousel.putExtra("index", getIntent().getIntExtra("index", 0));
+//													galleryCarousel.putExtra("position", Integer.valueOf(v.getContentDescription().toString()));
+//													startActivity(galleryCarousel);
+//												}
 												
 											}	
 
