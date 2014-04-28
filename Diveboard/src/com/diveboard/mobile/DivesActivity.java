@@ -199,6 +199,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         // application context and an implementation of
         // GestureDetector.OnGestureListener
         mDetector = new GestureDetectorCompat(this,new MyGestureListener());
+        mDataLoaded = false;
         
         //Instantiate the current context so that we dont have to access everytime is needed
         mContext = getApplicationContext();
@@ -248,6 +249,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		showProgress(false);
 
 		if (success == true) {
+			mDataLoaded = true;
 			mModel.preloadPictures();
 			createPages();
 		}
@@ -1128,7 +1130,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
 //			if(mDataLoaded){
 //				System.out.println("Value of mDAtaloaded is true");
-				{	
+			if(mDataLoaded){	
+					System.out.println("Value of mDAtaloaded is true");
 					int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
 					int bubbleWidth;
 					if(mScreenSetup.getScreenWidth()> mScreenSetup.getScreenHeight()){
@@ -1244,13 +1247,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
 		            	
 					}
-					
+					return true;
 				}
 				
 //			}
-//			else
-//				System.out.println("Value of mDAtaloaded is false");
-			return true;
+			else{
+				System.out.println("Value of mDAtaloaded is false");
+				return false;
+			}
+				
 		}
     }
     

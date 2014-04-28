@@ -120,7 +120,7 @@ public class					DataManager
 					file.createNewFile();
 					outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 					outputStream.write(elem.get(key).getBytes());
-					System.err.println("GET BYTES = " + elem.get(key));
+//					System.err.println("GET BYTES = " + elem.get(key));
 					outputStream.close();
 				}
 			}
