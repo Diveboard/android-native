@@ -280,6 +280,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.refresh:
+//					mModel.refreshData();
 					ApplicationController AC = (ApplicationController)getApplicationContext();
 					AC.setDataReady(false);
 					AC.getModel().stopPreloadPictures();

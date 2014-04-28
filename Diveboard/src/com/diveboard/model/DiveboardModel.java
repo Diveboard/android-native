@@ -426,10 +426,31 @@ public class					DiveboardModel
 			{
 				e.printStackTrace();
 			}
-			if (_user == null)
+//			if (_user == null)    //Old way of loading data
+//				refreshData();
+//			else
+//				_applyEdit();
+			
+			if (_user == null){
+				System.out.println("REFRESHING DATA");
 				refreshData();
-			else
+			}
+			else if(_cache.getEditList().size() > 0){
+				System.out.println("APPLYING EDIT CHANGES TO DATA");
+				// there are changes to be applied
 				_applyEdit();
+			} else if (_refreshDataThread == null) {
+				// force user to null so that there is a full sync with the data stored in the server
+				System.out.println("FORCING REFRESH");
+				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+				// Test connectivity
+				if (networkInfo != null && networkInfo.isConnected()) {
+					_user = null;
+					refreshData();
+				}
+
+			}
+				
 		}
 	}
 	
