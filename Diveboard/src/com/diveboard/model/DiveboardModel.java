@@ -1174,7 +1174,7 @@ public class					DiveboardModel
 		}
 	}
 	
-	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String vanity, final String nickname, final boolean loop)
+	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String nickname, final boolean loop)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -1187,7 +1187,8 @@ public class					DiveboardModel
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
 			args.add(new BasicNameValuePair("email", email));
-			args.add(new BasicNameValuePair("vanity_url", vanity));
+			//args.add(new BasicNameValuePair("vanity_url", vanity));
+			args.add(new BasicNameValuePair("assign_vanity_url", "true"));
 			args.add(new BasicNameValuePair("password", password));
 			args.add(new BasicNameValuePair("nickname", nickname));
 			args.add(new BasicNameValuePair("password_check", confirm_password));
