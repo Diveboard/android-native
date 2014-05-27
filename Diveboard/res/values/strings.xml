@@ -143,4 +143,5 @@
     <string name="choose_gallery">Choose from gallery</string>
     <string name="take_picture">Take a picture</string>
     <string name="upload_not_finished">Please wait until the picture has been uploaded to the server to save</string>
+    <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
 </resources>

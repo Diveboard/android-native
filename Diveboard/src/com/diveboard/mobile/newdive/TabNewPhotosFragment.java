@@ -294,14 +294,22 @@ public class TabNewPhotosFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Picture result) {
 			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			if(result != null){
+				mListPictures.add(result);
+				mDive.setPictures(mListPictures);
+			} else {
+				Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+			}
+						
 			mPhotoView.setVisibility(View.VISIBLE);
 			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
 			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 			bar.setVisibility(View.GONE);
-			mListPictures.add(result);
-			mDive.setPictures(mListPictures);
 			generateTableLayout();
 			isAddingPic = false;
+			
 		}
 
 	}
