@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
-    android:installLocation="auto"
-    android:versionCode="107"
-    android:versionName="3.4.2" >
+    android:installLocation="preferExternal"
+    android:versionCode="90"
+    android:versionName="3.1.0" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -28,7 +28,7 @@
     <application
         android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
-        android:debuggable="false"
+        android:debuggable="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
@@ -38,10 +38,10 @@
             android:value="@integer/google_play_services_version" />     
        	<meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/maps_app_id_release" />
+            android:value="@string/maps_app_id_debug" />
        	<meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/fb_app_id_release" />
+            android:value="@string/fb_app_id_debug" />
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
             android:label="@string/title_activity_login"
@@ -155,7 +155,7 @@
         <activity
             android:name="com.diveboard.mobile.WalletActivity"
             android:label="@string/title_activity_wallet" >
-        </activity>
+         </activity>
     </application>
 
 </manifest>
