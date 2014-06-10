@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
     android:installLocation="auto"
-    android:versionCode="104"
-    android:versionName="3.4.0" >
+    android:versionCode="107"
+    android:versionName="3.4.2" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,20 +11,15 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES" />
     <uses-permission android:name="android.permission.READ_LOGS" />
     <uses-permission android:name="android.permission.CAMERA" />
-
-    <uses-feature
-        android:name="android.hardware.camera"
-        android:required="false" />
-    <uses-feature
-        android:name="android.hardware.camera.autofocus"
-        android:required="false" />
+	<uses-feature android:name="android.hardware.camera" android:required="false"/>
+	<uses-feature android:name="android.hardware.camera.autofocus" android:required="false"/>
     <!--
          The following two permissions are not required to use
 	     Google Maps Android API v2, but are recommended.
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -33,35 +28,35 @@
     <application
         android:name="com.diveboard.mobile.ApplicationController"
         android:allowBackup="true"
+        android:debuggable="false"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme" >
         <meta-data
             android:name="com.google.android.gms.version"
-            android:value="@integer/google_play_services_version"/>
-        <meta-data
+            android:value="@integer/google_play_services_version" />     
+       	<meta-data
             android:name="com.google.android.maps.v2.API_KEY"
-            android:value="@string/maps_app_id_debug2"/>
-        <meta-data
+            android:value="@string/maps_app_id_release" />
+       	<meta-data
             android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/fb_app_id_debug"/>
-
+            android:value="@string/fb_app_id_release" />
         <activity
             android:name="com.diveboard.mobile.DiveboardLoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden">
+            android:windowSoftInputMode="stateHidden" >
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
+                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"
             android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar"/>
+            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name="com.diveboard.mobile.DivesActivity"
             android:label="@string/app_name" >
@@ -73,7 +68,7 @@
         <activity
             android:name="com.diveboard.mobile.editdive.EditDiveActivity"
             android:label="@string/title_activity_edit_dive"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
+            android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
             android:name="com.diveboard.mobile.editdive.TabEditDetailsActivity"
@@ -151,15 +146,16 @@
         <activity
             android:name="com.diveboard.mobile.GraphImageActivity"
             android:label="@string/title_activity_graph_image"
-            android:screenOrientation="landscape" >
+            android:screenOrientation="landscape">
         </activity>
         <activity
             android:name="com.diveboard.mobile.TestActivity"
-            android:label="@string/title_activity_graph_image" >
+            android:label="@string/title_activity_graph_image">
         </activity>
         <activity
             android:name="com.diveboard.mobile.WalletActivity"
             android:label="@string/title_activity_wallet" >
         </activity>
     </application>
+
 </manifest>
