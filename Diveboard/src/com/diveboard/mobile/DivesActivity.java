@@ -305,8 +305,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(settingsActivity);
 		    	    return true;
 		        case R.id.report_bug:
-		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
+		        	if (true)
 		        	{
+		        		//Use of UserVoice report bug system
 	        			WaitDialogFragment dialog = new WaitDialogFragment();
 	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 						Config config = new Config("diveboard.uservoice.com");
@@ -319,15 +320,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        		UserVoice.launchContactUs(DivesActivity.this);
 		        		dialog.dismiss();
 		        	}
-		        	else
-		        	{
-		        		Intent intent = new Intent(Intent.ACTION_SEND);
-		        		intent.setType("text/plain");
-		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-		        		String deviceInfo = (String.format(mModel.getUser().getId() + " - I found a bug in my %s %s ,%s", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE));
-		        		intent.putExtra(Intent.EXTRA_SUBJECT, deviceInfo);
-		        		startActivity(Intent.createChooser(intent, "Send Email"));
-		        	}
+//		        	else
+//		        	{
+//		        		Intent intent = new Intent(Intent.ACTION_SEND);
+//		        		intent.setType("text/plain");
+//		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+//		        		String deviceInfo = (String.format(mModel.getUser().getId() + " - I found a bug in my %s %s ,%s", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE));
+//		        		intent.putExtra(Intent.EXTRA_SUBJECT, deviceInfo);
+//		        		startActivity(Intent.createChooser(intent, "Send Email"));
+//		        	}
 		            return true;
 		        case R.id.menu_logout:
 		        	logout();
@@ -380,7 +381,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	    startActivity(settingsActivity);
 	            return true;
 	    	case R.id.report_bug:
-	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	    		if (true)
 	        	{
     				WaitDialogFragment dialog = new WaitDialogFragment();
     				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
@@ -394,13 +395,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        		UserVoice.launchContactUs(DivesActivity.this);
 	        		dialog.dismiss();
 	        	}
-	        	else
-	        	{
-	        		Intent intent = new Intent(Intent.ACTION_SEND);
-	        		intent.setType("text/plain");
-	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-	        		startActivity(Intent.createChooser(intent, "Send Email"));
-	        	}
+//	        	else
+//	        	{
+//	        		Intent intent = new Intent(Intent.ACTION_SEND);
+//	        		intent.setType("text/plain");
+//	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
+//	        		startActivity(Intent.createChooser(intent, "Send Email"));
+//	        	}
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();

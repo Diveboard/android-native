@@ -7,5 +7,7 @@
 	<classpathentry kind="src" path="gen"/>
 	<classpathentry kind="lib" path="libs/libGoogleAnalyticsServices.jar"/>
 	<classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
+	<classpathentry kind="lib" path="/UserVoiceSDK"/>
+	<classpathentry kind="lib" path="/UserVoiceSDK/bin/uservoicesdk.jar"/>
 	<classpathentry kind="output" path="bin/classes"/>
 </classpath>
