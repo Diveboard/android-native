@@ -1,8 +1,7 @@
 package com.diveboard.model;
 
-import java.io.File;
-
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -42,27 +40,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveboardLoginActivity;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.SettingsActivity;
-import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.support.v4.app.DialogFragment;
-import android.util.Base64;
 import android.util.Pair;
-import android.widget.Toast;
-import android.database.Cursor;
-import android.database.sqlite.*;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 
 /*
  * Class DiveboardModel
@@ -71,6 +62,7 @@ import android.graphics.BitmapFactory;
 public class					DiveboardModel
 {
 	private int					_userId;
+	private String				_userEmail = null;
 	private String				_shakenId;
 	public static Context		_context;
 	private User				_user = null;
@@ -216,6 +208,7 @@ public class					DiveboardModel
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
+				_userEmail = login;
 				// Get user ID
 				HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
@@ -2058,5 +2051,9 @@ public class					DiveboardModel
 			}
 		}
 		return null;
+	}
+	
+	public String 			getSessionEmail(){
+		return _userEmail;
 	}
 }

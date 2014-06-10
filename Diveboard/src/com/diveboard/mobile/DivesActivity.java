@@ -2,22 +2,7 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import com.diveboard.mobile.editdive.EditDiveActivity;
-import com.diveboard.mobile.newdive.NewDiveActivity;
-import com.diveboard.model.DataRefreshListener;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.DiveboardModel.TokenExpireListener;
-import com.diveboard.model.Picture;
-import com.diveboard.model.ScreenSetup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -32,17 +17,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore.Images.Thumbnails;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v4.view.GestureDetectorCompat;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -62,16 +45,22 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.RelativeLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.facebook.*;
+
+import com.diveboard.mobile.newdive.NewDiveActivity;
+import com.diveboard.model.DataRefreshListener;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.TokenExpireListener;
+import com.diveboard.model.Picture;
+import com.diveboard.model.ScreenSetup;
+import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
@@ -311,6 +300,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        			WaitDialogFragment dialog = new WaitDialogFragment();
 	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 						Config config = new Config("diveboard.uservoice.com");
+						if(mModel.getSessionEmail() != null)
+							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
 						UserVoice.init(config, DivesActivity.this);
 						config.setShowForum(false);
 					    config.setShowContactUs(true);
@@ -386,6 +377,8 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     				WaitDialogFragment dialog = new WaitDialogFragment();
     				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 					Config config = new Config("diveboard.uservoice.com");
+					if(mModel.getSessionEmail() != null)
+						config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
 					UserVoice.init(config, DivesActivity.this);
 					config.setShowForum(false);
 				    config.setShowContactUs(true);
