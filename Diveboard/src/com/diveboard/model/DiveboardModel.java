@@ -2056,4 +2056,8 @@ public class					DiveboardModel
 	public String 			getSessionEmail(){
 		return _userEmail;
 	}
+	
+	public void				setSessionEmail(String email){
+		_userEmail = email;
+	}
 }

@@ -316,8 +316,14 @@ public class TabNewPhotosFragment extends Fragment {
 
 	public void generateTableLayout()
 	{
-		Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+		try{
+			Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
+			((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
+		}catch (NullPointerException e){
+			
+		}
 		
 		
 		System.out.println("il y a " + mListPictures.size() + " photos");
@@ -328,12 +334,11 @@ public class TabNewPhotosFragment extends Fragment {
 
 		screenWidth = mRootView.findViewById(R.id.tablelayout).getMeasuredWidth();
 		screenheight = mRootView.findViewById(R.id.tablelayout).getMeasuredHeight();
-		((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
+		
 		RelativeLayout.LayoutParams dropitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 		dropitemparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		((RelativeLayout)mRootView.findViewById(R.id.drop_item)).setLayoutParams(dropitemparam);
 
-		((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
 		RelativeLayout.LayoutParams mainitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 		mainitemparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		((RelativeLayout)mRootView.findViewById(R.id.main_item)).setLayoutParams(mainitemparam);
