@@ -100,8 +100,6 @@ public class FBLoginActivity extends Activity {
 //	                welcome.setText("Hello " + user.getName() + "!");
 	            	System.out.println(user.getProperty("email").toString() + "THAT WAS THE FB EMAIL");
 	                mId = user.getId();
-	                ApplicationController AC = (ApplicationController)getApplicationContext();
-	                AC.getModel().setSessionEmail(user.getProperty("email").toString());
 	                mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 	                showProgress(true);
 					mAuthTask = new UserLoginTask();

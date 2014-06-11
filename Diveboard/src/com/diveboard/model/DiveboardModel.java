@@ -208,7 +208,6 @@ public class					DiveboardModel
 				_token = json.getString("token");
 				_shakenId = json.getString("id");
 				_unitPreferences = json.getJSONObject("units").toString();
-				_userEmail = login;
 				// Get user ID
 				HttpGet getRequest = new HttpGet(AppConfig.SERVER_URL + "/api/V2/user/" + _shakenId);
 				response = client.execute(getRequest);
@@ -667,6 +666,10 @@ public class					DiveboardModel
 		json = json.getJSONObject("result");
 		String dive_str = "[";
 		System.out.println("Data loaded " + json);
+		//Storing locally the session email
+		if(!json.isNull("contact_email")){
+			_userEmail = json.getString("contact_email");	
+		}
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		if (json.isNull("all_dive_ids"))
 		{
@@ -2055,9 +2058,5 @@ public class					DiveboardModel
 	
 	public String 			getSessionEmail(){
 		return _userEmail;
-	}
-	
-	public void				setSessionEmail(String email){
-		_userEmail = email;
 	}
 }
