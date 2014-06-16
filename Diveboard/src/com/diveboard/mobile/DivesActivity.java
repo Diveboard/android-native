@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -36,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -45,6 +47,7 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
@@ -53,6 +56,7 @@ import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DataRefreshListener;
 import com.diveboard.model.Dive;
@@ -213,8 +217,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	}
 	
 	@Override
-	public void onBackPressed() {
-	}
+	public void onBackPressed()
+	{		
+	};
 	
 	// The three methods below are called by the TaskFragment when new
 	// progress updates or results are available. The MainActivity 
@@ -311,18 +316,38 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        		UserVoice.launchContactUs(DivesActivity.this);
 		        		dialog.dismiss();
 		        	}
-//		        	else
-//		        	{
-//		        		Intent intent = new Intent(Intent.ACTION_SEND);
-//		        		intent.setType("text/plain");
-//		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-//		        		String deviceInfo = (String.format(mModel.getUser().getId() + " - I found a bug in my %s %s ,%s", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE));
-//		        		intent.putExtra(Intent.EXTRA_SUBJECT, deviceInfo);
-//		        		startActivity(Intent.createChooser(intent, "Send Email"));
-//		        	}
 		            return true;
 		        case R.id.menu_logout:
-		        	logout();
+		        	final Dialog dialog = new Dialog(DivesActivity.this);
+		        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    		dialog.setContentView(R.layout.dialog_edit_confirm);
+		    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		    		TextView title = (TextView) dialog.findViewById(R.id.title);
+		    		title.setTypeface(faceR);
+		    		title.setText(getResources().getString(R.string.confirm_exit));
+		    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
+		    		cancel.setTypeface(faceR);
+		    		cancel.setText(getResources().getString(R.string.cancel));
+		    		cancel.setOnClickListener(new View.OnClickListener() {
+		    			
+		    			@Override
+		    			public void onClick(View v) {
+		    				// TODO Auto-generated method stub
+		    				dialog.dismiss();
+		    			}
+		    		});
+		    		Button save = (Button) dialog.findViewById(R.id.save);
+		    		save.setTypeface(faceR);
+		    		save.setText(getResources().getString(R.string.menu_logout));
+		    		save.setOnClickListener(new View.OnClickListener() {
+		    			
+		    			@Override
+		    			public void onClick(View v) {
+		    				// TODO Auto-generated method stub
+		    				logout();
+		    			}
+		    		});
+		    		dialog.show();
 		            return true;
 		        default:
 		            return false;
@@ -388,13 +413,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	        		UserVoice.launchContactUs(DivesActivity.this);
 	        		dialog.dismiss();
 	        	}
-//	        	else
-//	        	{
-//	        		Intent intent = new Intent(Intent.ACTION_SEND);
-//	        		intent.setType("text/plain");
-//	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-//	        		startActivity(Intent.createChooser(intent, "Send Email"));
-//	        	}
 	            return true;
 	    	case R.id.menu_logout:
 	        	logout();

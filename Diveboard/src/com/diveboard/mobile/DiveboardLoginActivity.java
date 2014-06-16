@@ -174,7 +174,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					e.printStackTrace(pw);
 					writer.flush();
 					writer.close();
-//					
 				} catch (IOException er) {
 					er.printStackTrace();
 				}
