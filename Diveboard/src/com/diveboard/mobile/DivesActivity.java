@@ -165,6 +165,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public void onStart() {
 		super.onStart();
 		EasyTracker.getInstance(this).activityStart(this);
+		
 	}
 
 	@Override
@@ -243,15 +244,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		showProgress(false);
 
 		if (success == true) {
+			//all the data has been loaded properly
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			System.out.println("Launching AppRater");
+			AppRater.app_launched(AC, this);
+			
 			mDataLoaded = true;
 			mModel.preloadPictures();
 			createPages();
-		}
-		else
-		{
-			//finish();
-//			System.out.println("logout");
-//			logout();
 		}
 	}
 

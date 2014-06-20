@@ -149,13 +149,6 @@ public class					DiveboardModel
 				_token = fileContent.toString();
 				fileInputStream.close();
 				
-//				fileInputStream = _context.openFileInput(unit_preferences.getName());
-//				fileContent = new StringBuffer("");
-//				buffer = new byte[1];
-//				while (fileInputStream.read(buffer) != -1)
-//					fileContent.append(new String(buffer));
-//				_unitPreferences = fileContent.toString();
-//				fileInputStream.close();
 				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
@@ -2058,5 +2051,74 @@ public class					DiveboardModel
 	
 	public String 			getSessionEmail(){
 		return _userEmail;
+	}
+	
+	public void				setHasRatedApp(boolean hasRated){
+		if(hasRated)
+			_cache.saveCache(_userId, "hasRatedApp", "true");
+		else
+			_cache.saveCache(_userId, "hasRatedApp", "false");
+		try {
+			_cache.commitCache();
+			System.out.println("STORING hasRatedApp in Cache with value " + String.valueOf(hasRated));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Boolean			hasRatedApp(){
+
+		String tmp = _cache.get(_userId, "hasRatedApp");
+		System.out.println("READING hasRatedApp in Cache with value " + String.valueOf(tmp));
+		if(tmp == null)
+			return null;
+		if (tmp != null){
+			if(tmp.equals("true"))
+				return true;
+		}
+		return false;
+	}
+	
+	public void				setFirstLaunch(Long launch){
+		_cache.saveCache(_userId, "firstLaunch", launch.toString());
+		try {
+			_cache.commitCache();
+			System.out.println("STORING firstLaunch in Cache with value " + String.valueOf(launch));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getFirstLaunch(){
+
+		String tmp = _cache.get(_userId, "firstLaunch");
+		System.out.println("READING firstLaunch in Cache with value " + String.valueOf(tmp));
+		if (tmp != null){
+			return Long.parseLong(tmp);
+		}
+		return null;
+	}
+	
+	public void				setLaunchCount(Long launch){
+		_cache.saveCache(_userId, "launchCount", launch.toString());
+		try {
+			_cache.commitCache();
+			System.out.println("STORING launchCount in Cache with value " + String.valueOf(launch));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getLaunchCount(){
+
+		String tmp = _cache.get(_userId, "launchCount");
+		System.out.println("READING launchCount in Cache with value " + String.valueOf(tmp));
+		if (tmp != null){
+			return Long.valueOf(tmp);
+		}
+		return null;
 	}
 }

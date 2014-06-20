@@ -96,6 +96,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		AC.setModel(model);
 		if (model.isLogged() == true)
 		{
+			
 			Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
 		    startActivity(editDiveActivity);
 		    return ;
@@ -129,13 +130,10 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.password)).setTypeface(faceR);
 		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
-//		((TextView)findViewById(R.id.authButton)).setTypeface(faceR);
 		((Button)findViewById(R.id.sign_in_button)).setTypeface(faceR);
 		((Button)findViewById(R.id.sign_in_button)).setTextSize(TEXT_SIZE);
-		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
-		//mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
 
@@ -182,7 +180,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	        }
 	    };
 
-		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
+//		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 	}
 	
 	@Override

@@ -75,6 +75,7 @@ public class					UserPreference
 			units.put("pressure", "bar");
 			new_pref.put("units", units);
 			new_pref.put("picture_quality", "m_qual");
+			
 			_userPreferences = new_pref;
 			outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 			outputStream.write(new_pref.toString().getBytes());
@@ -198,4 +199,5 @@ public class					UserPreference
 			e.printStackTrace();
 		}
 	}
+
 }

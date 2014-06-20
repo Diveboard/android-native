@@ -1,57 +1,33 @@
 package com.diveboard.mobile.editdive;
 
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.FBLoginActivity.UserLoginTask;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.commons.codec.digest.Md5Crypt;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.model.Buddy;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.util.ExpandableHeightGridView;
-import com.diveboard.util.ImageCache.ImageCacheParams;
-import com.diveboard.util.ImageFetcher;
-import com.diveboard.util.Utils;
-import com.facebook.HttpMethod;
-import com.facebook.Request;
-import com.facebook.Request.GraphUserListCallback;
-import com.facebook.Response;
-import com.facebook.Session;
-import com.facebook.SessionState;
-import com.facebook.model.GraphObject;
-import com.facebook.model.GraphUser;
-
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Typeface;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.util.Log;
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Picture;
-import android.graphics.Typeface;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.view.ViewGroup.LayoutParams;
-import android.widget.AbsListView.OnScrollListener;
+import android.view.ViewTreeObserver;
 import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.AdapterView.OnItemSelectedListener;
@@ -63,13 +39,28 @@ import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.Filter;
 import android.widget.Filterable;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
+
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
+import com.diveboard.model.Buddy;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.util.ExpandableHeightGridView;
+import com.diveboard.util.ImageCache.ImageCacheParams;
+import com.diveboard.util.ImageFetcher;
+import com.diveboard.util.Utils;
+import com.facebook.HttpMethod;
+import com.facebook.Request;
+import com.facebook.Response;
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.model.GraphObject;
+import com.facebook.model.GraphUser;
 
 public class					TabEditBuddiesFragment extends Fragment
 {
