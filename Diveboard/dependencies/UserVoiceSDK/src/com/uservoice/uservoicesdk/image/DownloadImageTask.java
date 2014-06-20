@@ -9,28 +9,35 @@ import android.widget.ImageView;
 
 public class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
     private ImageView imageView;
-	private final String url;
+    private final String url;
 
     public DownloadImageTask(String url, ImageView imageView) {
         this.url = url;
-		this.imageView = imageView;
+        this.imageView = imageView;
         imageView.setImageBitmap(null);
     }
 
     protected Bitmap doInBackground(Void... voids) {
         Bitmap bitmap = null;
+        InputStream in = null;
+
         try {
-            InputStream in = new java.net.URL(url).openStream();
+            in = new java.net.URL(url).openStream();
             bitmap = BitmapFactory.decodeStream(in);
         } catch (Exception e) {
             e.printStackTrace();
+        } finally {
+            try {
+                in.close();
+            } catch (Exception ignored) {
+            }
         }
         return bitmap;
     }
 
     protected void onPostExecute(Bitmap bitmap) {
-    	ImageCache.getInstance().set(url, bitmap);
-    	imageView.setImageBitmap(bitmap);
+        ImageCache.getInstance().set(url, bitmap);
+        imageView.setImageBitmap(bitmap);
     }
 
 }

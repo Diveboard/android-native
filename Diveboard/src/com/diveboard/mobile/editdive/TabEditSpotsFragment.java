@@ -159,12 +159,18 @@ public class TabEditSpotsFragment extends Fragment implements
 		mContext = getActivity().getApplicationContext();
 		mModel = AC.getModel();
 
-		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
-		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
+		try{
+			mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
+			mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
+		}catch (NullPointerException e){
+			e.printStackTrace();
+			mFaceB = Typeface.DEFAULT_BOLD;
+			mFaceR = Typeface.DEFAULT;
+		}
+		
+		
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		
-		String mSpotName = mModel.getDives().get(mIndex).getSpot().getName();
-
 		((TextView) mRootView.findViewById(R.id.nameSpotTitle)).setTypeface(mFaceB);
 		((TextView) mRootView.findViewById(R.id.nameSelectedSpotTV)).setTypeface(mFaceR);
 		((TextView) mRootView.findViewById(R.id.countrySpotTitle)).setTypeface(mFaceB);
@@ -786,11 +792,11 @@ public class TabEditSpotsFragment extends Fragment implements
 				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if(!goOfflineMode){
 					System.out.println("Region-location API call" + " " + query[0]+ " " + query[1]);
-					result = AC.getModel().searchRegionLocationText(query[0],query[1]);
+					result = mModel.searchRegionLocationText(query[0],query[1]);
 					searchDone = true;
 				}
 				else{
-					result = AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
+					result = mModel.offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
 					searchDone = true;
 				}
 			}
@@ -804,8 +810,7 @@ public class TabEditSpotsFragment extends Fragment implements
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					return AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
+					return mModel.offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
 				}
 				else
 					return result;
@@ -946,11 +951,11 @@ public class TabEditSpotsFragment extends Fragment implements
 			public void run() {
 				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if (!goOfflineMode) {
-					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
+					result = mModel.searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
 				}
 				else {
-					result = AC.getModel().offlineSearchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
+					result = mModel.offlineSearchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
 				}
 			}
@@ -966,7 +971,7 @@ public class TabEditSpotsFragment extends Fragment implements
 					goOfflineMode = true;
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					return AC.getModel().offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
+					return mModel.offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
 				}else
 					return result;
 			} catch (InterruptedException e) {

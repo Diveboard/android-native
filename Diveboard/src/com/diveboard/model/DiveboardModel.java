@@ -1,8 +1,7 @@
 package com.diveboard.model;
 
-import java.io.File;
-
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -42,27 +40,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveboardLoginActivity;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.SettingsActivity;
-import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
-
-import android.app.Activity;
 import android.content.Context;
-import android.content.res.Resources.NotFoundException;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.support.v4.app.DialogFragment;
-import android.util.Base64;
 import android.util.Pair;
-import android.widget.Toast;
-import android.database.Cursor;
-import android.database.sqlite.*;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 
 /*
  * Class DiveboardModel
@@ -71,6 +62,7 @@ import android.graphics.BitmapFactory;
 public class					DiveboardModel
 {
 	private int					_userId;
+	private String				_userEmail = null;
 	private String				_shakenId;
 	public static Context		_context;
 	private User				_user = null;
@@ -157,13 +149,6 @@ public class					DiveboardModel
 				_token = fileContent.toString();
 				fileInputStream.close();
 				
-//				fileInputStream = _context.openFileInput(unit_preferences.getName());
-//				fileContent = new StringBuffer("");
-//				buffer = new byte[1];
-//				while (fileInputStream.read(buffer) != -1)
-//					fileContent.append(new String(buffer));
-//				_unitPreferences = fileContent.toString();
-//				fileInputStream.close();
 				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
@@ -674,6 +659,10 @@ public class					DiveboardModel
 		json = json.getJSONObject("result");
 		String dive_str = "[";
 		System.out.println("Data loaded " + json);
+		//Storing locally the session email
+		if(!json.isNull("contact_email")){
+			_userEmail = json.getString("contact_email");	
+		}
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		if (json.isNull("all_dive_ids"))
 		{
@@ -1174,7 +1163,7 @@ public class					DiveboardModel
 		}
 	}
 	
-	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String vanity, final String nickname, final boolean loop)
+	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String nickname, final boolean loop)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -1187,7 +1176,8 @@ public class					DiveboardModel
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
 			args.add(new BasicNameValuePair("email", email));
-			args.add(new BasicNameValuePair("vanity_url", vanity));
+			//args.add(new BasicNameValuePair("vanity_url", vanity));
+			args.add(new BasicNameValuePair("assign_vanity_url", "true"));
 			args.add(new BasicNameValuePair("password", password));
 			args.add(new BasicNameValuePair("nickname", nickname));
 			args.add(new BasicNameValuePair("password_check", confirm_password));
@@ -2055,6 +2045,79 @@ public class					DiveboardModel
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+		}
+		return null;
+	}
+	
+	public String 			getSessionEmail(){
+		return _userEmail;
+	}
+	
+	public void				setHasRatedApp(boolean hasRated){
+		if(hasRated)
+			_cache.saveCache(_userId, "hasRatedApp", "true");
+		else
+			_cache.saveCache(_userId, "hasRatedApp", "false");
+		try {
+			_cache.commitCache();
+			System.out.println("STORING hasRatedApp in Cache with value " + String.valueOf(hasRated));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Boolean			hasRatedApp(){
+
+		String tmp = _cache.get(_userId, "hasRatedApp");
+		System.out.println("READING hasRatedApp in Cache with value " + String.valueOf(tmp));
+		if(tmp == null)
+			return null;
+		if (tmp != null){
+			if(tmp.equals("true"))
+				return true;
+		}
+		return false;
+	}
+	
+	public void				setFirstLaunch(Long launch){
+		_cache.saveCache(_userId, "firstLaunch", launch.toString());
+		try {
+			_cache.commitCache();
+			System.out.println("STORING firstLaunch in Cache with value " + String.valueOf(launch));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getFirstLaunch(){
+
+		String tmp = _cache.get(_userId, "firstLaunch");
+		System.out.println("READING firstLaunch in Cache with value " + String.valueOf(tmp));
+		if (tmp != null){
+			return Long.parseLong(tmp);
+		}
+		return null;
+	}
+	
+	public void				setLaunchCount(Long launch){
+		_cache.saveCache(_userId, "launchCount", launch.toString());
+		try {
+			_cache.commitCache();
+			System.out.println("STORING launchCount in Cache with value " + String.valueOf(launch));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getLaunchCount(){
+
+		String tmp = _cache.get(_userId, "launchCount");
+		System.out.println("READING launchCount in Cache with value " + String.valueOf(tmp));
+		if (tmp != null){
+			return Long.valueOf(tmp);
 		}
 		return null;
 	}

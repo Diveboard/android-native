@@ -1,26 +1,22 @@
 package com.diveboard.mobile.editdive;
 
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.R;
-
 import java.util.ArrayList;
 
-import org.apache.commons.codec.digest.Md5Crypt;
-
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SafetyStop;
-import com.diveboard.model.Units;
-
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Pair;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Units;
 
 public class					TabEditDetailsFragment extends Fragment
 {

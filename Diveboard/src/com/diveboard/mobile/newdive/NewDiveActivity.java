@@ -368,7 +368,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onBackPressed()
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		if (mDive.getEditList().size() > 0)
+		if (mDive.getEditList()!= null && mDive.getEditList().size() > 0)
 		{
 			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
 	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");

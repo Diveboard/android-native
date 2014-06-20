@@ -762,11 +762,16 @@ public class WalletActivity extends Activity {
 		}
 		
 		@Override
-		protected void onPostExecute(Void result) {
+		protected void onPostExecute(Void res) {
 				mAddPhotoView.setVisibility(View.VISIBLE);
 				bar.setVisibility(View.GONE);
 				generateTableLayout();
 				isAddingPic = false;
+				if(result == null){
+					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+				}
 		}
 
 	}

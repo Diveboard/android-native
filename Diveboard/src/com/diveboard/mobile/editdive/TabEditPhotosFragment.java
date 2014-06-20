@@ -259,12 +259,21 @@ public class TabEditPhotosFragment extends Fragment {
 		@Override
 		protected void onPostExecute(Picture result) {
 			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
+			if(result != null){
+				mListPictures.add(result);
+				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+			} else {
+				Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+			}
+			
 			mPhotoView.setVisibility(View.VISIBLE);
 			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
 			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 			bar.setVisibility(View.GONE);
-			mListPictures.add(result);
-			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+//			mListPictures.add(result);
+//			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
 			generateTableLayout();
 			isAddingPic = false;
 		}
@@ -273,9 +282,14 @@ public class TabEditPhotosFragment extends Fragment {
 
 	public void generateTableLayout()
 	{
-		Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
-		
-		
+		try{
+			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
+			((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
+		} catch(NullPointerException e){
+			System.out.println("Error while obtaining the font");
+			e.printStackTrace();
+		}
 		System.out.println("il y a " + mListPictures.size() + " photos");
 		
 		int screenWidth;
@@ -284,12 +298,11 @@ public class TabEditPhotosFragment extends Fragment {
 
 		screenWidth = mRootView.findViewById(R.id.tablelayout).getMeasuredWidth();
 		screenheight = mRootView.findViewById(R.id.tablelayout).getMeasuredHeight();
-		((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
 		RelativeLayout.LayoutParams dropitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 		dropitemparam.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
 		((RelativeLayout)mRootView.findViewById(R.id.drop_item)).setLayoutParams(dropitemparam);
 
-		((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
+		
 		RelativeLayout.LayoutParams mainitemparam = new RelativeLayout.LayoutParams(screenWidth / 2, RelativeLayout.LayoutParams.MATCH_PARENT);
 		mainitemparam.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 		((RelativeLayout)mRootView.findViewById(R.id.main_item)).setLayoutParams(mainitemparam);

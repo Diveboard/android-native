@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
-    android:installLocation="preferExternal"
-    android:versionCode="90"
-    android:versionName="3.1.0" >
+    android:installLocation="auto"
+    android:versionCode="108"
+    android:versionName="3.4.3" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -19,6 +19,7 @@
     -->
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.VIBRATE"/>
 
     <uses-sdk
         android:minSdkVersion="8"
@@ -150,8 +151,11 @@
         <activity
             android:name="com.diveboard.mobile.TestActivity"
             android:label="@string/title_activity_graph_image">
-            
         </activity>
+        <activity
+            android:name="com.diveboard.mobile.WalletActivity"
+            android:label="@string/title_activity_wallet" >
+         </activity>
     </application>
 
 </manifest>

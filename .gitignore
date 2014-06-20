@@ -11,6 +11,10 @@
 # generated files
 bin/
 gen/
+Diveboard/AndroidManifest.xml
+Diveboard/res/values/analytics.xml
+Diveboard/src/com/diveboard/config/AppConfig.java
+
 
 # Local configuration file (sdk path, etc)
 local.properties

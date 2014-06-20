@@ -280,7 +280,7 @@ public class					TabNewDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
 		{
-			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ",elem.get(17).getValue()));	
+			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ",mDive.getDiveReviews().getJson().toString()));	
 		}
 		
 		NewDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mDive);

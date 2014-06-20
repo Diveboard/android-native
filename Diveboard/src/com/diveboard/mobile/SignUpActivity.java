@@ -63,7 +63,7 @@ public class SignUpActivity extends FragmentActivity {
 	private String mEmail;
 	private String mPassword;
 	private String mConfirmPassword;
-	private String mURL;
+//	private String mURL;
 	private String mNickname;
 	private Boolean mNewsletter = false;
 	private Boolean mTerms = false;
@@ -72,7 +72,7 @@ public class SignUpActivity extends FragmentActivity {
 	private EditText mEmailView;
 	private EditText mPasswordView;
 	private EditText mConfirmPasswordView;
-	private EditText mURLView;
+	//private EditText mURLView;
 	private EditText mNicknameView;
 	private CheckBox mNewsletterView;
 	private CheckBox mTermsView;
@@ -115,8 +115,6 @@ public class SignUpActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.confirm_password)).setTypeface(faceR);
 		((TextView)findViewById(R.id.confirm_password)).setTextSize(TEXT_SIZE);
-		((TextView)findViewById(R.id.url)).setTypeface(faceR);
-		((TextView)findViewById(R.id.url)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.nickname)).setTypeface(faceR);
 		((TextView)findViewById(R.id.nickname)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.newsletter)).setTypeface(faceR);
@@ -144,7 +142,7 @@ public class SignUpActivity extends FragmentActivity {
 					}
 				});
 		mConfirmPasswordView = (EditText)findViewById(R.id.confirm_password);
-		mURLView = (EditText)findViewById(R.id.url);
+		//mURLView = (EditText)findViewById(R.id.url);
 		mNicknameView = (EditText)findViewById(R.id.nickname);
 		mNewsletterView = (CheckBox)findViewById(R.id.newsletter_check);
 		mTermsView = (CheckBox)findViewById(R.id.terms_check);
@@ -195,7 +193,7 @@ public class SignUpActivity extends FragmentActivity {
 		mEmailView.setError(null);
 		mPasswordView.setError(null);
 		mConfirmPasswordView.setError(null);
-		mURLView.setError(null);
+		//mURLView.setError(null);
 		mNicknameView.setError(null);
 		mNewsletterView.setError(null);
 		mTermsView.setError(null);
@@ -204,8 +202,8 @@ public class SignUpActivity extends FragmentActivity {
 		mEmail = mEmail.replace(" ", "");
 		mPassword = mPasswordView.getText().toString();
 		mConfirmPassword = mConfirmPasswordView.getText().toString();
-		mURL = mURLView.getText().toString();
-		mURL = mURL.replace(" ", "");
+		//mURL = mURLView.getText().toString();
+//		mURL = mURL.replace(" ", "");
 		mNickname = mNicknameView.getText().toString();
 		mNewsletter = mNewsletterView.isChecked();
 		mTerms = mTermsView.isChecked();
@@ -235,22 +233,23 @@ public class SignUpActivity extends FragmentActivity {
 			focusView = mNicknameView;
 			cancel = true;
 		}
-		String pattern = "^[A-Za-z\\.0-9\\-\\_]*$";
-		// Check for a valid URL.
-		if (TextUtils.isEmpty(mURL)) {
-			mURLView.setError(getString(R.string.error_field_required));
-			focusView = mURLView;
-			cancel = true;
-		} else if (mURL.length() < 4) {
-			mURLView.setError(getString(R.string.error_short_url));
-			focusView = mURLView;
-			cancel = true;
-		} else if (!mURL.matches(pattern))
-		{
-			mURLView.setError(getString(R.string.error_invalid_url));
-			focusView = mURLView;
-			cancel = true;
-		}
+		
+//		String pattern = "^[A-Za-z\\.0-9\\-\\_]*$";
+//		// Check for a valid URL.
+//		if (TextUtils.isEmpty(mURL)) {
+//			mURLView.setError(getString(R.string.error_field_required));
+//			focusView = mURLView;
+//			cancel = true;
+//		} else if (mURL.length() < 4) {
+//			mURLView.setError(getString(R.string.error_short_url));
+//			focusView = mURLView;
+//			cancel = true;
+//		} else if (!mURL.matches(pattern))
+//		{
+//			mURLView.setError(getString(R.string.error_invalid_url));
+//			focusView = mURLView;
+//			cancel = true;
+//		}
 		
 		// Check for a confirm password.
 		if (TextUtils.isEmpty(mConfirmPassword)) {
@@ -352,7 +351,7 @@ public class SignUpActivity extends FragmentActivity {
 		@Override
 		protected JSONObject doInBackground(Void... params) {
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			return AC.getModel().doRegister(mEmail, mPassword, mConfirmPassword, mURL, mNickname, mNewsletter);
+			return AC.getModel().doRegister(mEmail, mPassword, mConfirmPassword, mNickname, mNewsletter);
 		}
 
 		@Override
@@ -382,11 +381,11 @@ public class SignUpActivity extends FragmentActivity {
 								mNicknameView.setError(error);
 								mNicknameView.requestFocus();
 							}
-							else if (params.contentEquals("vanity_url"))
-							{
-								mURLView.setError(error);
-								mURLView.requestFocus();
-							}
+//							else if (params.contentEquals("vanity_url"))
+//							{
+//								mURLView.setError(error);
+//								mURLView.requestFocus();
+//							}
 							else if (params.contentEquals("password_check"))
 							{
 								mConfirmPasswordView.setError(error);

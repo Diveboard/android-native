@@ -2,26 +2,12 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
-import java.math.RoundingMode;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-
-import com.diveboard.mobile.editdive.EditDiveActivity;
-import com.diveboard.mobile.newdive.NewDiveActivity;
-import com.diveboard.model.DataRefreshListener;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.DiveboardModel.TokenExpireListener;
-import com.diveboard.model.Picture;
-import com.diveboard.model.ScreenSetup;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -32,17 +18,15 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.MediaStore.Images.Thumbnails;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.support.v4.view.GestureDetectorCompat;
-import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -53,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -62,16 +47,24 @@ import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.RelativeLayout;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupMenu;
-import android.widget.Toast;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.RelativeLayout;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.facebook.*;
+
+import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
+import com.diveboard.mobile.newdive.NewDiveActivity;
+import com.diveboard.model.DataRefreshListener;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.TokenExpireListener;
+import com.diveboard.model.Picture;
+import com.diveboard.model.ScreenSetup;
+import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
@@ -172,6 +165,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	public void onStart() {
 		super.onStart();
 		EasyTracker.getInstance(this).activityStart(this);
+		
 	}
 
 	@Override
@@ -224,8 +218,9 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	}
 	
 	@Override
-	public void onBackPressed() {
-	}
+	public void onBackPressed()
+	{		
+	};
 	
 	// The three methods below are called by the TaskFragment when new
 	// progress updates or results are available. The MainActivity 
@@ -249,15 +244,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		showProgress(false);
 
 		if (success == true) {
+			//all the data has been loaded properly
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			System.out.println("Launching AppRater");
+			AppRater.app_launched(AC, this);
+			
 			mDataLoaded = true;
 			mModel.preloadPictures();
 			createPages();
-		}
-		else
-		{
-			//finish();
-//			System.out.println("logout");
-//			logout();
 		}
 	}
 
@@ -305,11 +299,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		    	    startActivity(settingsActivity);
 		    	    return true;
 		        case R.id.report_bug:
-		        	if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT && ApplicationController.UserVoiceReady == true)
+		        	if (true)
 		        	{
+		        		//Use of UserVoice report bug system
 	        			WaitDialogFragment dialog = new WaitDialogFragment();
 	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 						Config config = new Config("diveboard.uservoice.com");
+						if(mModel.getSessionEmail() != null)
+							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
 						UserVoice.init(config, DivesActivity.this);
 						config.setShowForum(false);
 					    config.setShowContactUs(true);
@@ -319,18 +316,38 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		        		UserVoice.launchContactUs(DivesActivity.this);
 		        		dialog.dismiss();
 		        	}
-		        	else
-		        	{
-		        		Intent intent = new Intent(Intent.ACTION_SEND);
-		        		intent.setType("text/plain");
-		        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-		        		String deviceInfo = (String.format(mModel.getUser().getId() + " - I found a bug in my %s %s ,%s", Build.MANUFACTURER, Build.MODEL, Build.VERSION.RELEASE));
-		        		intent.putExtra(Intent.EXTRA_SUBJECT, deviceInfo);
-		        		startActivity(Intent.createChooser(intent, "Send Email"));
-		        	}
 		            return true;
 		        case R.id.menu_logout:
-		        	logout();
+		        	final Dialog dialog = new Dialog(DivesActivity.this);
+		        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+		    		dialog.setContentView(R.layout.dialog_edit_confirm);
+		    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		    		TextView title = (TextView) dialog.findViewById(R.id.title);
+		    		title.setTypeface(faceR);
+		    		title.setText(getResources().getString(R.string.confirm_exit));
+		    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
+		    		cancel.setTypeface(faceR);
+		    		cancel.setText(getResources().getString(R.string.cancel));
+		    		cancel.setOnClickListener(new View.OnClickListener() {
+		    			
+		    			@Override
+		    			public void onClick(View v) {
+		    				// TODO Auto-generated method stub
+		    				dialog.dismiss();
+		    			}
+		    		});
+		    		Button save = (Button) dialog.findViewById(R.id.save);
+		    		save.setTypeface(faceR);
+		    		save.setText(getResources().getString(R.string.menu_logout));
+		    		save.setOnClickListener(new View.OnClickListener() {
+		    			
+		    			@Override
+		    			public void onClick(View v) {
+		    				// TODO Auto-generated method stub
+		    				logout();
+		    			}
+		    		});
+		    		dialog.show();
 		            return true;
 		        default:
 		            return false;
@@ -380,11 +397,13 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	    	    startActivity(settingsActivity);
 	            return true;
 	    	case R.id.report_bug:
-	    		if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
+	    		if (true)
 	        	{
     				WaitDialogFragment dialog = new WaitDialogFragment();
     				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 					Config config = new Config("diveboard.uservoice.com");
+					if(mModel.getSessionEmail() != null)
+						config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
 					UserVoice.init(config, DivesActivity.this);
 					config.setShowForum(false);
 				    config.setShowContactUs(true);
@@ -393,13 +412,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					ApplicationController.UserVoiceReady = true;
 	        		UserVoice.launchContactUs(DivesActivity.this);
 	        		dialog.dismiss();
-	        	}
-	        	else
-	        	{
-	        		Intent intent = new Intent(Intent.ACTION_SEND);
-	        		intent.setType("text/plain");
-	        		intent.putExtra(Intent.EXTRA_EMAIL, new String[] {"support@diveboard.com"});
-	        		startActivity(Intent.createChooser(intent, "Send Email"));
 	        	}
 	            return true;
 	    	case R.id.menu_logout:
