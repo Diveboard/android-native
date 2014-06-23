@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.BitmapDrawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -33,6 +34,7 @@ import android.view.ContextMenu.ContextMenuInfo;
 import android.view.GestureDetector;
 import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
@@ -105,6 +107,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private View 							mLoadDataStatusView;
 	private TextView 						mLoadDataStatusMessageView;
 	private boolean							mDataLoaded = false;
+	private PopupMenu 						popup;
 	// Model to display
 	private DownloadTickerImage 			mTickerImage = null;
 	private Bitmap 							strokeThumbnail = null;
@@ -254,6 +257,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			System.out.println("Launching AppRater");
+			
 			AppRater.app_launched(AC, this);
 			
 			mDataLoaded = true;
@@ -261,6 +265,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			createPages();
 		}
 	}
+	
 
 	
 	@Override
@@ -270,9 +275,12 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	
 	public void goToMenuV3(View view)
 	{
-		PopupMenu popup = new PopupMenu(this, view);
+		popup = new PopupMenu(this, view);
 	    MenuInflater inflater = popup.getMenuInflater();
 	    inflater.inflate(R.menu.settings, popup.getMenu());
+	    if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
+			popup.getMenu().findItem(R.id.rate_app).setVisible(true);
+		}
 	    popup.show();
 	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
 	    {
@@ -281,13 +289,20 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			public boolean onMenuItemClick(MenuItem item) {
 				switch (item.getItemId()) {
 				case R.id.refresh:
-//					mModel.refreshData();
 					ApplicationController AC = (ApplicationController)getApplicationContext();
 					AC.setDataReady(false);
 					AC.getModel().stopPreloadPictures();
 					ApplicationController.mForceRefresh = true;
 					AC.setModel(null);
 					finish();
+					return true;
+				case R.id.rate_app:
+					mModel.setHasRatedApp(true);
+					try {
+					    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+					} catch (android.content.ActivityNotFoundException anfe) {
+					    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+					}
 					return true;
 				case R.id.see_wallet:
 					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
@@ -1356,4 +1371,5 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
         return super.onKeyDown(keycode, e);
     }
+    
 }

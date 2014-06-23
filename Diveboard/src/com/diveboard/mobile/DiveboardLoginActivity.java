@@ -165,7 +165,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 						root.mkdirs();
 					}
 					
-					File gpxfile = new File(root, "Undhandled_errors.txt");
+					File gpxfile = new File(root, "Unhandled_errors.txt");
 					FileWriter writer = new FileWriter(gpxfile, true);
 					PrintWriter pw = new PrintWriter(writer);
 					writer.append("\n\n" + timeTag + ": ");
@@ -180,7 +180,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	        }
 	    };
 
-//		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
+		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 	}
 	
 	@Override
