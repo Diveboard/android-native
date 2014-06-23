@@ -197,10 +197,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         
         //Instantiate the current context so that we dont have to access everytime is needed
         mContext = getApplicationContext();
-		if (AC.isDataReady() == false)
+        
+		if (AC.isDataReady() == false){
+			System.out.println("Data is not ready, loading data");
 			loadData();
-		else
+			
+		}
+		else{
+			System.out.println("Data is ready, creating pages");
 			createPages();
+		}
+			
 		
 		
 	}
@@ -278,6 +285,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 					ApplicationController AC = (ApplicationController)getApplicationContext();
 					AC.setDataReady(false);
 					AC.getModel().stopPreloadPictures();
+					ApplicationController.mForceRefresh = true;
 					AC.setModel(null);
 					finish();
 					return true;
@@ -458,6 +466,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	{
 		if (mTaskFragment != null)
 		{
+			System.out.println("mTaskFragment was not launched cause its already running");
 			return;
 		}
 		// Show a progress spinner, and kick off a background task to

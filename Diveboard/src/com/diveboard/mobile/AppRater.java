@@ -27,7 +27,10 @@ public class AppRater {
         	AC.getModel().setHasRatedApp(false);
         }
         	
-        if (AC.getModel().hasRatedApp()) { return ; }
+        if (AC.getModel().hasRatedApp()) { 
+        	System.out.println("User has already rated the app");
+        	return ; 
+        }
         
         // Increment launch counter
         Long launch_count = AC.getModel().getLaunchCount() + 1L;
@@ -43,13 +46,12 @@ public class AppRater {
         System.out.println("DATE FIRST LAUNCH: " + new SimpleDateFormat("MMM dd,yyyy HH:mm").format(new Date(date_firstLaunch)));
         
         // Wait at least n days before opening
-//        if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
-//            if (System.currentTimeMillis() >= date_firstLaunch + (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
-//                showRateDialog(AC);
-//            }
-//        }
+        if (launch_count >= LAUNCHES_UNTIL_PROMPT) {
+            if (System.currentTimeMillis() >= date_firstLaunch + (DAYS_UNTIL_PROMPT * 24 * 60 * 60 * 1000)) {
+                showRateDialog(AC, mContext);
+            }
+        }
 
-        showRateDialog(AC, mContext);
     }   
     
     public static void showRateDialog(final ApplicationController AC, final Context mContext) {

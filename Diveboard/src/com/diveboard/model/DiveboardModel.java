@@ -96,6 +96,7 @@ public class					DiveboardModel
 	public static boolean 		_sotimedout = false;
 	public static boolean 		_searchtimedout = false;
 	private TokenExpireListener	mTokenExpireListener = null;
+	private boolean 			_force_refresh = false;
 	
 	/*
 	 * Method DiveboardModel
@@ -424,20 +425,25 @@ public class					DiveboardModel
 				System.out.println("APPLYING EDIT CHANGES TO DATA");
 				// there are changes to be applied
 				_applyEdit();
-			} else if (_refreshDataThread == null) {
-				// force user to null so that there is a full sync with the data stored in the server
+			} 
+			else if (ApplicationController.mForceRefresh) {
+//				// force refreshDataThread to null so that there is a full sync with the data stored in the server
 				System.out.println("FORCING REFRESH");
 				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 				// Test connectivity
 				if (networkInfo != null && networkInfo.isConnected()) {
 					_user = null;
+					_refreshDataThread = null;
+					ApplicationController.mForceRefresh = false;
 					refreshData();
+
 				}
 
 			}
 				
 		}
 	}
+	
 	
 	public void 				updateUser(){
 		System.out.println("Entered in updateUser");
@@ -504,6 +510,7 @@ public class					DiveboardModel
 		{
 //			while (_run)
 //			{
+			System.out.println("Refresh data Thread run method ON");
 				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 				
 				// Test connectivity
@@ -2060,7 +2067,6 @@ public class					DiveboardModel
 			_cache.saveCache(_userId, "hasRatedApp", "false");
 		try {
 			_cache.commitCache();
-			System.out.println("STORING hasRatedApp in Cache with value " + String.valueOf(hasRated));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2070,7 +2076,6 @@ public class					DiveboardModel
 	public Boolean			hasRatedApp(){
 
 		String tmp = _cache.get(_userId, "hasRatedApp");
-		System.out.println("READING hasRatedApp in Cache with value " + String.valueOf(tmp));
 		if(tmp == null)
 			return null;
 		if (tmp != null){
@@ -2084,7 +2089,6 @@ public class					DiveboardModel
 		_cache.saveCache(_userId, "firstLaunch", launch.toString());
 		try {
 			_cache.commitCache();
-			System.out.println("STORING firstLaunch in Cache with value " + String.valueOf(launch));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2094,7 +2098,6 @@ public class					DiveboardModel
 	public Long			getFirstLaunch(){
 
 		String tmp = _cache.get(_userId, "firstLaunch");
-		System.out.println("READING firstLaunch in Cache with value " + String.valueOf(tmp));
 		if (tmp != null){
 			return Long.parseLong(tmp);
 		}
@@ -2105,7 +2108,6 @@ public class					DiveboardModel
 		_cache.saveCache(_userId, "launchCount", launch.toString());
 		try {
 			_cache.commitCache();
-			System.out.println("STORING launchCount in Cache with value " + String.valueOf(launch));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -2115,7 +2117,6 @@ public class					DiveboardModel
 	public Long			getLaunchCount(){
 
 		String tmp = _cache.get(_userId, "launchCount");
-		System.out.println("READING launchCount in Cache with value " + String.valueOf(tmp));
 		if (tmp != null){
 			return Long.valueOf(tmp);
 		}

@@ -114,7 +114,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 		depth.addView(depth_title);
 		
 		mDepthField = new EditText(getActivity().getApplicationContext());
-		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mDepthField.setTypeface(mFaceR);
 		mDepthField.setTextColor(getResources().getColor(R.color.dark_grey));
 		mDepthField.setTextSize(30);
@@ -171,7 +171,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 		duration.addView(duration_title);
 		
 		mDurationField = new EditText(getActivity().getApplicationContext());
-		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mDurationField.setTypeface(mFaceR);
 		mDurationField.setTextColor(getResources().getColor(R.color.dark_grey));
 		mDurationField.setTextSize(30);
@@ -251,7 +251,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 		depth.addView(depth_title);
 		
 		mDepthField = new EditText(getActivity().getApplicationContext());
-		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER );
 		mDepthField.setTypeface(mFaceR);
 		mDepthField.setTextColor(getResources().getColor(R.color.dark_grey));
 		mDepthField.setTextSize(30);
@@ -291,7 +291,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 		duration.addView(duration_title);
 		
 		mDurationField = new EditText(getActivity().getApplicationContext());
-		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mDurationField.setTypeface(mFaceR);
 		mDurationField.setTextColor(getResources().getColor(R.color.dark_grey));
 		mDurationField.setTextSize(30);
