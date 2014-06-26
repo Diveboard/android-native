@@ -4,8 +4,8 @@
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
-    <string name="maps_app_id_debug2">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
-    <string name="maps_app_id_debug">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
@@ -35,6 +35,8 @@
     <string name="edit_date_title">Date</string>
     <string name="edit_time_in_title">Time In</string>
     <string name="title_activity_dive_details">DiveDetailsActivity</string>
+    <string name="title_shop_activity">ClosestShopActivity</string>
+    <string name="title_map_activity">MapActivity</string>
     <string name="title_activity_dive_details_main">DiveDetailsMainActivity</string>
     <string name="edit_max_depth_title">Max Depth</string>
     <string name="maxdepth_hint">Max Depth</string>
@@ -136,6 +138,7 @@
     <string name="share_msg">Share it!</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_new_dive">New dive</string>
+    <string name="menu_shop">Closest shop</string>
     <string name="menu_settings">Settings</string>
     <string name="menu_report_bug">Report a bug</string>
     <string name="menu_wallet">See your wallet</string>

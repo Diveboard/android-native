@@ -1671,10 +1671,10 @@ public class					DiveboardModel
 				e.printStackTrace();
 			} catch (ConnectTimeoutException e) {
 				DiveboardModel._cotimedout = true;
-				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+//				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (SocketTimeoutException e) {
 				DiveboardModel._sotimedout = true;
-				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+//				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
