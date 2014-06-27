@@ -165,6 +165,7 @@
         <item>Rate App</item>
     </string-array>
     <string-array name="menu_links_has_rated">
+        <item>Diveboard</item>
         <item>Refresh</item>
         <item>See Wallet</item>
         <item>Closest Shop</item>

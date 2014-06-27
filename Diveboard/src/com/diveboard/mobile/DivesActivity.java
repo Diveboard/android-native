@@ -1493,7 +1493,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     		final Dialog dialog = new Dialog(DivesActivity.this);
     		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     		dialog.setContentView(R.layout.dialog_edit_confirm);
-    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regula	r.otf");
     		TextView title = (TextView) dialog.findViewById(R.id.title);
     		title.setTypeface(faceR);
     		title.setText(getResources().getString(R.string.confirm_exit));
