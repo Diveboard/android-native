@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
@@ -153,4 +152,25 @@
     <string name="rate_later">Remind me later</string>
     <string name="rate_refuse">No, thanks</string>
     <string name="rate_accept">Sure!</string>
+    
+    <string-array name="menu_links_has_not_rated">
+        <item>Diveboard</item>
+        <item>Refresh</item>
+        <item>See Wallet</item>
+        <item>Closest Shop</item>
+        <item>New Dive</item>
+        <item>Settings</item>
+        <item>Report a bug</item>
+        <item>Logout</item>
+        <item>Rate App</item>
+    </string-array>
+    <string-array name="menu_links_has_rated">
+        <item>Refresh</item>
+        <item>See Wallet</item>
+        <item>Closest Shop</item>
+        <item>New Dive</item>
+        <item>Settings</item>
+        <item>Report a bug</item>
+        <item>Logout</item>
+    </string-array>
 </resources>
