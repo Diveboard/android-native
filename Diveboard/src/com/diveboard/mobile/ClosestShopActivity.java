@@ -14,6 +14,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
@@ -26,10 +27,12 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Typeface;
 import android.view.Gravity;
 import android.view.Menu;
@@ -164,6 +167,37 @@ public class ClosestShopActivity extends Activity {
 			mMap.getUiSettings().setRotateGesturesEnabled(true);
 			mMap.getUiSettings().setScrollGesturesEnabled(true);
 			mMap.getUiSettings().setCompassEnabled(true);
+			mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
+				
+				@Override
+				public void onInfoWindowClick(Marker marker) {
+					// TODO Auto-generated method stub
+					
+					if(myMarker != null){
+						if(!myMarker.equals(marker)){
+							String gmapsquery = "http://maps.google.com/maps?saddr=" + String.valueOf(myMarker.getPosition().latitude) + "," + String.valueOf(myMarker.getPosition().longitude) + "&daddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude);
+							System.out.println("About to call GOOGLE MAPS WITH:\n" + gmapsquery);
+							Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(gmapsquery));
+							startActivity(intent);
+						}
+					} else {
+						double latitude = marker.getPosition().latitude;
+						double longitude = marker.getPosition().longitude;
+						String label = marker.getTitle();
+						String uriBegin = "geo:" + latitude + "," + longitude;
+						String query = latitude + "," + longitude + "(" + label + ")";
+						String encodedQuery = Uri.encode(query);
+						String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
+						Uri uri = Uri.parse(uriString);
+						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+						startActivity(intent);
+						//						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, 
+						//								Uri.parse("http://maps.google.com/maps?saddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude) + "ddr=20.5666,45.345"));
+						//						startActivity(intent);
+					}
+
+				}
+			});
 			LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 			ShopsTask shops_task = new ShopsTask();
 			activeGPS(false);
