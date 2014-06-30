@@ -295,14 +295,15 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			if(!AC.getModel().hasRatedApp())
+			
+			if(AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp())
 				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
 			else
 				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
 			System.out.println("Launching AppRater");
-			
+
 			AppRater.app_launched(AC, this);
-			
+
 			mDataLoaded = true;
 			mModel.preloadPictures();
 			createPages();

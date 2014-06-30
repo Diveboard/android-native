@@ -17,7 +17,7 @@ public class AppRater {
     final static String APP_PNAME = "com.diveboard.mobile";
     
     private static int DAYS_UNTIL_PROMPT = 3;
-    private final static int LAUNCHES_UNTIL_PROMPT = 10;
+    private final static int LAUNCHES_UNTIL_PROMPT = 5;
     
     public static void app_launched(ApplicationController AC, Context mContext) {
     	//first time user logs initialization
@@ -26,11 +26,11 @@ public class AppRater {
         	AC.getModel().setLaunchCount(0L);
         	AC.getModel().setHasRatedApp(false);
         }
-        	
-        if (AC.getModel().hasRatedApp()) { 
-        	System.out.println("User has already rated the app");
-        	return ; 
-        }
+
+//        if (AC.getModel().hasRatedApp()) { 
+//        	System.out.println("User has already rated the app");
+//        	return ; 
+//        }
         
         // Increment launch counter
         Long launch_count = AC.getModel().getLaunchCount() + 1L;

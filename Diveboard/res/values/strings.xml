@@ -148,7 +148,7 @@
     <string name="upload_not_finished">Please wait until the picture has been uploaded to the server to save</string>
     <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
     <string name="rate_title">Rate Diveboard</string>
-    <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us and give us some feedback of your experience?\nThanks for your support diver!</string>
+    <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us on the play store?\nThanks!!</string>
     <string name="rate_later">Remind me later</string>
     <string name="rate_refuse">No, thanks</string>
     <string name="rate_accept">Sure!</string>
