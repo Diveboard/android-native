@@ -22,6 +22,7 @@ public class					Shop implements IModel
 	private ArrayList<Integer>	_diveIds;
 	private Integer				_diveCount;
 	private String				_cname;
+	private String				_shakenId;
 	
 	public						Shop(JSONObject json) throws JSONException
 	{
@@ -34,6 +35,8 @@ public class					Shop implements IModel
 		_web = (json.isNull("web")) ? null : json.getString("web");
 		_phone = (json.isNull("phone")) ? null : json.getString("phone");
 		_logo = (json.isNull("logo_url")) ? null : new Picture(json.getString("logo_url"));
+		_shakenId= (json.isNull("shaken_id")) ? null : json.getString("shaken_id");
+		
 		if (!json.isNull("dive_ids"))
 		{
 			_diveIds = new ArrayList<Integer>();
@@ -144,6 +147,14 @@ public class					Shop implements IModel
 	
 	public String getCountryName() {
 		return this._cname;
+	}
+
+	public String getShakenId() {
+		return _shakenId;
+	}
+
+	public void setShakenId(String _shakenId) {
+		this._shakenId = _shakenId;
 	}
 
 	@Override

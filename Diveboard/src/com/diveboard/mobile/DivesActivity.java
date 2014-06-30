@@ -233,6 +233,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        TextView mDrawerTitle = (TextView)findViewById(R.id.drawer_title);
+        mDrawerTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf"));
+        ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
+        mDrawerMenu.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mDrawerLayout.openDrawer(mDrawerContainer);
+			}
+		});
 
 //        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
@@ -615,33 +626,33 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		String pos = "";
 		if (model.getDives().get(i).getLat() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "N";
 		}
 		else if (model.getDives().get(i).getLat() >= 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLat(), 4)) + "Â° ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLat(), 4)) + "° ";
 			pos += "N";
 		}
 		else if (model.getDives().get(i).getLat() < 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLat() * (-1), 4)) + "Â° ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLat() * (-1), 4)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (model.getDives().get(i).getLng() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "E";
 		}
 		else if (model.getDives().get(i).getLng() >= 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLng(), 4)) + "Â° ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLng(), 4)) + "° ";
 			pos += "E";
 		}
 		else if (model.getDives().get(i).getLng() < 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLng() * (-1), 4)) + "Â° ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLng() * (-1), 4)) + "° ";
 			pos += "W";
 		}
 		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 
@@ -1405,16 +1416,16 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     	
     }
     
-    @Override
-    public boolean onKeyDown(int keycode, KeyEvent e) {
-        switch(keycode) {
-            case KeyEvent.KEYCODE_MENU:
-            	openMenu(findViewById(R.id.load_data_form));
-                return true;
-        }
-
-        return super.onKeyDown(keycode, e);
-    }
+//    @Override
+//    public boolean onKeyDown(int keycode, KeyEvent e) {
+//        switch(keycode) {
+//            case KeyEvent.KEYCODE_MENU:
+//            	openMenu(findViewById(R.id.load_data_form));
+//                return true;
+//        }
+//
+//        return super.onKeyDown(keycode, e);
+//    }
     
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
@@ -1494,7 +1505,7 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
     		final Dialog dialog = new Dialog(DivesActivity.this);
     		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     		dialog.setContentView(R.layout.dialog_edit_confirm);
-    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regula	r.otf");
+    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
     		TextView title = (TextView) dialog.findViewById(R.id.title);
     		title.setTypeface(faceR);
     		title.setText(getResources().getString(R.string.confirm_exit));

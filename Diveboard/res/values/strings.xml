@@ -154,7 +154,7 @@
     <string name="rate_accept">Sure!</string>
     
     <string-array name="menu_links_has_not_rated">
-        <item>Diveboard</item>
+        <item>Logbook</item>
         <item>Refresh</item>
         <item>See Wallet</item>
         <item>Closest Shop</item>
@@ -165,7 +165,7 @@
         <item>Rate App</item>
     </string-array>
     <string-array name="menu_links_has_rated">
-        <item>Diveboard</item>
+        <item>Logbook</item>
         <item>Refresh</item>
         <item>See Wallet</item>
         <item>Closest Shop</item>

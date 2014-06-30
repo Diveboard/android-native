@@ -19,6 +19,7 @@ import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
@@ -34,6 +35,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.util.Pair;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.View;
@@ -50,15 +52,18 @@ import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
 public class ClosestShopActivity extends Activity {
-	private 					GoogleMap mMap;
-	private boolean 			earthViewActive = false;
-	LocationManager 			mLocationManager;
-	myLocationListener 			mLocationListener;
-	Double 						mLatitude = 0.0;
-	Double 						mLongitude = 0.0;
-	Marker 						myMarker;
-	ApplicationController 		AC;
-	private List<Marker>		mListMarkers = new ArrayList<Marker>();
+	private 										GoogleMap mMap;
+	private boolean 								earthViewActive = false;
+	LocationManager 								mLocationManager;
+	myLocationListener 								mLocationListener;
+	Double 											mLatitude = 0.0;
+	Double 											mLongitude = 0.0;
+	Marker 											myMarker;
+	ApplicationController 							AC;
+	private ArrayList<Pair<Marker,Shop>> 			mListShops;
+	private int										mMaxNumShops = 10;
+//	private List<Marker>		mListMarkers = new ArrayList<Marker>();
+//	private List<Shop> 			mListShops;
 	
 	private class myLocationListener implements LocationListener {
 		public void onLocationChanged(Location location) {
@@ -119,7 +124,6 @@ public class ClosestShopActivity extends Activity {
 		Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		AC = (ApplicationController)getApplicationContext();
 		setContentView(R.layout.activity_closest_shop);
-		
 			
 		if (mMap == null) {
 			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
@@ -171,40 +175,65 @@ public class ClosestShopActivity extends Activity {
 				
 				@Override
 				public void onInfoWindowClick(Marker marker) {
-					// TODO Auto-generated method stub
-					
-					if(myMarker != null){
-						if(!myMarker.equals(marker)){
-							String gmapsquery = "http://maps.google.com/maps?saddr=" + String.valueOf(myMarker.getPosition().latitude) + "," + String.valueOf(myMarker.getPosition().longitude) + "&daddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude);
-							System.out.println("About to call GOOGLE MAPS WITH:\n" + gmapsquery);
-							Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(gmapsquery));
+					// Calls Google Maps					
+//					if(myMarker != null){
+//						if(!myMarker.equals(marker)){
+//							String gmapsquery = "http://maps.google.com/maps?saddr=" + String.valueOf(myMarker.getPosition().latitude) + "," + String.valueOf(myMarker.getPosition().longitude) + "&daddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude);
+//							System.out.println("About to call GOOGLE MAPS WITH:\n" + gmapsquery);
+//							Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(gmapsquery));
+//							startActivity(intent);
+//						}
+//					} else {
+//						double latitude = marker.getPosition().latitude;
+//						double longitude = marker.getPosition().longitude;
+//						String label = marker.getTitle();
+//						String uriBegin = "geo:" + latitude + "," + longitude;
+//						String query = latitude + "," + longitude + "(" + label + ")";
+//						String encodedQuery = Uri.encode(query);
+//						String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
+//						Uri uri = Uri.parse(uriString);
+//						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
+//						startActivity(intent);
+//					}
+					if(myMarker != null && !myMarker.equals(marker)){
+						String mShopUrl = ""; 
+						for(int i = 0; i < mListShops.size(); i++){
+							if( mListShops.get(i).first.equals(marker) && mListShops.get(i).second != null){
+								mShopUrl = "http://scu.bz/" + mListShops.get(i).second.getShakenId();
+								break;
+								}
+						}
+						if(!mShopUrl.isEmpty()){
+							Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mShopUrl));
 							startActivity(intent);
 						}
-					} else {
-						double latitude = marker.getPosition().latitude;
-						double longitude = marker.getPosition().longitude;
-						String label = marker.getTitle();
-						String uriBegin = "geo:" + latitude + "," + longitude;
-						String query = latitude + "," + longitude + "(" + label + ")";
-						String encodedQuery = Uri.encode(query);
-						String uriString = uriBegin + "?q=" + encodedQuery + "&z=16";
-						Uri uri = Uri.parse(uriString);
-						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
-						startActivity(intent);
-						//						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, 
-						//								Uri.parse("http://maps.google.com/maps?saddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude) + "ddr=20.5666,45.345"));
-						//						startActivity(intent);
+							
 					}
-
 				}
 			});
-			LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-			ShopsTask shops_task = new ShopsTask();
+			mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+				
+				@Override
+				public void onCameraChange(CameraPosition arg0) {
+					// TODO Auto-generated method stub
+					ShopsTask shops_task = new ShopsTask();
+					LatLngBounds b = mMap.getProjection().getVisibleRegion().latLngBounds;
+					mLatitude = mMap.getCameraPosition().target.latitude;
+					mLongitude = mMap.getCameraPosition().target.longitude;
+					if (b != null)
+						shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(b.southwest.latitude), Double.toString(b.northeast.latitude), Double.toString(b.southwest.longitude), Double.toString(b.northeast.longitude));
+					else
+						shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
+				}
+			});
+			
+			
 			activeGPS(false);
-			if (bounds != null)
-				shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
-			else
-				shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
+//			LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//			if (bounds != null)
+//				shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
+//			else
+//				shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
 			
 		}
 	}
@@ -263,7 +292,6 @@ public class ClosestShopActivity extends Activity {
     	private JSONObject	result;
     	private JSONArray	mArray;
     	private boolean		searchDone = false;
-    	private String 		swipe;
     	
     	private class SearchTimer extends Thread
     	{
@@ -340,35 +368,29 @@ public class ClosestShopActivity extends Activity {
 				{
 					try {
 						mArray = result.getJSONArray("shops");
-						final List<Shop> listShops = new ArrayList<Shop>();
-						for (int i = 0; i < mArray.length(); i++)
-						{
-							Shop shop = new Shop(mArray.getJSONObject(i));
-							listShops.add(shop);
-							
-						}
-						if (listShops.size() == 0)
-						{
-							Toast toast = Toast.makeText(AC, "There are not shops around :(", Toast.LENGTH_SHORT);
-							toast.setGravity(Gravity.CENTER, 0, 0);
-							toast.show();
-						}
-						else
-						{
-							for (int i = 0; i < Math.min(listShops.size(),9) ; i++)
+						mListShops = new ArrayList<Pair<Marker,Shop>>();
+						
+						if (mArray.length() > 0)
+						{	
+							mMap.clear();
+							if(myMarker != null){
+								myMarker = mMap.addMarker(new MarkerOptions()
+								.position(new LatLng(myMarker.getPosition().latitude, myMarker.getPosition().longitude))
+								.title("My current location")
+								.icon(BitmapDescriptorFactory.fromResource(R.drawable.diveboard_marker)));
+							}
+							for (int i = 0; i < Math.min(mArray.length(), mMaxNumShops) ; i++)
 							{
-								//System.out.println(listShops.get(i - 1).getName() + " " +listShops.get(i - 1).getLat());
-								if (listShops.get(i).getLat() != null && listShops.get(i).getLng() != null)
-								{
+								Shop shop = new Shop(mArray.getJSONObject(i));
+								if(shop.getLat() != null && shop.getLng() != null){
 									Marker shopMarker = mMap.addMarker(new MarkerOptions()
-									.position(new LatLng(listShops.get(i).getLat(), listShops.get(i).getLng()))
-									.title(listShops.get(i).getName() + ", " + listShops.get(i).getCountryName())
+									.position(new LatLng(shop.getLat(), shop.getLng()))
+									.title(shop.getName() + ", " + shop.getCountryName())
 									.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-									mListMarkers.add(shopMarker);
-									System.err.println("Added marker " + listShops.get(i).getName());
+									mListShops.add(new Pair<Marker, Shop>(shopMarker, shop));
+
 								}
-								else 
-									System.err.println("marker not added");
+								
 							}
 							
 						}
