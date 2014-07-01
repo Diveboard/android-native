@@ -666,6 +666,60 @@ public class					Dive implements IModel
 		Pair<String, String> new_elem = new Pair<String, String>("safetystops_unit_value", safetystring);
 		_editList.add(new_elem);
 	}
+	
+	public String getTanks(){
+		//TO DEFINE
+//		String safetystring = "[";
+//		ArrayList<SafetyStop> stops = getSafetyStops();
+//
+//		if (stops != null) {
+//			for (int i = 0, length = stops.size(); i < length; i++)
+//			{
+//				if (i != 0)
+//					safetystring += ",";
+//				safetystring += "[\"" + stops.get(i).getDuration() + "\",\"" + stops.get(i).getDepth() + "\",\"" + stops.get(i).getUnit() + "\"]";
+//			}
+//		}
+//		safetystring += "]";
+//		return safetystring;
+		return null;
+	}
+	
+	public void setTanks(ArrayList<Tank> tanks) {
+
+		try{
+			JSONArray tanksArray = new JSONArray();
+	
+			for (int i = 0, length = tanks.size(); i < length; i++)
+			{
+				JSONObject jTank = new JSONObject();
+				Tank tank = tanks.get(i);
+				if(tank.getId() != null)
+					jTank.put("id",tank.getId());
+				jTank.put("gas",tank.getGas());
+				jTank.put("he", tank.getHe());
+				jTank.put("n2", tank.getN2());
+				jTank.put("o2", tank.getO2());
+				jTank.put("material", tank.getMaterial());
+				jTank.put("multitank", tank.getMultitank());
+				jTank.put("p_start_value", tank.getPStartValue());
+				jTank.put("p_end_value", tank.getPEndValue());
+				jTank.put("p_start_unit", tank.getPUnit());
+				jTank.put("p_end_unit", tank.getPUnit());
+				jTank.put("time_start", tank.getTimeStart());
+				jTank.put("volume_value", tank.getVolumeValue());
+				jTank.put("volume_unit", tank.getVolumeUnit());
+				
+				tanksArray.put(jTank);
+			}
+	
+			System.out.println("SETTING TANKS: " + tanksArray.toString());
+			Pair<String, String> new_elem = new Pair<String, String>("tanks", tanksArray.toString());
+			_editList.add(new_elem);
+		} catch (JSONException e){
+			e.printStackTrace();
+		}
+	}
 
 	public String getShakenId() {
 		return _shakenId;
@@ -1063,14 +1117,6 @@ public class					Dive implements IModel
 
 	public void setDiveGears(ArrayList<DiveGear> _diveGears) {
 		this._diveGears = _diveGears;
-	}
-
-	public ArrayList<Tank> getTanks() {
-		return _tanks;
-	}
-
-	public void setTanks(ArrayList<Tank> _tanks) {
-		this._tanks = _tanks;
 	}
 
 	public Shop getShop() {

@@ -20,6 +20,11 @@ public class					Tank implements IModel
 	private Integer				_timeStart;
 	private Double				_pStart;
 	private Double				_pEnd;
+	private Double				_volumeUnit;
+	private Double				_volumeValue;
+	private	Double				_pUnit;
+	private	Double				_pStartValue;
+	private	Double				_pEndValue;
 	
 	public						Tank(JSONObject json) throws JSONException
 	{
@@ -34,6 +39,11 @@ public class					Tank implements IModel
 		_timeStart = (json.isNull("time_start")) ? null : json.getInt("time_start");
 		_pStart = (json.isNull("p_start")) ? null : json.getDouble("p_start");
 		_pEnd = (json.isNull("p_end")) ? null : json.getDouble("p_end");
+		_volumeUnit = (json.isNull("volume_unit")) ? null : json.getDouble("volume_unit");
+		_volumeValue = (json.isNull("volume_value")) ? null : json.getDouble("volume_value");
+		_pUnit = (json.isNull("p_start_unit")) ? null : json.getDouble("p_start_unit");
+		_pStartValue = (json.isNull("p_start_value")) ? null : json.getDouble("p_start_value");
+		_pEndValue = (json.isNull("p_value")) ? null : json.getDouble("p_end");
 	}
 
 	public Integer getId() {
@@ -122,6 +132,46 @@ public class					Tank implements IModel
 
 	public void setPEnd(Double _pEnd) {
 		this._pEnd = _pEnd;
+	}
+
+	public Double getVolumeUnit() {
+		return _volumeUnit;
+	}
+
+	public void setVolumeUnit(Double _volumeUnit) {
+		this._volumeUnit = _volumeUnit;
+	}
+
+	public Double getVolumeValue() {
+		return _volumeValue;
+	}
+
+	public void setVolumeValue(Double _volumeValue) {
+		this._volumeValue = _volumeValue;
+	}
+
+	public Double getPUnit() {
+		return _pUnit;
+	}
+
+	public void setPUnit(Double _pUnit) {
+		this._pUnit = _pUnit;
+	}
+
+	public Double getPStartValue() {
+		return _pStartValue;
+	}
+
+	public void setPStartValue(Double _pStartValue) {
+		this._pStartValue = _pStartValue;
+	}
+
+	public Double getPEndValue() {
+		return _pEndValue;
+	}
+
+	public void setPEndValue(Double _pEndValue) {
+		this._pEndValue = _pEndValue;
 	}
 
 	@Override
