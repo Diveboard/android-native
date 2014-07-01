@@ -19,8 +19,17 @@
     <string name="pound">pound</string>
     <string name="unit_m">m</string>
     <string name="unit_ft">ft</string>
+    <string name="cubic_ft">cuft</string>
+    <string name="unit_liter">L</string>
+    <string name="unit_bar">bar</string>
+    <string name="unit_psi">psi</string>
     <string name="meters">meters</string>
     <string name="feet">feet</string>
     <string name="unit_min">min</string>
     <string name="unit_mins">mins</string>
+    <string name="custom_mix">Custom</string>
+    <string name="air_mix">Air</string>
+    <string name="nitrox32">Nitrox EANx32</string>
+    <string name="nitrox36">Nitrox EANx36</string>
+    <string name="nitrox40">Nitrox EANx40</string>
 </resources>

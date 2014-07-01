@@ -667,22 +667,28 @@ public class					Dive implements IModel
 		_editList.add(new_elem);
 	}
 	
-	public String getTanks(){
-		//TO DEFINE
-//		String safetystring = "[";
-//		ArrayList<SafetyStop> stops = getSafetyStops();
-//
-//		if (stops != null) {
-//			for (int i = 0, length = stops.size(); i < length; i++)
-//			{
-//				if (i != 0)
-//					safetystring += ",";
-//				safetystring += "[\"" + stops.get(i).getDuration() + "\",\"" + stops.get(i).getDepth() + "\",\"" + stops.get(i).getUnit() + "\"]";
-//			}
-//		}
-//		safetystring += "]";
-//		return safetystring;
-		return null;
+	public ArrayList<Tank> getTanks(){
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("tanks"))
+			{
+				ArrayList<Tank> result;
+				try {
+					if (_editList.get(i).second.equals("null"))
+						return null;
+					JSONArray mTanks = new JSONArray(_editList.get(i).second);
+					result = new ArrayList<Tank>();
+					for (int j =0; j < mTanks.length(); j++){
+						result.add(new Tank(mTanks.getJSONObject(j)));
+					}
+					
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return _tanks;
 	}
 	
 	public void setTanks(ArrayList<Tank> tanks) {

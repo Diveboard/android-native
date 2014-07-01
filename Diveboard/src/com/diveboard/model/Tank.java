@@ -20,9 +20,9 @@ public class					Tank implements IModel
 	private Integer				_timeStart;
 	private Double				_pStart;
 	private Double				_pEnd;
-	private Double				_volumeUnit;
+	private String				_volumeUnit;
 	private Double				_volumeValue;
-	private	Double				_pUnit;
+	private	String				_pUnit;
 	private	Double				_pStartValue;
 	private	Double				_pEndValue;
 	
@@ -39,9 +39,9 @@ public class					Tank implements IModel
 		_timeStart = (json.isNull("time_start")) ? null : json.getInt("time_start");
 		_pStart = (json.isNull("p_start")) ? null : json.getDouble("p_start");
 		_pEnd = (json.isNull("p_end")) ? null : json.getDouble("p_end");
-		_volumeUnit = (json.isNull("volume_unit")) ? null : json.getDouble("volume_unit");
+		_volumeUnit = (json.isNull("volume_unit")) ? null : json.getString("volume_unit");
 		_volumeValue = (json.isNull("volume_value")) ? null : json.getDouble("volume_value");
-		_pUnit = (json.isNull("p_start_unit")) ? null : json.getDouble("p_start_unit");
+		_pUnit = (json.isNull("p_start_unit")) ? null : json.getString("p_start_unit");
 		_pStartValue = (json.isNull("p_start_value")) ? null : json.getDouble("p_start_value");
 		_pEndValue = (json.isNull("p_value")) ? null : json.getDouble("p_end");
 	}
@@ -134,11 +134,11 @@ public class					Tank implements IModel
 		this._pEnd = _pEnd;
 	}
 
-	public Double getVolumeUnit() {
+	public String getVolumeUnit() {
 		return _volumeUnit;
 	}
 
-	public void setVolumeUnit(Double _volumeUnit) {
+	public void setVolumeUnit(String _volumeUnit) {
 		this._volumeUnit = _volumeUnit;
 	}
 
@@ -150,11 +150,11 @@ public class					Tank implements IModel
 		this._volumeValue = _volumeValue;
 	}
 
-	public Double getPUnit() {
+	public String getPUnit() {
 		return _pUnit;
 	}
 
-	public void setPUnit(Double _pUnit) {
+	public void setPUnit(String _pUnit) {
 		this._pUnit = _pUnit;
 	}
 
