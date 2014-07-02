@@ -91,7 +91,9 @@
     <string name="delete_button">Delete</string>
     <string name="wait_message">Please wait</string>
     <string name="edit_safetystops_title">Safety Stops</string>
+    <string name="edit_tanks_title">Tanks</string>
     <string name="add_safetystops_button">Add Safety Stop</string>
+    <string name="add_tank_button">Add Tank</string>
     <string name="edit_divetype_title">Diving Type</string>
     <string name="recreational_type">Recreational</string>
     <string name="training_type">Training</string>

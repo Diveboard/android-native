@@ -187,6 +187,15 @@ public class					TabEditDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "EditGuideNameDialogFragment");
     }
     
+    private void				_editTanks()
+    {
+    	EditTanksDialogFragment dialog = new EditTanksDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getActivity().getSupportFragmentManager(), "EditTanksDialogFragment");
+    }
+    
     private void				_editReviewType()
     {
     	EditReviewDialogFragment dialog = new EditReviewDialogFragment();
@@ -345,7 +354,6 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.current_label) + " : ", ""));
 		if (dive.getTempSurface() != null)
 		{
-			//elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -360,7 +368,6 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.surface_temperature_label) + " : ", ""));
 		if (dive.getTempBottom() != null)
 		{
-//			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
 			String tempbottom_unit = "";
 			if (dive.getTempBottomUnit() == null)
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -391,8 +398,6 @@ public class					TabEditDetailsFragment extends Fragment
 		{
 			
 			String fullReview = "";
-			String parcialReview = "";
-			Integer overall, difficulty, life, fish, wreck = 0;
 
 			if (dive.getDiveReviews().getOverall()!= null)
 				fullReview += "Overall: " + _getReviewHintGeneral(dive.getDiveReviews().getOverall()).toLowerCase() + ". ";
@@ -407,6 +412,10 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption("Review : ", fullReview));
 			
 		}
+		if (dive.getTanks() != null)
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", "click here to see the tanks in detail"));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.water_type_label) + " : ", ""));
 		
 		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(EditDiveActivity.mOptionAdapter);
@@ -467,6 +476,9 @@ public class					TabEditDetailsFragment extends Fragment
 						break ;
 					case 17:
 						_editReviewType();
+						break;
+					case 18:
+						_editTanks();
 						break;
 				}
 			}

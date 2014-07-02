@@ -11,7 +11,7 @@
     <string name="maxdepth_duration_spot_missing">Max Depth, Duration or Spot fields are missing</string>
     <string name="spot_missing">You have not confirmed your Spot</string>
     <string name="no_safety_stops">No safety stops</string>
-    <string name="no_tanks">No safety stops</string>
+    <string name="no_tanks">No tanks added yet</string>
     <string name="depth_label">Depth</string>
     <string name="duration_label">Duration</string>
     <string name="cylinder_label">Cylinder</string>
@@ -38,6 +38,7 @@
     <string name="altitude_label">Altitude</string>
     <string name="water_type_label">Water type</string>
     <string name="dive_privacy_label">Dive privacy</string>
+    <string name="tanks_label">Tanks used</string>
     <string name="review_label">Review</string>
     <string name="check_connectivity">An internet connection is required for picture upload. Please check your connectivity and try again.</string>
 </resources>

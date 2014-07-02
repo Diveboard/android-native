@@ -3,6 +3,7 @@ package com.diveboard.mobile.editdive;
 import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
@@ -26,6 +27,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -50,7 +52,6 @@ public class					EditTanksDialogFragment extends DialogFragment
 	private View					mView;
 	EditTanksDialogListener			mListener;
 	private EditText				mVolumeField;
-//	private EditText				mDurationField;
 	private EditText				mStartPressureField;
 	private EditText				mEndPressureField;
 	private EditText				mStartTimeField;
@@ -63,6 +64,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 	private Spinner					mVolumeLabel;
 	private Spinner					mMixLabel;
 	private Spinner					mPressureLabel;
+	private int						mTextSize = 15;
 	
 	 @Override
 	 public void onAttach(Activity activity)
@@ -77,7 +79,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		 catch (ClassCastException e)
 		 {
 			 // The activity doesn't implement the interface, throw exception
-			 throw new ClassCastException(activity.toString() + " must implement onSafetyStopsEditComplete");
+			 throw new ClassCastException(activity.toString() + " must implement onTanksEditComplete");
 		 }
 	 }
 	
@@ -118,7 +120,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		TextView cylinder_title = new TextView(getActivity().getApplicationContext());
 		cylinder_title.setTypeface(mFaceR);
 		cylinder_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		cylinder_title.setTextSize(25);
+		cylinder_title.setTextSize(mTextSize);
 		cylinder_title.setText(getResources().getString(R.string.cylinder_label) + ":");
 		cylinder_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		cylinder.addView(cylinder_title);
@@ -158,7 +160,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		volume_title.setTypeface(mFaceR);
 		volume_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		volume_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		volume_title.setTextSize(25);
+		volume_title.setTextSize(mTextSize);
 		volume_title.setText(getResources().getString(R.string.volume_label) +":");
 		volume.addView(volume_title);
 		
@@ -166,8 +168,8 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mVolumeField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mVolumeField.setTypeface(mFaceR);
 		mVolumeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mVolumeField.setTextSize(25);
-		mVolumeField.setText(tank.getVolume().toString());
+		mVolumeField.setTextSize(mTextSize);
+		mVolumeField.setText(tank.getVolumeValue().toString());
 		volume.addView(mVolumeField);
 		
 		mVolumeLabel = new Spinner(getActivity().getApplicationContext());
@@ -176,12 +178,12 @@ public class					EditTanksDialogFragment extends DialogFragment
 		if (volume_unit.equals("L"))
 		{
 			volumeAdapter.add(getResources().getString(R.string.unit_liter));
-			volumeAdapter.add(getResources().getString(R.string.unit_cuft));
+			volumeAdapter.add(getResources().getString(R.string.cubic_ft));
 
 		}
 		else
 		{
-			volumeAdapter.add(getResources().getString(R.string.unit_cuft));
+			volumeAdapter.add(getResources().getString(R.string.cubic_ft));
 			volumeAdapter.add(getResources().getString(R.string.unit_liter));
 		}
 		volumeAdapter.setDropDownViewResource(R.layout.units_spinner_fields);
@@ -195,16 +197,20 @@ public class					EditTanksDialogFragment extends DialogFragment
 		LinearLayout gasmix = new LinearLayout(getActivity().getApplicationContext());
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		gasmix.setLayoutParams(params);
-		gasmix.setOrientation(LinearLayout.HORIZONTAL);
+		gasmix.setOrientation(LinearLayout.VERTICAL);
 		gasmix.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
+		
+		LinearLayout typeofgasmix = new LinearLayout(getActivity().getApplicationContext());
+		typeofgasmix.setLayoutParams(params);
+		typeofgasmix.setOrientation(LinearLayout.HORIZONTAL);
 		
 		TextView mix_title = new TextView(getActivity().getApplicationContext());
 		mix_title.setTypeface(mFaceR);
 		mix_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		mix_title.setTextSize(25);
+		mix_title.setTextSize(mTextSize);
 		mix_title.setText(getResources().getString(R.string.mix_label) + ":");
 		mix_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		gasmix.addView(mix_title);
+		typeofgasmix.addView(mix_title);
 		
 		mMixLabel = new Spinner(getActivity().getApplicationContext());
 		
@@ -224,7 +230,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		o2_title.setTypeface(mFaceR);
 		o2_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		o2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		o2_title.setTextSize(20);
+		o2_title.setTextSize(mTextSize);
 		o2_title.setText(getResources().getString(R.string.unit_o2) +":");
 		custom.addView(o2_title);
 		
@@ -232,7 +238,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mO2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mO2Field.setTypeface(mFaceR);
 		mO2Field.setTextColor(getResources().getColor(R.color.dark_grey));
-		mO2Field.setTextSize(25);
+		mO2Field.setTextSize(mTextSize);
 		mO2Field.setText(tank.getO2().toString());
 		custom.addView(mO2Field);
 		
@@ -240,7 +246,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		he_title.setTypeface(mFaceR);
 		he_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		he_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		he_title.setTextSize(20);
+		he_title.setTextSize(mTextSize);
 		he_title.setText(getResources().getString(R.string.unit_he) +":");
 		custom.addView(he_title);
 		
@@ -248,7 +254,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mHeField.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mHeField.setTypeface(mFaceR);
 		mHeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mHeField.setTextSize(25);
+		mHeField.setTextSize(mTextSize);
 		mHeField.setText(tank.getHe().toString());
 		custom.addView(mHeField);
 		
@@ -256,7 +262,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		n2_title.setTypeface(mFaceR);
 		n2_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		n2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		n2_title.setTextSize(20);
+		n2_title.setTextSize(mTextSize);
 		n2_title.setText(getResources().getString(R.string.unit_n2) +":");
 		custom.addView(n2_title);
 		
@@ -264,7 +270,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mN2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mN2Field.setTypeface(mFaceR);
 		mN2Field.setTextColor(getResources().getColor(R.color.dark_grey));
-		mN2Field.setTextSize(25);
+		mN2Field.setTextSize(mTextSize);
 		mN2Field.setText(tank.getN2().toString());
 		custom.addView(mN2Field);
 		
@@ -286,8 +292,8 @@ public class					EditTanksDialogFragment extends DialogFragment
 				
 			}
 		});
-		gasmix.addView(mMixLabel);
-		
+		typeofgasmix.addView(mMixLabel);
+		gasmix.addView(typeofgasmix);
 		gasmix.addView(custom);
 		
 		tankslist.addView(gasmix);
@@ -303,7 +309,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		start_pressure_title.setTypeface(mFaceR);
 		start_pressure_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		start_pressure_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		start_pressure_title.setTextSize(25);
+		start_pressure_title.setTextSize(mTextSize);
 		start_pressure_title.setText(getResources().getString(R.string.start_pressure_label) +":");
 		pressure.addView(start_pressure_title);
 		
@@ -311,25 +317,30 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mStartPressureField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mStartPressureField.setTypeface(mFaceR);
 		mStartPressureField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mStartPressureField.setTextSize(25);
+		mStartPressureField.setTextSize(mTextSize);
 		mStartPressureField.setText(tank.getPStartValue().toString());
 		pressure.addView(mStartPressureField);
 		
+		
+		LinearLayout endpressure = new LinearLayout(getActivity().getApplicationContext());
+		endpressure.setLayoutParams(params);
+		endpressure.setOrientation(LinearLayout.HORIZONTAL);
+		endpressure.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
 		TextView end_pressure_title = new TextView(getActivity().getApplicationContext());
 		end_pressure_title.setTypeface(mFaceR);
 		end_pressure_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		end_pressure_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		end_pressure_title.setTextSize(25);
+		end_pressure_title.setTextSize(mTextSize);
 		end_pressure_title.setText(getResources().getString(R.string.end_pressure_label) +":");
-		pressure.addView(end_pressure_title);
+		endpressure.addView(end_pressure_title);
 		
 		mEndPressureField = new EditText(getActivity().getApplicationContext());
 		mEndPressureField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mEndPressureField.setTypeface(mFaceR);
 		mEndPressureField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mEndPressureField.setTextSize(25);
+		mEndPressureField.setTextSize(mTextSize);
 		mEndPressureField.setText(tank.getPEndValue().toString());
-		pressure.addView(mStartPressureField);
+		endpressure.addView(mEndPressureField);
 		
 		mPressureLabel = new Spinner(getActivity().getApplicationContext());
 		ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
@@ -347,9 +358,10 @@ public class					EditTanksDialogFragment extends DialogFragment
 		}
 		press_adapt.setDropDownViewResource(R.layout.units_spinner_fields);
 		mPressureLabel.setAdapter(press_adapt);
-		pressure.addView(mPressureLabel);
+		endpressure.addView(mPressureLabel);
 		
 		tankslist.addView(pressure);
+		tankslist.addView(endpressure);
 		
 		//Start Time ROW
 		LinearLayout startTime = new LinearLayout(getActivity().getApplicationContext());
@@ -361,25 +373,26 @@ public class					EditTanksDialogFragment extends DialogFragment
 		startTime_title.setTypeface(mFaceR);
 		startTime_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		startTime_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		startTime_title.setTextSize(25);
-		startTime_title.setText(getResources().getString(R.string.volume_label) +":");
+		startTime_title.setTextSize(mTextSize);
+		startTime_title.setText(getResources().getString(R.string.start_time_label) +":");
 		startTime.addView(startTime_title);
 		
 		mStartTimeField = new EditText(getActivity().getApplicationContext());
 		mStartTimeField.setRawInputType(InputType.TYPE_CLASS_NUMBER );
 		mStartTimeField.setTypeface(mFaceR);
 		mStartTimeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mStartTimeField.setTextSize(25);
+		mStartTimeField.setTextSize(mTextSize);
 		mStartTimeField.setText(tank.getTimeStart().toString());
 		startTime.addView(mStartTimeField);
 		
 		TextView startTime_label = new TextView(getActivity().getApplicationContext());
 		startTime_label.setTypeface(mFaceR);
 		startTime_label.setTextColor(getResources().getColor(R.color.dark_grey));
-		startTime_label.setTextSize(25);
+		startTime_label.setTextSize(mTextSize);
 		startTime_label.setText(getResources().getString(R.string.unit_min));
 		startTime.addView(startTime_label);
 		
+		tankslist.addView(startTime);
 		
         Button cancel = (Button) mView.findViewById(R.id.cancel);
         cancel.setTypeface(mFaceR);
@@ -396,7 +409,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 				mEndPressureField = null;
 				mStartTimeField = null;
 				mIndex = null;
-				openSafetyStopsList();
+				openTanksList();
 			}
 		});
         
@@ -419,32 +432,38 @@ public class					EditTanksDialogFragment extends DialogFragment
 				if (mStartTimeField.getText().toString().isEmpty())
 					mStartTimeField.setText("0");
 				JSONObject newtank = new JSONObject();
-				newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
-				newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
-				if(mMixLabel.getSelectedItem().toString().equals("Custom")){
-					newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
-					newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
-					newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+				try{
+					newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
+					newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString());
+					newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
+					if(mMixLabel.getSelectedItem().toString().equals("Custom")){
+						newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+						newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
+						newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+					}
+					else{
+						newtank.put("o2", 0);
+						newtank.put("he", 0);
+						newtank.put("n2", 0);
+					}
+					newtank.put("material", mMaterialLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("multitank", Integer.parseInt(mCylinderLabel.getSelectedItem().toString()));
+					newtank.put("p_start_value", Double.parseDouble(mStartPressureField.getText().toString()));
+					newtank.put("p_end_value", Double.parseDouble(mEndPressureField.getText().toString()));
+					newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
+					mTanks.set(mIndex, new Tank(newtank));
+				} catch(JSONException e){
+					e.printStackTrace();
 				}
-				else{
-					newtank.put("o2", 0);
-					newtank.put("he", 0);
-					newtank.put("n2", 0);
-				}
-				newtank.put("material", mMaterialLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("multitank", Integer.parseInt(mCylinderLabel.getSelectedItem().toString()));
-				newtank.put("p_start_value", Double.parseDouble(mStartPressureField.getText().toString()));
-				newtank.put("p_end_value", Double.parseDouble(mEndPressureField.getText().toString()));
-				newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
-				mTanks.set(mIndex, new Tank(newtank));
+				
 				mVolumeField = null;
 				mStartPressureField = null;
 				mEndPressureField = null;
 				mStartTimeField = null;
 				mIndex = null;
-				openSafetyStopsList();
+				openTanksList();
 			}
 		});
 	}
@@ -470,7 +489,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		TextView cylinder_title = new TextView(getActivity().getApplicationContext());
 		cylinder_title.setTypeface(mFaceR);
 		cylinder_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		cylinder_title.setTextSize(25);
+		cylinder_title.setTextSize(mTextSize);
 		cylinder_title.setText(getResources().getString(R.string.cylinder_label) + ":");
 		cylinder_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		cylinder.addView(cylinder_title);
@@ -505,7 +524,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		volume_title.setTypeface(mFaceR);
 		volume_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		volume_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		volume_title.setTextSize(25);
+		volume_title.setTextSize(mTextSize);
 		volume_title.setText(getResources().getString(R.string.volume_label) +":");
 		volume.addView(volume_title);
 
@@ -513,7 +532,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mVolumeField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mVolumeField.setTypeface(mFaceR);
 		mVolumeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mVolumeField.setTextSize(25);
+		mVolumeField.setTextSize(mTextSize);
 		Double defaultVolume = 12.0;
 		mVolumeField.setText(defaultVolume.toString());
 		volume.addView(mVolumeField);
@@ -521,7 +540,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mVolumeLabel = new Spinner(getActivity().getApplicationContext());
 		ArrayAdapter<String> volumeAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
 		volumeAdapter.add(getResources().getString(R.string.unit_liter));
-		volumeAdapter.add(getResources().getString(R.string.unit_cuft));
+		volumeAdapter.add(getResources().getString(R.string.cubic_ft));
 		volumeAdapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		mVolumeLabel.setAdapter(volumeAdapter);
 		volume.addView(mVolumeLabel);
@@ -533,16 +552,20 @@ public class					EditTanksDialogFragment extends DialogFragment
 		LinearLayout gasmix = new LinearLayout(getActivity().getApplicationContext());
 		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 		gasmix.setLayoutParams(params);
-		gasmix.setOrientation(LinearLayout.HORIZONTAL);
+		gasmix.setOrientation(LinearLayout.VERTICAL);
 		gasmix.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
 
+		LinearLayout typeofgasmix = new LinearLayout(getActivity().getApplicationContext());
+		typeofgasmix.setLayoutParams(params);
+		typeofgasmix.setOrientation(LinearLayout.HORIZONTAL);
+		
 		TextView mix_title = new TextView(getActivity().getApplicationContext());
 		mix_title.setTypeface(mFaceR);
 		mix_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		mix_title.setTextSize(25);
+		mix_title.setTextSize(mTextSize);
 		mix_title.setText(getResources().getString(R.string.mix_label) + ":");
 		mix_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		gasmix.addView(mix_title);
+		typeofgasmix.addView(mix_title);
 
 		mMixLabel = new Spinner(getActivity().getApplicationContext());
 
@@ -562,7 +585,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		o2_title.setTypeface(mFaceR);
 		o2_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		o2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		o2_title.setTextSize(20);
+		o2_title.setTextSize(mTextSize);
 		o2_title.setText(getResources().getString(R.string.unit_o2) +":");
 		custom.addView(o2_title);
 
@@ -570,7 +593,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mO2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mO2Field.setTypeface(mFaceR);
 		mO2Field.setTextColor(getResources().getColor(R.color.dark_grey));
-		mO2Field.setTextSize(25);
+		mO2Field.setTextSize(mTextSize);
 		mO2Field.setText("21");
 		custom.addView(mO2Field);
 
@@ -578,7 +601,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		he_title.setTypeface(mFaceR);
 		he_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		he_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		he_title.setTextSize(20);
+		he_title.setTextSize(mTextSize);
 		he_title.setText(getResources().getString(R.string.unit_he) +":");
 		custom.addView(he_title);
 
@@ -586,15 +609,15 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mHeField.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mHeField.setTypeface(mFaceR);
 		mHeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mHeField.setTextSize(25);
-		mHeField.setText(0);
+		mHeField.setTextSize(mTextSize);
+		mHeField.setText("0");
 		custom.addView(mHeField);
 
 		TextView n2_title = new TextView(getActivity().getApplicationContext());
 		n2_title.setTypeface(mFaceR);
 		n2_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		n2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		n2_title.setTextSize(20);
+		n2_title.setTextSize(mTextSize);
 		n2_title.setText(getResources().getString(R.string.unit_n2) +":");
 		custom.addView(n2_title);
 
@@ -602,7 +625,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mN2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
 		mN2Field.setTypeface(mFaceR);
 		mN2Field.setTextColor(getResources().getColor(R.color.dark_grey));
-		mN2Field.setTextSize(25);
+		mN2Field.setTextSize(mTextSize);
 		mN2Field.setText("79");
 		custom.addView(mN2Field);
 
@@ -624,8 +647,8 @@ public class					EditTanksDialogFragment extends DialogFragment
 
 			}
 		});
-		gasmix.addView(mMixLabel);
-
+		typeofgasmix.addView(mMixLabel);
+		gasmix.addView(typeofgasmix);
 		gasmix.addView(custom);
 
 		tankslist.addView(gasmix);
@@ -641,7 +664,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		start_pressure_title.setTypeface(mFaceR);
 		start_pressure_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		start_pressure_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		start_pressure_title.setTextSize(25);
+		start_pressure_title.setTextSize(mTextSize);
 		start_pressure_title.setText(getResources().getString(R.string.start_pressure_label) +":");
 		pressure.addView(start_pressure_title);
 
@@ -649,31 +672,36 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mStartPressureField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mStartPressureField.setTypeface(mFaceR);
 		mStartPressureField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mStartPressureField.setTextSize(25);
+		mStartPressureField.setTextSize(mTextSize);
 		if(Units.getPressureUnit() == Units.Pressure.BAR)
 			mStartPressureField.setText("200.0");
 		else
 			mStartPressureField.setText("3000.0");
 		pressure.addView(mStartPressureField);
-
+		
+		LinearLayout endpressure = new LinearLayout(getActivity().getApplicationContext());
+		endpressure.setLayoutParams(params);
+		endpressure.setOrientation(LinearLayout.HORIZONTAL);
+		endpressure.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
+		
 		TextView end_pressure_title = new TextView(getActivity().getApplicationContext());
 		end_pressure_title.setTypeface(mFaceR);
 		end_pressure_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		end_pressure_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		end_pressure_title.setTextSize(25);
+		end_pressure_title.setTextSize(mTextSize);
 		end_pressure_title.setText(getResources().getString(R.string.end_pressure_label) +":");
-		pressure.addView(end_pressure_title);
+		endpressure.addView(end_pressure_title);
 
 		mEndPressureField = new EditText(getActivity().getApplicationContext());
 		mEndPressureField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
 		mEndPressureField.setTypeface(mFaceR);
 		mEndPressureField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mEndPressureField.setTextSize(25);
+		mEndPressureField.setTextSize(mTextSize);
 		if(Units.getPressureUnit() == Units.Pressure.BAR)
 			mEndPressureField.setText("50.0");
 		else
 			mEndPressureField.setText("500.0");
-		pressure.addView(mStartPressureField);
+		endpressure.addView(mEndPressureField);
 
 		mPressureLabel = new Spinner(getActivity().getApplicationContext());
 		ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
@@ -691,9 +719,10 @@ public class					EditTanksDialogFragment extends DialogFragment
 		}
 		press_adapt.setDropDownViewResource(R.layout.units_spinner_fields);
 		mPressureLabel.setAdapter(press_adapt);
-		pressure.addView(mPressureLabel);
+		endpressure.addView(mPressureLabel);
 
 		tankslist.addView(pressure);
+		tankslist.addView(endpressure);
 		
 		
 		//Start Time ROW
@@ -706,24 +735,26 @@ public class					EditTanksDialogFragment extends DialogFragment
 		startTime_title.setTypeface(mFaceR);
 		startTime_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		startTime_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		startTime_title.setTextSize(25);
-		startTime_title.setText(getResources().getString(R.string.volume_label) +":");
+		startTime_title.setTextSize(mTextSize);
+		startTime_title.setText(getResources().getString(R.string.start_time_label) +":");
 		startTime.addView(startTime_title);
 
 		mStartTimeField = new EditText(getActivity().getApplicationContext());
 		mStartTimeField.setRawInputType(InputType.TYPE_CLASS_NUMBER );
 		mStartTimeField.setTypeface(mFaceR);
 		mStartTimeField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mStartTimeField.setTextSize(25);
+		mStartTimeField.setTextSize(mTextSize);
 		mStartTimeField.setText("0");
 		startTime.addView(mStartTimeField);
 
 		TextView startTime_label = new TextView(getActivity().getApplicationContext());
 		startTime_label.setTypeface(mFaceR);
 		startTime_label.setTextColor(getResources().getColor(R.color.dark_grey));
-		startTime_label.setTextSize(25);
+		startTime_label.setTextSize(mTextSize);
 		startTime_label.setText(getResources().getString(R.string.unit_min));
 		startTime.addView(startTime_label);
+		
+		tankslist.addView(startTime);
 		
         Button cancel = (Button) mView.findViewById(R.id.cancel);
         cancel.setTypeface(mFaceR);
@@ -739,7 +770,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 				mStartPressureField = null;
 				mEndPressureField = null;
 				mStartTimeField = null;
-				openSafetyStopsList();
+				openTanksList();
 			}
 		});
         
@@ -761,33 +792,39 @@ public class					EditTanksDialogFragment extends DialogFragment
 					mEndPressureField.setText("0");
 				if (mStartTimeField.getText().toString().isEmpty())
 					mStartTimeField.setText("0");
-				JSONObject newtank = new JSONObject();
-				newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
-				newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
-				if(mMixLabel.getSelectedItem().toString().equals("Custom")){
-					newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
-					newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
-					newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+				try{
+					JSONObject newtank = new JSONObject();
+					newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
+					newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
+					if(mMixLabel.getSelectedItem().toString().equals("Custom")){
+						newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+						newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
+						newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+					}
+					else{
+						newtank.put("o2", 0);
+						newtank.put("he", 0);
+						newtank.put("n2", 0);
+					}
+					newtank.put("material", mMaterialLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("multitank", Integer.parseInt(mCylinderLabel.getSelectedItem().toString()));
+					newtank.put("p_start_value", Double.parseDouble(mStartPressureField.getText().toString()));
+					newtank.put("p_end_value", Double.parseDouble(mEndPressureField.getText().toString()));
+					newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString().toLowerCase());
+					newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
+					mTanks.add(new Tank(newtank));
+				} catch(JSONException e){
+					e.printStackTrace();
 				}
-				else{
-					newtank.put("o2", 0);
-					newtank.put("he", 0);
-					newtank.put("n2", 0);
-				}
-				newtank.put("material", mMaterialLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("multitank", Integer.parseInt(mCylinderLabel.getSelectedItem().toString()));
-				newtank.put("p_start_value", Double.parseDouble(mStartPressureField.getText().toString()));
-				newtank.put("p_end_value", Double.parseDouble(mEndPressureField.getText().toString()));
-				newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
-				newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
-				mTanks.add(new Tank(newtank));
+				
 				mVolumeField = null;
 				mStartPressureField = null;
 				mEndPressureField = null;
 				mStartTimeField = null;
 				mIndex = null;
-				openSafetyStopsList();
+				openTanksList();
 			}
 		});
 	}
@@ -795,10 +832,10 @@ public class					EditTanksDialogFragment extends DialogFragment
 	private void				deleteTank(int index)
 	{
 		mTanks.remove(index);
-		openSafetyStopsList();
+		openTanksList();
 	}
 	
-	private void				openSafetyStopsList()
+	private void				openTanksList()
 	{
 		LinearLayout tankslist = (LinearLayout) mView.findViewById(R.id.tanksfields);
 		tankslist.removeAllViews();
@@ -809,9 +846,12 @@ public class					EditTanksDialogFragment extends DialogFragment
 			for (int i = 0, length = mTanks.size(); i < length; i++)
 			{
 				final float scale = getResources().getDisplayMetrics().density;
+				LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+				
+				RelativeLayout row = new RelativeLayout(getActivity().getApplicationContext());
+				row.setLayoutParams(params);
 				
 				LinearLayout tankElem = new LinearLayout(getActivity().getApplicationContext());
-				LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 				tankElem.setTag(i);
 				tankElem.setLayoutParams(params);
 				tankElem.setOrientation(LinearLayout.HORIZONTAL);
@@ -827,19 +867,20 @@ public class					EditTanksDialogFragment extends DialogFragment
 				});
 
 				TextView text = new TextView(getActivity().getApplicationContext());
-				text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
+				text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 				text.setTypeface(mFaceR);
-				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
-				text.setTextSize(25);
+//				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
+				text.setTextSize(mTextSize);
+				text.setPadding((int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),0);
 				
 				//Writing the summary string of the tank
 				String tanksSummary = "";
 				Tank tank = mTanks.get(i);
 				if(tank.getMultitank() == 2)
 					tanksSummary = "2x";
-				tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit() + "  ";
+				tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "  ";
 				if(tank.getGas().equals("custom"))
-					tanksSummary += tank.getO2()+"O2/"+tank.getHe()+"He/"+tank.getN2()+"N2";
+					tanksSummary += tank.getO2()+"% O2/"+tank.getHe()+"% He/"+tank.getN2()+"% N2";
 				else
 					tanksSummary += tank.getGas();
 				tanksSummary +="\n";
@@ -853,9 +894,13 @@ public class					EditTanksDialogFragment extends DialogFragment
 				
 				tankElem.addView(text);
 				
+//				LinearLayout img = new LinearLayout(getActivity().getApplicationContext());
+//				img.setLayoutParams(new LinearLayout.LayoutParams(params));
+				RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams((int)(50 * scale + 0.5f), LayoutParams.MATCH_PARENT);
+				lp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
 				ImageView delete = new ImageView(getActivity().getApplicationContext());
 				delete.setScaleType(ScaleType.FIT_CENTER);
-				delete.setLayoutParams(new LinearLayout.LayoutParams((int)(50 * scale + 0.5f), LayoutParams.MATCH_PARENT));
+				delete.setLayoutParams(lp);
 				delete.setPadding(0, 0, (int)(5 * scale + 0.5f), 0);
 				delete.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 				delete.setTag(i);
@@ -870,14 +915,14 @@ public class					EditTanksDialogFragment extends DialogFragment
 				});
 				
 				tankElem.addView(delete);
-				
-				tankslist.addView(tankElem);
+				row.addView(tankElem);
+				tankslist.addView(row);
 			}
 		}
 		
 		Button add_button = (Button) mView.findViewById(R.id.add_button);
 		add_button.setTypeface(mFaceR);
-		add_button.setText(getResources().getString(R.string.add_safetystops_button));
+		add_button.setText(getResources().getString(R.string.add_tank_button));
 		add_button.setOnClickListener(new OnClickListener()
 		{
 			@Override
@@ -923,7 +968,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		mView = inflater.inflate(R.layout.dialog_edit_tanks, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		if (mModel.getDives().get(getArguments().getInt("index")).getTanks() != null){
+		if (mModel.getDives().get(getArguments().getInt("index")).getTanks() != null || !mModel.getDives().get(getArguments().getInt("index")).getTanks().isEmpty()){
 			mTanks = (ArrayList<Tank>) mModel.getDives().get(getArguments().getInt("index")).getTanks().clone();
 			}
 		else
@@ -933,9 +978,9 @@ public class					EditTanksDialogFragment extends DialogFragment
 		
 		TextView title = (TextView) mView.findViewById(R.id.title);
 		title.setTypeface(mFaceR);
-		title.setText(getResources().getString(R.string.edit_safetystops_title));
+		title.setText(getResources().getString(R.string.edit_tanks_title));
 		
-		openSafetyStopsList();
+		openTanksList();
 		return mView;
 	}
 }

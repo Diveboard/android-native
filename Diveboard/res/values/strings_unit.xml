@@ -25,7 +25,7 @@
     <string name="unit_psi">psi</string>
     <string name="meters">meters</string>
     <string name="feet">feet</string>
-    <string name="unit_min">min</string>
+    <string name="unit_min">mins from start</string>
     <string name="unit_mins">mins</string>
     <string name="custom_mix">Custom</string>
     <string name="air_mix">Air</string>

@@ -43,7 +43,7 @@ public class					Tank implements IModel
 		_volumeValue = (json.isNull("volume_value")) ? null : json.getDouble("volume_value");
 		_pUnit = (json.isNull("p_start_unit")) ? null : json.getString("p_start_unit");
 		_pStartValue = (json.isNull("p_start_value")) ? null : json.getDouble("p_start_value");
-		_pEndValue = (json.isNull("p_value")) ? null : json.getDouble("p_end");
+		_pEndValue = (json.isNull("p_end_value")) ? null : json.getDouble("p_end_value");
 	}
 
 	public Integer getId() {
