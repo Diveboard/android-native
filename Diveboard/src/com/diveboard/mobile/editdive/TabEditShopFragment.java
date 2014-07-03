@@ -318,33 +318,33 @@ public class					TabEditShopFragment extends Fragment
 		String pos = "";
 		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "Â° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "° ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "Â° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (mModel.getDives().get(mIndex).getShop().getLng() == null)
 		{
-			pos += "0Â° ";
+			pos += "0° ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "Â° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "° ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "Â° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
 		if ((mModel.getDives().get(mIndex).getShop().getLat() == null || mModel.getDives().get(mIndex).getShop().getLat() == 0) && 
