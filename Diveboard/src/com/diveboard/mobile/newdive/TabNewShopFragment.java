@@ -609,6 +609,9 @@ public class					TabNewShopFragment extends Fragment
 				else
 				{
 					((TextView)mRootView.findViewById(R.id.no_shop)).setVisibility(View.VISIBLE);
+					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.no_network_connection_toast), Toast.LENGTH_SHORT);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
