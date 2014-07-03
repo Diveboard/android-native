@@ -392,6 +392,12 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_public_label), 1));
 		else
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_private_label), 1));
+		
+		if (dive.getTanks() != null && dive.getTanks().size() > 0)
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", dive.getTanks().size() + " tanks used"));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", ""));
+		
 		if (dive.getDiveReviews()== null)
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
@@ -412,10 +418,7 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption("Review : ", fullReview));
 			
 		}
-		if (dive.getTanks() != null)
-			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", "click here to see the tanks in detail"));
-		else
-			elem.add(new EditOption(getResources().getString(R.string.water_type_label) + " : ", ""));
+		
 		
 		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(EditDiveActivity.mOptionAdapter);
@@ -475,10 +478,10 @@ public class					TabEditDetailsFragment extends Fragment
 						_editWater();
 						break ;
 					case 17:
-						_editReviewType();
+						_editTanks();
 						break;
 					case 18:
-						_editTanks();
+						_editReviewType();
 						break;
 				}
 			}

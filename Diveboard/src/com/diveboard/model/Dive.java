@@ -355,6 +355,15 @@ public class					Dive implements IModel
 				System.out.println("NewSpot");
 			}
 		}
+		if(!json.isNull("tanks")){
+			JSONArray jtanks = new JSONArray(json.getString("tanks"));
+			ArrayList<Tank> new_elem= new ArrayList<Tank>();
+			for (int i = 0; i < jtanks.length(); i++){
+				new_elem.add(new Tank(jtanks.getJSONObject(i)));
+			}
+			_tanks = new_elem;
+			System.out.println("Applying edit changes on tanks " + jtanks);
+		}
 		if (!json.isNull("shop"))
 		{
 			_shop = new Shop(json.getJSONObject("shop"));

@@ -163,6 +163,13 @@ public class					TabNewDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "NewReviewDialogFragment");
     	
     }
+    
+    private void 				_editTanksDialog()
+    {
+    	NewTanksDialogFragment dialog = new NewTanksDialogFragment();
+    	dialog.show(getActivity().getSupportFragmentManager(), "NewTanksDialogFragment");
+    	
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
@@ -276,6 +283,11 @@ public class					TabNewDetailsFragment extends Fragment
 		else
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_private_label), 1));
 		
+		if (mDive.getTanks() != null && mDive.getTanks().size() > 0)
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", mDive.getTanks().size() + " tanks used"));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", ""));
+		
 		if (mDive.getDiveReviews()== null)
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
@@ -341,8 +353,11 @@ public class					TabNewDetailsFragment extends Fragment
 						_editWater();
 						break ;
 					case 17:
-						_editReviewDialog();
+						_editTanksDialog();
 						break ;
+					case 18:
+						_editReviewDialog();
+						break;
 				}
 			}
 		});

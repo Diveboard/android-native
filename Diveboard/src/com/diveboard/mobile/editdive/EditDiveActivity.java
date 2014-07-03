@@ -667,6 +667,19 @@ public class EditDiveActivity extends FragmentActivity implements
 	}
 
 	@Override
+	public void onTanksEditComplete(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		ArrayList<Tank> mTanks = (ArrayList<Tank>) mModel.getDives().get(mIndex).getTanks().clone();
+		String tankString = "";
+		
+		if (mTanks != null && mTanks.size() > 0 )
+			tankString = mTanks.size() + " tanks used";
+		
+		((EditOption)mOptionAdapter.getItem(17)).setValue(tankString);
+		mOptionAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
 	public void onReviewEditComplete(DialogFragment dialog) {
 		// TODO Auto-generated method stub
 		Dive dive = mModel.getDives().get(mIndex);
@@ -681,7 +694,7 @@ public class EditDiveActivity extends FragmentActivity implements
 			fullReview += "Big fish sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getBigFish()).toLowerCase() + ". ";
 		if (dive.getDiveReviews().getWreck()!= null)
 			fullReview += "Wrecks sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getWreck()).toLowerCase() + ". ";
-		((EditOption)mOptionAdapter.getItem(17)).setValue(fullReview);
+		((EditOption)mOptionAdapter.getItem(18)).setValue(fullReview);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 	
@@ -757,13 +770,5 @@ public class EditDiveActivity extends FragmentActivity implements
 
 	}
 
-	@Override
-	public void onTanksEditComplete(DialogFragment dialog) {
-		// TODO Auto-generated method stub
-		ArrayList<Tank> mTanks = (ArrayList<Tank>) mModel.getDives().get(mIndex).getTanks().clone();
-		String tankString = "Some tanks have been modified";
-		((EditOption)mOptionAdapter.getItem(18)).setValue(tankString);
-		mOptionAdapter.notifyDataSetChanged();
-	}
 	
 }

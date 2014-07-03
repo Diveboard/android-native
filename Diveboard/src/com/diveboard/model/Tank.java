@@ -25,6 +25,7 @@ public class					Tank implements IModel
 	private	String				_pUnit;
 	private	Double				_pStartValue;
 	private	Double				_pEndValue;
+	private JSONObject			_json;
 	
 	public						Tank(JSONObject json) throws JSONException
 	{
@@ -44,6 +45,7 @@ public class					Tank implements IModel
 		_pUnit = (json.isNull("p_start_unit")) ? null : json.getString("p_start_unit");
 		_pStartValue = (json.isNull("p_start_value")) ? null : json.getDouble("p_start_value");
 		_pEndValue = (json.isNull("p_end_value")) ? null : json.getDouble("p_end_value");
+		_json = json;
 	}
 
 	public Integer getId() {
@@ -172,6 +174,10 @@ public class					Tank implements IModel
 
 	public void setPEndValue(Double _pEndValue) {
 		this._pEndValue = _pEndValue;
+	}
+	
+	public JSONObject getJson() {
+		return _json;
 	}
 
 	@Override

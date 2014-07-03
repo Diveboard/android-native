@@ -27,6 +27,7 @@ import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment.EditMaxDepthDialog
 import com.diveboard.mobile.newdive.NewReviewDialogFragment.EditReviewDialogListener;
 import com.diveboard.mobile.newdive.NewSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
 import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
+import com.diveboard.mobile.newdive.NewTanksDialogFragment.EditTanksDialogListener;
 import com.diveboard.mobile.newdive.NewTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.newdive.NewTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.mobile.newdive.NewVisibilityDialogFragment.EditVisibilityDialogListener;
@@ -37,6 +38,7 @@ import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.FirstFragment;
 import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
@@ -69,6 +71,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 																					EditCurrentDialogListener,
 																					EditSurfaceTempDialogListener,
 																					EditBottomTempDialogListener,
+																					EditTanksDialogListener,
 																					EditAltitudeDialogListener,
 																					EditWaterDialogListener,
 																					EditConfirmDialogListener,
@@ -679,7 +682,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 			fullReview += "Big fish sighted:  " + _getReviewHintGeneral(mDive.getDiveReviews().getBigFish()).toLowerCase() + ". ";
 		if (mDive.getDiveReviews().getWreck()!= null)
 			fullReview += "Wrecks sighted: " + _getReviewHintGeneral(mDive.getDiveReviews().getWreck()).toLowerCase() + ". ";
-		((EditOption)mOptionAdapter.getItem(17)).setValue(fullReview);
+		((EditOption)mOptionAdapter.getItem(18)).setValue(fullReview);
 		mOptionAdapter.notifyDataSetChanged();
 		
 	}
@@ -753,5 +756,18 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 
 		return resul;
 
+	}
+
+	@Override
+	public void onTanksEditComplete(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+		ArrayList<Tank> mTanks = (ArrayList<Tank>) mDive.getTanks().clone();
+		String tankString = "";
+		if (mTanks != null && mTanks.size() > 0 )
+			tankString = mTanks.size() + " tanks used";
+		
+		((EditOption)mOptionAdapter.getItem(17)).setValue(tankString);
+		mOptionAdapter.notifyDataSetChanged();
 	}
 }

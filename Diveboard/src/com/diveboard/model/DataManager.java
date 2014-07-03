@@ -373,8 +373,17 @@ public class					DataManager
 				JSONArray jarray = new JSONArray();
 				ArrayList<Picture> elem = dive.getPictures();
 				for (int i = 0, length = elem.size(); i < length; i++)
-					jarray.put(elem.get(i));
+					jarray.put(elem.get(i).getJson());
 				json.put("pictures", jarray);
+			}
+			if (dive.getTanks() != null){
+				JSONArray jarray = new JSONArray();
+				ArrayList<Tank> mTanks = dive.getTanks();
+				for (int i = 0; i < mTanks.size(); i++){
+					jarray.put(mTanks.get(i).getJson());
+				}
+				System.out.println("HAS TANKS ATTACHED " + jarray.toString());
+				json.put("tanks", jarray);
 			}
 			if (dive.getBuddies() != null)
 			{
@@ -432,7 +441,6 @@ public class					DataManager
 					{
 						resul.put("id", mSpot.getId());
 					}
-					System.out.println("ADDED spot on _saveDive " + resul.toString());
 					obj.put(edit_list.get(i).first, resul);
 				}
 					
@@ -446,6 +454,8 @@ public class					DataManager
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("dive_reviews"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				else if (edit_list.get(i).first.equals("tanks"))
+					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else
 				{
 					if (edit_list.get(i).second == null)

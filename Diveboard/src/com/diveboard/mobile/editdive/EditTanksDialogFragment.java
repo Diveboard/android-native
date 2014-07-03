@@ -1,6 +1,5 @@
 package com.diveboard.mobile.editdive;
 
-import java.security.spec.MGF1ParameterSpec;
 import java.util.ArrayList;
 
 import org.json.JSONException;
@@ -34,10 +33,8 @@ import android.widget.TextView;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.diveboard.model.UserPreference;
 
 public class					EditTanksDialogFragment extends DialogFragment
 {
@@ -104,7 +101,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		LinearLayout tankslist = (LinearLayout) mView.findViewById(R.id.tanksfields);
 		tankslist.removeAllViews();
 		final float scale = getResources().getDisplayMetrics().density;
-		Tank tank = mTanks.get(index);
+		final Tank tank = mTanks.get(index);
 		
 		Button add_button = (Button) mView.findViewById(R.id.add_button);
 		add_button.setVisibility(Button.GONE);
@@ -389,7 +386,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		startTime_label.setTypeface(mFaceR);
 		startTime_label.setTextColor(getResources().getColor(R.color.dark_grey));
 		startTime_label.setTextSize(mTextSize);
-		startTime_label.setText(getResources().getString(R.string.unit_min));
+		startTime_label.setText(getResources().getString(R.string.mins_from_start));
 		startTime.addView(startTime_label);
 		
 		tankslist.addView(startTime);
@@ -433,6 +430,9 @@ public class					EditTanksDialogFragment extends DialogFragment
 					mStartTimeField.setText("0");
 				JSONObject newtank = new JSONObject();
 				try{
+					if(tank.getId() != null)
+						newtank.put("id", tank.getId());
+						
 					newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
 					newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString());
 					newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
@@ -751,7 +751,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		startTime_label.setTypeface(mFaceR);
 		startTime_label.setTextColor(getResources().getColor(R.color.dark_grey));
 		startTime_label.setTextSize(mTextSize);
-		startTime_label.setText(getResources().getString(R.string.unit_min));
+		startTime_label.setText(getResources().getString(R.string.mins_from_start));
 		startTime.addView(startTime_label);
 		
 		tankslist.addView(startTime);
@@ -968,7 +968,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		mView = inflater.inflate(R.layout.dialog_edit_tanks, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		if (mModel.getDives().get(getArguments().getInt("index")).getTanks() != null || !mModel.getDives().get(getArguments().getInt("index")).getTanks().isEmpty()){
+		if (mModel.getDives().get(getArguments().getInt("index")).getTanks() != null && !mModel.getDives().get(getArguments().getInt("index")).getTanks().isEmpty()){
 			mTanks = (ArrayList<Tank>) mModel.getDives().get(getArguments().getInt("index")).getTanks().clone();
 			}
 		else
