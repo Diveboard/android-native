@@ -257,7 +257,7 @@ public class ClosestShopActivity extends Activity {
 		if(showMarker) 
 			mZoom = 15.0f;
 		else
-			mZoom = 10.0f;
+			mZoom = 12.0f;
 		
 		if (lastKnownLocation == null)
 			lastKnownLocation = mLocationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);

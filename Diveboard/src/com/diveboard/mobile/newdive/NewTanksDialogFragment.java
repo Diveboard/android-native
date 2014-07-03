@@ -1,6 +1,7 @@
 package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import com.diveboard.model.Units;
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
 import android.app.Activity;
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.util.Pair;
@@ -133,7 +135,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			cylinder.addView(cylinder_title);
 			
 			mCylinderLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> cylinderAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> cylinderAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			if(tank.getMultitank() == 2){
 				cylinderAdapter.add("2");
 				cylinderAdapter.add("1");
@@ -147,7 +160,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			cylinder.addView(mCylinderLabel);
 			
 			mMaterialLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			materialAdapter.add(getResources().getString(R.string.aluminium));
 			materialAdapter.add(getResources().getString(R.string.steel));
 			materialAdapter.add(getResources().getString(R.string.carbon));
@@ -180,7 +204,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			volume.addView(mVolumeField);
 			
 			mVolumeLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> volumeAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> volumeAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			String volume_unit = tank.getVolumeUnit();
 			if (volume_unit.equals("L"))
 			{
@@ -221,9 +256,26 @@ public class					NewTanksDialogFragment extends DialogFragment
 			
 			mMixLabel = new Spinner(getActivity().getApplicationContext());
 			
-			ArrayAdapter<String> adapt_mix = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
-			adapt_mix.add(getResources().getString(R.string.air_mix));
-			adapt_mix.add(getResources().getString(R.string.custom_mix));
+			ArrayAdapter<String> adapt_mix = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
+			if(tank.getGas().equals("air")){
+				adapt_mix.add(getResources().getString(R.string.air_mix));
+				adapt_mix.add(getResources().getString(R.string.custom_mix));
+			}
+			else{
+				adapt_mix.add(getResources().getString(R.string.custom_mix));
+				adapt_mix.add(getResources().getString(R.string.air_mix));
+			}
 			adapt_mix.setDropDownViewResource(R.layout.units_spinner_fields);
 			mMixLabel.setAdapter(adapt_mix);
 			
@@ -271,7 +323,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 			n2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 			n2_title.setTextSize(mTextSize);
 			n2_title.setText(getResources().getString(R.string.unit_n2) +":");
-			custom.addView(n2_title);
+			//custom.addView(n2_title);
 			
 			mN2Field = new EditText(getActivity().getApplicationContext());
 			mN2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
@@ -279,14 +331,14 @@ public class					NewTanksDialogFragment extends DialogFragment
 			mN2Field.setTextColor(getResources().getColor(R.color.dark_grey));
 			mN2Field.setTextSize(mTextSize);
 			mN2Field.setText(tank.getN2().toString());
-			custom.addView(mN2Field);
+			//custom.addView(mN2Field);
 			
 			mMixLabel.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 				@Override
 				public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 					// TODO Auto-generated method stub
-					if(pos == 1){
+					if(!parent.getItemAtPosition(pos).toString().equals("Air")){
 						//selected custom
 						custom.setVisibility(View.VISIBLE);
 					} else
@@ -350,7 +402,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			endpressure.addView(mEndPressureField);
 			
 			mPressureLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			String pressure_unit = tank.getPUnit();
 			if (pressure_unit.equals("bar"))
 			{
@@ -398,7 +461,8 @@ public class					NewTanksDialogFragment extends DialogFragment
 			startTime_label.setTextSize(mTextSize);
 			startTime_label.setText(getResources().getString(R.string.mins_from_start));
 			startTime.addView(startTime_label);
-			
+			if (index == 0)
+				startTime.setVisibility(View.GONE);
 			tankslist.addView(startTime);
 			
 	        Button cancel = (Button) mView.findViewById(R.id.cancel);
@@ -444,9 +508,20 @@ public class					NewTanksDialogFragment extends DialogFragment
 						newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString());
 						newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
 						if(mMixLabel.getSelectedItem().toString().equals("Custom")){
-							newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
-							newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
-							newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+							if(!mO2Field.getText().toString().isEmpty())
+								newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+							else{
+								mO2Field.setText("0");
+								newtank.put("o2", 0);
+							}
+								
+							if(!mHeField.getText().toString().isEmpty())
+								newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
+							else{
+								mHeField.setText("0");
+								newtank.put("he", 0);
+							}
+							newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
 						}
 						else{
 							newtank.put("o2", 0);
@@ -502,7 +577,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			cylinder.addView(cylinder_title);
 			
 			mCylinderLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> cylinderAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> cylinderAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			cylinderAdapter.add("1");
 			cylinderAdapter.add("2");
 			cylinderAdapter.setDropDownViewResource(R.layout.units_spinner_fields);
@@ -510,7 +596,19 @@ public class					NewTanksDialogFragment extends DialogFragment
 			cylinder.addView(mCylinderLabel);
 			
 			mMaterialLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> materialAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
+			
 			materialAdapter.add(getResources().getString(R.string.aluminium));
 			materialAdapter.add(getResources().getString(R.string.steel));
 			materialAdapter.add(getResources().getString(R.string.carbon));
@@ -545,7 +643,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			volume.addView(mVolumeField);
 
 			mVolumeLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> volumeAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> volumeAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			volumeAdapter.add(getResources().getString(R.string.unit_liter));
 			volumeAdapter.add(getResources().getString(R.string.cubic_ft));
 			volumeAdapter.setDropDownViewResource(R.layout.units_spinner_fields);
@@ -576,7 +685,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 
 			mMixLabel = new Spinner(getActivity().getApplicationContext());
 
-			ArrayAdapter<String> adapt_mix = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> adapt_mix = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			adapt_mix.add(getResources().getString(R.string.air_mix));
 			adapt_mix.add(getResources().getString(R.string.custom_mix));
 			adapt_mix.setDropDownViewResource(R.layout.units_spinner_fields);
@@ -626,7 +746,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 			n2_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 			n2_title.setTextSize(mTextSize);
 			n2_title.setText(getResources().getString(R.string.unit_n2) +":");
-			custom.addView(n2_title);
+			//custom.addView(n2_title);
 
 			mN2Field = new EditText(getActivity().getApplicationContext());
 			mN2Field.setRawInputType(InputType.TYPE_CLASS_NUMBER);
@@ -634,7 +754,8 @@ public class					NewTanksDialogFragment extends DialogFragment
 			mN2Field.setTextColor(getResources().getColor(R.color.dark_grey));
 			mN2Field.setTextSize(mTextSize);
 			mN2Field.setText("79");
-			custom.addView(mN2Field);
+			mN2Field.setEnabled(false);
+			//custom.addView(mN2Field);
 
 			mMixLabel.setOnItemSelectedListener(new OnItemSelectedListener() {
 
@@ -711,7 +832,18 @@ public class					NewTanksDialogFragment extends DialogFragment
 			endpressure.addView(mEndPressureField);
 
 			mPressureLabel = new Spinner(getActivity().getApplicationContext());
-			ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+			ArrayAdapter<String> press_adapt = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+				public View getView(int position, View convertView, ViewGroup parent) {
+					View v = super.getView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					((TextView) v).setTextSize(mTextSize);
+					return v;
+				}
+				public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+					View v =super.getDropDownView(position, convertView, parent);
+					((TextView) v).setTypeface(mFaceR);
+					return v;
+				}};
 			String pressure_unit = (Units.getPressureUnit() == Units.Pressure.BAR) ? "bar" : "psi";
 			if (pressure_unit.equals("bar"))
 			{
@@ -760,6 +892,8 @@ public class					NewTanksDialogFragment extends DialogFragment
 			startTime_label.setTextSize(mTextSize);
 			startTime_label.setText(getResources().getString(R.string.mins_from_start));
 			startTime.addView(startTime_label);
+			if (mTanks.size() == 0)
+				startTime.setVisibility(View.GONE);
 			
 			tankslist.addView(startTime);
 			
@@ -804,9 +938,20 @@ public class					NewTanksDialogFragment extends DialogFragment
 						newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
 						newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
 						if(mMixLabel.getSelectedItem().toString().equals("Custom")){
-							newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
-							newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
-							newtank.put("n2", Integer.parseInt(mN2Field.getText().toString()));
+							if(!mO2Field.getText().toString().isEmpty())
+								newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+							else{
+								mO2Field.setText("0");
+								newtank.put("o2", 0);
+							}
+								
+							if(!mHeField.getText().toString().isEmpty())
+								newtank.put("he", Integer.parseInt(mHeField.getText().toString()));
+							else{
+								mHeField.setText("0");
+								newtank.put("he", 0);
+							}
+							newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
 						}
 						else{
 							newtank.put("o2", 0);
@@ -998,4 +1143,5 @@ public class					NewTanksDialogFragment extends DialogFragment
 		return mView;
 		
 	}
+	
 }
