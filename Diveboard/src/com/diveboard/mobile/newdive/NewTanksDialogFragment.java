@@ -389,7 +389,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 			mStartTimeField.setTypeface(mFaceR);
 			mStartTimeField.setTextColor(getResources().getColor(R.color.dark_grey));
 			mStartTimeField.setTextSize(mTextSize);
-			mStartTimeField.setText(tank.getTimeStart().toString());
+			mStartTimeField.setText(String.valueOf(tank.getTimeStart() / 60));
 			startTime.addView(mStartTimeField);
 			
 			TextView startTime_label = new TextView(getActivity().getApplicationContext());
@@ -459,7 +459,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 						newtank.put("p_end_value", Double.parseDouble(mEndPressureField.getText().toString()));
 						newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
 						newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
-						newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
+						newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()) * 60 ); //needs to be expressed in secs
 						mTanks.set(mIndex, new Tank(newtank));
 					} catch(JSONException e){
 						e.printStackTrace();
@@ -820,7 +820,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 						newtank.put("p_end_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
 						newtank.put("p_start_unit", mPressureLabel.getSelectedItem().toString().toLowerCase());
 						newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString().toLowerCase());
-						newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()));
+						newtank.put("time_start", Integer.parseInt(mStartTimeField.getText().toString()) * 60 ); //needs to be expressed in secs
 						mTanks.add(new Tank(newtank));
 					} catch(JSONException e){
 						e.printStackTrace();
@@ -862,6 +862,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 					tankElem.setTag(i);
 					tankElem.setLayoutParams(params);
 					tankElem.setOrientation(LinearLayout.HORIZONTAL);
+					tankElem.setGravity(Gravity.CENTER);
 					tankElem.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
 					tankElem.setOnClickListener(new OnClickListener()
 					{
@@ -885,15 +886,20 @@ public class					NewTanksDialogFragment extends DialogFragment
 					Tank tank = mTanks.get(i);
 					if(tank.getMultitank() == 2)
 						tanksSummary = "2x";
-					tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "  ";
-					if(tank.getGas().equals("custom"))
-						tanksSummary += tank.getO2()+"% O2/"+tank.getHe()+"% He/"+tank.getN2()+"% N2";
+					tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "        ";
+					if(tank.getGas().equals("custom")){
+						if(tank.getHe() == 0){
+							tanksSummary += "Nx " + tank.getO2();
+						} else
+							tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
+					}
+						
 					else
-						tanksSummary += tank.getGas();
+						tanksSummary += tank.getGas().toUpperCase();
 					tanksSummary +="\n";
-					tanksSummary += tank.getPStartValue() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "  ";
-					if(tank.getTimeStart() != null)
-						tanksSummary += "Start:" + tank.getTimeStart()+"min";
+					tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
+					if(i > 0 && tank.getTimeStart() != null )
+						tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min"; //timestart comes expressed in secs
 					
 					text.setText(tanksSummary);
 					text.setTextColor(getResources().getColor(R.color.dark_grey));
@@ -908,7 +914,7 @@ public class					NewTanksDialogFragment extends DialogFragment
 					ImageView delete = new ImageView(getActivity().getApplicationContext());
 					delete.setScaleType(ScaleType.FIT_CENTER);
 					delete.setLayoutParams(lp);
-					delete.setPadding(0, 0, (int)(5 * scale + 0.5f), 0);
+					delete.setPadding((int)(5 * scale + 0.5f), 0, (int)(5 * scale + 0.5f), 0);
 					delete.setImageDrawable(getResources().getDrawable(R.drawable.ic_recycle_bin));
 					delete.setTag(i);
 					delete.setOnClickListener(new OnClickListener()

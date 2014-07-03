@@ -113,7 +113,8 @@ public class					Tank implements IModel
 	}
 
 	public Integer getTimeStart() {
-		return _timeStart;
+		//divide by 60 cause timestart is expressed in secs
+		return _timeStart ;
 	}
 
 	public void setTimeStart(Integer _timeStart) {
