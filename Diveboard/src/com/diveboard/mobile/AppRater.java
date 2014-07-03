@@ -27,10 +27,10 @@ public class AppRater {
         	AC.getModel().setHasRatedApp(false);
         }
 
-//        if (AC.getModel().hasRatedApp()) { 
-//        	System.out.println("User has already rated the app");
-//        	return ; 
-//        }
+        if (AC.getModel().hasRatedApp()) { 
+        	System.out.println("User has already rated the app");
+        	return ; 
+        }
         
         // Increment launch counter
         Long launch_count = AC.getModel().getLaunchCount() + 1L;
