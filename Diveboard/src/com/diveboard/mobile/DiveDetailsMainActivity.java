@@ -240,7 +240,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 
 		String temp;
 		if (mDive.getTempSurface() != null) {
-			// temp = "SURF " + mDive.getTempSurface().getTemperature() + "°" +
+			// temp = "SURF " + mDive.getTempSurface().getTemperature() + "º" +
 			// mDive.getTempSurface().getSmallName();
 			String tempsurface_unit = "";
 			/*
@@ -270,7 +270,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			temp = "-";
 		temp += " | ";
 		if (mDive.getTempBottom() != null) {
-			// temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "°"
+			// temp += "BOTTOM " + mDive.getTempBottom().getTemperature() + "º"
 			// + mDive.getTempBottom().getSmallName();
 			String tempbottom_unit = "";
 			/*

@@ -87,7 +87,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 		
 //		TextView temp_label = (TextView) view.findViewById(R.id.temp_label);
 //		temp_label.setTypeface(faceR);
-//		temp_label.setText("°" + mTemperature.getSmallName());
+//		temp_label.setText("º" + mTemperature.getSmallName());
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);

@@ -621,33 +621,33 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 		String pos = "";
 		if (model.getDives().get(i).getLat() == null)
 		{
-			pos += "0ฐ ";
+			pos += "0ยบ ";
 			pos += "N";
 		}
 		else if (model.getDives().get(i).getLat() >= 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLat(), 4)) + "ฐ ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLat(), 4)) + "ยบ ";
 			pos += "N";
 		}
 		else if (model.getDives().get(i).getLat() < 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLat() * (-1), 4)) + "ฐ ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLat() * (-1), 4)) + "ยบ ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (model.getDives().get(i).getLng() == null)
 		{
-			pos += "0ฐ ";
+			pos += "0ยบ ";
 			pos += "E";
 		}
 		else if (model.getDives().get(i).getLng() >= 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLng(), 4)) + "ฐ ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLng(), 4)) + "ยบ ";
 			pos += "E";
 		}
 		else if (model.getDives().get(i).getLng() < 0)
 		{
-			pos += String.valueOf(roundToN(model.getDives().get(i).getLng() * (-1), 4)) + "ฐ ";
+			pos += String.valueOf(roundToN(model.getDives().get(i).getLng() * (-1), 4)) + "ยบ ";
 			pos += "W";
 		}
 		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 

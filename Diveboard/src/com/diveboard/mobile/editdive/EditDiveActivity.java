@@ -515,7 +515,7 @@ public class EditDiveActivity extends FragmentActivity implements
 			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
 		{
-			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " º" + dive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);

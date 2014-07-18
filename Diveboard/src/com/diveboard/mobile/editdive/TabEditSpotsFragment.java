@@ -383,24 +383,24 @@ public class TabEditSpotsFragment extends Fragment implements
 	public String getPosition() {
 		String pos = "";
 		if (mModel.getDives().get(mIndex).getSpot().getLat() == null) {
-			pos += "0ฐ ";
+			pos += "0ยบ ";
 			pos += "N";
 		} else if (mModel.getDives().get(mIndex).getSpot().getLat() >= 0) {
-			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLat()) + "ฐ ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLat()) + "ยบ ";
 			pos += "N";
 		} else if (mModel.getDives().get(mIndex).getSpot().getLat() < 0) {
-			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLat() * (-1)) + "ฐ ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLat() * (-1)) + "ยบ ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (mModel.getDives().get(mIndex).getSpot().getLng() == null) {
-			pos += "0ฐ ";
+			pos += "0ยบ ";
 			pos += "E";
 		} else if (mModel.getDives().get(mIndex).getSpot().getLng() >= 0) {
-			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLng()) + "ฐ ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLng()) + "ยบ ";
 			pos += "E";
 		} else if (mModel.getDives().get(mIndex).getSpot().getLng() < 0) {
-			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLng() * (-1)) + "ฐ ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getSpot().getLng() * (-1)) + "ยบ ";
 			pos += "W";
 		}
 		if ((mModel.getDives().get(mIndex).getSpot().getLat() == null || mModel.getDives().get(mIndex).getSpot().getLat() == 0)
@@ -414,14 +414,14 @@ public class TabEditSpotsFragment extends Fragment implements
 
 		String mCoordinates = "";
 		if (position.latitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ฐN, ";
+			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ยบN, ";
 		else
-			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ฐS, ";
+			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ยบS, ";
 
 		if (position.longitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ฐE";
+			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ยบE";
 		else
-			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ฐW";
+			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ยบW";
 
 		return mCoordinates;
 	}

@@ -95,7 +95,7 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 		
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
 //		temp_label.setTypeface(faceR);
-//		temp_label.setText("°" + mTemperature.getSmallName());
+//		temp_label.setText("º" + mTemperature.getSmallName());
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mModel.getDives().get(getArguments().getInt("index")).getTempSurfaceUnit() == null)

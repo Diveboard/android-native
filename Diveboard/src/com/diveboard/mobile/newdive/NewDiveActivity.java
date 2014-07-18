@@ -507,7 +507,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 			((EditOption)mOptionAdapter.getItem(12)).setValue("");
 		else
 		{
-//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " °" + mDive.getTempSurface().getSmallName());
+//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(mDive.getTempSurface().getTemperature()) + " º" + mDive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (mDive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -530,7 +530,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 			((EditOption)mOptionAdapter.getItem(13)).setValue("");
 		else
 		{
-//			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " °" + mDive.getTempBottom().getSmallName());
+//			((EditOption)mOptionAdapter.getItem(12)).setValue(Double.toString(mDive.getTempBottom().getTemperature()) + " º" + mDive.getTempBottom().getSmallName());
 			String tempbottom_unit = "";
 			if (mDive.getTempBottomUnit() == null)
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
