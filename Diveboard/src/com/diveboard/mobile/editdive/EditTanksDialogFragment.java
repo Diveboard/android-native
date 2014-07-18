@@ -52,6 +52,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 	private EditText				mStartPressureField;
 	private EditText				mEndPressureField;
 	private EditText				mStartTimeField;
+	private TextView				he_title;
 	private EditText				mHeField;
 	private EditText				mO2Field;
 	private EditText				mN2Field;
@@ -257,18 +258,14 @@ public class					EditTanksDialogFragment extends DialogFragment
 				((TextView) v).setTypeface(mFaceR);
 				return v;
 			}};
-		if(tank.getGas().equals("air")){
-			adapt_mix.add(getResources().getString(R.string.air_mix));
-			adapt_mix.add(getResources().getString(R.string.custom_mix));
-		}
-		else{
-			adapt_mix.add(getResources().getString(R.string.custom_mix));
-			adapt_mix.add(getResources().getString(R.string.air_mix));
-		}
+
+    adapt_mix.add(getResources().getString(R.string.air_mix));
+    adapt_mix.add(getResources().getString(R.string.nitrox_mix));
+    adapt_mix.add(getResources().getString(R.string.trimix_mix));
 			
 		adapt_mix.setDropDownViewResource(R.layout.units_spinner_fields);
 		mMixLabel.setAdapter(adapt_mix);
-		
+
 		
 		final LinearLayout custom = new LinearLayout(getActivity().getApplicationContext());
 		custom.setLayoutParams(params);
@@ -291,7 +288,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mO2Field.setText(tank.getO2().toString());
 		custom.addView(mO2Field);
 		
-		TextView he_title = new TextView(getActivity().getApplicationContext());
+		he_title = new TextView(getActivity().getApplicationContext());
 		he_title.setTypeface(mFaceR);
 		he_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		he_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
@@ -323,16 +320,37 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mN2Field.setText(tank.getN2().toString());
 		//custom.addView(mN2Field);
 		
+    if (tank.getGasType().equals("air")) {
+      mMixLabel.setSelection(0, true);
+      custom.setVisibility(View.GONE);
+    } else if (tank.getGasType().equals("nitrox")) {
+      mMixLabel.setSelection(1, true);
+      mHeField.setVisibility(View.GONE);
+      he_title.setVisibility(View.GONE);
+      custom.setVisibility(View.VISIBLE);
+    } else {
+      mMixLabel.setSelection(2, true);
+      mHeField.setVisibility(View.VISIBLE);
+      he_title.setVisibility(View.VISIBLE);
+      custom.setVisibility(View.VISIBLE);
+    }
+
+
 		mMixLabel.setOnItemSelectedListener(new OnItemSelectedListener() {
 
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
-				// TODO Auto-generated method stub
-				if(!parent.getItemAtPosition(pos).toString().equals("Air")){
-					//selected custom
-					custom.setVisibility(View.VISIBLE);
-				} else
-					custom.setVisibility(View.GONE);
+        if(parent.getItemAtPosition(pos).toString().equals(getResources().getString(R.string.air_mix))){
+          custom.setVisibility(View.GONE);
+        } else if(parent.getItemAtPosition(pos).toString().equals(getResources().getString(R.string.nitrox_mix))){
+          custom.setVisibility(View.VISIBLE);
+          mHeField.setVisibility(View.GONE);
+          he_title.setVisibility(View.GONE);
+        } else { //trimix
+          custom.setVisibility(View.VISIBLE);
+          mHeField.setVisibility(View.VISIBLE);
+          he_title.setVisibility(View.VISIBLE);
+        }
 			}
 
 			@Override
@@ -499,8 +517,21 @@ public class					EditTanksDialogFragment extends DialogFragment
 						
 					newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
 					newtank.put("volume_unit", mVolumeLabel.getSelectedItem().toString());
-					newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
-					if(mMixLabel.getSelectedItem().toString().equals("Custom")){
+					if(mMixLabel.getSelectedItem().toString().equals(getResources().getString(R.string.nitrox_mix))){
+            newtank.put("gas_type", "nitrox");
+						if(!mO2Field.getText().toString().isEmpty())
+							newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+						else{
+							mO2Field.setText("0");
+							newtank.put("o2", 0);
+						}
+							
+            mHeField.setText("0");
+            newtank.put("he", 0);
+						newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
+					}
+					else if(mMixLabel.getSelectedItem().toString().equals(getResources().getString(R.string.trimix_mix))){
+            newtank.put("gas_type", "trimix");
 						if(!mO2Field.getText().toString().isEmpty())
 							newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
 						else{
@@ -518,6 +549,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 						newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
 					}
 					else{
+            newtank.put("gas_type", "air");
 						newtank.put("o2", 0);
 						newtank.put("he", 0);
 						newtank.put("n2", 0);
@@ -691,7 +723,8 @@ public class					EditTanksDialogFragment extends DialogFragment
 				return v;
 			}};
 		adapt_mix.add(getResources().getString(R.string.air_mix));
-		adapt_mix.add(getResources().getString(R.string.custom_mix));
+		adapt_mix.add(getResources().getString(R.string.nitrox_mix));
+		adapt_mix.add(getResources().getString(R.string.trimix_mix));
 		adapt_mix.setDropDownViewResource(R.layout.units_spinner_fields);
 		mMixLabel.setAdapter(adapt_mix);
 
@@ -717,7 +750,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		mO2Field.setText("21");
 		custom.addView(mO2Field);
 
-		TextView he_title = new TextView(getActivity().getApplicationContext());
+		he_title = new TextView(getActivity().getApplicationContext());
 		he_title.setTypeface(mFaceR);
 		he_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		he_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
@@ -754,11 +787,17 @@ public class					EditTanksDialogFragment extends DialogFragment
 			@Override
 			public void onItemSelected(AdapterView<?> parent, View view, int pos, long id) {
 				// TODO Auto-generated method stub
-				if(pos == 1){
-					//selected custom
-					custom.setVisibility(View.VISIBLE);
-				} else
-					custom.setVisibility(View.GONE);
+        if(parent.getItemAtPosition(pos).toString().equals(getResources().getString(R.string.air_mix))){
+          custom.setVisibility(View.GONE);
+        } else if(parent.getItemAtPosition(pos).toString().equals(getResources().getString(R.string.nitrox_mix))){
+          custom.setVisibility(View.VISIBLE);
+          mHeField.setVisibility(View.GONE);
+          he_title.setVisibility(View.GONE);
+        } else { //trimix
+          custom.setVisibility(View.VISIBLE);
+          mHeField.setVisibility(View.VISIBLE);
+          he_title.setVisibility(View.VISIBLE);
+        }
 			}
 
 			@Override
@@ -928,8 +967,22 @@ public class					EditTanksDialogFragment extends DialogFragment
 				try{
 					JSONObject newtank = new JSONObject();
 					newtank.put("volume_value", Double.parseDouble(mVolumeField.getText().toString()));
-					newtank.put("gas", mMixLabel.getSelectedItem().toString().toLowerCase());				
-					if(mMixLabel.getSelectedItem().toString().equals("Custom")){
+
+          if(mMixLabel.getSelectedItem().toString().equals(getResources().getString(R.string.nitrox_mix))){
+            newtank.put("gas_type", "nitrox");
+            if(!mO2Field.getText().toString().isEmpty())
+              newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
+            else{
+              mO2Field.setText("0");
+              newtank.put("o2", 0);
+            }
+              
+            mHeField.setText("0");
+            newtank.put("he", 0);
+            newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
+          }
+          else if(mMixLabel.getSelectedItem().toString().equals(getResources().getString(R.string.trimix_mix))){
+            newtank.put("gas_type", "trimix");
 						if(!mO2Field.getText().toString().isEmpty())
 							newtank.put("o2", Integer.parseInt(mO2Field.getText().toString()));
 						else{
@@ -946,9 +999,10 @@ public class					EditTanksDialogFragment extends DialogFragment
 						newtank.put("n2", 100 - Integer.parseInt(mO2Field.getText().toString()) - Integer.parseInt(mHeField.getText().toString()));
 					}
 					else{
-						newtank.put("o2", 0);
-						newtank.put("he", 0);
-						newtank.put("n2", 0);
+            newtank.put("gas_type", "air");
+            newtank.put("o2", 21);
+            newtank.put("he", 0);
+            newtank.put("n2", 79);
 					}
 					newtank.put("material", mMaterialLabel.getSelectedItem().toString().toLowerCase());
 					newtank.put("multitank", Integer.parseInt(mCylinderLabel.getSelectedItem().toString()));
@@ -1024,15 +1078,14 @@ public class					EditTanksDialogFragment extends DialogFragment
 				if(tank.getMultitank() == 2)
 					tanksSummary = "2x";
 				tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
-				if(tank.getGas().equals("custom")){
-					if(tank.getHe() == 0){
-						tanksSummary += "Nx " + tank.getO2();
-					} else
-						tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
-				}
-					
+        if(tank.getGasType().equals("nitrox"))
+          tanksSummary += "Nx " + tank.getO2();
+        else if (tank.getGasType().equals("trimix"))
+          tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
+        else if (tank.getGasType().equals("air"))
+          tanksSummary += getResources().getString(R.string.air_mix);
 				else
-					tanksSummary += tank.getGas().toUpperCase();
+					tanksSummary += tank.getGasType().toUpperCase();
 				tanksSummary +="\n";
 				tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
 				if(i > 0 && tank.getTimeStart() != null)

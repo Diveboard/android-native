@@ -11,7 +11,7 @@ public class					Tank implements IModel
 {
 	private Integer				_id;
 	private String				_material;
-	private String				_gas;
+	private String				_gas_type;
 	private Double				_volume;
 	private Integer				_multitank;
 	private Integer				_o2;
@@ -31,7 +31,7 @@ public class					Tank implements IModel
 	{
 		_id = (json.isNull("id")) ? null : json.getInt("id");
 		_material = (json.isNull("material")) ? null : json.getString("material");
-		_gas = (json.isNull("gas")) ? null : json.getString("gas");
+		_gas_type = (json.isNull("gas_type")) ? null : json.getString("gas_type");
 		_volume = (json.isNull("volume")) ? null : json.getDouble("volume");
 		_multitank = (json.isNull("multitank")) ? null : json.getInt("multitank");
 		_o2 = (json.isNull("o2")) ? null : json.getInt("o2");
@@ -64,12 +64,12 @@ public class					Tank implements IModel
 		this._material = _material;
 	}
 
-	public String getGas() {
-		return _gas;
+	public String getGasType() {
+		return _gas_type;
 	}
 
-	public void setGas(String _gas) {
-		this._gas = _gas;
+	public void setGasType(String _gas_type) {
+		this._gas_type = _gas_type;
 	}
 
 	public Double getVolume() {

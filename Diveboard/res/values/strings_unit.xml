@@ -29,6 +29,8 @@
     <string name="mins_from_start">mins from start</string>
     <string name="unit_mins">mins</string>
     <string name="custom_mix">Custom</string>
+    <string name="nitrox_mix">Nitrox</string>
+    <string name="trimix_mix">Trimix</string>
     <string name="air_mix">Air</string>
     <string name="unit_he">He</string>
     <string name="unit_o2">O2</string>    

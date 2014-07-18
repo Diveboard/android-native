@@ -711,7 +711,7 @@ public class					Dive implements IModel
 				Tank tank = tanks.get(i);
 				if(tank.getId() != null)
 					jTank.put("id",tank.getId());
-				jTank.put("gas",tank.getGas());
+				jTank.put("gas_type",tank.getGasType());
 				jTank.put("he", tank.getHe());
 				jTank.put("n2", tank.getN2());
 				jTank.put("o2", tank.getO2());
