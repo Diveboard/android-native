@@ -163,8 +163,8 @@
         <item>New Dive</item>
         <item>Settings</item>
         <item>Report a bug</item>
-        <item>Logout</item>
         <item>Rate App</item>
+        <item>Logout</item>
     </string-array>
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>

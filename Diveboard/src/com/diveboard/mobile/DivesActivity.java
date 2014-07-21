@@ -125,14 +125,14 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 	private Context 						mContext;
 	
 	//controls for navigation drawer
-//	private DrawerLayout 					mDrawerLayout;
-//	private ListView 						mDrawerList;
-//	private LinearLayout 					mDrawerContainer;
-//	private ActionBarDrawerToggle 			mDrawerToggle;
-//
-//	private CharSequence 					mDrawerTitle;
-//	private CharSequence 					mTitle;
-//	private String[] 						mLinksTitles;
+	private DrawerLayout 					mDrawerLayout;
+	private ListView 						mDrawerList;
+	private LinearLayout 					mDrawerContainer;
+	private ActionBarDrawerToggle 			mDrawerToggle;
+
+	private CharSequence 					mDrawerTitle;
+	private CharSequence 					mTitle;
+	private String[] 						mLinksTitles;
 	
 	@Override
 	protected void onResume()
@@ -221,29 +221,33 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         
         
         
-//        //Setting up controls for the navigation drawer 
-//        mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
-//        mDrawerList = (ListView) findViewById(R.id.menu_links);
-//
-//        // set a custom shadow that overlays the main content when the drawer opens
-//        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-//        
-//        // set up the drawer's list view with items and click listener
-//        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
-//        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-//        TextView mDrawerTitle = (TextView)findViewById(R.id.drawer_title);
-//        mDrawerTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf"));
-//        ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
-//        mDrawerMenu.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				mDrawerLayout.openDrawer(mDrawerContainer);
-//			}
-//		});
+        //Setting up controls for the navigation drawer 
+        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
+			mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
+        }
+        else
+        	mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
+        mDrawerList = (ListView) findViewById(R.id.menu_links);
+
+        // set a custom shadow that overlays the main content when the drawer opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        
+        // set up the drawer's list view with items and click listener
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        TextView mDrawerTitle = (TextView)findViewById(R.id.drawer_title);
+        mDrawerTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf"));
+        ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
+        mDrawerMenu.setOnClickListener(new View.OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				mDrawerLayout.openDrawer(mDrawerContainer);
+			}
+		});
 
         
 		if (AC.isDataReady() == false){
@@ -302,10 +306,17 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			
-//			if(AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp())
-//				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
-//			else
-//				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
+			if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
+				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
+				mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
+				System.out.println("User ALREADY rated app");
+			}
+			else {
+				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
+				mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
+				System.out.println("User has NOT rated APP");				
+
+			}
 			System.out.println("Launching AppRater");
 
 			AppRater.app_launched(AC, this);
@@ -718,10 +729,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null || mModel.getDives().size() == 0)
 				{
-//					Toast toast = Toast.makeText(getApplicationContext(), "You are offline or there is no dive!", Toast.LENGTH_SHORT);
-//					toast.setGravity(Gravity.CENTER, 0, 0);
-//					toast.show();
-					//logout();
 					return ;
 				}
 				else
@@ -1215,8 +1222,6 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
 
 		@Override
 		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
-//			if(mDataLoaded){
-//				System.out.println("Value of mDAtaloaded is true");
 			if(mDataLoaded){	
 					System.out.println("Value of mDAtaloaded is true");
 					int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
@@ -1422,124 +1427,130 @@ public class DivesActivity extends FragmentActivity implements TaskFragment.Task
         return super.onKeyDown(keycode, e);
     }
     
-//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            selectItem(position);
-//        }
-//    }
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            selectItem(position);
+        }
+    }
     
-//    private void selectItem(int position) {
-//
-//    	switch (position) {
-//
-//    	//Rate App
-//    	case 0:
-//    		mDrawerList.setItemChecked(position, true);
-//    		break;
-//    	
-//    	//Refresh
-//    	case 1:
-//    		
-//    		ApplicationController AC = (ApplicationController)getApplicationContext();
-//    		AC.setDataReady(false);
-//    		AC.getModel().stopPreloadPictures();
-//    		ApplicationController.mForceRefresh = true;
-//    		AC.setModel(null);
-//    		finish();
-//    		break;
-//
-//    	//Wallet Activity
-//    	case 2:
-//    		Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
-//    		startActivity(walletActivity);
-//    		break;
-//    		
-//    	//Closest Shop    			
-//    	case 3:
-//    		Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
-//    		startActivity(closestShopActivity);
-//    		break;
-//
-//    	//New Dive	
-//    	case 4:
-//    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//    		startActivity(newDiveActivity);
-//    		break;
-//    	
-//    	//Settings	
-//    	case 5:    		
-//    		mModel.getDataManager().getMemoryUsed();
-//    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//    		startActivity(settingsActivity);
-//    		break;
-//
-//    	//bug report
-//    	case 6:
-//    		if (true)
-//    		{
-//    			//Use of UserVoice report bug system
-//    			WaitDialogFragment dialog = new WaitDialogFragment();
-//    			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//    			Config config = new Config("diveboard.uservoice.com");
-//    			if(mModel.getSessionEmail() != null)
-//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//    			UserVoice.init(config, DivesActivity.this);
-//    			config.setShowForum(false);
-//    			config.setShowContactUs(true);
-//    			config.setShowPostIdea(false);
-//    			config.setShowKnowledgeBase(false);
-//    			ApplicationController.UserVoiceReady = true;
-//    			UserVoice.launchContactUs(DivesActivity.this);
-//    			dialog.dismiss();
-//    		}
-//    		break;
-//
-//    	//Logout	
-//    	case 7:
-//    		final Dialog dialog = new Dialog(DivesActivity.this);
-//    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//    		dialog.setContentView(R.layout.dialog_edit_confirm);
-//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-//    		TextView title = (TextView) dialog.findViewById(R.id.title);
-//    		title.setTypeface(faceR);
-//    		title.setText(getResources().getString(R.string.confirm_exit));
-//    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
-//    		cancel.setTypeface(faceR);
-//    		cancel.setText(getResources().getString(R.string.cancel));
-//    		cancel.setOnClickListener(new View.OnClickListener() {
-//
-//    			@Override
-//    			public void onClick(View v) {
-//    				// TODO Auto-generated method stub
-//    				dialog.dismiss();
-//    			}
-//    		});
-//    		Button save = (Button) dialog.findViewById(R.id.save);
-//    		save.setTypeface(faceR);
-//    		save.setText(getResources().getString(R.string.menu_logout));
-//    		save.setOnClickListener(new View.OnClickListener() {
-//
-//    			@Override
-//    			public void onClick(View v) {
-//    				// TODO Auto-generated method stub
-//    				logout();
-//    			}
-//    		});
-//    		dialog.show();
-//    		break;
-//    		
-//    	case 8:
-//    		
-//    		break;
-//    		
-//    	default:
-//    		break ;
-//    	}
-//
-//        // update selected item and title, then close the drawer
-//        mDrawerList.setItemChecked(position, false);
-//        mDrawerLayout.closeDrawer(mDrawerContainer);
-//    }
+    private void selectItem(int position) {
+
+    	switch (position) {
+
+    	//Logbook
+    	case 0:
+    		mDrawerList.setItemChecked(position, true);
+    		break;
+    	
+    	//Refresh
+    	case 1:
+    		
+    		ApplicationController AC = (ApplicationController)getApplicationContext();
+    		AC.setDataReady(false);
+    		AC.getModel().stopPreloadPictures();
+    		ApplicationController.mForceRefresh = true;
+    		AC.setModel(null);
+    		finish();
+    		break;
+
+    	//Wallet Activity
+    	case 2:
+    		Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
+    		startActivity(walletActivity);
+    		break;
+    		
+    	//Closest Shop    			
+    	case 3:
+    		Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
+    		startActivity(closestShopActivity);
+    		break;
+
+    	//New Dive	
+    	case 4:
+    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+    		startActivity(newDiveActivity);
+    		break;
+    	
+    	//Settings	
+    	case 5:    		
+    		mModel.getDataManager().getMemoryUsed();
+    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+    		startActivity(settingsActivity);
+    		break;
+
+    	//bug report
+    	case 6:
+    		if (true)
+    		{
+    			//Use of UserVoice report bug system
+    			WaitDialogFragment dialog = new WaitDialogFragment();
+    			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+    			Config config = new Config("diveboard.uservoice.com");
+    			if(mModel.getSessionEmail() != null)
+    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+    			UserVoice.init(config, DivesActivity.this);
+    			config.setShowForum(false);
+    			config.setShowContactUs(true);
+    			config.setShowPostIdea(false);
+    			config.setShowKnowledgeBase(false);
+    			ApplicationController.UserVoiceReady = true;
+    			UserVoice.launchContactUs(DivesActivity.this);
+    			dialog.dismiss();
+    		}
+    		break;
+
+    	//Rate app
+    	case 7:
+    		mModel.setHasRatedApp(true);
+			try {
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+			} catch (android.content.ActivityNotFoundException anfe) {
+			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+			}
+    		break;	
+    		
+    	//Logout	
+    	case 8:
+    		final Dialog dialog = new Dialog(DivesActivity.this);
+    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    		dialog.setContentView(R.layout.dialog_edit_confirm);
+    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+    		TextView title = (TextView) dialog.findViewById(R.id.title);
+    		title.setTypeface(faceR);
+    		title.setText(getResources().getString(R.string.confirm_exit));
+    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
+    		cancel.setTypeface(faceR);
+    		cancel.setText(getResources().getString(R.string.cancel));
+    		cancel.setOnClickListener(new View.OnClickListener() {
+
+    			@Override
+    			public void onClick(View v) {
+    				// TODO Auto-generated method stub
+    				dialog.dismiss();
+    			}
+    		});
+    		Button save = (Button) dialog.findViewById(R.id.save);
+    		save.setTypeface(faceR);
+    		save.setText(getResources().getString(R.string.menu_logout));
+    		save.setOnClickListener(new View.OnClickListener() {
+
+    			@Override
+    			public void onClick(View v) {
+    				// TODO Auto-generated method stub
+    				logout();
+    			}
+    		});
+    		dialog.show();
+    		break;
+    		
+    	default:
+    		break ;
+    	}
+
+        // update selected item and title, then close the drawer
+        mDrawerList.setItemChecked(position, false);
+        mDrawerLayout.closeDrawer(mDrawerContainer);
+    }
     
 }
