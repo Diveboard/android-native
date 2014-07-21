@@ -95,7 +95,7 @@
         </activity>
         <activity
             android:name="com.diveboard.mobile.ClosestShopActivity"
-            android:label="@string/title_activity_dive_details_main" >
+            android:label="@string/title_shop_activity" >
         </activity>
         <activity
             android:name="com.diveboard.mobile.DiveDetailsMainActivity"
