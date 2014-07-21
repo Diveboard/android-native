@@ -1683,7 +1683,6 @@ public class					DiveboardModel
 		}
 		else
 		{
-			//return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			return null;
 		}
 		return null;
@@ -1744,7 +1743,7 @@ public class					DiveboardModel
 		}
 		else{
 			
-			return null;
+			return offlineSearchRegionLocationText(latitude, longitude, String.valueOf(2.0));
 		}
 		
 		return null;

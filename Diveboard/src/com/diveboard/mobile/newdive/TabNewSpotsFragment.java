@@ -538,10 +538,10 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		//we add the custom marker and launch the search of nearby spots on the background
 		mManualMarker = mMap.addMarker(new MarkerOptions() 
-			.position(mMap.getCameraPosition().target)
-			.title(((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString())
-			.draggable(true)
-			.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+				.position(mMap.getCameraPosition().target)
+				.title(((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString())
+				.draggable(true)
+				.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 		
 		
 		RegionLocationTask regionLocation_task = new RegionLocationTask();
