@@ -44,8 +44,7 @@ public class					DatabaseUpdater
 		{
 			ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 			NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-			NetworkInfo dataNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-			if (wifiNetwork.isConnected() == false && dataNetwork.isConnected() == false)
+			if (wifiNetwork.isConnected() == false)
 				return ;
 			try {
 				URL url = new URL(AppConfig.SERVER_URL + "/assets/mobilespots.db.gz");
