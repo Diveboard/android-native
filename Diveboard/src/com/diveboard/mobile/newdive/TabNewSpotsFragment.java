@@ -380,37 +380,37 @@ public class TabNewSpotsFragment extends Fragment implements
 		String pos = "";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLat() == null) {
-			pos += "0ยบ ";
+			pos += "0บ ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat())
-					+ "ยบ ";
+					+ "บ ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat()
-					* (-1)) + "ยบ ";
+					* (-1)) + "บ ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLng() == null) {
-			pos += "ยบ ";
+			pos += "บ ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng())
-					+ "ยบ ";
+					+ "บ ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng()
-					* (-1)) + "ยบ ";
+					* (-1)) + "บ ";
 			pos += "W";
 		}
 		if ((((ApplicationController) getActivity().getApplicationContext())
@@ -430,14 +430,14 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		String mCoordinates ="";
 		if(position.latitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ยบN, ";
+			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "บN, ";
 		else
-			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ยบS, ";
+			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "บS, ";
 		
 		if(position.longitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ยบE";
+			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "บE";
 		else
-			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ยบW";
+			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "บW";
 		
 		return mCoordinates;
 	}

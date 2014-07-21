@@ -310,33 +310,33 @@ public class					TabNewShopFragment extends Fragment
 		String pos = "";
 		if (((ApplicationController)mContext).getTempDive().getShop().getLat() == null)
 		{
-			pos += "0ยบ ";
+			pos += "0บ ";
 			pos += "N";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat()) + "ยบ ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat()) + "บ ";
 			pos += "N";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLat() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat() * (-1)) + "ยบ ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat() * (-1)) + "บ ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController)mContext).getTempDive().getShop().getLng() == null)
 		{
-			pos += "0ยบ ";
+			pos += "0บ ";
 			pos += "E";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng()) + "ยบ ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng()) + "บ ";
 			pos += "E";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLng() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng() * (-1)) + "ยบ ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng() * (-1)) + "บ ";
 			pos += "W";
 		}
 		if ((((ApplicationController)mContext).getTempDive().getShop().getLat() == null || ((ApplicationController)mContext).getTempDive().getShop().getLat() == 0) && 
