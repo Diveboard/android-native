@@ -13,11 +13,14 @@ import android.preference.Preference.OnPreferenceChangeListener;
 import android.preference.Preference.OnPreferenceClickListener;
 import android.preference.PreferenceActivity;
 import android.preference.PreferenceCategory;
+import android.util.Pair;
 import android.widget.Toast;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+
 import org.json.JSONException;
 
 import com.diveboard.config.AppConfig;
@@ -77,6 +80,7 @@ public class SettingsActivity extends PreferenceActivity {
 		super.onCreate(savedInstanceState);
 		
 		ApplicationController AC = (ApplicationController)getApplicationContext();
+		
 		if (AC.handleLowMemory() == true)
 			return ;
 		setupSimplePreferencesScreen();
@@ -328,6 +332,7 @@ public class SettingsActivity extends PreferenceActivity {
 				@Override
 				public boolean onPreferenceClick(Preference arg0)
 				{
+					
 					Preference remaining = (Preference) findPreference("remaining_req");
 					remaining.setTitle(getResources().getString(R.string.remaining_requests_title) + ": " + ((ApplicationController)getApplicationContext()).getModel().getDataManager().getEditList().size());
 					return true;

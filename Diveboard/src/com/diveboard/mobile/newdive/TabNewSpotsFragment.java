@@ -45,6 +45,7 @@ import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
@@ -117,6 +118,7 @@ public class TabNewSpotsFragment extends Fragment implements
 	private boolean searchRegionLocationText = false;
 	private int toastCount = 0;
 	private boolean goOfflineMode;
+	private Context mContext;
 	
 
 	private class myLocationListener implements LocationListener {
@@ -171,7 +173,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots,container, false);
 		ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 		mModel = AC.getModel();
-		
+		mContext = getActivity().getApplicationContext();
 		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
 		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
@@ -190,12 +192,22 @@ public class TabNewSpotsFragment extends Fragment implements
 		((TextView) mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
 		((TextView) mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
 				
-		WindowManager wm = (WindowManager)AC.getSystemService(Context.WINDOW_SERVICE);
+		WindowManager wm = (WindowManager) AC.getSystemService(Context.WINDOW_SERVICE);
 		Display display = wm.getDefaultDisplay();
 		Point size = new Point();
-		display.getSize(size);
-		final int width = size.x;
-		final int height = size.y;
+		final int width;
+		final int height;
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2){
+			display.getSize(size);
+				width = size.x;
+				height = size.y;
+		}else
+		{
+			display = wm.getDefaultDisplay();
+			width = display.getWidth();
+			height = display.getHeight();
+		}
+		
 		NewDiveActivity.isNewSpot = false;
 		goOfflineMode = false;
 
@@ -239,18 +251,16 @@ public class TabNewSpotsFragment extends Fragment implements
 					String stringToSearch = ((TextView) mRootView.findViewById(R.id.search_bar)).getText().toString();
 					
 					
-					if(!stringToSearch.trim().isEmpty()){
+					if(!stringToSearch.trim().isEmpty() && stringToSearch.trim().length() > 2){
 						doMySearch("search", stringToSearch, null, null, null);
-						InputMethodManager imm = (InputMethodManager) getActivity()
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.toggleSoftInput(0, 0);
 						handled = true;
 					}
 					else{
 						
 						doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
-						InputMethodManager imm = (InputMethodManager) getActivity()
-								.getSystemService(Context.INPUT_METHOD_SERVICE);
+						InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 						imm.toggleSoftInput(0, 0);
 						handled = true;
 					}
@@ -326,6 +336,9 @@ public class TabNewSpotsFragment extends Fragment implements
 				mMap.getUiSettings().setScrollGesturesEnabled(true);
 				mMap.getUiSettings().setCompassEnabled(true);
 				
+				mMap.setOnMapLongClickListener(this);
+				mMap.setOnMarkerDragListener(this);
+				
 				((ImageView) mRootView.findViewById(R.id.ic_map_change)).setOnClickListener(new OnClickListener() {
 					@Override
 					public void onClick(View v) {
@@ -345,83 +358,17 @@ public class TabNewSpotsFragment extends Fragment implements
 					}
 				});
 				
-				//Spot ID is 1 when there is no spot assigned yet
-				if (((ApplicationController) getActivity()
-						.getApplicationContext()).getTempDive().getSpot()
-						.getId() != 1) {
+				//Load the previously selected spot if so
+				if (((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1) {
 					
-					//Then we show the "selected spot" controls
-					((LinearLayout) mRootView.findViewById(R.id.manual_spot_layout)).setVisibility(View.GONE);
-					((LinearLayout) mRootView.findViewById(R.id.on_spot_selected_layout)).setVisibility(View.VISIBLE);
-					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.GONE);
-					
-					((TextView) mRootView
-							.findViewById(R.id.details_name_content))
-							.setText(((ApplicationController) getActivity()
-									.getApplicationContext()).getTempDive()
-									.getSpot().getName());
-					((TextView) mRootView.findViewById(R.id.details_gps_content))
-							.setText(getPosition());
-					
-					
-					if (!manualSpotActivated)
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(),
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
-						.title(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-					
-					else 
-					
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLat(),
-								((ApplicationController)getActivity().getApplicationContext()).getTempDive().getSpot().getLng()))
-						.title(((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getName())
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker_grey)));
+					goToSpotSelected(mRootView, AC.getTempDive().getSpot().getJson());
+				} else {
+					goToSearch(mRootView);
+					activeGPS(mRootView);
+				}
 						
-					System.out.println(((ApplicationController) getActivity()
-							.getApplicationContext()).getTempDive().getSpot()
-							.getId());
-					Integer zoom = ((ApplicationController) getActivity()
-							.getApplicationContext()).getTempDive().getSpot()
-							.getZoom();
-					if (zoom == null || zoom > mZoom)
-						zoom = mZoom;
-					if (((ApplicationController) getActivity()
-							.getApplicationContext()).getTempDive().getSpot()
-							.getLat() != null
-							&& ((ApplicationController) getActivity()
-									.getApplicationContext()).getTempDive()
-									.getSpot().getLng() != null)
-						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(
-								new LatLng(
-										((ApplicationController) getActivity()
-												.getApplicationContext())
-												.getTempDive().getSpot()
-												.getLat(),
-										((ApplicationController) getActivity()
-												.getApplicationContext())
-												.getTempDive().getSpot()
-												.getLng()), zoom));
-
-				} else if(!manualSpotActivated){
-					System.out.println("activeGPS");
-					((LinearLayout) mRootView.findViewById(R.id.view_search))
-							.setVisibility(View.VISIBLE);
-					activeGPS(null);
-				}
-				if (manualSpotActivated){
-					System.out.println("Manual Spot mode on");
-				}
 			}
 			
-			mMap.setOnMapLongClickListener(this);
-			mMap.setOnMarkerDragListener(this);
-
-			
-		  
 		}
 
 		return mRootView;
@@ -433,37 +380,37 @@ public class TabNewSpotsFragment extends Fragment implements
 		String pos = "";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLat() == null) {
-			pos += "0ฐ ";
+			pos += "0ยบ ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat())
-					+ "ฐ ";
+					+ "ยบ ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat()
-					* (-1)) + "ฐ ";
+					* (-1)) + "ยบ ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLng() == null) {
-			pos += "ฐ ";
+			pos += "ยบ ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng())
-					+ "ฐ ";
+					+ "ยบ ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng()
-					* (-1)) + "ฐ ";
+					* (-1)) + "ยบ ";
 			pos += "W";
 		}
 		if ((((ApplicationController) getActivity().getApplicationContext())
@@ -483,14 +430,14 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		String mCoordinates ="";
 		if(position.latitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ฐN, ";
+			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ยบN, ";
 		else
-			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ฐS, ";
+			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ยบS, ";
 		
 		if(position.longitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ฐE";
+			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ยบE";
 		else
-			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ฐW";
+			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ยบW";
 		
 		return mCoordinates;
 	}
@@ -510,16 +457,9 @@ public class TabNewSpotsFragment extends Fragment implements
 		mMap.clear();
 		
 		if(manualSpotActivated){
-			
 			manualSpotActivated = false;
-				
 		}
-		
-		mLatitude = mMap.getCameraPosition().target.latitude;
-		mLongitude = mMap.getCameraPosition().target.longitude;
-		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-		doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
-		
+		mMap.setOnCameraChangeListener(null);
 		mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
@@ -536,12 +476,25 @@ public class TabNewSpotsFragment extends Fragment implements
 						+ Double.toString(bounds.northeast.longitude));
 				mLatitude = mMap.getCameraPosition().target.latitude;
 				mLongitude = mMap.getCameraPosition().target.longitude;
-				doMySearch("swipe", null, mLatitude.toString(),
-						mLongitude.toString(), bounds);
+				String stringToSearch = ((TextView) mRootView.findViewById(R.id.search_bar)).getText().toString();
+				if(stringToSearch.trim().isEmpty()){
+					doMySearch("swipe", null, mLatitude.toString(),mLongitude.toString(), bounds);
+					System.out.println("doMySearch with NO term in goToSearch");
+				}
+					
+				
 			}
 		});
 		
-		
+		JSONObject no_spot = new JSONObject();
+		try {
+			no_spot.put("id", 1);
+			((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(no_spot);
+			
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void goToSetManualSpot(View view){
@@ -594,15 +547,15 @@ public class TabNewSpotsFragment extends Fragment implements
 		RegionLocationTask regionLocation_task = new RegionLocationTask();
 		regionLocation_task.execute(String.valueOf(mMap.getCameraPosition().target.latitude), String.valueOf(mMap.getCameraPosition().target.longitude));
 		
-
-		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-		doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+//
+//		LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//		doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+		mMap.setOnCameraChangeListener(null);
 		mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
 
 			@Override
 			public void onCameraChange(CameraPosition pos) {
-				LatLngBounds bounds = mMap.getProjection()
-						.getVisibleRegion().latLngBounds;
+				LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 				System.out.println(Double
 						.toString(bounds.southwest.latitude)
 						+ " "
@@ -613,8 +566,8 @@ public class TabNewSpotsFragment extends Fragment implements
 						+ Double.toString(bounds.northeast.longitude));
 				mLatitude = mMap.getCameraPosition().target.latitude;
 				mLongitude = mMap.getCameraPosition().target.longitude;
-				doMySearch("swipe", null, mLatitude.toString(),
-						mLongitude.toString(), bounds);
+				doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+				System.out.println("doMySearch with No Terms in gotosetmanualspot");
 			}
 		});
 		
@@ -688,7 +641,7 @@ public class TabNewSpotsFragment extends Fragment implements
 				String name = ((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString(); 
 				name = (name.trim().isEmpty()) ? mSpotTitle : ((TextView) mRootView.findViewById(R.id.nameManualSpotET)).getText().toString();
 								
-				if (mRegionsIdArray != null && !mSpot.isNull("region") && !mSpot.isNull("location")){
+				if (!mSpot.isNull("location")){
 				
 					try {
 						System.out.println("1 " + mSpot.get("region").toString());
@@ -697,7 +650,7 @@ public class TabNewSpotsFragment extends Fragment implements
 							System.out.println("comparing regions: " + mRegionsIdArray.getJSONObject(i).getString("region_name") + " with " + mSpot.get("region"));
 							if(mRegionsIdArray.getJSONObject(i).getString("region_name").equals(mSpot.get("region"))){
 								mRegionId = mRegionsIdArray.getJSONObject(i).getInt("region_id");
-								
+								break;
 							}
 								
 						
@@ -706,7 +659,7 @@ public class TabNewSpotsFragment extends Fragment implements
 							System.out.println("comparing locations: " + mLocationsIdArray.getJSONObject(i).getString("location_name") + " with " + mSpot.get("location"));
 							if(mLocationsIdArray.getJSONObject(i).getString("location_name").equals(mSpot.get("location"))){
 								mLocationId = mLocationsIdArray.getJSONObject(i).getInt("location_id");
-								
+								break;
 							}
 								
 						}
@@ -718,7 +671,9 @@ public class TabNewSpotsFragment extends Fragment implements
 							mSpot.put("region_id", mRegionId);
 							mSpot.put("location_id", mLocationId);
 						}
-						System.out.println("gotoSpotSelected with " + mSpot.toString());
+						// It sets here the selected spot to the Dive Model
+						((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSpot);
+						System.out.println("~~~SetSpot with " + mSpot.toString());
 						goToSpotSelected(mRootView, mSpot);
 						
 					} catch (JSONException e) {
@@ -770,16 +725,17 @@ public class TabNewSpotsFragment extends Fragment implements
 				public void onFinish() {
 					LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 					doMySearch("swipe", null, mLatitude.toString(),mLongitude.toString(), bounds);
-					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
-						@Override
-						public void onCameraChange(CameraPosition pos) {
-							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
-							mLatitude = mMap.getCameraPosition().target.latitude;
-							mLongitude = mMap.getCameraPosition().target.longitude;
-							doMySearch("swipe", null, mLatitude.toString(),
-									mLongitude.toString(), bounds);
-						}
-					});
+					System.out.println("doMySearch with No Terms in activegps");
+//					mMap.setOnCameraChangeListener(new OnCameraChangeListener() {
+//						@Override
+//						public void onCameraChange(CameraPosition pos) {
+//							LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
+//							mLatitude = mMap.getCameraPosition().target.latitude;
+//							mLongitude = mMap.getCameraPosition().target.longitude;
+//							doMySearch("swipe", null, mLatitude.toString(), mLongitude.toString(), bounds);
+//
+//						}
+//					});
 				}
 
 				@Override
@@ -863,10 +819,17 @@ public class TabNewSpotsFragment extends Fragment implements
 			@Override
 			public void run() {
 				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-				System.out.println("Region-location API call" + " " + query[0] + " " + query[1]);
-				result = AC.getModel().searchRegionLocationText(query[0], query[1]);
-				System.out.println("Response from REGION LOCATION CALL: " + result);
-				searchDone = true;
+				
+				if (!goOfflineMode) {
+					System.out.println("Region-location API call" + " " + query[0] + " " + query[1]);
+					result = AC.getModel().searchRegionLocationText(query[0], query[1]);
+					System.out.println("Response from REGION LOCATION CALL: " + result);
+					searchDone = true;
+				}
+				else {
+					result = AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
+					searchDone = true;
+				}
 			}
 		}
 		
@@ -879,7 +842,7 @@ public class TabNewSpotsFragment extends Fragment implements
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					return null;
+					return AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -898,6 +861,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._searchtimedout = false;
+				goOfflineMode = true;
 			}
 			if (DiveboardModel._cotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
@@ -908,6 +872,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._cotimedout = false;
+				goOfflineMode = true;
 			} else if (DiveboardModel._sotimedout == true) {
 				if (AppConfig.DEBUG_MODE == 1) {
 					Toast toast = Toast.makeText(getActivity()
@@ -917,6 +882,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					toast.show();
 				}
 				DiveboardModel._sotimedout = false;
+				goOfflineMode = true;
 			}
 			
 			
@@ -987,9 +953,13 @@ public class TabNewSpotsFragment extends Fragment implements
 				}
 				else{
 					goToSearch(mRootView);
-					Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.no_internet_co_new_spot),Toast.LENGTH_SHORT);
-					toast.setGravity(Gravity.CENTER, 0, 0);
-					toast.show();
+					if(result!= null && !result.isNull("error") && result.getString("error").contains("DB")){
+						Toast toast = Toast.makeText(getActivity()
+								.getApplicationContext(), getResources().getString(R.string.no_db),
+								Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
 				}
 					
 				
@@ -1025,11 +995,13 @@ public class TabNewSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
+				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if (!goOfflineMode) {
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					System.out.println(query[0] + " " + query[1] + " "+ query[2] + " " + query[3] + " " + query[4] + " "+ query[5] + " " + query[6]);
 					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
-					System.out.println(result);
+					searchDone = true;
+				}
+				else {
+					result = AC.getModel().offlineSearchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
 				}
 			}
@@ -1037,17 +1009,15 @@ public class TabNewSpotsFragment extends Fragment implements
 
 		protected JSONObject doInBackground(String... query) {
 			swipe = query[0];
-			SearchTimer task = new SearchTimer(query[1], query[2], query[3],
-					query[4], query[5], query[6], query[7]);
+			SearchTimer task = new SearchTimer(query[1], query[2], query[3], query[4], query[5], query[6], query[7]);
 			task.start();
 			try {
-				
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
 					goOfflineMode = true;
 					DiveboardModel._searchtimedout = true;
 					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
-					return AC.getModel().offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
+					return AC.getModel().offlineSearchSpotText(query[1], query[2],query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
 			} catch (InterruptedException e) {
@@ -1062,6 +1032,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Spot Search Timeout",Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
+					goOfflineMode = true;
 				}
 				DiveboardModel._searchtimedout = false;
 			}
@@ -1070,6 +1041,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Connection Timeout",Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
+					goOfflineMode = true;
 				}
 				DiveboardModel._cotimedout = false;
 			} else if (DiveboardModel._sotimedout == true) {
@@ -1077,6 +1049,7 @@ public class TabNewSpotsFragment extends Fragment implements
 					Toast toast = Toast.makeText(getActivity().getApplicationContext(), "Socket Timeout",Toast.LENGTH_SHORT);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
+					goOfflineMode = true;
 				}
 				DiveboardModel._sotimedout = false;
 			}
@@ -1122,9 +1095,8 @@ public class TabNewSpotsFragment extends Fragment implements
 
 								@Override
 								public boolean onMarkerClick(Marker marker) {
-									if (!marker.equals(mMyMarker)) {
-										int id = Integer.valueOf(marker
-												.getTitle().substring(0, marker.getTitle().indexOf(":")));
+									if (!manualSpotActivated) {
+										int id = Integer.valueOf(marker.getTitle().substring(0, marker.getTitle().indexOf(":")));
 										System.out.println(id);
 										lv.smoothScrollToPosition(id);
 									}
@@ -1133,7 +1105,7 @@ public class TabNewSpotsFragment extends Fragment implements
 								}
 							});
 							System.out.println(result.toString());
-							SpotAdapter adapter = new SpotAdapter(getActivity().getApplicationContext(), listSpots);
+							SpotAdapter adapter = new SpotAdapter(mContext, listSpots);
 							// Zoom out to show markers
 							if (swipe.contentEquals("search")) {
 								LatLngBounds.Builder builder = new LatLngBounds.Builder();
@@ -1155,8 +1127,8 @@ public class TabNewSpotsFragment extends Fragment implements
 
 											@Override
 											public void onFinish() {
-												if (mMap.getCameraPosition().zoom > mZoom)
-													mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
+//												if (mMap.getCameraPosition().zoom > mZoom)
+//													mMap.animateCamera(CameraUpdateFactory.zoomTo(mZoom));
 											}
 
 										});
@@ -1185,6 +1157,10 @@ public class TabNewSpotsFragment extends Fragment implements
 										
 										e1.printStackTrace();
 									}
+									
+									// It sets here the selected spot to the Dive Model
+									((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSelectedObject);
+									System.out.println("~~~SetSpot with " + mSelectedObject.toString());
 									goToSpotSelected(mRootView, mSelectedObject);
 									
 									
@@ -1196,8 +1172,15 @@ public class TabNewSpotsFragment extends Fragment implements
 						e.printStackTrace();
 					}
 				} else {
-					((TextView) mRootView.findViewById(R.id.no_spot))
-							.setVisibility(View.VISIBLE);
+					((TextView) mRootView.findViewById(R.id.no_spot)).setVisibility(View.VISIBLE);
+					if(result!= null && !result.isNull("error") && result.getString("error").contains("DB")){
+						Toast toast = Toast.makeText(getActivity()
+								.getApplicationContext(), getResources().getString(R.string.no_db),
+								Toast.LENGTH_SHORT);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
+						
 				}
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
@@ -1307,8 +1290,8 @@ public class TabNewSpotsFragment extends Fragment implements
 			mPosition = new LatLng((Double) (mSpotSelected.get("lat")),mLong);
 			mSpotName = mSpotSelected.getString("name");
 			
-			mRegion = mSpotSelected.getString("region");
-			mLocation = mSpotSelected.getString("location");
+//			mRegion = mSpotSelected.getString("region");
+//			mLocation = mSpotSelected.getString("location");
 			
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -1331,10 +1314,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(mPosition.latitude, mPosition.longitude), zoom));
 		mMyMarker = mMap.addMarker(new MarkerOptions().position(new LatLng(mPosition.latitude, mPosition.longitude)).title(mSpotName).icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
 		
-		//It sets here the selected spot to the tempDive Model
-		((ApplicationController) getActivity().getApplicationContext()).getTempDive().setSpot(mSpotSelected);
-		System.out.println("~~~SetSpot with " + mSpotSelected.toString());
-		
+				
 	}
 	
 	public double roundToN(double number, int n){

@@ -98,7 +98,7 @@ public class FBLoginActivity extends Activity {
 	              if (user != null) {
 //	                TextView welcome = (TextView) findViewById(R.id.welcome);
 //	                welcome.setText("Hello " + user.getName() + "!");
-	            	System.out.println(user.getProperty("email").toString());
+	            	System.out.println(user.getProperty("email").toString() + "THAT WAS THE FB EMAIL");
 	                mId = user.getId();
 	                mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
 	                showProgress(true);

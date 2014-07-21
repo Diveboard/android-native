@@ -29,6 +29,7 @@ import org.json.JSONObject;
 
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
+import com.facebook.internal.Validate;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -81,6 +82,8 @@ public class					DataManager
 		HashMap<String, String>	userElem;
 		String key = new String(category);
 		String value = new String(json);
+
+		System.err.println("Trying to save values in the local cache " + value);
 		
 		if ((userElem = _cacheData.get(userId)) == null)
 		{
@@ -103,23 +106,23 @@ public class					DataManager
 	 */
 	public void					commitCache() throws IOException
 	{
-		FileOutputStream		outputStream;
-		
-		for (int i = 0, length = _cacheData.size(); i < length; i++)
-		{
-			HashMap<String, String> elem = _cacheData.valueAt(i);
-			Iterator<String> keyset = elem.keySet().iterator();
-			while (keyset.hasNext())
+			FileOutputStream		outputStream;
+			for (int i = 0, length = _cacheData.size(); i < length; i++)
 			{
-				String key = keyset.next();
-				//Open file /[userid]_[category]
-				File file = new File(_context.getFilesDir() + "_" + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
-				file.createNewFile();
-				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-				outputStream.write(elem.get(key).getBytes());
-				outputStream.close();
+				HashMap<String, String> elem = _cacheData.valueAt(i);
+				Iterator<String> keyset = elem.keySet().iterator();
+				while (keyset.hasNext())
+				{
+					String key = keyset.next();
+					//Open file /[userid]_[category]
+					File file = new File(_context.getFilesDir() + "_" + Integer.toString(_cacheData.keyAt(i)) + "_" + key);
+					file.createNewFile();
+					outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
+					outputStream.write(elem.get(key).getBytes());
+//					System.err.println("GET BYTES = " + elem.get(key));
+					outputStream.close();
+				}
 			}
-		}
 	}
 	
 	/*
@@ -128,49 +131,96 @@ public class					DataManager
 	 */
 	public void					loadCache(final int userId) throws IOException
 	{
-		FileInputStream			fileInputStream;
-		File file = _context.getFilesDir();
-		String[] file_list = file.list();
-		HashMap<String, String> elem = new HashMap<String, String>();
-		
-		for (int i = 0, length = file_list.length; i < length; i++)
-		{
-			// If file name starts with files_[userId]_ and is not a picture and is not edit list
-			if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0)
-					&& (file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") != 0))
+			
+			FileInputStream			fileInputStream;
+			File file = _context.getFilesDir();
+			System.err.println("LOADING FILES FROM CACHE FROM PATH: " + file.getAbsolutePath());
+			
+			String[] file_list = file.list();
+			HashMap<String, String> elem = new HashMap<String, String>();
+			
+			for (int i = 0, length = file_list.length; i < length; i++)
 			{
+				// If file name starts with files_[userId]_ and is not a picture and is not edit list
+				if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_") == 0) && (file_list[i].indexOf("files_" + Integer.toString(userId) + "_picture") != 0)
+						&& (file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") != 0))
+				{
 				String[] name_split = file_list[i].split("_");
 				fileInputStream = _context.openFileInput(file_list[i]);
 				StringBuffer fileContent = new StringBuffer("");
 				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
+				int n;
+				while ((n=fileInputStream.read(buffer)) != -1)
+					fileContent.append(new String(buffer, 0, n));
 				elem.put(name_split[2], fileContent.toString());
 				fileInputStream.close();
 			}
-			else if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") == 0))
-			{
-				// If it's an edit list file
-				_editList = null;
-				_editList = new ArrayList<Pair<String, String>>();
-				fileInputStream = _context.openFileInput(file_list[i]);
-				StringBuffer fileContent = new StringBuffer("");
-				byte[] buffer = new byte[1024];
-				while (fileInputStream.read(buffer) != -1)
-					fileContent.append(new String(buffer));
-				String[] edit_list = fileContent.toString().split("#END#");
-				for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
+				else if ((file_list[i].indexOf("files_" + Integer.toString(userId) + "_edit") == 0))
 				{
-					String[] elem_value = edit_list[j].split("#SEP#");
-					if (elem_value.length != 2)
-						continue ;
-					Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
-					_editList.add(new_elem);
+					// If it's an edit list file
+					_editList = null;
+					_editList = new ArrayList<Pair<String, String>>();
+					fileInputStream = _context.openFileInput(file_list[i]);
+					StringBuffer fileContent = new StringBuffer("");
+					int n;
+					byte[] buffer = new byte[1024];
+					while ((n=fileInputStream.read(buffer)) != -1)
+						fileContent.append(new String(buffer, 0, n));
+//					System.err.println("@" + fileContent);
+					String[] edit_list = fileContent.toString().split("#END#");
+					for (int j = 0, edit_length = edit_list.length; j < edit_length; j++)
+					{
+						boolean error = false;
+						String[] elem_value = edit_list[j].split("#SEP#");
+						if (elem_value.length != 2)
+							continue ;
+						try  //Check  
+						{
+							if(!elem_value[0].startsWith("Dive:") && !elem_value[0].startsWith("User:") && !elem_value[0].startsWith("Dive_delete:"))
+								continue;
+							if(elem_value[0].startsWith("Dive:") || elem_value[0].startsWith("User:")){
+								JSONObject jerr = new JSONObject(elem_value[1]);
+							}
+						}catch (JSONException e){
+							e.printStackTrace();
+							error= true;
+						}
+						
+						if(!error){
+							Pair<String, String> new_elem = new Pair<String, String>(elem_value[0], elem_value[1]);
+							System.err.println("New elem added to the EDIT LIST loaded from CACHEE: " + elem_value[0] + " - " + elem_value[1]);
+							_editList.add(new_elem);
+						}
+					}
 				}
 			}
-		}
-		if (elem.size() != 0)
-			_cacheData.put(userId, elem);
+			if (elem.size() != 0)
+				_cacheData.put(userId, elem);
+			
+	}
+	
+	public long 				getMemoryUsed(){
+		File file = _context.getFilesDir();
+		long size = 0;
+
+	    //clear SD cache
+	    File[] files = file.listFiles();
+	    for (File f:files) {
+	    		size = size+f.length();
+	    }
+	    
+//	    File cacheDir = _context.getCacheDir();
+//	    File[] cachefiles = cacheDir.listFiles();
+//	    long tmpSize;
+//	    for (File a:cachefiles) {
+//	    	tmpSize = a.length();
+//	        size = size + tmpSize;
+//	    }
+	    
+	    Long l = Long.valueOf(size);
+	    Double s = l.doubleValue()/1024/1024;
+		System.err.println("THE SIZE OF THE PACKAGE PATH IS: " + s + "MB");
+		return size;
 	}
 	
 	/*
@@ -193,7 +243,7 @@ public class					DataManager
 			if (object.getClass() == Dive.class)
 				_deleteDive(object);
 		}
-		commit();
+		//commit();
 	}
 	
 	private void				_deleteDive(Object object)
@@ -222,6 +272,10 @@ public class					DataManager
 					_saveDive(object);
 					commit();
 				}
+			}else if(object.getClass() == User.class){
+				System.out.println("Entered in _saveUser");
+				_saveUser(object);
+				commit();
 			}
 			((IModel)object).clearEditList();
 		}
@@ -272,7 +326,7 @@ public class					DataManager
 					temp.put("id", dive.getSpot().getId());//If Spot exists
 					json.put("spot", temp);
 				}
-				else {
+				if(dive.getSpot().getLocationId() != null && dive.getSpot().getRegionId() != null){
 					JSONObject loc = new JSONObject();
 					JSONObject reg = new JSONObject();
 					loc.put("id", dive.getSpot().getLocationId());
@@ -280,14 +334,14 @@ public class					DataManager
 					//temp.put("region_id", dive.getSpot().getRegionId());
 					temp.put("location", loc);
 					temp.put("region", reg);
+				}
 					temp.put("country_name", dive.getSpot().getCountryName());
 					temp.put("lat", dive.getSpot().getLat());
 					temp.put("lng", dive.getSpot().getLng());
 					temp.put("name", dive.getSpot().getName());
 					json.put("spot", temp);
-				}
 				
-				System.out.println("THIS IS the final spot we are going to add: " + json.toString());
+				System.out.println("ADDED spot on _addDive " + json.toString());
 				
 				
 			}
@@ -319,8 +373,17 @@ public class					DataManager
 				JSONArray jarray = new JSONArray();
 				ArrayList<Picture> elem = dive.getPictures();
 				for (int i = 0, length = elem.size(); i < length; i++)
-					jarray.put(elem.get(i));
+					jarray.put(elem.get(i).getJson());
 				json.put("pictures", jarray);
+			}
+			if (dive.getTanks() != null){
+				JSONArray jarray = new JSONArray();
+				ArrayList<Tank> mTanks = dive.getTanks();
+				for (int i = 0; i < mTanks.size(); i++){
+					jarray.put(mTanks.get(i).getJson());
+				}
+				System.out.println("HAS TANKS ATTACHED " + jarray.toString());
+				json.put("tanks", jarray);
 			}
 			if (dive.getBuddies() != null)
 			{
@@ -334,6 +397,7 @@ public class					DataManager
 				json.put("dive_reviews", dive.getDiveReviews().getJson());
 			//Pair<String, String> new_elem = new Pair<String, String>("Dive:-1", json.toString());
 			Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), json.toString());
+			System.err.println("New elem added to the EDIT LIST in _addDive: " + new_elem.first +" - " + new_elem.second);
 			_editList.add(new_elem);
 		}
 		catch (JSONException e) {
@@ -346,7 +410,6 @@ public class					DataManager
 //		ArrayList<Pair<String, String>> edit_list = ((IModel)object).getEditList();
 		Dive dive = (Dive) object;
 		ArrayList<Pair<String, String>> edit_list = dive.getEditList();
-		JSONObject				jsono = new JSONObject();
 		
 		for (int i = 0, length = edit_list.size(); i < length; i++)
 		{
@@ -355,7 +418,7 @@ public class					DataManager
 			try
 			{
 				JSONObject obj = new JSONObject(json);
-				System.out.println("SAVE DIVE@ : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				System.out.println("SAVE DIVE : " + edit_list.get(i).first + " " + edit_list.get(i).second);
 				if (edit_list.get(i).first.equals("spot")){
 					JSONObject temp = new JSONObject(edit_list.get(i).second);
 					Spot mSpot = new Spot(temp);
@@ -369,7 +432,6 @@ public class					DataManager
 						resul.put("location", loc);
 						resul.put("region", reg);
 					}
-					//temp.put("region_id", dive.getSpot().getRegionId());
 					
 					resul.put("country_name", mSpot.getCountryName());
 					resul.put("lat", mSpot.getLat());
@@ -377,10 +439,8 @@ public class					DataManager
 					resul.put("name", mSpot.getName());
 					if(!temp.isNull("id"))
 					{
-						
 						resul.put("id", mSpot.getId());
 					}
-					System.out.println("THIS IS IT " + resul.toString());
 					obj.put(edit_list.get(i).first, resul);
 				}
 					
@@ -394,6 +454,8 @@ public class					DataManager
 					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else if (edit_list.get(i).first.equals("dive_reviews"))
 					obj.put(edit_list.get(i).first, new JSONObject(edit_list.get(i).second));
+				else if (edit_list.get(i).first.equals("tanks"))
+					obj.put(edit_list.get(i).first, new JSONArray(edit_list.get(i).second));
 				else
 				{
 					if (edit_list.get(i).second == null)
@@ -403,6 +465,38 @@ public class					DataManager
 				}
 				dive.applyEdit(obj);
 				Pair<String, String> new_elem = new Pair<String, String>("Dive:" + Integer.toString(dive.getId()), obj.toString());
+				System.err.println("New elem added to the EDIT LIST in _saveDive: " + new_elem.first +" - " + new_elem.second);
+				_editList.add(new_elem);
+			}
+			catch (JSONException e)
+			{
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	private void				_saveUser(Object object)
+	{
+		User user = (User) object;
+		ArrayList<Pair<String, String>> edit_list = user.getEditList();
+		
+		for (int i = 0, length = edit_list.size(); i < length; i++)
+		{
+			String json = "{\"id\":\"" + user.getId() + "\"}";
+			
+			try
+			{
+				JSONObject obj = new JSONObject(json);
+				System.out.println("SAVE USER : " + edit_list.get(i).first + " " + edit_list.get(i).second);
+				
+				if (edit_list.get(i).first.equals("wallet_picture_ids"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				if (edit_list.get(i).first.equals("wallet_pictures"))     
+					obj.put(edit_list.get(i).first, edit_list.get(i).second);
+				
+//				user.applyEdit(obj);
+				Pair<String, String> new_elem = new Pair<String, String>("User:" + Integer.toString(user.getId()), obj.toString());
+				System.err.println("New elem added to the DataManager EDIT LIST in _saveUser: " + new_elem.first +" - " + new_elem.second);
 				_editList.add(new_elem);
 			}
 			catch (JSONException e)
@@ -425,24 +519,35 @@ public class					DataManager
 		commitEditOnline();
 	}
 	
-	private void				_cacheEditList()
-	{
-		FileOutputStream		outputStream;
-		
-		File file = new File(_context.getFilesDir() + "_" + Integer.toString(_userId) + "_edit");
-		try
-		{
+	private void				_cacheEditList() {
+		FileOutputStream outputStream;
+		File file = new File(_context.getFilesDir() + "_"
+				+ Integer.toString(_userId) + "_edit");
+		try {
 			file.createNewFile();
-			outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
-			for (int i = 0, length = _editList.size(); i < length; i++)
-			{
-				String new_line = _editList.get(i).first + "#SEP#" + _editList.get(i).second + "#END#";
-				outputStream.write(new_line.getBytes());
+			outputStream = _context.openFileOutput(file.getName(),
+					Context.MODE_PRIVATE);
+			System.err.println("Storing editlist in cache: \n");
+			for (int i = 0, length = _editList.size(); i < length; i++) {
+				boolean error = false;
+				if (_editList.get(i).first.compareTo("Dive") == 0) {
+					try // Check
+					{
+						JSONObject j = new JSONObject(_editList.get(i).second);
+					} catch (JSONException e) {
+						e.printStackTrace();
+						error = true;
+					}
+				}
+				if (!error) {
+					String new_line = _editList.get(i).first + "#SEP#"
+							+ _editList.get(i).second + "#END#";
+					System.err.println(new_line);
+					outputStream.write(new_line.getBytes());
+				}
 			}
 			outputStream.close();
-		}
-		catch (IOException e)
-		{
+		} catch (IOException e) {
 			System.err.println("Error: Saving edit list on cache");
 		}
 	}
@@ -542,6 +647,35 @@ public class					DataManager
 				e.printStackTrace();
 			}
 		}
+		else if (info[0].equals("User"))
+		{
+			String result = get(_userId, "user");
+//			String picturesIds = get(_userId, "wallet_picture_ids");
+//			JSONObject pics;
+			JSONObject res;
+//			JSONArray res;
+			try
+			{
+				res = new JSONObject(result);
+//				ids = new JSONObject(picturesIds);
+				
+//					JSONObject temp = jarray.getJSONObject(i);
+					if (res.getJSONObject("result").getInt("id") == Integer.parseInt(info[1]))
+					{
+//						res = result_obj.getJSONArray("wallet_pictures");
+						JSONObject tmp = new JSONObject();
+						tmp.put("result", result_obj);
+						saveCache(_userId, "user",tmp.toString());
+						commitCache();
+						return ;
+					}
+			}
+			catch (JSONException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 	}
 	
 	private class CommitOnlineThread implements Runnable
@@ -592,9 +726,12 @@ public class					DataManager
 								_editList.remove(0);
 								_cacheEditList();
 								continue ;
+							}else if(info[0].compareTo("User") == 0){
+								postRequest = new HttpPost(AppConfig.SERVER_URL + "/api/V2/user/");
 							}
 							else
 								postRequest = null;
+							
 							if (postRequest == null)
 								break ;
 							try
@@ -615,9 +752,10 @@ public class					DataManager
 									else{
 										checkObject.put("spot", spot);
 									}
+									
 									args.add(new BasicNameValuePair("arg", checkObject.toString()));
 								}
-								else
+								else 
 									args.add(new BasicNameValuePair("arg", elem.second));
 								args.add(new BasicNameValuePair("flavour", "mobile"));
 								// Set parameters
@@ -639,9 +777,14 @@ public class					DataManager
 									// New Dive segment
 									_refreshNewDiveEditList(Integer.parseInt(info[1]), json);
 								}
-								if (ApplicationController.SudoId == 0)
+								if (ApplicationController.SudoId == 0){
 									_applyEditCache(elem.first, json.getJSONObject("result"));
-								// Fire dive created event
+									if(info[0].equals("User"))
+										_model.refreshUser(result);
+					
+//									_model.updateUser();
+								}
+									// Fire dive created event
 								for (DiveCreateListener listener : _diveCreateListeners)
 									listener.onDiveCreateComplete();
 							}
@@ -660,10 +803,14 @@ public class					DataManager
 								break ;
 							}
 							client.close();
-							// Remove edit from cache
-							_editList.remove(0);
-							// Save edit in cache
-							_cacheEditList();
+							
+							synchronized (_lock) {
+								// Remove edit from cache
+								_editList.remove(0);
+								// Save edit in cache
+								_cacheEditList();
+							}
+							
 						}
 					}
 				}
@@ -672,6 +819,10 @@ public class					DataManager
 					// Fire dive created event
 					for (DiveCreateListener listener : _diveCreateListeners)
 						listener.onDiveCreateComplete();
+					
+					for (DiveDeleteListener listener : _diveDeleteListeners)
+						listener.onDiveDeleteComplete();
+					
 					break ;
 				}
 			}
@@ -734,6 +885,7 @@ public class					DataManager
 		 */
 		private void					_refreshNewDiveEditList(int id, JSONObject json) throws JSONException
 		{
+			System.err.println("Entering _refreshNewDiveEditList: " + _editList);
 			ArrayList<Dive> dives = _model.getDives();
 			System.out.println("REFRESH : " + json);
 			JSONObject new_dive = json.getJSONObject("result");
@@ -785,4 +937,5 @@ public class					DataManager
 	{
 		_diveCreateListeners.add(listener);
 	}
+	
 }

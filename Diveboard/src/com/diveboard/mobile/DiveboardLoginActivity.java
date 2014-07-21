@@ -1,5 +1,14 @@
 package com.diveboard.mobile;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.sql.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -10,6 +19,7 @@ import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
+import com.uservoice.uservoicesdk.activity.BaseActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -20,8 +30,10 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -75,30 +87,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	{
 		super.onResume();
 		BugSenseHandler.initAndStartSession(DiveboardLoginActivity.this, AppConfig.BUGSENSE_ID);
-//		Config config = new Config("yoursite.uservoice.com");
-		//Config config = new Config("diveboard.uservoice.com");
-//		config.setTopicId(9579);
-		//UserVoice.init(config, this);
-//        new Thread(new Runnable()
-//		{
-//			public void run()
-//			{
-//				if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT)
-//				{
-//					Config config = new Config("diveboard.uservoice.com");
-//					UserVoice.init(config, DiveboardLoginActivity.this);
-//					config.setShowForum(false);
-//				    config.setShowContactUs(true);
-//				    config.setShowPostIdea(false);
-//				    config.setShowKnowledgeBase(false);
-//					ApplicationController.UserVoiceReady = true;
-//				}
-//			}
-//		}).start();
-//		config.setShowForum(false);
-//	    config.setShowContactUs(true);
-//	    config.setShowPostIdea(false);
-//	    config.setShowKnowledgeBase(false);
 		
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		AC.setDataReady(false);
@@ -108,21 +96,12 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		AC.setModel(model);
 		if (model.isLogged() == true)
 		{
+			
 			Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
 		    startActivity(editDiveActivity);
 		    return ;
 		}
 		
-	}
-	
-	public void goToPascalDives(View view)
-	{
-//		ApplicationController AC = (ApplicationController)getApplicationContext();
-//		//DiveboardModel model = new DiveboardModel(getApplicationContext());
-//		DiveboardModel model = new DiveboardModel(48, getApplicationContext());
-//		AC.setModel(model);
-//		mPascalTask = new PascalLoginTask();
-//		mPascalTask.execute((Void) null);
 	}
 	
 	@Override
@@ -151,47 +130,18 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.password)).setTypeface(faceR);
 		((TextView)findViewById(R.id.password)).setTextSize(TEXT_SIZE);
-//		((TextView)findViewById(R.id.authButton)).setTypeface(faceR);
 		((Button)findViewById(R.id.sign_in_button)).setTypeface(faceR);
 		((Button)findViewById(R.id.sign_in_button)).setTextSize(TEXT_SIZE);
-		// Set up the login form.
 		mEmail = getIntent().getStringExtra(EXTRA_EMAIL);
 		mEmailView = (EditText) findViewById(R.id.email);
-		//mEmailView.setText(mEmail);
 
 		mPasswordView = (EditText) findViewById(R.id.password);
-//		mPasswordView
-//				.setOnEditorActionListener(new TextView.OnEditorActionListener() {
-//					@Override
-//					public boolean onEditorAction(TextView textView, int id,
-//							KeyEvent keyEvent) {
-//						if (id == R.id.login || id == EditorInfo.IME_NULL) {
-//							attemptLogin();
-//							return true;
-//						}
-//						return false;
-//					}
-//				});
 
 		mLoginFormView = findViewById(R.id.login_form);
 		mLoginStatusView = findViewById(R.id.login_status);
 		mLoginStatusMessageView = (TextView) findViewById(R.id.login_status_message);
 
-//		if (savedInstanceState == null)
-//		{
-//			// Add the fragment on initial activity setup
-//			mFBLoginFragment = new FBLoginFragment();
-//			getSupportFragmentManager()
-//			.beginTransaction()
-//			.add(R.id.login_fields, mFBLoginFragment)
-//			.commit();
-//		}
-//		else
-//		{
-//			// Or set the fragment from restored state info
-//			mFBLoginFragment = (FBLoginFragment) getSupportFragmentManager()
-//					.findFragmentById(R.id.login_fields);
-//		}
+		
 		findViewById(R.id.sign_in_button).setOnClickListener(
 				new View.OnClickListener() {
 					@Override
@@ -199,6 +149,38 @@ public class DiveboardLoginActivity extends FragmentActivity {
 						attemptLogin();
 					}
 				});
+
+		Thread.UncaughtExceptionHandler mUEHandler = new Thread.UncaughtExceptionHandler() {
+
+			@Override
+			public void uncaughtException(Thread t, Throwable e) {
+				
+				SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+				Calendar cal = Calendar.getInstance();
+				String timeTag = dateFormat.format(cal.getTime());
+				System.err.println("Error occurred\n" + timeTag + ": " + e.getMessage());
+				try {
+					File root = new File(Environment.getExternalStorageDirectory(), "DiveboardErrors");
+					if (!root.exists()) {
+						root.mkdirs();
+					}
+					
+					File gpxfile = new File(root, "Uhandled_errors.txt");
+					FileWriter writer = new FileWriter(gpxfile, true);
+					PrintWriter pw = new PrintWriter(writer);
+					writer.append("\n\n" + timeTag + ": ");
+					e.printStackTrace(pw);
+					writer.flush();
+					writer.close();
+				} catch (IOException er) {
+					er.printStackTrace();
+				}
+				
+				
+	        }
+	    };
+
+//		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 	}
 	
 	@Override
@@ -213,6 +195,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		EasyTracker.getInstance(this).activityStart(this);
 		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
 		dbUpdater.launchUpdate();
+		System.out.println("Attempting to download DB");
 	}
 
 	@Override
@@ -348,7 +331,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		protected void onPostExecute(final JSONObject json) {
 			if (json != null)
 			{
-				System.out.println(json.toString());
+				System.out.println("User Validated " + json.toString());
 				//mAuthTask = null;
 				showProgress(false);
 				try {
@@ -363,31 +346,10 @@ public class DiveboardLoginActivity extends FragmentActivity {
 					}
 					else
 					{
-						
 						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.wrong_login), Toast.LENGTH_SHORT);
 						toast.setGravity(Gravity.BOTTOM, 0, 200);
 						toast.show();
 						showProgress(false);
-//						JSONArray jsonArray = (JSONArray)json.getJSONArray("errors");
-//						for (int i = 0; i < jsonArray.length(); i++)
-//						{
-//							String error = ((JSONObject)jsonArray.get(i)).getString("error");
-//							String params = ((JSONObject)jsonArray.get(i)).getString("params");
-//							if (params.contentEquals("password"))
-//							{
-//								mPasswordView.setError(error);
-//								mPasswordView.requestFocus();
-//							}
-//							else if (params.contentEquals("email"))
-//							{
-//								mEmailView.setError(error);
-//								mEmailView.requestFocus();
-//							}
-//						}
-//						String error = ((JSONObject)json.getJSONObject("errors")).getString("error");
-//						String params = json.getString("params");
-//						System.out.println(error + " " + params);
-						
 					}
 				} catch (JSONException e) {
 					// TODO Auto-generated catch block
@@ -409,7 +371,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			showProgress(false);
 		}
 	}
-	
 	
 	/**
 	 * Represents an asynchronous login/registration task used to authenticate
@@ -435,11 +396,6 @@ public class DiveboardLoginActivity extends FragmentActivity {
 				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
 			    startActivity(editDiveActivity);
 			}
-//			else if (success == 0 ){
-//				mPasswordView
-//						.setError(getString(R.string.error_incorrect_password));
-//				mPasswordView.requestFocus();
-//			}
 			else
 			{
 				Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.could_not_connect_db), Toast.LENGTH_SHORT);

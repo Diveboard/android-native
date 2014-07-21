@@ -318,33 +318,33 @@ public class					TabEditShopFragment extends Fragment
 		String pos = "";
 		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
 		{
-			pos += "0° ";
+			pos += "0º ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "º ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "º ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (mModel.getDives().get(mIndex).getShop().getLng() == null)
 		{
-			pos += "0° ";
+			pos += "0º ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "º ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "º ";
 			pos += "W";
 		}
 		if ((mModel.getDives().get(mIndex).getShop().getLat() == null || mModel.getDives().get(mIndex).getShop().getLat() == 0) && 
@@ -403,9 +403,9 @@ public class					TabEditShopFragment extends Fragment
     		public void run()
     		{
     			ApplicationController AC = (ApplicationController)mContext.getApplicationContext();
-    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
+//    			System.out.println(query[0] + " " + query[1] + " " + query[2] + " " + query[3] + " " + query[4] + " " + query[5] + " " + query[6]);
     			result = mModel.searchShopText(query[0], query[1], query[2], query[3], query[4], query[5], query[6]);
-    			System.out.println(result);
+//    			System.out.println(result);
     			searchDone = true;
     		}
     	}

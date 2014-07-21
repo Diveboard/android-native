@@ -97,7 +97,6 @@ public class					Picture
 		//ApplicationController AC = (ApplicationController)context;
 		//NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
 		if (networkInfo != null && networkInfo.isConnected())
 		{
 			URL url;
@@ -142,7 +141,6 @@ public class					Picture
 			size = Size.LARGE;
 		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
-
 		if (!_loadCachePicture(context, size) || (_uniqId != null && networkInfo != null && networkInfo.isConnected()))
 		{
 			if (!loadPicture(context, size))
@@ -152,6 +150,24 @@ public class					Picture
 		Bitmap bitmap = _bitmap;
 		_bitmap = null;
 		return bitmap;
+	}
+	
+	
+	/*Stores the picture in the local cache and updates the list of saved pictures */
+	public Bitmap							storePicture(final Context context) throws IOException{
+		final Size size;
+		if(loadPicture(context)){
+			if (UserPreference.getPictureQuality().equals("m_qual"))
+				size = Size.MEDIUM;
+			else
+				size = Size.LARGE;
+			_savePicture(context, size);
+			Bitmap bitmap = _bitmap;
+			_bitmap = null;
+			return bitmap;
+		}
+		else
+			return null;
 	}
 	
 	/*
@@ -164,7 +180,6 @@ public class					Picture
 	{
 		String[] picture_name;
 		String url;
-		
 		switch (size)
 		{
 			case LARGE:
@@ -196,13 +211,13 @@ public class					Picture
 		else
 			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
 		file.createNewFile();
-		//System.out.println("Saving picture: " + file.getAbsolutePath());
+//		System.out.println("Saving picture: " + file.getAbsolutePath());
 		// Get the ouput stream
 		FileOutputStream outputStream = context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 		// Compress the image and put into file
 		if (outputStream != null)
 		{
-			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.PNG, 100, outputStream))
+			if (_bitmap == null || !_bitmap.compress(Bitmap.CompressFormat.JPEG, 90, outputStream))
 				file.delete();
 		}
 		//System.out.println("Saving picture complete : " + file.getAbsolutePath());

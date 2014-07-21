@@ -11,6 +11,7 @@ import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.google.analytics.tracking.android.EasyTracker;
 
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.animation.Animator;
@@ -41,9 +42,11 @@ import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.MediaController;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.BaseAdapter;
+import android.widget.Button;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -53,6 +56,7 @@ import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.VideoView;
 
 public class TestActivity extends Activity {
 
@@ -62,9 +66,41 @@ public class TestActivity extends Activity {
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_test);
-		findViewById(R.id.imageView).setOnTouchListener(new MyTouchListener());
-		findViewById(R.id.layout).setOnDragListener(new MyDragListener());
-		findViewById(R.id.layout1).setOnDragListener(new MyDragListener());
+		Button play = (Button) findViewById(R.id.button1);
+//		play.setBackground(getResources().getDrawable(android.R.drawable.ic_media_play));
+		play.setOnClickListener(new OnClickListener() {
+			
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+			
+				String videourl = getIntent().getStringExtra("video_url");
+				System.out.println("URL received to be played is: " + videourl);
+				if (videourl == null){
+					Toast toast = Toast.makeText(getApplicationContext(), "Sorry buddy but the video can't be played :(", Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();	
+				}
+				else{
+					
+//					Uri uri = Uri.parse(videourl);
+//					Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//					intent.setDataAndType(uri, "video/mp4");
+//					startActivity(intent);
+
+					String LINK = videourl;
+					VideoView videoView = (VideoView) findViewById(R.id.videoView1);
+					MediaController mc = new MediaController(getApplicationContext());
+					mc.setAnchorView(videoView);
+					mc.setMediaPlayer(videoView);
+					Uri video = Uri.parse(LINK);
+					videoView.setMediaController(mc);
+					videoView.setVideoURI(video);
+					videoView.start();
+					videoView.requestFocus(); 
+				}
+			}
+		});
 	}
 
 	private final class MyTouchListener implements OnTouchListener {

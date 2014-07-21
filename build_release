@@ -1,17 +1,31 @@
 rm Diveboard-release*.apk
 cd Diveboard/dependencies/FacebookSDK;
+[[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
+[[ $? -gt 0 ]] && exit 1
 cd ../google-play-services_lib;
+[[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
+[[ $? -gt 0 ]] && exit 1
 cd ../UserVoiceSDK;
+[[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
+[[ $? -gt 0 ]] && exit 1
 cd ../PagerSlidingTabStrip;
+[[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
+[[ $? -gt 0 ]] && exit 1
 cd ../../;
+[[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
+[[ $? -gt 0 ]] && exit 1
 ant build_release;
+[[ $? -gt 0 ]] && exit 1
 cp bin/Diveboard-release-unsigned.apk ..;
+[[ $? -gt 0 ]] && exit 1
 ant clean;
+[[ $? -gt 0 ]] && exit 1
 cd ..
+[[ $? -gt 0 ]] && exit 1
 jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore release.keystore  Diveboard-release-unsigned.apk diveboard
 zipalign -v 4 Diveboard-release-unsigned.apk Diveboard-release-signed.apk

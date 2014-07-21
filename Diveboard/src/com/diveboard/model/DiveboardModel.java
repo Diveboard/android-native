@@ -1,8 +1,7 @@
 package com.diveboard.model;
 
-import java.io.File;
-
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ import org.apache.http.conn.ConnectTimeoutException;
 import org.apache.http.entity.mime.HttpMultipartMode;
 import org.apache.http.entity.mime.MultipartEntity;
 import org.apache.http.entity.mime.content.ByteArrayBody;
-import org.apache.http.entity.mime.content.FileBody;
 import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.BasicCookieStore;
 import org.apache.http.impl.client.DefaultHttpClient;
@@ -42,25 +40,20 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveboardLoginActivity;
-import com.diveboard.mobile.SettingsActivity;
-import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
-
-import android.app.Activity;
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
+import android.database.sqlite.SQLiteException;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.support.v4.app.DialogFragment;
-import android.util.Base64;
 import android.util.Pair;
-import android.widget.Toast;
-import android.database.Cursor;
-import android.database.sqlite.*;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
 
 /*
  * Class DiveboardModel
@@ -69,6 +62,7 @@ import android.graphics.BitmapFactory;
 public class					DiveboardModel
 {
 	private int					_userId;
+	private String				_userEmail = null;
 	private String				_shakenId;
 	public static Context		_context;
 	private User				_user = null;
@@ -84,23 +78,25 @@ public class					DiveboardModel
 	private String				_token;
 	private String				_unitPreferences;
 	private UserPreference		_preference;
-	
+	private Wallet 				_wallet = null;
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static ArrayList<String>	savedPictureList;
 	public static Semaphore		savedPictureLock;
 	private Integer				_pictureCount = 0;
 	private LoadPictureThread	_pictureThread1 = null;
 	private LoadPictureThread	_pictureThread2 = null;
+	private final Object		_lock_el = new Object();
 	private Object				_lock1 = new Object();
 	private Object				_lock2 = new Object();
 	private RefreshDataThread	_refreshDataThread = null;
-	public static Integer		_coTimeout = 10000;
-	public static Integer		_soTimeout = 10000;
-	public static Integer		_searchTimeout = 10000;
+	public static Integer		_coTimeout = 5000;
+	public static Integer		_soTimeout = 5000;
+	public static Integer		_searchTimeout = 5000;
 	public static boolean 		_cotimedout = false;
 	public static boolean 		_sotimedout = false;
 	public static boolean 		_searchtimedout = false;
 	private TokenExpireListener	mTokenExpireListener = null;
+	private boolean 			_force_refresh = false;
 	
 	/*
 	 * Method DiveboardModel
@@ -154,13 +150,6 @@ public class					DiveboardModel
 				_token = fileContent.toString();
 				fileInputStream.close();
 				
-//				fileInputStream = _context.openFileInput(unit_preferences.getName());
-//				fileContent = new StringBuffer("");
-//				buffer = new byte[1];
-//				while (fileInputStream.read(buffer) != -1)
-//					fileContent.append(new String(buffer));
-//				_unitPreferences = fileContent.toString();
-//				fileInputStream.close();
 				_cache = new DataManager(_context, _userId, _token, this);
 			}
 			catch (FileNotFoundException e)
@@ -423,10 +412,46 @@ public class					DiveboardModel
 			{
 				e.printStackTrace();
 			}
-			if (_user == null)
+//			if (_user == null)    //Old way of loading data
+//				refreshData();
+//			else
+//				_applyEdit();
+			
+			if (_user == null){
+				System.out.println("REFRESHING DATA");
 				refreshData();
-			else
+			}
+			else if(_cache.getEditList().size() > 0){
+				System.out.println("APPLYING EDIT CHANGES TO DATA");
+				// there are changes to be applied
 				_applyEdit();
+			} 
+			else if (ApplicationController.mForceRefresh) {
+//				// force refreshDataThread to null so that there is a full sync with the data stored in the server
+				System.out.println("FORCING REFRESH");
+				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+				// Test connectivity
+				if (networkInfo != null && networkInfo.isConnected()) {
+					_user = null;
+					_refreshDataThread = null;
+					ApplicationController.mForceRefresh = false;
+					refreshData();
+
+				}
+
+			}
+				
+		}
+	}
+	
+	
+	public void 				updateUser(){
+		System.out.println("Entered in updateUser");
+		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+		for (int i = 0, length = edit_list.size(); i < length; i++) {
+			String[] info = edit_list.get(i).first.split(":");
+			if (info[0].equals("User"))
+				_applyEditUser(edit_list.get(i).second);
 		}
 	}
 	
@@ -434,6 +459,7 @@ public class					DiveboardModel
 	{
 		if (_refreshDataThread == null)
 		{
+			System.out.println("Refresh data thread has JUST BEEN LAUNCHED");
 			_refreshDataThread = new RefreshDataThread();
 			_refreshDataThread.start();
 			// Wait synchronously for data refresh end
@@ -443,6 +469,8 @@ public class					DiveboardModel
 				e.printStackTrace();
 			}
 		}
+		else
+			System.out.println("Refresh data thread was still running...");
 	}
 	
 	public void					refreshData(boolean sync)
@@ -482,6 +510,7 @@ public class					DiveboardModel
 		{
 //			while (_run)
 //			{
+			System.out.println("Refresh data Thread run method ON");
 				NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 				
 				// Test connectivity
@@ -554,6 +583,19 @@ public class					DiveboardModel
 	}
 	
 	/*
+	 * Method refreshUser
+	 * Takes a JSON with the new user and updates the user data to model
+	 */
+	public void				refreshUser(final String json_str) throws JSONException
+	{
+		
+		JSONObject json = new JSONObject(json_str);
+		json = json.getJSONObject("result");
+		_user = new User(json);
+		
+	}
+	
+	/*
 	 * Method _loadDives
 	 * Takes a JSON and load dives data to model
 	 */
@@ -623,7 +665,11 @@ public class					DiveboardModel
 		JSONObject json = new JSONObject(result);
 		json = json.getJSONObject("result");
 		String dive_str = "[";
-		System.out.println(json);
+		System.out.println("Data loaded " + json);
+		//Storing locally the session email
+		if(!json.isNull("contact_email")){
+			_userEmail = json.getString("contact_email");	
+		}
 		JSONArray jarray = json.getJSONArray("all_dive_ids");
 		if (json.isNull("all_dive_ids"))
 		{
@@ -778,29 +824,33 @@ public class					DiveboardModel
 		return _cache;
 	}
 	
-	private void				_applyEdit()
-	{
-		ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
-		try
-		{
-			for (int i = 0, length = edit_list.size(); i < length; i++)
-			{
-				System.out.println("EDIT ITEM : " + edit_list.get(i).first);
-				String[] info = edit_list.get(i).first.split(":");
-				if (info[0].compareTo("Dive") == 0)
-					_applyEditDive(Integer.parseInt(info[1]), edit_list.get(i).second);
-				else if (info[0].equals("Dive_delete"))
-					_applyDeleteDive(Integer.parseInt(info[1]));
+	private void _applyEdit() {
+			try {
+				ArrayList<Pair<String, String>> edit_list = _cache.getEditList();
+				for (int i = 0, length = edit_list.size(); i < length; i++) {
+					System.out.println("EDIT ITEM : " + edit_list.get(i).first + " whose content is: " + edit_list.get(i).second);
+					String[] info = edit_list.get(i).first.split(":");
+					if (info[0].compareTo("Dive") == 0){
+						try{ 
+							//Checking the edit_list contains indeed a JSONObject well parsed
+							JSONObject temp = new JSONObject(edit_list.get(i).second);
+							_applyEditDive(Integer.parseInt(info[1]),edit_list.get(i).second);
+						}catch(JSONException e){
+							e.printStackTrace();
+							continue;
+						}
+						
+					}
+						
+					else if (info[0].equals("Dive_delete"))
+						_applyDeleteDive(Integer.parseInt(info[1]));
+					else if (info[0].equals("User"))
+						_applyEditUser(edit_list.get(i).second);
+					
+				}
+			} catch (NumberFormatException e) {
+				e.printStackTrace();
 			}
-		}
-		catch (NumberFormatException e)
-		{
-			e.printStackTrace();
-		}
-		catch (JSONException e)
-		{
-			e.printStackTrace();
-		}
 	}
 	
 	private void				_applyDeleteDive(final int id)
@@ -815,7 +865,41 @@ public class					DiveboardModel
 			}
 	}
 	
-	private void				_applyEditDive(final int id, final String json) throws JSONException
+	private void 				_applyEditUser(final String json){
+		System.out.println("####Object received in_applyEditUser: " + json);
+//		ArrayList<Picture> mWalletPics = new ArrayList<Picture>();
+//		ArrayList<Integer> mWalletPicIds = new ArrayList<Integer>();
+////		JSONObject changes = new JSONObject();
+//		JSONObject j = new JSONObject();
+//		try {
+//			JSONObject changes = new JSONObject(json);
+//		if (!changes.isNull("wallet_pictures")){
+//			j.put("wallet_pictures", new JSONArray(changes.getString("wallet_pictures")));
+//			System.out.println("Value of j " + j);
+//			JSONArray array = j.getJSONArray("wallet_pictures");
+//			for (int i = 0; i < array.length(); i++){
+//				JSONObject p = array.getJSONObject(i);
+//				mWalletPics.add(new Picture(p));
+//			}
+//			_user.setWalletPictures(mWalletPics);
+//		}
+//		if(!changes.isNull("wallet_picture_ids")){
+//			System.out.println("####Assigning wallet_pictures_ids from Cache to current user:");
+//			j.put("wallet_picture_ids", new JSONArray(changes.getString("wallet_picture_ids")));
+//			JSONArray array = j.getJSONArray("wallet_picture_ids");
+//			for (int i = 0; i < array.length(); i++){
+//				mWalletPicIds.add(array.getInt(i));
+//			}
+//			_user.setWalletPictureIds(mWalletPicIds);
+//		}
+//		else System.out.println("There was an ERROR transfering the wallet pictures from the Model to current user: \n" + json);
+//		} catch (JSONException e) {
+//			// TODO Auto-generated catch block
+//			e.printStackTrace();
+//		}
+	}
+	
+	private void				_applyEditDive(final int id, final String json) 
 	{
 		ArrayList<Dive> dives = getDives();
 		boolean exist = false;
@@ -832,21 +916,31 @@ public class					DiveboardModel
 		//if (id == -1)
 		if (exist == false)
 		{
-			Dive new_dive = new Dive(new JSONObject(json));
-			new_dive.setId(id);
-			dives.add(0, new_dive);
+			try {
+				Dive new_dive = new Dive(new JSONObject(json));
+				new_dive.setId(id);
+				dives.add(0, new_dive);
+			} catch (JSONException e){
+				e.printStackTrace();
+				System.err.println("Dive " + id + " could not be added to the dives list");
+			}
+			
+			
 		}
 		else
 		{
-			// Apply edit if edit type
-//			for (int i = 0, length = dives.size(); i < length; i++)
-//			{
-//				if (dives.get(i).getId() == id)
-//				{
-					dives.get(i).applyEdit(new JSONObject(json));
-//					break ;
-//				}
-//			}
+			JSONObject temp = null;
+			try {
+				System.err.println("Attempting to apply edit list to the dive: " + i + " with this EDIT LIST " + json.toString());
+				temp = new JSONObject(json);
+				dives.get(i).applyEdit(temp);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+				System.err.println("Error while parsing the JSONObject");
+				return;
+			}
+				
 		}
 	}
 	
@@ -957,37 +1051,53 @@ public class					DiveboardModel
 						{
 							synchronized (_lock1)
 							{
-								//System.out.println("Loading pictures " + i);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run || !wifiNetwork.isConnected())
+								if(UserPreference.getPictureQuality().equals("m_qual")){
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run || !wifiNetwork.isConnected())
+								}
+								else{
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								}
+//								//System.out.println("Loading pictures " + i);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+								
+								
 							}
 						}
 						else if (_locknb == 2)
 						{
 							synchronized (_lock2)
 							{
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-								if (!_run || !wifiNetwork.isConnected())
-									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-								if (!_run || !wifiNetwork.isConnected())
+								if(UserPreference.getPictureQuality().equals("m_qual")){
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-								if (!_run || !wifiNetwork.isConnected())
+								}
+								else{
+									if (!_run || !wifiNetwork.isConnected())
 									break ;
 								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								}
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+//								if (!_run || !wifiNetwork.isConnected())
+//									break ;
+//								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
 							}
 						}
 					}
@@ -1019,18 +1129,23 @@ public class					DiveboardModel
 					//System.out.println("Loading pictures " + i);
 					try
 					{
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
-						if (!_run || !wifiNetwork.isConnected())
-							break ;
-						pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+//						if (!_run || !wifiNetwork.isConnected())
+//							break ;
+//						pictureList.get(i).second.getPicture(_context, Picture.Size.THUMB);
+//						if (!_run || !wifiNetwork.isConnected())
+//							break ;
+//						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
+						if(UserPreference.getPictureQuality().equals("m_qual")){
+							if (!_run || !wifiNetwork.isConnected())
+								break ;
+							pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+						}
+						else{
+							if (!_run || !wifiNetwork.isConnected())
+								break ;
+							pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+						}
+						
 					}
 					catch (IOException e)
 					{
@@ -1055,7 +1170,7 @@ public class					DiveboardModel
 		}
 	}
 	
-	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String vanity, final String nickname, final boolean loop)
+	public JSONObject				doRegister(final String email, final String password, final String confirm_password, final String nickname, final boolean loop)
 	{
 		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
 		// Test connectivity
@@ -1068,7 +1183,8 @@ public class					DiveboardModel
 			// Adding parameters
 			ArrayList<NameValuePair> args = new ArrayList<NameValuePair>(7);
 			args.add(new BasicNameValuePair("email", email));
-			args.add(new BasicNameValuePair("vanity_url", vanity));
+			//args.add(new BasicNameValuePair("vanity_url", vanity));
+			args.add(new BasicNameValuePair("assign_vanity_url", "true"));
 			args.add(new BasicNameValuePair("password", password));
 			args.add(new BasicNameValuePair("nickname", nickname));
 			args.add(new BasicNameValuePair("password_check", confirm_password));
@@ -1137,12 +1253,10 @@ public class					DiveboardModel
 						String[] savedPictureArray = fileContent.toString().split(";");
 						
 						for (int i = 0, length = savedPictureArray.length; i < length; i++)
-						{
-							//System.err.println("--------------------REFRESH: " + savedPictureArray[i]);
+						{ 
 							DiveboardModel.savedPictureList.add(savedPictureArray[i]);
 						}
-						
-						//DiveboardModel.savedPictureList = new JSONArray(fileContent.toString());
+						 
 						DiveboardModel.savedPictureLock.release();
 					}
 					catch (InterruptedException e) {
@@ -1165,12 +1279,9 @@ public class					DiveboardModel
 	
 	public JSONObject					offlineSearchSpotText(final String term, String lat, String lng, String latSW, String latNE, String lngSW, String lngNE)
 	{
-//		lat = "-41.298734";
-//		lng = "174.781237";
-//		latSW = "39.92476837932741";
-//		lngSW = "-13.183000099999958";
-//		latNE = "59.095806348000615";
-//		lngNE = "16.17246865000004";
+		JSONObject result = new JSONObject();
+		boolean errorDB = false;
+		System.err.println("OFFLINE SEARCH of SPOTS");
 		if (lng != null)
 		{
 			Double lng_d = Double.parseDouble(lng);
@@ -1180,81 +1291,332 @@ public class					DiveboardModel
 		String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
 		String DB_NAME = "spots.db";
 		File file_db = new File(DB_PATH + DB_NAME);
-		if (!file_db.exists())
-			return null;
-		SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
-		String condition_str = "";
-		if (term != null)
-		{
-			String[] strarr = term.split(" ");
-			String match_str = "";
-			for (int i = 0, length = strarr.length; i < length; i++)
-			{
-				if (i != 0)
-					match_str += " ";
-				match_str += strarr[i] + "*";
-			}
-			if (condition_str.length() == 0)
-				condition_str += "spots_fts.name MATCH '" + match_str + "'";
-			else
-				condition_str += " AND spots_fts.name MATCH '" + match_str + "'";
+		if (!file_db.exists()){
 			
-		}
-		if (latSW != null && latNE != null && lngSW != null && lngNE != null)
-		{
-			if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
-			{
-				if (condition_str.length() == 0)
-					condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-				else
-					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-			}
-			if (condition_str.length() == 0)
-				condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-			else
-				condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
-		}
-		if (condition_str.length() == 0)
-			condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
-		else
-			condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
-		if (lat != null && lng != null)
-		{
-			Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
-			condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
-		}
-		JSONObject result = new JSONObject();
-		try {
-			result.put("success", true);
-			JSONArray jarray = new JSONArray();
-			Cursor c;
-			if (term == null)
-			{
-				System.out.println();
-				c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
-			}
-			else
-				c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
-			if (c.getCount() == 0)
-				return null;
-			while (c.moveToNext())
-			{
-				JSONObject new_elem = new JSONObject();
-				new_elem.put("id", c.getInt(0));
-				new_elem.put("name", c.getString(1));
-				new_elem.put("location_name", c.getString(2));
-				new_elem.put("country_name", c.getString(3));
-				new_elem.put("lat", c.getDouble(4));
-				new_elem.put("lng", c.getDouble(5));
-				jarray.put(new_elem);
-			}
+			try {
+				result.put("success", false);
+				result.put("error", _context.getResources().getString(R.string.no_db));
 			
-			result.put("spots", jarray);
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} 
 			return result;
-		} catch (JSONException e) {
-			e.printStackTrace();
 		}
-		return null;
+		
+		if(SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY) != null){
+		
+			SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+			String condition_str = "";
+			if (term != null)
+			{
+				String[] strarr = term.split(" ");
+				String match_str = "";
+				for (int i = 0, length = strarr.length; i < length; i++)
+				{
+					if (i != 0)
+						match_str += " ";
+					match_str += strarr[i] + "*";
+				}
+				if (condition_str.length() == 0)
+					condition_str += "spots_fts.name MATCH '" + match_str + "'";
+				else
+					condition_str += " AND spots_fts.name MATCH '" + match_str + "'";
+			
+			}
+			if (latSW != null && latNE != null && lngSW != null && lngNE != null)
+			{
+				if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
+				{
+					if (condition_str.length() == 0)
+						condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+					else
+						condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+				}
+				if (condition_str.length() == 0)
+					condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+				else
+					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+			}
+			if (condition_str.length() == 0)
+				condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+			else
+				condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+			if (lat != null && lng != null)
+			{
+				Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
+				condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
+			}
+			Cursor c = null;
+			try {
+				result.put("success", true);
+				JSONArray jarray = new JSONArray();
+				
+				if (term == null)
+				{
+					c = mDataBase.query("spots", new String[] {"id", "name", "location_name", "country_name", "lat", "lng", "private_user_id"}, condition_str + " LIMIT 30", null, null, null, null);
+				}
+				else
+					c = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + condition_str + " LIMIT 30", null);
+				if (c.getCount() == 0){
+					c.close();
+					return null;
+				}
+					
+				while (c.moveToNext())
+				{
+					JSONObject new_elem = new JSONObject();
+					new_elem.put("id", c.getInt(0));
+					new_elem.put("name", c.getString(1));
+					new_elem.put("location_name", c.getString(2));
+					new_elem.put("country_name", c.getString(3));
+					new_elem.put("lat", c.getDouble(4));
+					new_elem.put("lng", c.getDouble(5));
+					jarray.put(new_elem);
+				}
+				c.close();
+				result.put("spots", jarray);
+				return result;
+			} catch (JSONException e) {
+				e.printStackTrace();
+				c.close();
+			} catch(SQLiteException e){
+				e.printStackTrace();
+				c.close();
+				errorDB = true;
+			}
+		}
+		if(errorDB){
+			//DB does not exist or was not loaded properly
+			try {
+				result.put("success", false);
+				result.put("error", _context.getResources().getString(R.string.no_db)); 
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			
+			}
+		}
+		
+		return result;
+	}
+	
+	public JSONObject					offlineSearchRegionLocationText(String lat, String lng, String dist)
+	{
+
+		System.err.println("OFFLINE SEARCH OF REGIONS/LOCATIONS");
+		JSONObject result = new JSONObject();
+		boolean errorDB = false;
+		
+		if(lat != null && lng != null && dist != null)
+		{
+			String DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";
+			String DB_NAME = "spots.db";
+			File file_db = new File(DB_PATH + DB_NAME);
+			if (!file_db.exists()){
+				try {
+					result.put("success", false);
+					result.put("error", _context.getResources().getString(R.string.no_db));
+				
+				} catch (JSONException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} 
+				return result;
+			}
+				
+			if(SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.OPEN_READONLY) != null){
+				SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(DB_PATH + DB_NAME, null, SQLiteDatabase.CREATE_IF_NECESSARY);
+				String condition_str_country = "";
+				String condition_str_reg = "";
+				String condition_str_loc = "";
+				String NElat = "";
+				String SWlat = "";
+				String NElng = "";
+				String SWlng = "";
+				Double lat_d = Double.parseDouble(lat);
+				Double lng_d = Double.parseDouble(lng);
+				Double dist_d = Double.parseDouble(dist);
+				boolean onEdge = false; 
+				
+				
+						//Calculate the space of search
+				//Check adding the distance does not take the search coordinate "out of the map"
+				if(lat_d + dist_d < 90.0){
+					NElat = String.valueOf(lat_d + dist_d);
+				}
+				else{
+					NElat = "90.0";
+				}
+					
+				if(lat_d - dist_d > -90.0){
+					SWlat = String.valueOf(lat_d - dist_d);
+				}
+				else{
+					SWlat = "-90.0";
+				}		
+				
+				if(lng_d + dist_d < 180.0){
+					NElng = String.valueOf(lng_d + dist_d);
+				}
+				else{
+					onEdge = true;
+					Double add = lng_d + dist_d - 180.0;
+					NElng = String.valueOf((180.0 - add) * (-1));
+				}
+				
+				if(lng_d - dist_d > -180.0){
+					SWlng = String.valueOf(lng_d - dist_d);
+				}
+				else{
+					onEdge = true;
+					Double add = lng_d - dist_d + 180.0;
+					SWlng = String.valueOf(180.0 + add);
+				}
+			
+				if(!onEdge)
+				{
+					condition_str_country += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+					condition_str_reg += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+					condition_str_loc += "(spots.lng BETWEEN " + SWlng + " AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+				}
+				else
+				{
+					condition_str_country += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+					condition_str_reg += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+					condition_str_loc += "(spots.lng BETWEEN " + SWlng + " AND 180 OR spots.lng BETWEEN -180 AND " + NElng + " AND spots.lat BETWEEN " + SWlat + " AND " + NElat + ")";
+				}
+				
+				if (lat != null && lng != null)
+				{
+					Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
+					condition_str_country +=  " GROUP BY spots.country_id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
+					condition_str_reg += 	 		" GROUP BY regions.id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
+					condition_str_loc +=     " GROUP BY spots.location_id having count(*) > 2 ORDER BY MIN(MIN ((((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + ")*(spots.lng - " + lng + ") * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))),(((spots.lat - " + lat + " )*(spots.lat - " + lat + ")) + ((spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)))))) ASC ";
+				}
+				
+	//			if (SWlat != null && NElat != null && SWlng != null && NElng != null)
+	//			{
+	//				if (Double.parseDouble(lngSW) >= 0 && Double.parseDouble(lngNE) < 0)
+	//				{
+	//					if (condition_str.length() == 0)
+	//						condition_str += "(spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+	//					else
+	//						condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+	//				}
+	//				if (condition_str.length() == 0)
+	//					condition_str += "(spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+	//				else
+	//					condition_str += " AND (spots.lng BETWEEN " + lngSW + " AND " + lngNE + " AND spots.lat BETWEEN " + latSW + " AND " + latNE + ")";
+	//			}
+	//			if (condition_str.length() == 0)
+	//				condition_str += "(spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+	//			else
+	//				condition_str += " AND (spots.private_user_id IS NULL OR spots.private_user_id = " + _userId + ")";
+	//			if (lat != null && lng != null)
+	//			{
+	//				Double lat_sqr = Math.pow(Double.parseDouble(lat), 2.0);
+	//				condition_str += " ORDER BY ((spots.lat - " + lat + ")*(spots.lat - " + lat + ")) + (MIN((spots.lng - " + lng + ")*(spots.lng - " + lng + "), (spots.lng - " + lng + " + 360)*(spots.lng - " + lng + " + 360), (spots.lng - " + lng + " - 360)*(spots.lng - " + lng + " - 360))) * (1 - (((spots.lat * spots.lat) + " + lat_sqr + ") / 8100)) ASC";
+	//			}
+				
+				Cursor c = null;
+				Cursor r = null;
+				Cursor l = null;
+				try {
+					result.put("success", true);
+					JSONArray jCountries = new JSONArray();
+					JSONArray jRegions = new JSONArray();
+					JSONArray jLocations = new JSONArray();
+					
+					c = mDataBase.query("spots", new String[] {"country_id", "country_name"}, condition_str_country + " LIMIT 10", null, null, null, null);
+					r = mDataBase.rawQuery("SELECT spots.region_id, regions.name FROM spots, regions WHERE spots.region_id = regions.id AND " + condition_str_reg + " LIMIT 10", null);
+					l = mDataBase.query("spots", new String[] {"location_id", "location_name"}, condition_str_loc + " LIMIT 10", null, null, null, null);
+					
+					if (c.getCount() == 0)
+					{
+						c.close();
+						System.out.println("NO Countries were found");
+						return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));	
+					}
+					if (r.getCount() == 0)
+					{
+						r.close();
+						System.out.println("NO Regions were found");
+						return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
+					}
+					if (l.getCount() == 0)
+					{
+						l.close();
+						System.out.println("NO Locations were found");
+						return offlineSearchRegionLocationText(lat, lng, String.valueOf(Double.parseDouble(dist) * 2));
+					}
+					
+					while (c.moveToNext())
+					{
+						if(!c.getString(1).trim().isEmpty()){
+							JSONObject country = new JSONObject();
+							country.put("id", c.getInt(0));
+							country.put("name", c.getString(1));
+							jCountries.put(country);
+						}
+						
+					}
+					
+					while (r.moveToNext()){
+						if(!r.getString(1).trim().isEmpty()){
+							JSONObject region = new JSONObject();
+							region.put("id", r.getInt(0));
+							region.put("name", r.getString(1));
+							jRegions.put(region);
+						}
+						
+					}
+					
+					while (l.moveToNext()){
+						if(!l.getString(1).trim().isEmpty()){
+							JSONObject location = new JSONObject();
+							location.put("id", l.getInt(0));
+							location.put("name", l.getString(1));
+							jLocations.put(location);
+						}
+						
+					}
+					
+					result.put("countries", jCountries);
+					result.put("regions", jRegions);
+					result.put("locations", jLocations);
+					
+					System.out.println("The result is " + result.toString());
+					c.close();
+					r.close();
+					l.close();
+					return result;
+					
+				} catch (JSONException e) {
+					e.printStackTrace();
+					c.close();
+					r.close();
+					l.close();
+				}catch(SQLiteException e){
+					e.printStackTrace();
+					c.close();
+					r.close();
+					l.close();
+					errorDB = true;
+				}
+			} 
+		}
+		if(errorDB){
+			//DB does not exist or was not loaded properly
+			try {
+				result.put("success", false);
+				result.put("error", _context.getResources().getString(R.string.no_db)); 
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return result;
 	}
 	
 	
@@ -1309,10 +1671,10 @@ public class					DiveboardModel
 				e.printStackTrace();
 			} catch (ConnectTimeoutException e) {
 				DiveboardModel._cotimedout = true;
-				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+//				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (SocketTimeoutException e) {
 				DiveboardModel._sotimedout = true;
-				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
+//				return offlineSearchSpotText(term, lat, lng, latSW, latNE, lngSW, lngNE);
 			} catch (IllegalStateException e) {
 				e.printStackTrace();
 			} catch (IOException e) {
@@ -1359,8 +1721,8 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
+				System.out.println("Server raw response " + result);
 				JSONObject json = new JSONObject(result);
-//				System.out.println(json);
 //				client.close();
 				return (json);
 			}
@@ -1437,7 +1799,7 @@ public class					DiveboardModel
 				// Get response
 				HttpEntity entity = response.getEntity();
 				String result = ContentExtractor.getASCII(entity);
-				System.out.println(result);
+				//System.out.println(result);
 				JSONObject json = new JSONObject(result);
 //				System.out.println(json);
 //				client.close();
@@ -1520,6 +1882,10 @@ public class					DiveboardModel
 		return _preference;
 	}
 	
+	public String							getToken(){
+		return _token;
+	}
+	
 	public Picture							uploadPicture(File picture_file)
 	{
 		HttpClient							httpClient = new DefaultHttpClient();
@@ -1545,10 +1911,55 @@ public class					DiveboardModel
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();
 				String result = ContentExtractor.getASCII(entity_response);
+				System.out.println("PICTURE UPLOADED SUCCESSFULLY!\n " + result);
 				JSONObject json = new JSONObject(result);
 				if (json.getBoolean("success") == false)
 					return null;
 				return (new Picture(json.getJSONObject("result")));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public JSONObject						uploadWalletPicture(File picture_file)
+	{
+		HttpClient							httpClient = new DefaultHttpClient();
+		HttpContext							localContext = new BasicHttpContext();
+		HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+				byte[] b = baos.toByteArray();
+				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+				entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+				entity.addPart("auth_token", new StringBody(_token));
+				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("flavour", new StringBody("private"));
+//				entity.addPart("album", new StringBody("wallet"));
+				httpPost.setEntity(entity);
+				HttpResponse response = httpClient.execute(httpPost, localContext);
+				HttpEntity entity_response = response.getEntity();
+				String result = ContentExtractor.getASCII(entity_response);
+				System.out.println("WALLET PICTURE UPLOADED SUCCESSFULLY!\n" + result);
+				JSONObject json = new JSONObject(result);
+				if (json.getBoolean("success") == false)
+					return null;
+				return (json);
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {
@@ -1642,6 +2053,73 @@ public class					DiveboardModel
 			} catch (JSONException e) {
 				e.printStackTrace();
 			}
+		}
+		return null;
+	}
+	
+	public String 			getSessionEmail(){
+		return _userEmail;
+	}
+	
+	public void				setHasRatedApp(boolean hasRated){
+		if(hasRated)
+			_cache.saveCache(_userId, "hasRatedApp", "true");
+		else
+			_cache.saveCache(_userId, "hasRatedApp", "false");
+		try {
+			_cache.commitCache();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Boolean			hasRatedApp(){
+
+		String tmp = _cache.get(_userId, "hasRatedApp");
+		if(tmp == null)
+			return null;
+		if (tmp != null){
+			if(tmp.equals("true"))
+				return true;
+		}
+		return false;
+	}
+	
+	public void				setFirstLaunch(Long launch){
+		_cache.saveCache(_userId, "firstLaunch", launch.toString());
+		try {
+			_cache.commitCache();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getFirstLaunch(){
+
+		String tmp = _cache.get(_userId, "firstLaunch");
+		if (tmp != null){
+			return Long.parseLong(tmp);
+		}
+		return null;
+	}
+	
+	public void				setLaunchCount(Long launch){
+		_cache.saveCache(_userId, "launchCount", launch.toString());
+		try {
+			_cache.commitCache();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public Long			getLaunchCount(){
+
+		String tmp = _cache.get(_userId, "launchCount");
+		if (tmp != null){
+			return Long.valueOf(tmp);
 		}
 		return null;
 	}

@@ -1,19 +1,27 @@
 package com.diveboard.mobile.editdive;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import android.content.Intent;
+import android.graphics.Typeface;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
+import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.ViewPager;
+import android.support.v4.view.ViewPager.OnPageChangeListener;
+import android.util.Pair;
+import android.view.Gravity;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
@@ -28,94 +36,42 @@ import com.diveboard.mobile.editdive.EditDiveTypeDialogFragment.EditDiveTypeDial
 import com.diveboard.mobile.editdive.EditDurationDialogFragment.EditDurationDialogListener;
 import com.diveboard.mobile.editdive.EditGuideNameDialogFragment.EditGuideNameDialogListener;
 import com.diveboard.mobile.editdive.EditMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.editdive.EditReviewDialogFragment.EditReviewDialogListener;
 import com.diveboard.mobile.editdive.EditSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
 import com.diveboard.mobile.editdive.EditSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
+import com.diveboard.mobile.editdive.EditTanksDialogFragment.EditTanksDialogListener;
 import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.mobile.editdive.EditVisibilityDialogFragment.EditVisibilityDialogListener;
 import com.diveboard.mobile.editdive.EditWaterDialogFragment.EditWaterDialogListener;
 import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
-import com.diveboard.mobile.editdive.EditReviewDialogFragment.EditReviewDialogListener;
-import com.diveboard.mobile.newdive.TabNewSpotsFragment;
-import com.diveboard.model.Buddy;
 import com.diveboard.model.Dive;
-import com.diveboard.model.DiveCreateListener;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.FirstFragment;
-import com.diveboard.model.Picture;
 import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
-import android.app.Activity;
-import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
-import android.util.Pair;
-import android.view.ContextMenu;
-import android.view.Gravity;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ContextMenu.ContextMenuInfo;
-import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.PopupMenu;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TabHost;
-import android.widget.TextView;
-import android.widget.Toast;
-import android.widget.AdapterView.AdapterContextMenuInfo;
-import android.widget.PopupMenu.OnMenuItemClickListener;
-
-public class					EditDiveActivity extends FragmentActivity implements EditTripNameDialogListener,
-EditDiveNumberDialogListener,
-EditDateDialogListener,
-EditTimeInDialogListener,
-EditMaxDepthDialogListener,
-EditDurationDialogListener,
-EditSurfaceTempDialogListener,
-EditBottomTempDialogListener,
-EditWeightsDialogListener,
-EditVisibilityDialogListener,
-EditCurrentDialogListener,
-EditAltitudeDialogListener,
-EditWaterDialogListener,
-EditConfirmDialogListener,
-EditSafetyStopsDialogListener,
-EditDiveTypeDialogListener,
-EditGuideNameDialogListener,
-EditReviewDialogListener
+public class EditDiveActivity extends FragmentActivity implements
+		EditTripNameDialogListener, EditDiveNumberDialogListener,
+		EditDateDialogListener, EditTimeInDialogListener,
+		EditMaxDepthDialogListener, EditDurationDialogListener,
+		EditSurfaceTempDialogListener, EditBottomTempDialogListener,
+		EditWeightsDialogListener, EditVisibilityDialogListener,
+		EditCurrentDialogListener, EditAltitudeDialogListener,
+		EditWaterDialogListener, EditConfirmDialogListener,
+		EditTanksDialogListener, EditSafetyStopsDialogListener,
+		EditDiveTypeDialogListener, EditGuideNameDialogListener,
+		EditReviewDialogListener
 
 {
-	private int					mIndex;
-	private Typeface			mFaceB;
+	private int						mIndex;
+	private Typeface				mFaceB;
 	public static EditPagerAdapter	adapterViewPager;
 	private TabEditDetailsFragment	mEditDetailsFragment = new TabEditDetailsFragment();
-	public DiveboardModel		mModel;
+	public DiveboardModel			mModel;
 	public static OptionAdapter		mOptionAdapter;
-	private TextView			mTitle = null;
+	private TextView				mTitle = null;
 	private TabEditNotesFragment	mEditNotesFragment = new TabEditNotesFragment();
 	private TabEditPhotosFragment	mEditPhotosFragment = new TabEditPhotosFragment();
 	public static EditText			mNotes = null;
@@ -124,7 +80,7 @@ EditReviewDialogListener
 	private TabEditBuddiesFragment	mEditBuddiesFragment = new TabEditBuddiesFragment();
 	public static boolean 			isNewSpot = false;
 	private boolean					mError = false;
-	private int		NUM_ITEMS = 6;
+	private int						NUM_ITEMS = 6;
 //	public static final int SELECT_PICTURE = 1;
 //	public static final int TAKE_PICTURE = 2;
 //	private Bitmap bitmap;
@@ -226,7 +182,9 @@ EditReviewDialogListener
 						JSONObject edit = new JSONObject(); 
 						for (int i = 0, size = editList.size(); i < size; i++)
 							try {
-								System.out.println("Value of editList" + editList.get(i).first.toString()+ editList.get(i).second.toString());
+//								System.out.println("Value of editList"
+//										+ editList.get(i).first.toString()
+//										+ editList.get(i).second.toString());
 								if (editList.get(i).first.equals("spot")){
 									//System.out.println("Akkii");
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
@@ -557,7 +515,7 @@ EditReviewDialogListener
 			((EditOption)mOptionAdapter.getItem(11)).setValue("");
 		else
 		{
-			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName());
+			//			((EditOption)mOptionAdapter.getItem(11)).setValue(Double.toString(dive.getTempSurface().getTemperature()) + " º" + dive.getTempSurface().getSmallName());
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -709,21 +667,108 @@ EditReviewDialogListener
 	}
 
 	@Override
+	public void onTanksEditComplete(DialogFragment dialog) {
+		// TODO Auto-generated method stub
+		ArrayList<Tank> mTanks = (ArrayList<Tank>) mModel.getDives().get(mIndex).getTanks().clone();
+		String tankString = "";
+		
+		if (mTanks != null && mTanks.size() > 0 )
+			tankString = mTanks.size() + " tanks used";
+		
+		((EditOption)mOptionAdapter.getItem(17)).setValue(tankString);
+		mOptionAdapter.notifyDataSetChanged();
+	}
+	
+	@Override
 	public void onReviewEditComplete(DialogFragment dialog) {
 		// TODO Auto-generated method stub
 		Dive dive = mModel.getDives().get(mIndex);
 		String fullReview = "";
 		if (dive.getDiveReviews().getOverall()!= null)
-			fullReview += "The Overall review was " + dive.getDiveReviews().getOverall().toString() + " ,";
+			fullReview += "Overall: " + _getReviewHintGeneral(dive.getDiveReviews().getOverall()) + ". ";
 		if (dive.getDiveReviews().getDifficulty()!= null)
-			fullReview += "Difficulty was " + dive.getDiveReviews().getDifficulty().toString() + " ,";
+			fullReview += "Dive difficulty: " + _getReviewHintDifficulty(dive.getDiveReviews().getDifficulty()).toLowerCase() + ". ";
 		if (dive.getDiveReviews().getMarine()!= null)
-			fullReview += "Marine life review was " + dive.getDiveReviews().getMarine().toString() + " ,";
+			fullReview += "Marine life: " +_getReviewHintGeneral(dive.getDiveReviews().getMarine()).toLowerCase() + ". ";
 		if (dive.getDiveReviews().getBigFish()!= null)
-			fullReview += "Fish review was " + dive.getDiveReviews().getBigFish().toString() + " ,";
+			fullReview += "Big fish sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getBigFish()).toLowerCase() + ". ";
 		if (dive.getDiveReviews().getWreck()!= null)
-			fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
-		((EditOption)mOptionAdapter.getItem(17)).setValue(fullReview);
+			fullReview += "Wrecks sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getWreck()).toLowerCase() + ". ";
+		((EditOption)mOptionAdapter.getItem(18)).setValue(fullReview);
 		mOptionAdapter.notifyDataSetChanged();
 	}
+	
+	private String _getReviewHintGeneral(int rating) {
+		String resul = "";
+		switch (rating) {
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_terrible);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_poor);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_average);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_very_good);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_excellent);
+			break;
+
+		default:
+			break;
+		}
+		return resul;
+	}
+    
+	private String 				_getReviewHintDifficulty(int rating) {
+
+		String resul = "";
+
+		switch (rating) {
+
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_trivial);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_simple);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_somewhat_simple);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_tricky);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_hardcore);
+			break;
+
+		default:
+			break;
+
+		}
+
+		return resul;
+
+	}
+
+	
 }

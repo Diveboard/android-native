@@ -53,6 +53,11 @@ public class ForumActivity extends BaseListActivity implements SearchActivity {
 
             @Override
             public void loadMore() {
+                // Need to notify data set change as initializing flag
+                // will impact count below
+                if (initializing) {
+                    notifyDataSetChanged();
+                }
                 initializing = false;
                 super.loadMore();
             }
@@ -142,6 +147,9 @@ public class ForumActivity extends BaseListActivity implements SearchActivity {
 
             @Override
             public RestTask search(final String query, final Callback<List<Suggestion>> callback) {
+                if (forum == null) {
+                    return null;
+                }
                 return Suggestion.searchSuggestions(forum, query, new Callback<List<Suggestion>>() {
 
                     @Override
@@ -179,7 +187,7 @@ public class ForumActivity extends BaseListActivity implements SearchActivity {
                 } else if (position != 1) {
                     Suggestion suggestion = (Suggestion) getModelAdapter().getItem(position);
                     Session.getInstance().setSuggestion(suggestion);
-                    SuggestionDialogFragment dialog = new SuggestionDialogFragment(suggestion);
+                    SuggestionDialogFragment dialog = new SuggestionDialogFragment(suggestion, null);
                     dialog.show(getSupportFragmentManager(), "SuggestionDialogFragment");
                 }
             }

@@ -163,89 +163,19 @@ public class					TabNewDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "NewReviewDialogFragment");
     	
     }
+    
+    private void 				_editTanksDialog()
+    {
+    	NewTanksDialogFragment dialog = new NewTanksDialogFragment();
+    	dialog.show(getActivity().getSupportFragmentManager(), "NewTanksDialogFragment");
+    	
+    }
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_details, container, false);
     	
 	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
-	    
-//	    Button save = (Button) findViewById(R.id.save_button);
-//	    save.setTypeface(faceB);
-//	    save.setText(getResources().getString(R.string.add_button));
-//	    save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
-//				ArrayList<Pair<String, String>> editList = mDive.getEditList();
-//				if (mDive.getMaxdepth() == null || mDive.getDuration() == null)
-//					mError = true;
-//				else
-//					mError = false;
-//				if (mDive.getMaxdepth() == null)
-//				{
-//					if (2 - optionList.getFirstVisiblePosition() >= 0)
-//					{
-//						View view = optionList.getChildAt(2 - optionList.getFirstVisiblePosition());
-//						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-//						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-//					}
-//					
-//				}
-//				if (mDive.getDuration() == null)
-//				{
-//					if (4 - optionList.getFirstVisiblePosition() >= 0)
-//					{
-//						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
-//						((TextView)view.findViewById(R.id.optTitle)).setError("This field must be filled");
-//						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
-//					}
-//					
-//				}
-//				if (mError == false)
-//				{
-//					WaitDialogFragment dialog = new WaitDialogFragment();
-//					dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//					if (editList != null && editList.size() > 0)
-//					{
-//						JSONObject edit = new JSONObject(); 
-//						for (int i = 0, size = editList.size(); i < size; i++)
-//							try {
-//								if (editList.get(i).first.equals("spot"))
-//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-//								else
-//									edit.put(editList.get(i).first, editList.get(i).second);
-//							} catch (JSONException e) {
-//								e.printStackTrace();
-//							}
-//						try {
-//							mDive.applyEdit(edit);
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//						mDive.clearEditList();
-//					}
-//					dives.add(0, mDive);
-//					((ApplicationController)getApplicationContext()).getModel().getDataManager().setOnDiveCreateComplete(new DiveCreateListener() {
-//						@Override
-//						public void onDiveCreateComplete() {
-//							finish();
-//						}
-//					});
-//					((ApplicationController)getApplicationContext()).getModel().getDataManager().save(mDive);
-//					((ApplicationController)getApplicationContext()).setRefresh(1);
-//					((ApplicationController)getApplicationContext()).setTempDive(null);
-//				}
-//				else
-//				{
-//					Toast toast = Toast.makeText(getApplicationContext(), "Max Depth or Duration fields are missing", Toast.LENGTH_LONG);
-//					toast.setGravity(Gravity.CENTER, 0, 0);
-//					toast.show();
-//				}
-//			}
-//		});
 	    
     	NewDiveActivity.optionList = (ListView)rootView.findViewById(R.id.optionList);
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
@@ -353,12 +283,16 @@ public class					TabNewDetailsFragment extends Fragment
 		else
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_private_label), 1));
 		
+		if (mDive.getTanks() != null && mDive.getTanks().size() > 0)
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", mDive.getTanks().size() + " tanks used"));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", ""));
+		
 		if (mDive.getDiveReviews()== null)
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
 		{
-			
-			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ",elem.get(17).getValue()));	
+			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ",mDive.getDiveReviews().getJson().toString()));	
 		}
 		
 		NewDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mDive);
@@ -419,8 +353,11 @@ public class					TabNewDetailsFragment extends Fragment
 						_editWater();
 						break ;
 					case 17:
-						_editReviewDialog();
+						_editTanksDialog();
 						break ;
+					case 18:
+						_editReviewDialog();
+						break;
 				}
 			}
 		});

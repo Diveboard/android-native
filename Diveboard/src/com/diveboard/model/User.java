@@ -30,8 +30,13 @@ public class					User implements IModel, Cloneable
 	private String										_location;
 	private String										_nickname;
 	private ArrayList<UserGear>							_userGears;
+//	private Wallet 										_wallet;
+	private ArrayList<String>							_trip_names = new ArrayList<String>();
+	private ArrayList<Integer>							_wallet_picture_ids = new ArrayList<Integer>();
+	private ArrayList<Picture>							_wallet_pictures = new ArrayList<Picture>();
 	private Integer										_totalExtDives;
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
+	private ArrayList<Pair<String, String>>				_editList = new ArrayList<Pair<String, String>>();
 	private String										_countryName;
 	private Units										_unitPreferences;
 	private Integer										_admin_rights;
@@ -80,6 +85,42 @@ public class					User implements IModel, Cloneable
 		}
 		else
 			_userGears = null;
+		if (!json.isNull("wallet_picture_ids"))
+		{
+			
+			JSONArray ids = new JSONArray();
+			ids = json.getJSONArray("wallet_picture_ids");
+			for(int i = 0; i < ids.length(); i ++)
+				_wallet_picture_ids.add(ids.getInt(i)); 
+			//			JSONObject ids = new JSONObject();
+//			JSONArray array = new JSONArray();
+//			wallet.put("user_id", _id); 
+//			wallet.put("size", json.optJSONArray("wallet_picture_ids").length());
+//			wallet.put("wallet_picture_ids", json.getJSONArray("wallet_picture_ids"));
+//			Wallet new_wallet = new Wallet(wallet);
+//			_wallet = new_wallet;
+		}
+		else
+			_wallet_picture_ids = null;
+		if (!json.isNull("wallet_pictures"))
+		{
+			JSONArray jarray;
+			_wallet_pictures = new ArrayList<Picture>();
+			jarray = json.getJSONArray("wallet_pictures");
+			for (int i = 0, length = jarray.length(); i < length; i++)
+			{
+				Picture new_elem = new Picture(jarray.getJSONObject(i));
+				_wallet_pictures.add(new_elem);
+			}
+		}
+		else
+			_wallet_pictures = null;
+		if(!json.isNull("trip_names")){
+			JSONArray array = json.getJSONArray("trip_names");
+			for(int i = 0; i < array.length(); i ++)
+				_trip_names.add(array.getString(i));
+		}
+			
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
 		_unitPreferences = new Units(UserPreference.getUnits());
@@ -222,20 +263,27 @@ public class					User implements IModel, Cloneable
 
 	@Override
 	public ArrayList<Pair<String, String>> getEditList() {
-		// TODO Auto-generated method stub
-		return null;
+		return _editList;
 	}
 
 	@Override
 	public void clearEditList() {
-		// TODO Auto-generated method stub
-		
+		_editList = null;
+		_editList = new ArrayList<Pair<String, String>>();
 	}
 
 	@Override
 	public void applyEdit(JSONObject json) throws JSONException {
 		// TODO Auto-generated method stub
-		
+		if (!json.isNull("wallet_pictures") && !json.isNull("wallet_picture_ids")){
+			JSONArray tmp = new JSONArray();
+			for(int i = 0; i < tmp.length(); i++){
+				_wallet_picture_ids.add(json.getJSONArray("wallet_picture_ids").getInt(i));
+				_wallet_pictures.add(new Picture(json.getJSONArray("wallet_pictures").getJSONObject(i)));
+			}
+			tmp = null;
+		}
+			
 	}
 
 	public String getCountryName() {
@@ -256,5 +304,105 @@ public class					User implements IModel, Cloneable
 
 	public Integer getAdminRights() {
 		return _admin_rights;
+	}
+
+//	public Wallet getWallet() {
+//		return _wallet;
+//	}
+//
+//	public void setWallet(Wallet wallet) {
+//		this._wallet = wallet;
+//		Pair<String, String> new_elem;
+//		if(!wallet.getPicturesIds().isEmpty())
+//			new_elem = new Pair<String, String>("wallet_picture_ids", wallet.getPicturesIds().toString());
+//		else
+//			new_elem = new Pair<String, String>("wallet_picture_ids", new JSONArray().toString());
+//		
+//		//We add the walletPicturesIds so that they can be updated in the server
+//		 
+//		System.out.println("ADDED new_elem to USER EDIT LIST\n" + new_elem.first + new_elem.second);
+//		_editList.add(new_elem);
+//	}
+	
+	public ArrayList<Integer> getWalletPictureIds() {
+		
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("wallet_picture_ids"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<Integer> result = new ArrayList<Integer>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+					{
+						result.add(jarray.getInt(j));
+					}
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return _wallet_picture_ids;
+	}
+
+	public void setWalletPictureIds(ArrayList<Integer> _wallet_picture_ids) {
+//		this._wallet_picture_ids = _wallet_picture_ids;
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		for (int i = 0, size = _wallet_picture_ids.size(); i < size; i++)
+			jarray.put(_wallet_picture_ids.get(i));
+		new_elem = new Pair<String, String>("wallet_picture_ids", jarray.toString());
+		_editList.add(new_elem);
+	}
+
+	public void setWalletPictures(ArrayList<Picture> _pictures)
+	{
+		Pair<String, String> new_elem;
+		JSONArray jarray = new JSONArray();
+		for (int i = 0, size = _pictures.size(); i < size; i++)
+			jarray.put(_pictures.get(i).getJson());
+		new_elem = new Pair<String, String>("wallet_pictures", jarray.toString());
+		_editList.add(new_elem);
+//		_wallet_pictures = _pictures;
+	}
+	
+	public ArrayList<Picture> getWalletPictures()
+	{
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("wallet_pictures"))
+			{
+				if (_editList.get(i).second == null)
+					return null;
+				ArrayList<Picture> result = new ArrayList<Picture>();
+				JSONArray jarray;
+				try {
+					jarray = new JSONArray(_editList.get(i).second);
+					for (int j = 0, length = jarray.length(); j < length; j++)
+					{
+						result.add(new Picture(jarray.getJSONObject(j)));
+					}
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+//		if(_wallet_pictures != null)
+//			return (ArrayList<Picture>) _wallet_pictures.clone();
+//		return null;
+		return _wallet_pictures;
+	}
+
+	public ArrayList<String> getTripNames() {
+		return _trip_names;
+	}
+
+	public void setTripNames(ArrayList<String> _trip_names) {
+		this._trip_names = _trip_names;
 	}
 }

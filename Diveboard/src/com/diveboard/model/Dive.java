@@ -355,6 +355,15 @@ public class					Dive implements IModel
 				System.out.println("NewSpot");
 			}
 		}
+		if(!json.isNull("tanks")){
+			JSONArray jtanks = new JSONArray(json.getString("tanks"));
+			ArrayList<Tank> new_elem= new ArrayList<Tank>();
+			for (int i = 0; i < jtanks.length(); i++){
+				new_elem.add(new Tank(jtanks.getJSONObject(i)));
+			}
+			_tanks = new_elem;
+			System.out.println("Applying edit changes on tanks " + jtanks);
+		}
 		if (!json.isNull("shop"))
 		{
 			_shop = new Shop(json.getJSONObject("shop"));
@@ -666,6 +675,66 @@ public class					Dive implements IModel
 		Pair<String, String> new_elem = new Pair<String, String>("safetystops_unit_value", safetystring);
 		_editList.add(new_elem);
 	}
+	
+	public ArrayList<Tank> getTanks(){
+		for (int i = _editList.size() - 1; i >= 0; i--)
+		{
+			if (_editList.get(i).first.contentEquals("tanks"))
+			{
+				ArrayList<Tank> result;
+				try {
+					if (_editList.get(i).second.equals("null"))
+						return null;
+					JSONArray mTanks = new JSONArray(_editList.get(i).second);
+					result = new ArrayList<Tank>();
+					for (int j =0; j < mTanks.length(); j++){
+						result.add(new Tank(mTanks.getJSONObject(j)));
+					}
+					
+					return (result);
+				} catch (JSONException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return _tanks;
+	}
+	
+	public void setTanks(ArrayList<Tank> tanks) {
+
+		try{
+			JSONArray tanksArray = new JSONArray();
+	
+			for (int i = 0, length = tanks.size(); i < length; i++)
+			{
+				JSONObject jTank = new JSONObject();
+				Tank tank = tanks.get(i);
+				if(tank.getId() != null)
+					jTank.put("id",tank.getId());
+				jTank.put("gas_type",tank.getGasType());
+				jTank.put("he", tank.getHe());
+				jTank.put("n2", tank.getN2());
+				jTank.put("o2", tank.getO2());
+				jTank.put("material", tank.getMaterial());
+				jTank.put("multitank", tank.getMultitank());
+				jTank.put("p_start_value", tank.getPStartValue());
+				jTank.put("p_end_value", tank.getPEndValue());
+				jTank.put("p_start_unit", tank.getPUnit());
+				jTank.put("p_end_unit", tank.getPUnit());
+				jTank.put("time_start", tank.getTimeStart());
+				jTank.put("volume_value", tank.getVolumeValue());
+				jTank.put("volume_unit", tank.getVolumeUnit());
+				
+				tanksArray.put(jTank);
+			}
+	
+			System.out.println("SETTING TANKS: " + tanksArray.toString());
+			Pair<String, String> new_elem = new Pair<String, String>("tanks", tanksArray.toString());
+			_editList.add(new_elem);
+		} catch (JSONException e){
+			e.printStackTrace();
+		}
+	}
 
 	public String getShakenId() {
 		return _shakenId;
@@ -712,7 +781,6 @@ public class					Dive implements IModel
 
 	public void setSpot(JSONObject _spot) {
 		//this._spot = _spot;
-		System.out.println("DIVE EDIT " + _spot);
 		Pair<String, String> new_elem = new Pair<String, String>("spot", _spot.toString());
 		_editList.add(new_elem);
 	}
@@ -1064,14 +1132,6 @@ public class					Dive implements IModel
 
 	public void setDiveGears(ArrayList<DiveGear> _diveGears) {
 		this._diveGears = _diveGears;
-	}
-
-	public ArrayList<Tank> getTanks() {
-		return _tanks;
-	}
-
-	public void setTanks(ArrayList<Tank> _tanks) {
-		this._tanks = _tanks;
 	}
 
 	public Shop getShop() {

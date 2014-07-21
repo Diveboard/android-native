@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
-    <LinearLayout
-        android:id="@+id/layout"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/black">
-        <ImageView 
-	        android:id="@+id/imageView"
-	        android:layout_height="wrap_content"
-	        android:layout_width="wrap_content"
-	        android:src="@drawable/ic_facebook_btn"/>
-    </LinearLayout>
-    
-    <LinearLayout
-        android:id="@+id/layout1"
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@color/blue"
-        android:layout_below="@id/layout">        
-    </LinearLayout>
+    android:layout_height="match_parent" >
+
+    <VideoView
+        android:id="@+id/videoView1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true" 
+        />
+
+    <Button
+        android:id="@+id/button1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="" 
+        android:layout_centerInParent="true"
+        android:background="@android:drawable/ic_media_play"/>
+
+    <MediaController
+        android:id="@+id/mediaController1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true" >
+
+    </MediaController>
+
 </RelativeLayout>

@@ -74,17 +74,13 @@ public class NewReviewDialogFragment extends DialogFragment implements
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
-		Typeface faceR = Typeface.createFromAsset(getActivity()
-				.getApplicationContext().getAssets(),
-				"fonts/Quicksand-Regular.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		View view = inflater.inflate(R.layout.dialog_edit_review, container);
-		mDive = ((ApplicationController) getActivity().getApplicationContext())
-				.getTempDive();
+		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
 		TextView title = (TextView) view.findViewById(R.id.title);
-		System.out.println("title " + title);
 		title.setTypeface(faceR);
 		title.setText(getResources().getString(R.string.edit_review_title));
 
@@ -122,28 +118,23 @@ public class NewReviewDialogFragment extends DialogFragment implements
 				overall.setRating(rating);
 				switch (rating) {
 				case 1:
-					hintOverall.setText(getResources().getString(
-							R.string.hint_terrible));
+					hintOverall.setText(getResources().getString(R.string.hint_terrible));
 					break;
 
 				case 2:
-					hintOverall.setText(getResources().getString(
-							R.string.hint_poor));
+					hintOverall.setText(getResources().getString(R.string.hint_poor));
 					break;
 
 				case 3:
-					hintOverall.setText(getResources().getString(
-							R.string.hint_average));
+					hintOverall.setText(getResources().getString(R.string.hint_average));
 					break;
 
 				case 4:
-					hintOverall.setText(getResources().getString(
-							R.string.hint_very_good));
+					hintOverall.setText(getResources().getString(R.string.hint_very_good));
 					break;
 
 				case 5:
-					hintOverall.setText(getResources().getString(
-							R.string.hint_excellent));
+					hintOverall.setText(getResources().getString(R.string.hint_excellent));
 					break;
 
 				}
@@ -154,28 +145,23 @@ public class NewReviewDialogFragment extends DialogFragment implements
 
 				switch (rating) {
 				case 1:
-					hintDifficulty.setText(getResources().getString(
-							R.string.hint_trivial));
+					hintDifficulty.setText(getResources().getString(R.string.hint_trivial));
 					break;
 
 				case 2:
-					hintDifficulty.setText(getResources().getString(
-							R.string.hint_simple));
+					hintDifficulty.setText(getResources().getString(R.string.hint_simple));
 					break;
 
 				case 3:
-					hintDifficulty.setText(getResources().getString(
-							R.string.hint_somewhat_simple));
+					hintDifficulty.setText(getResources().getString(R.string.hint_somewhat_simple));
 					break;
 
 				case 4:
-					hintDifficulty.setText(getResources().getString(
-							R.string.hint_tricky));
+					hintDifficulty.setText(getResources().getString(R.string.hint_tricky));
 					break;
 
 				case 5:
-					hintDifficulty.setText(getResources().getString(
-							R.string.hint_hardcore));
+					hintDifficulty.setText(getResources().getString(R.string.hint_hardcore));
 					break;
 
 				}
@@ -187,28 +173,23 @@ public class NewReviewDialogFragment extends DialogFragment implements
 
 				switch (rating) {
 				case 1:
-					hintFish.setText(getResources().getString(
-							R.string.hint_terrible));
+					hintFish.setText(getResources().getString(R.string.hint_terrible));
 					break;
 
 				case 2:
-					hintFish.setText(getResources().getString(
-							R.string.hint_poor));
+					hintFish.setText(getResources().getString(R.string.hint_poor));
 					break;
 
 				case 3:
-					hintFish.setText(getResources().getString(
-							R.string.hint_average));
+					hintFish.setText(getResources().getString(R.string.hint_average));
 					break;
 
 				case 4:
-					hintFish.setText(getResources().getString(
-							R.string.hint_very_good));
+					hintFish.setText(getResources().getString(R.string.hint_very_good));
 					break;
 
 				case 5:
-					hintFish.setText(getResources().getString(
-							R.string.hint_excellent));
+					hintFish.setText(getResources().getString(R.string.hint_excellent));
 					break;
 
 				}

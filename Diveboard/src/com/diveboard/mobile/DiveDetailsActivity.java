@@ -208,12 +208,16 @@ public class DiveDetailsActivity extends TabActivity {
 					((TextView)findViewById(R.id.trip_name)).setTypeface(mFaceB);
 				}
 				String place_name = "";
-				if (!mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getJson().isNull("id") && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
-					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() + ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
-				else if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() == null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
-					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
-				else if (mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() != null && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() == null)
-					place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName();
+				if (!mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getJson().isNull("id") && mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getId() != 1){
+					if(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName() != null){
+						place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getLocationName();
+						if(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
+							place_name += ", " + mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
+					}
+					else if(mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName() != null)
+						place_name += mModel.getDives().get(getIntent().getIntExtra("index", 0)).getSpot().getCountryName();
+				}
+				
 				((TextView)findViewById(R.id.place_name)).setText(place_name);
 				((TextView)findViewById(R.id.place_name)).setTextSize(TypedValue.COMPLEX_UNIT_SP, 24);
 				((TextView)findViewById(R.id.place_name)).setTypeface(mFaceR);

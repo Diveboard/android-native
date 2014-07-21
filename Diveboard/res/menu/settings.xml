@@ -1,19 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/rate_app"
+          android:title="@string/rate_title" 
+          android:visible="false"/>
     <item android:id="@+id/refresh"
-          android:title="Refresh" />
+          android:title="@string/menu_refresh" />
+    <item android:id="@+id/see_wallet"
+          android:title="@string/menu_wallet" />
+    <item android:id="@+id/closest_shop"
+          android:title="@string/menu_shop" />
     <item android:id="@+id/add_dive"
-          android:title="New dive" />
+          android:title="@string/menu_new_dive" />
     <item android:id="@+id/menu_settings"
-      	  android:title="Settings" />
+      	  android:title="@string/menu_settings" />
     <item android:id="@+id/report_bug"
-          android:title="Report a bug" />
+          android:title="@string/menu_report_bug" />
     <item android:id="@+id/menu_logout"
-          android:title="Logout" />
-<!--     <group android:id="@+id/group_delete"> -->
-<!--         <item android:id="@+id/menu_archive" -->
-<!--               android:title="@string/menu_archive" /> -->
-<!--         <item android:id="@+id/menu_delete" -->
-<!--               android:title="@string/menu_delete" /> -->
-<!--     </group> -->
+          android:title="@string/menu_logout" />
 </menu>

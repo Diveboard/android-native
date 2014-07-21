@@ -151,17 +151,6 @@
 						                android:background="@drawable/sign_up_field_background"
 						                android:layout_marginTop="14dp" />
 									<EditText
-						                android:id="@+id/url"
-						                android:layout_width="232dp"
-						                android:layout_height="44dp"
-						                android:hint="@string/sign_up_url"
-						                android:inputType="text"
-						                android:maxLines="1"
-						                android:singleLine="true"
-						                android:padding="7dp"
-						                android:background="@drawable/sign_up_field_background"
-						                android:layout_marginTop="14dp" />
-									<EditText
 						                android:id="@+id/nickname"
 						                android:layout_width="232dp"
 						                android:layout_height="44dp"

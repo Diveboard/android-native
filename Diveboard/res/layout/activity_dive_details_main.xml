@@ -104,8 +104,8 @@
 				        android:layout_marginTop="8dp"
 				        android:background="@drawable/login_button_selector"
 				        android:paddingBottom="7dp"
-				        android:paddingLeft="20dp"
-				        android:paddingRight="20dp"
+				        android:paddingLeft="15dp"
+				        android:paddingRight="15dp"
 				        android:paddingTop="7dp"
                         android:layout_alignParentRight="false"
                         android:layout_marginLeft="10dp"
@@ -436,7 +436,7 @@
 
                         <RatingBar
                             android:id="@+id/overall_review"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="@style/diveboardRatingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
@@ -444,11 +444,14 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0" 
+                            android:clickable="false"
+                            android:isIndicator="false"
+                            />
 
                         <RatingBar
                             android:id="@+id/difficulty_review"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="@style/diveboardRatingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
@@ -457,11 +460,12 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                         <RatingBar
                             android:id="@+id/life_review"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="@style/diveboardRatingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
@@ -470,24 +474,26 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                         <RatingBar
                             android:id="@+id/fish_review"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="@style/diveboardRatingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
                             android:layout_weight="0.5"
-                            android:gravity="center"
+                            android:gravity="center" 
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0" 
+                            android:clickable="false"/>
 
                         <RatingBar
                             android:id="@+id/wreck_review"
-                            style="?android:attr/ratingBarStyleSmall"
+                            style="@style/diveboardRatingBar"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="15dp"
@@ -496,7 +502,8 @@
                             android:numStars="5"
                             android:paddingTop="5dp"
                             android:rating="0.0"
-                            android:stepSize="1.0" />
+                            android:stepSize="1.0"
+                            android:clickable="false" />
 
                     </LinearLayout>
 

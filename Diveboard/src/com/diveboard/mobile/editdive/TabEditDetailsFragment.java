@@ -1,26 +1,22 @@
 package com.diveboard.mobile.editdive;
 
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.R;
-
 import java.util.ArrayList;
 
-import org.apache.commons.codec.digest.Md5Crypt;
-
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SafetyStop;
-import com.diveboard.model.Units;
-
-import android.support.v4.app.Fragment;
 import android.os.Bundle;
-import android.util.Pair;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.R;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Units;
 
 public class					TabEditDetailsFragment extends Fragment
 {
@@ -191,6 +187,15 @@ public class					TabEditDetailsFragment extends Fragment
     	dialog.show(getActivity().getSupportFragmentManager(), "EditGuideNameDialogFragment");
     }
     
+    private void				_editTanks()
+    {
+    	EditTanksDialogFragment dialog = new EditTanksDialogFragment();
+    	Bundle args = new Bundle();
+    	args.putInt("index", mIndex);
+    	dialog.setArguments(args);
+    	dialog.show(getActivity().getSupportFragmentManager(), "EditTanksDialogFragment");
+    }
+    
     private void				_editReviewType()
     {
     	EditReviewDialogFragment dialog = new EditReviewDialogFragment();
@@ -199,6 +204,78 @@ public class					TabEditDetailsFragment extends Fragment
     	dialog.setArguments(args);
     	dialog.show(getActivity().getSupportFragmentManager(), "EditReviewDialogFragment");
     }
+    
+	private String _getReviewHintGeneral(int rating) {
+		String resul = "";
+		switch (rating) {
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_terrible);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_poor);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_average);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_very_good);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_excellent);
+			break;
+
+		default:
+			break;
+		}
+		return resul;
+	}
+    
+	private String 				_getReviewHintDifficulty(int rating) {
+
+		String resul = "";
+
+		switch (rating) {
+
+		case 0:
+			resul = "";
+			break;
+
+		case 1:
+			resul = getResources().getString(R.string.hint_trivial);
+			break;
+
+		case 2:
+			resul = getResources().getString(R.string.hint_simple);
+			break;
+
+		case 3:
+			resul = getResources().getString(R.string.hint_somewhat_simple);
+			break;
+
+		case 4:
+			resul = getResources().getString(R.string.hint_tricky);
+			break;
+
+		case 5:
+			resul = getResources().getString(R.string.hint_hardcore);
+			break;
+
+		default:
+			break;
+
+		}
+
+		return resul;
+
+	}
     
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
@@ -277,7 +354,6 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.current_label) + " : ", ""));
 		if (dive.getTempSurface() != null)
 		{
-			//elem.add(new EditOption("Surface temperature : ", Double.toString(dive.getTempSurface().getTemperature()) + " °" + dive.getTempSurface().getSmallName()));
 			String tempsurface_unit = "";
 			if (dive.getTempSurfaceUnit() == null)
 				tempsurface_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -292,7 +368,6 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.surface_temperature_label) + " : ", ""));
 		if (dive.getTempBottom() != null)
 		{
-//			elem.add(new EditOption("Bottom temperature : ", Double.toString(dive.getTempBottom().getTemperature()) + " °" + dive.getTempBottom().getSmallName()));
 			String tempbottom_unit = "";
 			if (dive.getTempBottomUnit() == null)
 				tempbottom_unit = (Units.getTemperatureUnit() == Units.Temperature.C) ? getResources().getString(R.string.unit_C) : getResources().getString(R.string.unit_F);
@@ -317,26 +392,33 @@ public class					TabEditDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_public_label), 1));
 		else
 			elem.add(new EditOption(getResources().getString(R.string.dive_privacy_label) + " : ", getResources().getString(R.string.dive_private_label), 1));
+		
+		if (dive.getTanks() != null && dive.getTanks().size() > 0)
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", dive.getTanks().size() + " tanks used"));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.tanks_label) + " : ", ""));
+		
 		if (dive.getDiveReviews()== null)
 			elem.add(new EditOption(getResources().getString(R.string.review_label) + " : ", ""));
 		else
 		{
 			
 			String fullReview = "";
-			Integer overall, difficulty, life, fish, wreck = 0;
+
 			if (dive.getDiveReviews().getOverall()!= null)
-				fullReview += "The Overall review was " + dive.getDiveReviews().getOverall().toString() + " ,";
+				fullReview += "Overall: " + _getReviewHintGeneral(dive.getDiveReviews().getOverall()).toLowerCase() + ". ";
 			if (dive.getDiveReviews().getDifficulty()!= null)
-				fullReview += "Difficulty was " + dive.getDiveReviews().getDifficulty().toString() + " ,";
+				fullReview += "Dive difficulty: " + _getReviewHintDifficulty(dive.getDiveReviews().getDifficulty()).toLowerCase() + ". ";
 			if (dive.getDiveReviews().getMarine()!= null)
-				fullReview += "Marine life review was " + dive.getDiveReviews().getMarine().toString() + " ,";
+				fullReview += "Marine life: " + _getReviewHintGeneral(dive.getDiveReviews().getMarine()).toLowerCase() + ". ";
 			if (dive.getDiveReviews().getBigFish()!= null)
-				fullReview += "Fish review was " + dive.getDiveReviews().getBigFish().toString() + " ,";
+				fullReview += "Big fish sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getBigFish()).toLowerCase() + ". ";
 			if (dive.getDiveReviews().getWreck()!= null)
-				fullReview += "Wreck review was " + dive.getDiveReviews().getWreck().toString() + " ,";
+				fullReview += "Wrecks sighted: " + _getReviewHintGeneral(dive.getDiveReviews().getWreck()).toLowerCase() + ". ";
 			elem.add(new EditOption("Review : ", fullReview));
 			
 		}
+		
 		
 		EditDiveActivity.mOptionAdapter = new OptionAdapter(getActivity().getApplicationContext(), elem, mModel.getDives().get(mIndex));
 		optionList.setAdapter(EditDiveActivity.mOptionAdapter);
@@ -396,6 +478,9 @@ public class					TabEditDetailsFragment extends Fragment
 						_editWater();
 						break ;
 					case 17:
+						_editTanks();
+						break;
+					case 18:
 						_editReviewType();
 						break;
 				}

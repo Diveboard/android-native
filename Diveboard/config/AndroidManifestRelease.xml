@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.diveboard.mobile"
-    android:versionCode="98"
-    android:versionName="3.2.1" >
+    android:installLocation="auto"
+    android:versionCode="110"
+    android:versionName="3.4.5" >
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -149,7 +150,10 @@
         <activity
             android:name="com.diveboard.mobile.TestActivity"
             android:label="@string/title_activity_graph_image">
-            
+        </activity>
+        <activity
+            android:name="com.diveboard.mobile.WalletActivity"
+            android:label="@string/title_activity_wallet" >
         </activity>
     </application>
 

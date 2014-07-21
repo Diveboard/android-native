@@ -40,6 +40,7 @@ public class					Spot implements IModel
 			_lng = (json.isNull("lng")) ? null : json.getDouble("lng");
 		_zoom = (json.isNull("zoom")) ? null : json.getInt("zoom");
 		_locationId = (json.isNull("location_id")) ? null : json.getInt("location_id");
+		
 		_locationName = (json.isNull("location_name")) ? null : json.getString("location_name");
 		_regionId = (json.isNull("region_id")) ? null : json.getInt("region_id");
 		_regionName = (json.isNull("region_name")) ? null : json.getString("region_name");
