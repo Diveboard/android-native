@@ -123,14 +123,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	static ArrayList<Picture> 				mWalletPictures = null;
 	private Context 						mContext;
 	
-//	//controls for navigation drawer
-//	private DrawerLayout 					mDrawerLayout;
+	//controls to update navigation drawer
 	private ListView 						mDrawerList;
-//	private LinearLayout 					mDrawerContainer;
-//	private ActionBarDrawerToggle 			mDrawerToggle;
-//
-//	private CharSequence 					mDrawerTitle;
-//	private CharSequence 					mTitle;
 	private String[] 						mLinksTitles;
 	
 	@Override
@@ -218,37 +212,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
         //Instantiate the current context so that we dont have to access everytime is needed
         mContext = getApplicationContext();
         
-        
-        
-//        //Setting up controls for the navigation drawer 
-//        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
-			mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
-//        }
-//        else
-//        	mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
-//        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-//        mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
-        mDrawerList = (ListView) findViewById(R.id.menu_links);
-//
-//        // set a custom shadow that overlays the main content when the drawer opens
-//        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-//        
-//        // set up the drawer's list view with items and click listener
-//        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
-//        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-//        TextView mDrawerTitle = (TextView)findViewById(R.id.drawer_title);
-//        mDrawerTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf"));
-//        ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
-//        mDrawerMenu.setOnClickListener(new View.OnClickListener() {
-//			
-//			@Override
-//			public void onClick(View v) {
-//				// TODO Auto-generated method stub
-//				mDrawerLayout.openDrawer(mDrawerContainer);
-//			}
-//		});
-
-        
 		if (AC.isDataReady() == false){
 			System.out.println("Data is not ready, loading data");
 			loadData();
@@ -258,9 +221,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			System.out.println("Data is ready, creating pages");
 			createPages();
 		}
-			
-		
-		
+					
 	}
 	
 	public void logout()
@@ -304,7 +265,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			
+			mDrawerList = (ListView) findViewById(R.id.menu_links);
 			if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
 				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
 				mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));

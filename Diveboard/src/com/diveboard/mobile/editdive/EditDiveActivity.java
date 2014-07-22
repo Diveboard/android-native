@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.NavDrawer;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.editdive.EditAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
@@ -52,7 +53,7 @@ import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class EditDiveActivity extends FragmentActivity implements
+public class EditDiveActivity extends NavDrawer implements
 		EditTripNameDialogListener, EditDiveNumberDialogListener,
 		EditDateDialogListener, EditTimeInDialogListener,
 		EditMaxDepthDialogListener, EditDurationDialogListener,
@@ -81,26 +82,15 @@ public class EditDiveActivity extends FragmentActivity implements
 	public static boolean 			isNewSpot = false;
 	private boolean					mError = false;
 	private int						NUM_ITEMS = 6;
-//	public static final int SELECT_PICTURE = 1;
-//	public static final int TAKE_PICTURE = 2;
-//	private Bitmap bitmap;
-//	
-//	public static ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
-//	private Uri fileUri;
-//	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-//	public static final int MEDIA_TYPE_IMAGE = 1;
-//	public static final int MEDIA_TYPE_VIDEO = 2;
-//	public static int count=0;
-	//private UploadPictureTask mUploadPictureTask = null;
 	
 	
 	public static ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstance) {
-		super.onCreate(savedInstance);
+		super.onCreate(savedInstance, R.layout.activity_edit_dive);
 		mIndex = getIntent().getIntExtra("index", -1);
-		setContentView(R.layout.activity_edit_dive);
+//		setContentView(R.layout.activity_edit_dive);
 		mViewPager = (ViewPager) findViewById(R.id.vpPager);
 		adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
 		mViewPager.setAdapter(adapterViewPager);

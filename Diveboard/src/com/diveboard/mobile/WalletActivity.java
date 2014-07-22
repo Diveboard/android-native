@@ -1032,5 +1032,6 @@ public class WalletActivity extends NavDrawer {
 		getMenuInflater().inflate(R.menu.wallet, menu);
 		return true;
 	}
+	
 
 }

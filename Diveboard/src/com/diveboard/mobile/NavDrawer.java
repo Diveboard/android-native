@@ -132,21 +132,21 @@ public class NavDrawer extends FragmentActivity {
 
     	//bug report
     	case 6:
-    		
-    			//Use of UserVoice report bug system
-    			WaitDialogFragment bugDialog = new WaitDialogFragment();
-    			bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-    			Config config = new Config("diveboard.uservoice.com");
-    			if(mModel.getSessionEmail() != null)
-    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-    			UserVoice.init(config, this);
-    			config.setShowForum(false);
-    			config.setShowContactUs(true);
-    			config.setShowPostIdea(false);
-    			config.setShowKnowledgeBase(false);
-    			ApplicationController.UserVoiceReady = true;
-    			UserVoice.launchContactUs(this);
-    			bugDialog.dismiss();
+
+    		//Use of UserVoice report bug system
+    		WaitDialogFragment bugDialog = new WaitDialogFragment();
+    		bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+    		Config config = new Config("diveboard.uservoice.com");
+    		if(mModel.getSessionEmail() != null)
+    			config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+    		UserVoice.init(config, this);
+    		config.setShowForum(false);
+    		config.setShowContactUs(true);
+    		config.setShowPostIdea(false);
+    		config.setShowKnowledgeBase(false);
+    		ApplicationController.UserVoiceReady = true;
+    		UserVoice.launchContactUs(this);
+    		bugDialog.dismiss();
 
     		break;
     		

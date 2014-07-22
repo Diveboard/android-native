@@ -104,6 +104,7 @@ public class TabEditSpotsFragment extends Fragment implements
 	private boolean goOfflineMode;
 	private int toastCount = 0;
 	private Context mContext;
+	private ApplicationController AC;
 
 	private class myLocationListener implements LocationListener {
 		public void onLocationChanged(Location location) {
@@ -155,7 +156,7 @@ public class TabEditSpotsFragment extends Fragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstance) {
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots,container, false);
-		ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+		AC = (ApplicationController) getActivity().getApplicationContext();
 		mContext = getActivity().getApplicationContext();
 		mModel = AC.getModel();
 
@@ -789,7 +790,6 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if(!goOfflineMode){
 					System.out.println("Region-location API call" + " " + query[0]+ " " + query[1]);
 					result = mModel.searchRegionLocationText(query[0],query[1]);
@@ -949,7 +949,6 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if (!goOfflineMode) {
 					result = mModel.searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
@@ -970,7 +969,6 @@ public class TabEditSpotsFragment extends Fragment implements
 				if (searchDone == false) {
 					goOfflineMode = true;
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return mModel.offlineSearchSpotText(query[1],query[2], query[3], query[4], query[5], query[6],query[7]);
 				}else
 					return result;

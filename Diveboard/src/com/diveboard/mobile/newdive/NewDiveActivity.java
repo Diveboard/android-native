@@ -26,6 +26,7 @@ import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.NavDrawer;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.WaitDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
@@ -58,7 +59,7 @@ import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class					NewDiveActivity extends FragmentActivity implements EditDateDialogListener,
+public class					NewDiveActivity extends NavDrawer implements EditDateDialogListener,
 																					EditTimeInDialogListener,
 																					EditMaxDepthDialogListener,
 																					EditDurationDialogListener,
@@ -179,9 +180,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-	    super.onCreate(savedInstanceState);
+	    super.onCreate(savedInstanceState, R.layout.activity_edit_dive);
 	    
-	    setContentView(R.layout.activity_edit_dive);
+//	    setContentView(R.layout.activity_edit_dive);
 	    
 	    if (((ApplicationController)getApplicationContext()).getTempDive() == null)
 	    {
