@@ -25,12 +25,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -58,12 +57,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -75,7 +74,6 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -83,15 +81,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.model.ContentExtractor;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.diveboard.model.User;
-import com.diveboard.model.Wallet;
 
-public class WalletActivity extends Activity {
+public class WalletActivity extends NavDrawer {
 
 	private DiveboardModel 				mModel;
 	private Context						mContext;
@@ -106,7 +102,6 @@ public class WalletActivity extends Activity {
 	private int 						nbPicture;
 	private int 						size;
 	private Size 						mSizePicture;
-	private int							mWalletSize;
 	private ImageView 					mAddPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
 	private UploadPictureTask 			mUploadPictureTask = null;
@@ -117,16 +112,17 @@ public class WalletActivity extends Activity {
 	NetworkInfo 						networkInfo;
 	private boolean						mIsUploading = false;
 	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wallet);
+		super.onCreate(savedInstanceState, R.layout.activity_wallet);
+//		setContentView(R.layout.activity_wallet); DONT CALL SET CONTENT VIEW IF CURRENT ACTIVITY IS INHERITING FROM NAVDRAWER
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getApplicationContext();
 		mListPictures = new ArrayList<Picture>();
 		mPicturesIDS = new ArrayList<Integer>();
-		mWalletSize = mListPictures.size();
 		if(mModel.getUser().getWalletPictureIds() != null){
 			for(int i = 0; i < mModel.getUser().getWalletPictureIds().size(); i++){
 				mListPictures.add(mModel.getUser().getWalletPictures().get(i));

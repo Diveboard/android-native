@@ -6,6 +6,7 @@
     <color name="dark_grey">#464B52</color>
     <color name="light_grey">#f8f8f8</color>
     <color name="blue">#0000ff</color>
+    <color name="orange">#FBAF17</color>
     <color name="gray_light">#ffabacae</color>
     <color name="tab_title_underline_grey">#FFDADBDC</color>
     <color name="grid_state_pressed">#BB7dbcd3</color>

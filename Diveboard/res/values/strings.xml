@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
-    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
-    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string>
+ <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
+ <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
@@ -48,6 +51,7 @@
     <string name="bottom_temp_hint">Bottom Temp.</string>
     <string name="weights_hint">Weights</string>
     <string name="edit_weights_title">Weights</string>
+    <string name="exit_title">Exit</string>
     <string name="edit_confirm_title">Exit without save?</string>
     <string name="confirm_exit">Are you sure you want to logout?</string>
     <string name="bad_visibility">Bad (under 5m / 15ft)</string>
@@ -71,6 +75,7 @@
     <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
     <string name="title_activity_fblogin">FBLoginActivity</string>
     <string name="title_activity_intro">IntroActivity</string>
+    <string name="title_banner_closest_shop">CLOSEST SHOPS</string>
     <string name="title_banner_wallet">MY WALLET</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
@@ -154,7 +159,7 @@
     <string name="rate_later">Remind me later</string>
     <string name="rate_refuse">No, thanks</string>
     <string name="rate_accept">Sure!</string>
-    
+
     <string-array name="menu_links_has_not_rated">
         <item>Logbook</item>
         <item>Refresh</item>
@@ -163,8 +168,8 @@
         <item>New Dive</item>
         <item>Settings</item>
         <item>Report a bug</item>
-        <item>Rate App</item>
         <item>Logout</item>
+        <item>Rate App</item>
     </string-array>
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>
@@ -176,4 +181,7 @@
         <item>Report a bug</item>
         <item>Logout</item>
     </string-array>
+
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+
 </resources>

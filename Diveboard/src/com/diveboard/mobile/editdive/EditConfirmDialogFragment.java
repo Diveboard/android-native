@@ -55,6 +55,7 @@ public class					EditConfirmDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		View view = inflater.inflate(R.layout.dialog_edit_confirm, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
@@ -62,8 +63,12 @@ public class					EditConfirmDialogFragment extends DialogFragment implements OnE
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
-		title.setTypeface(faceR);
-		title.setText(getResources().getString(R.string.edit_confirm_title));
+		TextView text = (TextView) view.findViewById(R.id.exitTV);
+		title.setTypeface(faceB);
+		title.setText(getResources().getString(R.string.exit_title));
+		
+		text.setTypeface(faceR);
+		text.setText(getResources().getString(R.string.edit_confirm_title));
         
 		Button cancel = (Button) view.findViewById(R.id.cancel);
 		cancel.setTypeface(faceR);

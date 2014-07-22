@@ -14,6 +14,7 @@ import com.google.analytics.tracking.android.EasyTracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
@@ -42,6 +43,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -51,7 +53,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ClosestShopActivity extends Activity {
+public class ClosestShopActivity extends NavDrawer {
 	private 										GoogleMap mMap;
 	private boolean 								earthViewActive = false;
 	LocationManager 								mLocationManager;
@@ -120,13 +122,21 @@ public class ClosestShopActivity extends Activity {
 	}
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		super.onCreate(savedInstanceState, R.layout.activity_closest_shop);
+//		setContentView(R.layout.activity_closest_shop);
 		AC = (ApplicationController)getApplicationContext();
-		setContentView(R.layout.activity_closest_shop);
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		TextView mTitle = (TextView) findViewById(R.id.title);
+		mTitle.setTypeface(mFaceB);
+		mTitle.setText(getResources().getString(R.string.title_banner_closest_shop));
+		Button save = (Button) findViewById(R.id.save_button);
+		save.setTypeface(mFaceB);
+		save.setText(getResources().getString(R.string.save_button));
 			
 		if (mMap == null) {
-			mMap = ((MapFragment) getFragmentManager().findFragmentById(R.id.map)).getMap();
+			SupportMapFragment suppMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+			mMap = suppMap.getMap();
 			mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
 			// Check if we were successful in obtaining the map.
 			if (mMap != null) {
