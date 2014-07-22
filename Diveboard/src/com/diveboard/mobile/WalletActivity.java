@@ -990,14 +990,17 @@ public class WalletActivity extends NavDrawer {
 		}
 		protected void onCreate(Bundle savedInstanceState) {
 			super.onCreate(savedInstanceState);
-			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-//			View view = findViewById(R.layout.dialog_edit_confirm);
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView(R.layout.dialog_edit_confirm);
-			TextView title = (TextView) findViewById(R.id.title);
-			title.setTypeface(faceR);
-			title.setText(getResources().getString(R.string.edit_confirm_title));
-	        
+			
+			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+    		TextView title = (TextView) findViewById(R.id.title);
+    		TextView exitTV = (TextView) findViewById(R.id.exitTV);
+    		title.setTypeface(faceB);
+    		title.setText(getResources().getString(R.string.exit_title));
+    		exitTV.setTypeface(faceR);
+    		exitTV.setText(getResources().getString(R.string.edit_confirm_title));
 			Button cancel = (Button) findViewById(R.id.cancel);
 			cancel.setTypeface(faceR);
 			cancel.setText(getResources().getString(R.string.cancel));

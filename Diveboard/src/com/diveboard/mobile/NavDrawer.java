@@ -22,7 +22,9 @@ import android.widget.TextView;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
+import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
 import com.diveboard.mobile.newdive.NewDiveActivity;
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
 
@@ -81,130 +83,140 @@ public class NavDrawer extends FragmentActivity {
     }
     
     private void selectItem(int position) {
-
-    	switch (position) {
-
-    	//Logbook
-    	case 0:
-//    		AC.setRefresh(1);
-    		finish();
-    		Intent logbookActivity = new Intent(this, DivesActivity.class);
-    		startActivity(logbookActivity);
-    		break;
-    	
-    	//Refresh
-    	case 1:
-    		
-    		
-    		AC.setDataReady(false);
-    		AC.getModel().stopPreloadPictures();
-    		ApplicationController.mForceRefresh = true;
-    		AC.setModel(null);
-    		finish();
-    		break;
-
-    	//Wallet Activity
-    	case 2:
-    		Intent walletActivity = new Intent(this, WalletActivity.class);
-    		startActivity(walletActivity);
-    		finish();
-    		break;
-    		
-    	//Closest Shop    			
-    	case 3:
-    		Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
-    		startActivity(closestShopActivity);
-    		finish();
-    		break;
-
-    	//New Dive	
-    	case 4:
-    		Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
-    		startActivity(newDiveActivity);
-    		finish();
-    		break;
-    	
-    	//Settings	
-    	case 5:    		
-    		Intent settingsActivity = new Intent(this, SettingsActivity.class);
-    		startActivity(settingsActivity);
-    		break;
-
-    	//bug report
-    	case 6:
-
-    		//Use of UserVoice report bug system
-    		WaitDialogFragment bugDialog = new WaitDialogFragment();
-    		bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-    		Config config = new Config("diveboard.uservoice.com");
-    		if(mModel.getSessionEmail() != null)
-    			config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-    		UserVoice.init(config, this);
-    		config.setShowForum(false);
-    		config.setShowContactUs(true);
-    		config.setShowPostIdea(false);
-    		config.setShowKnowledgeBase(false);
-    		ApplicationController.UserVoiceReady = true;
-    		UserVoice.launchContactUs(this);
-    		bugDialog.dismiss();
-
-    		break;
-    		
-    	//Logout	
-    	case 7:
-    		final Dialog dialog = new Dialog(this);
-    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    		dialog.setContentView(R.layout.dialog_edit_confirm);
-    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-    		TextView title = (TextView) dialog.findViewById(R.id.title);
-    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-    		title.setTypeface(faceB);
-    		title.setText(getResources().getString(R.string.exit_title));
-    		exitTV.setTypeface(faceR);
-    		exitTV.setText(getResources().getString(R.string.confirm_exit));
-    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
-    		cancel.setTypeface(faceR);
-    		cancel.setText(getResources().getString(R.string.cancel));
-    		cancel.setOnClickListener(new View.OnClickListener() {
-
-    			@Override
-    			public void onClick(View v) {
-    				// TODO Auto-generated method stub
-    				dialog.dismiss();
-    			}
-    		});
-    		Button save = (Button) dialog.findViewById(R.id.save);
-    		save.setTypeface(faceR);
-    		save.setText(getResources().getString(R.string.menu_logout));
-    		save.setOnClickListener(new View.OnClickListener() {
-
-    			@Override
-    			public void onClick(View v) {
-    				// TODO Auto-generated method stub
-    				logout();
-    			}
-    		});
+    	int currDive = AC.getModel().getDives().size() - AC.getPageIndex() - 1;
+    	Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+    	//Check there are not unsaved changes
+    	if ((currDive >= 0 && mModel.getDives().get(currDive).getEditList().size() > 0)
+    			|| (mModel.getUser().getEditList().size() > 0)
+    			|| (mDive != null && mDive.getEditList() != null && mDive.getEditList().size() > 0)) 
+    	{			
+    		SaveChangesDialog dialog = new SaveChangesDialog(this, position);
     		dialog.show();
-    		break;
-    		
-    		//Rate app
-    	case 8:
-    		mModel.setHasRatedApp(true);
-			try {
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
-			} catch (android.content.ActivityNotFoundException anfe) {
-			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
-			}
-    		break;	
-    		
-    	default:
-    		break ;
     	}
+    	else{
+    		switch (position) {
 
-        // update selected item and title, then close the drawer
-        mDrawerList.setItemChecked(position, false);
-        mDrawerLayout.closeDrawer(mDrawerContainer);
+    		// Logbook
+    		case 0:
+    			// AC.setRefresh(1);
+    			finish();
+    			Intent logbookActivity = new Intent(this, DivesActivity.class);
+    			startActivity(logbookActivity);
+    			break;
+
+    			// Refresh
+    		case 1:
+    			AC.setDataReady(false);
+    			AC.getModel().stopPreloadPictures();
+    			ApplicationController.mForceRefresh = true;
+    			AC.setModel(null);
+    			finish();
+    			break;
+
+    			// Wallet Activity
+    		case 2:
+    			Intent walletActivity = new Intent(this, WalletActivity.class);
+    			startActivity(walletActivity);
+    			finish();
+    			break;
+
+    			// Closest Shop
+    		case 3:
+    			Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
+    			startActivity(closestShopActivity);
+    			finish();
+    			break;
+
+    			// New Dive
+    		case 4:
+    			Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
+    			startActivity(newDiveActivity);
+    			finish();
+    			break;
+
+    			// Settings
+    		case 5:
+    			Intent settingsActivity = new Intent(this, SettingsActivity.class);
+    			startActivity(settingsActivity);
+    			break;
+
+    			// bug report
+    		case 6:
+
+    			// Use of UserVoice report bug system
+    			WaitDialogFragment bugDialog = new WaitDialogFragment();
+    			bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+    			Config config = new Config("diveboard.uservoice.com");
+    			if (mModel.getSessionEmail() != null)
+    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+    			UserVoice.init(config, this);
+    			config.setShowForum(false);
+    			config.setShowContactUs(true);
+    			config.setShowPostIdea(false);
+    			config.setShowKnowledgeBase(false);
+    			ApplicationController.UserVoiceReady = true;
+    			UserVoice.launchContactUs(this);
+    			bugDialog.dismiss();
+
+    			break;
+
+    			// Logout
+    		case 7:
+    			final Dialog dialog = new Dialog(this);
+    			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+    			dialog.setContentView(R.layout.dialog_edit_confirm);
+    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Bold.otf");
+    			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Regular.otf");
+    			TextView title = (TextView) dialog.findViewById(R.id.title);
+    			TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
+    			title.setTypeface(faceB);
+    			title.setText(getResources().getString(R.string.exit_title));
+    			exitTV.setTypeface(faceR);
+    			exitTV.setText(getResources().getString(R.string.confirm_exit));
+    			Button cancel = (Button) dialog.findViewById(R.id.cancel);
+    			cancel.setTypeface(faceR);
+    			cancel.setText(getResources().getString(R.string.cancel));
+    			cancel.setOnClickListener(new View.OnClickListener() {
+
+    				@Override
+    				public void onClick(View v) {
+    					// TODO Auto-generated method stub
+    					dialog.dismiss();
+    				}
+    			});
+    			Button save = (Button) dialog.findViewById(R.id.save);
+    			save.setTypeface(faceR);
+    			save.setText(getResources().getString(R.string.menu_logout));
+    			save.setOnClickListener(new View.OnClickListener() {
+
+    				@Override
+    				public void onClick(View v) {
+    					// TODO Auto-generated method stub
+    					logout();
+    				}
+    			});
+    			dialog.show();
+    			break;
+
+    			// Rate app
+    		case 8:
+    			mModel.setHasRatedApp(true);
+    			try {
+    				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+    			} catch (android.content.ActivityNotFoundException anfe) {
+    				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+    			}
+    			break;
+
+    		default:
+    			break;
+
+    		}
+
+    		// update selected item and title, then close the drawer
+    		mDrawerList.setItemChecked(position, false);
+    		mDrawerLayout.closeDrawer(mDrawerContainer);
+    	}
     }
     
     public void logout()
@@ -217,5 +229,63 @@ public class NavDrawer extends FragmentActivity {
     	AC.setPageIndex(0);
     	AC.getModel().doLogout();
     	finish();
+	}
+    
+    public class SaveChangesDialog extends Dialog implements android.view.View.OnClickListener{
+    	int pos;
+		public SaveChangesDialog(Activity a, int nextActivity) {
+			super(a);
+			pos = nextActivity;
+		}
+		protected void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			requestWindowFeature(Window.FEATURE_NO_TITLE);
+			setContentView(R.layout.dialog_edit_confirm);
+			
+//			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+    		TextView title = (TextView) findViewById(R.id.title);
+    		TextView exitTV = (TextView) findViewById(R.id.exitTV);
+    		title.setTypeface(faceB);
+    		title.setText(getResources().getString(R.string.exit_title));
+    		exitTV.setTypeface(faceR);
+    		exitTV.setText(getResources().getString(R.string.edit_confirm_title));
+			Button cancel = (Button) findViewById(R.id.cancel);
+			cancel.setTypeface(faceR);
+			cancel.setText(getResources().getString(R.string.cancel));
+			cancel.setOnClickListener(this);
+			Button save = (Button) findViewById(R.id.save);
+			save.setTypeface(faceR);
+			save.setText(getResources().getString(R.string.save));
+			save.setOnClickListener(this);
+		}
+		@Override
+		public void onClick(View v) {
+			// TODO Auto-generated method stub
+			switch (v.getId()) {
+		    case R.id.cancel:
+		    	mDrawerLayout.closeDrawer(mDrawerContainer);
+		    	mDrawerList.setItemChecked(pos, false);
+		    	break;
+		    case R.id.save:
+		    	mModel.getUser().clearEditList();
+		    	Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+		    	if (mDive != null)
+		    		mDive.clearEditList();
+		    	int currDive = AC.getModel().getDives().size() - AC.getPageIndex() - 1;
+		    	if(currDive >= 0){
+		    		mModel.getDives().get(currDive).clearEditList(); 
+		    	}
+		    	selectItem(pos);
+//				Intent intent = new Intent(mContext, DivesActivity.class);
+//				startActivity(intent);
+//				finish();
+		      break;
+		    default:
+		      break;
+		    }
+		    dismiss();
+		}
 	}
 }
