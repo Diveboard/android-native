@@ -165,8 +165,8 @@ public class NavDrawer extends FragmentActivity {
     			final Dialog dialog = new Dialog(this);
     			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     			dialog.setContentView(R.layout.dialog_edit_confirm);
-    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Bold.otf");
-    			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Regular.otf");
+    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Regular.ttf");
+    			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Light.ttf");
     			TextView title = (TextView) dialog.findViewById(R.id.title);
     			TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
     			title.setTypeface(faceB);
@@ -243,8 +243,8 @@ public class NavDrawer extends FragmentActivity {
 			setContentView(R.layout.dialog_edit_confirm);
 			
 //			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
     		TextView title = (TextView) findViewById(R.id.title);
     		TextView exitTV = (TextView) findViewById(R.id.exitTV);
     		title.setTypeface(faceB);

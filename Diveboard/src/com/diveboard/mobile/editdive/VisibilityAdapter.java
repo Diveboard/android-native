@@ -18,7 +18,7 @@ public class					VisibilityAdapter extends ArrayAdapter<String>
 	{
 		super(context, resource, items);
 		_resource = resource;
-		_tf = Typeface.createFromAsset(context.getAssets(), "fonts/Quicksand-Regular.otf");
+		_tf = Typeface.createFromAsset(context.getAssets(), "fonts/Lato-Light.ttf");
 	}
 	
 //	@Override

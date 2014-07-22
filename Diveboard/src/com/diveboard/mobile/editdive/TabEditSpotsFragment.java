@@ -161,8 +161,8 @@ public class TabEditSpotsFragment extends Fragment implements
 		mModel = AC.getModel();
 
 		try{
-			mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
-			mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
+			mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Light.ttf");
+			mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Regular.ttf");
 		}catch (NullPointerException e){
 			e.printStackTrace();
 			mFaceB = Typeface.DEFAULT_BOLD;

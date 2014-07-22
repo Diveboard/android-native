@@ -456,7 +456,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		mView = inflater.inflate(R.layout.dialog_edit_safetystops, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		if (mModel.getDives().get(getArguments().getInt("index")).getSafetyStops() != null)

@@ -175,8 +175,8 @@ public class TabNewSpotsFragment extends Fragment implements
 		AC = (ApplicationController) getActivity().getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getActivity().getApplicationContext();
-		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
-		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
+		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Light.ttf");
+		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Regular.ttf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		
 		((TextView) mRootView.findViewById(R.id.nameSpotTitle)).setTypeface(mFaceB);

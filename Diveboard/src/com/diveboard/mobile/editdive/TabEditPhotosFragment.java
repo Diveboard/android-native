@@ -283,7 +283,7 @@ public class TabEditPhotosFragment extends Fragment {
 	public void generateTableLayout()
 	{
 		try{
-			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
 			((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
 		} catch(NullPointerException e){

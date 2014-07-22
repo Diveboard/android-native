@@ -278,8 +278,8 @@ public class					TabNewBuddiesFragment extends Fragment
 						}
 					}
 				});
-		Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
-		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
 		((TextView)mRootView.findViewById(R.id.myBuddies)).setTypeface(faceB);
 		((TextView)mRootView.findViewById(R.id.myOldBuddies)).setTypeface(faceB);
 		((TextView)mRootView.findViewById(R.id.search)).setTypeface(faceB);
@@ -508,8 +508,8 @@ public class					TabNewBuddiesFragment extends Fragment
 		public View getView(final int position, final View convertView, final ViewGroup parent)
 		{
 			final RelativeLayout rl;
-			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -635,8 +635,8 @@ public class					TabNewBuddiesFragment extends Fragment
 		{
 			System.out.println("START DISPLAYING");
 			final RelativeLayout rl;
-			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -888,8 +888,8 @@ public class					TabNewBuddiesFragment extends Fragment
 			ImageView imageView;
 			TextView tv;
 			LinearLayout rl;
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -1001,8 +1001,8 @@ public class					TabNewBuddiesFragment extends Fragment
 			ImageView imageView;
 			TextView tv;
 			LinearLayout rl;
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

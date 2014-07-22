@@ -60,7 +60,7 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_max_depth, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		

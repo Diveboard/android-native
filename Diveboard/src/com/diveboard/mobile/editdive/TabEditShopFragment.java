@@ -122,8 +122,8 @@ public class					TabEditShopFragment extends Fragment
         	mContext = getActivity();
     	//mContext = getActivity().getApplicationContext();
     	mModel = ((ApplicationController)mContext.getApplicationContext()).getModel();
-	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_shop));
 		((TextView)mRootView.findViewById(R.id.no_shop)).setTypeface(mFaceR);

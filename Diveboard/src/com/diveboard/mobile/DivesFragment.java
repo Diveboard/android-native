@@ -76,8 +76,8 @@ public class DivesFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
 		// Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);

@@ -125,8 +125,8 @@ public class ClosestShopActivity extends NavDrawer {
 		super.onCreate(savedInstanceState, R.layout.activity_closest_shop);
 //		setContentView(R.layout.activity_closest_shop);
 		AC = (ApplicationController)getApplicationContext();
-		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		TextView mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setTypeface(mFaceB);
 		mTitle.setText(getResources().getString(R.string.title_banner_closest_shop));

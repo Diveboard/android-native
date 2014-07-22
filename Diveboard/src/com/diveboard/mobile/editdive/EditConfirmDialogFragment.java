@@ -55,8 +55,8 @@ public class					EditConfirmDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_confirm, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		

@@ -104,8 +104,8 @@ public class SignUpActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_sign_up);
-		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		((TextView)findViewById(R.id.title)).setText(getResources().getString(R.string.signup_for_diveboard));
 		((TextView)findViewById(R.id.title)).setTypeface(faceB);
 		((TextView)findViewById(R.id.title)).setTextSize(TEXT_SIZE_BIG);

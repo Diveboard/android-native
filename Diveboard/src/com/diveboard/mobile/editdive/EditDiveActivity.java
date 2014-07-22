@@ -139,7 +139,7 @@ public class EditDiveActivity extends NavDrawer implements
 		});
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setTypeface(faceB);
 		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
@@ -390,7 +390,7 @@ public class EditDiveActivity extends NavDrawer implements
 	//			return ;
 	//	    setContentView(R.layout.activity_edit_dive);
 	//	
-	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
 	//	    
 	//	    mIndex = getIntent().getIntExtra("index", -1);
 	//	

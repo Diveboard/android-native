@@ -317,8 +317,8 @@ public class TabNewPhotosFragment extends Fragment {
 	public void generateTableLayout()
 	{
 		try{
-			Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
 			((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
 		}catch (NullPointerException e){

@@ -201,7 +201,7 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	    	((ApplicationController)getApplicationContext()).setTempDive(new_dive);
 	    }
 	
-	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
 	    
 	    mTitle = (TextView) findViewById(R.id.title);
 	    mTitle.setTypeface(mFaceB);

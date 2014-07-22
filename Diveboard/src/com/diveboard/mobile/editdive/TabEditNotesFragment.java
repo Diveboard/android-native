@@ -53,8 +53,8 @@ public class TabEditNotesFragment extends Fragment
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_notes, container, false);
     	
         
-	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 	    mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 	    

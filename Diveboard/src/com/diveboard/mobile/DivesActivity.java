@@ -365,8 +365,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		        	final Dialog dialog = new Dialog(DivesActivity.this);
 		        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 		    		dialog.setContentView(R.layout.dialog_edit_confirm);
-		    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-		    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		    		TextView title = (TextView) dialog.findViewById(R.id.title);
 		    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
 		    		title.setTypeface(faceB);
@@ -627,7 +627,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		}
 		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 
 				(model.getDives().get(i).getLng() == null || model.getDives().get(i).getLng() == 0))
-			pos = "";
+			pos = "No spot assigned";
 		return (pos);
 		
 	}
@@ -681,14 +681,16 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 				RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
 				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListFooterHeight());
 				diveFooter.setLayoutParams(diveFooterParams);
-				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+				Typeface quickR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+				Typeface quickB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 				// Footer static text
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setText(getResources().getString(R.string.title_footer));
-				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceB);
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setText(getResources().getString(R.string.no_dive_found));
-				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+				((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceB);
 				((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 				//We create the pager with the associated pages
 				if (mModel.getDives() == null || mModel.getDives().size() == 0)
@@ -738,7 +740,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			        else
 			        	mPager.setCurrentItem(AC.getPageIndex());
 			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
-					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceB);
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 			        mPager.setOnTouchListener(new OnTouchListener() {
 						@Override
@@ -903,9 +905,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 								else
 									((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
-								Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+								Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
-								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceR);
+								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceB);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
 								if (mBackgroundImageTask != null)
 									mBackgroundImageTask.cancel(true);
@@ -1241,7 +1243,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		            	bubble.setLayoutParams(bubble_params);
 		            	bubble.setGravity(Gravity.CENTER_HORIZONTAL);
 		            	
-		            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 						Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 		            	TextView tv = new TextView(DivesActivity.this);
 		            	TextView country = new TextView(DivesActivity.this);
@@ -1451,8 +1453,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 //    		final Dialog dialog = new Dialog(DivesActivity.this);
 //    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //    		dialog.setContentView(R.layout.dialog_edit_confirm);
-//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
-//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 //    		TextView title = (TextView) dialog.findViewById(R.id.title);
 //    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
 //    		title.setTypeface(faceB);

@@ -277,7 +277,7 @@ public class WalletActivity extends NavDrawer {
 	
 	public void generateTableLayout()
 	{
-		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		TextView mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setTypeface(mFaceB);
 		mTitle.setText(getResources().getString(R.string.title_banner_wallet));
@@ -993,8 +993,8 @@ public class WalletActivity extends NavDrawer {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView(R.layout.dialog_edit_confirm);
 			
-			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
     		TextView title = (TextView) findViewById(R.id.title);
     		TextView exitTV = (TextView) findViewById(R.id.exitTV);
     		title.setTypeface(faceB);

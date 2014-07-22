@@ -175,7 +175,7 @@ public class					TabNewDetailsFragment extends Fragment
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_details, container, false);
     	
-	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 	    
     	NewDiveActivity.optionList = (ListView)rootView.findViewById(R.id.optionList);
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();

@@ -60,8 +60,8 @@ public class AppRater {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_app_rate);
         dialog.findViewById(R.id.title);
-        Typeface faceB = Typeface.createFromAsset(AC.getAssets(), "fonts/Quicksand-Bold.otf");
-        Typeface faceR = Typeface.createFromAsset(AC.getAssets(), "fonts/Quicksand-Regular.otf");
+        Typeface faceB = Typeface.createFromAsset(AC.getAssets(), "fonts/Lato-Regular.ttf");
+        Typeface faceR = Typeface.createFromAsset(AC.getAssets(), "fonts/Lato-Light.ttf");
         TextView title = (TextView) dialog.findViewById(R.id.title);
 		TextView body = (TextView) dialog.findViewById(R.id.bodyTV);
 		Button b1 = (Button) dialog.findViewById(R.id.cancel);

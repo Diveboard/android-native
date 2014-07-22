@@ -71,7 +71,7 @@ public class EditReviewDialogFragment extends DialogFragment implements
 			Bundle savedInstanceState) {
 		Typeface faceR = Typeface.createFromAsset(getActivity()
 				.getApplicationContext().getAssets(),
-				"fonts/Quicksand-Regular.otf");
+				"fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_review, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		mDive = mModel.getDives().get(getArguments().getInt("index"));

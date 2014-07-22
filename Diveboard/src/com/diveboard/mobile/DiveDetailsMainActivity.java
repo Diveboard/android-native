@@ -108,9 +108,9 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),
 				dpToPx(35));
 		Typeface faceR = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Regular.otf");
+				"fonts/Lato-Light.ttf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Bold.otf");
+				"fonts/Lato-Regular.ttf");
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());

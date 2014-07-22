@@ -108,8 +108,8 @@ public class DiveDetailsActivity extends TabActivity {
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 				mModel = AC.getModel();
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 				mIndex = getIntent().getIntExtra("index", 0);
 				//We built the tabs
 				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);
