@@ -16,8 +16,11 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
+import com.uservoice.uservoicesdk.Config;
+import com.uservoice.uservoicesdk.UserVoice;
 
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.DiveboardModel;
@@ -56,8 +59,8 @@ public class NavDrawer extends FragmentActivity {
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles));
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-        TextView mDrawerTitle = (TextView)findViewById(R.id.drawer_title);
-        mDrawerTitle.setTypeface(Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf"));
+        ImageView mDrawerTitle = (ImageView)findViewById(R.id.drawer_title);
+        mDrawerTitle.setImageDrawable(getResources().getDrawable(R.drawable.logo_250));
         ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
         mDrawerMenu.setOnClickListener(new View.OnClickListener() {
 			
@@ -92,7 +95,7 @@ public class NavDrawer extends FragmentActivity {
     	//Refresh
     	case 1:
     		
-    		ApplicationController AC = (ApplicationController)getApplicationContext();
+    		
     		AC.setDataReady(false);
     		AC.getModel().stopPreloadPictures();
     		ApplicationController.mForceRefresh = true;
@@ -129,23 +132,22 @@ public class NavDrawer extends FragmentActivity {
 
     	//bug report
     	case 6:
-    		if (true)
-    		{
-//    			//Use of UserVoice report bug system
-//    			WaitDialogFragment dialog = new WaitDialogFragment();
-//    			dialog.show(getFragmentManager(), "WaitDialogFragment");
-//    			Config config = new Config("diveboard.uservoice.com");
-//    			if(mModel.getSessionEmail() != null)
-//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//    			UserVoice.init(config, DivesActivity.this);
-//    			config.setShowForum(false);
-//    			config.setShowContactUs(true);
-//    			config.setShowPostIdea(false);
-//    			config.setShowKnowledgeBase(false);
-//    			ApplicationController.UserVoiceReady = true;
-//    			UserVoice.launchContactUs(DivesActivity.this);
-//    			dialog.dismiss();
-    		}
+    		
+    			//Use of UserVoice report bug system
+    			WaitDialogFragment bugDialog = new WaitDialogFragment();
+    			bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+    			Config config = new Config("diveboard.uservoice.com");
+    			if(mModel.getSessionEmail() != null)
+    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+    			UserVoice.init(config, this);
+    			config.setShowForum(false);
+    			config.setShowContactUs(true);
+    			config.setShowPostIdea(false);
+    			config.setShowKnowledgeBase(false);
+    			ApplicationController.UserVoiceReady = true;
+    			UserVoice.launchContactUs(this);
+    			bugDialog.dismiss();
+
     		break;
     		
     	//Logout	
