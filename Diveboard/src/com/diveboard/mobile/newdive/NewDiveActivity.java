@@ -234,9 +234,9 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 				}
 				if (mDive.getDuration() == null)
 				{
-					if (4 - optionList.getFirstVisiblePosition() >= 0)
+					if (3 - optionList.getFirstVisiblePosition() >= 0)
 					{
-						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
+						View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
 						((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 					}
@@ -446,13 +446,13 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	        	if (4 - optionList.getFirstVisiblePosition() >= 0)
+	        	if (3 - optionList.getFirstVisiblePosition() >= 0)
 	        	{
-	        		((TextView)optionList.getChildAt(4 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
+	        		((TextView)optionList.getChildAt(3 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
 		                public void run() {
 		                	if (mDive.getDuration() == null)
 		                	{
-		                		View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
+		                		View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
 		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 			                	((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 			        			mError = true;
@@ -468,7 +468,7 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		final Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min));
+		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 		new Thread(new Runnable() {
@@ -638,7 +638,7 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 				safetydetails += ", ";
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
-		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		((EditOption)mOptionAdapter.getItem(4)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 

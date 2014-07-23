@@ -172,13 +172,8 @@ public class EditDiveActivity extends NavDrawer implements
 						JSONObject edit = new JSONObject(); 
 						for (int i = 0, size = editList.size(); i < size; i++)
 							try {
-//								System.out.println("Value of editList"
-//										+ editList.get(i).first.toString()
-//										+ editList.get(i).second.toString());
 								if (editList.get(i).first.equals("spot")){
-									//System.out.println("Akkii");
 									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-									//System.out.println("The selected manual spot is:: " + editList.get(i).second );
 								}
 									
 								else if (editList.get(i).first.equals("shop"))
@@ -188,13 +183,6 @@ public class EditDiveActivity extends NavDrawer implements
 							} catch (JSONException e) {
 								e.printStackTrace();
 							}
-//						try {
-//							dive.applyEdit(edit);
-//							System.out.println("Value of spot after applyedit" + dive.getSpot().getJson().toString());
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//						dive.clearEditList();
 					}
 					
 					mModel.getDataManager().save(dive);
@@ -205,44 +193,6 @@ public class EditDiveActivity extends NavDrawer implements
 		}); 
 	}
 	
-
-
-//	@Override
-//	protected void onPause() {
-//		if (mUploadPictureTask != null)
-//			mUploadPictureTask.cancel(true);
-//		super.onPause();
-//	}
-//
-//	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
-//	{
-//		private File mFile;
-//
-//		public UploadPictureTask(File file)
-//		{
-//			mFile = file;
-//		}
-//
-//		@Override
-//		protected Picture doInBackground(Void... arg0) {
-//
-//			Picture picture = mModel.uploadPicture(mFile);
-//			return picture;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Picture result) {
-//			System.out.println("TRUC de jean " + result.getJson());
-//			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
-//			EditDiveActivity.mPhotoView.setVisibility(View.VISIBLE);
-//			LinearLayout rl = (LinearLayout)(EditDiveActivity.mPhotoView.getParent());
-//			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
-//			bar.setVisibility(View.GONE);
-//			EditDiveActivity.mListPictures.add(result);
-//			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
-//		}
-//
-//	}
 
 	@Override
 	public void onBackPressed()
@@ -271,8 +221,6 @@ public class EditDiveActivity extends NavDrawer implements
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
 		mModel.getDives().get(mIndex).clearEditList();
-//		if (mUploadPictureTask != null)
-//			mUploadPictureTask.cancel(true);
 	}
 
 	public class			EditPagerAdapter extends FragmentPagerAdapter
@@ -315,9 +263,6 @@ public class EditDiveActivity extends NavDrawer implements
 				System.out.println("0");
 				return 0;
 			}
-				
-//			else if (object.equals(mEditDetailsFragment))
-//				return 1;
 			else if (object.equals(mEditPhotosFragment))
 			{
 				System.out.println("2");
@@ -492,7 +437,7 @@ public class EditDiveActivity extends NavDrawer implements
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min));
+		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -628,7 +573,7 @@ public class EditDiveActivity extends NavDrawer implements
 				safetydetails += ", ";
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
-		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		((EditOption)mOptionAdapter.getItem(4)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 

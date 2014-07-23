@@ -298,6 +298,8 @@ public class					TabEditDetailsFragment extends Fragment
 		else
 			maxdepth_unit = (dive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? getResources().getString(R.string.unit_m) : getResources().getString(R.string.unit_ft);
 		elem.add(new EditOption(getResources().getString(R.string.max_depth_label) + " : ", Double.toString(dive.getMaxdepth()) + " " + maxdepth_unit));
+		elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min)));
+
 		ArrayList<SafetyStop> safetystop = dive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
@@ -307,12 +309,7 @@ public class					TabEditDetailsFragment extends Fragment
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
 		elem.add(new EditOption(getResources().getString(R.string.safety_stops_label) + " : ", safetydetails));
-		elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min)));
-		//elem.add(new EditOption("Safety stops : ", "not implemented"));
-//		if (dive.getWeights() != null)
-//			elem.add(new EditOption("Weights : ", Double.toString(dive.getWeights().getWeight()) + " " + dive.getWeights().getSmallName()));
-//		else
-//			elem.add(new EditOption("Weights : ", ""));
+		
 		if (dive.getWeights() != null)
 		{
 			String weights_unit = "";
@@ -439,10 +436,10 @@ public class					TabEditDetailsFragment extends Fragment
 						_editMaxDepth();
 						break ;
 					case 3:
-						_editSafetyStops();
+						_editDuration();
 						break ;
 					case 4:
-						_editDuration();
+						_editSafetyStops();
 						break ;
 					case 5:
 						_editWeights();
