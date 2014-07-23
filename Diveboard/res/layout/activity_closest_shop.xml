@@ -19,7 +19,7 @@
             <ImageView
                 android:id="@+id/ic_drawer"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:padding="10dp"
                 android:src="@drawable/ic_drawer" />
 
@@ -31,14 +31,6 @@
                 android:paddingLeft="15dp"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/save_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/edit_save_button_selector"
-                android:padding="15dp"
-                android:textColor="@color/white"
-                android:textSize="15sp" />
         </LinearLayout>
 
         <RelativeLayout

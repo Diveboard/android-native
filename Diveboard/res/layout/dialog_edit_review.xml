@@ -407,7 +407,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginRight="1dp"
                     android:layout_weight="1"
-                    android:background="@drawable/edit_save_button_selector"
+                    android:background="@drawable/edit_secondary_button_selector"
                     android:paddingBottom="15dp"
                     android:paddingTop="15dp"
                     android:textColor="@color/white" />
@@ -417,7 +417,7 @@
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
                     android:layout_weight="1"
-                    android:background="@drawable/edit_save_button_selector"
+                    android:background="@drawable/edit_secondary_button_selector"
                     android:textColor="@color/white" />
             </LinearLayout>
         </LinearLayout>

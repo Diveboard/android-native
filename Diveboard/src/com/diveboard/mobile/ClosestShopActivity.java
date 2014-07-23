@@ -131,9 +131,6 @@ public class ClosestShopActivity extends NavDrawer {
 		TextView mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.title_banner_closest_shop));
-		Button save = (Button) findViewById(R.id.save_button);
-		save.setTypeface(mFaceB);
-		save.setText(getResources().getString(R.string.save_button));
 			
 		if (mMap == null) {
 			SupportMapFragment suppMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);

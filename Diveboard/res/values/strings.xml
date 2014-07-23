@@ -156,8 +156,8 @@
     <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
     <string name="rate_title">Rate Diveboard</string>
     <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us on the play store?\nThanks!!</string>
-    <string name="rate_later">Remind me later</string>
-    <string name="rate_refuse">No, thanks</string>
+    <string name="rate_later">Later</string>
+    <string name="rate_refuse">Nope</string>
     <string name="rate_accept">Sure!</string>
 
     <string-array name="menu_links_has_not_rated">

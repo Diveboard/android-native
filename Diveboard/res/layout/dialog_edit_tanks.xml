@@ -41,13 +41,13 @@
 	        android:layout_marginRight="1dp"
 	        android:paddingTop="15dp"
 	        android:paddingBottom="15dp"
-	        android:background="@drawable/edit_save_button_selector" />
+	        android:background="@drawable/edit_secondary_button_selector" />
 	    <Button
 	        android:id="@+id/save"
 	        android:layout_width="0dp"
 	        android:layout_weight="1"
 	        android:layout_height="match_parent"
 	        android:textColor="@color/white"
-	        android:background="@drawable/edit_save_button_selector" />
+	        android:background="@drawable/edit_secondary_button_selector" />
     </LinearLayout>    
 </LinearLayout>

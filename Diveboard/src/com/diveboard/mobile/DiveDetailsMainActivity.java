@@ -65,6 +65,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		Intent editDiveActivity = new Intent(this, EditDiveActivity.class);
 		editDiveActivity.putExtra("index", getIntent().getIntExtra("index", 0));
 		startActivity(editDiveActivity);
+		finish();
 	}
 
 	public void goToDeleteDive() {
@@ -105,12 +106,9 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_dive_details_main);
 		// System.out.println(dpToPx(50));
-		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),
-				dpToPx(35));
-		Typeface faceR = Typeface.createFromAsset(getAssets(),
-				"fonts/Lato-Light.ttf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(),
-				"fonts/Lato-Regular.ttf");
+		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
+		Typeface faceR = Typeface.createFromAsset(getAssets(),"fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(),"fonts/Lato-Regular.ttf");
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());

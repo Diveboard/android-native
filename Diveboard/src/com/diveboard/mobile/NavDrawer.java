@@ -10,6 +10,7 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -59,7 +60,19 @@ public class NavDrawer extends FragmentActivity {
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         
         // set up the drawer's list view with items and click listener
-        mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles));
+        mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
+        	@Override
+        	public View getView(int position, View convertView, ViewGroup parent) {
+        		// TODO Auto-generated method stub
+        		
+        		Typeface mFaceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+        		View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf"));
+				
+				return v;
+        		
+        	}
+        });
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
         ImageView mDrawerTitle = (ImageView)findViewById(R.id.drawer_title);
         mDrawerTitle.setImageDrawable(getResources().getDrawable(R.drawable.logo_250));
@@ -94,14 +107,15 @@ public class NavDrawer extends FragmentActivity {
     		dialog.show();
     	}
     	else{
-    		switch (position) {
-
+    		switch (position) {	
     		// Logbook
     		case 0:
-    			// AC.setRefresh(1);
+    			// AC.setRefresh(1);    			
+    			AC.setDataReady(false);
+    			AC.getModel().stopPreloadPictures();
+//    			ApplicationController.mForceRefresh = true;
+    			AC.setModel(null);
     			finish();
-    			Intent logbookActivity = new Intent(this, DivesActivity.class);
-    			startActivity(logbookActivity);
     			break;
 
     			// Refresh
@@ -117,21 +131,21 @@ public class NavDrawer extends FragmentActivity {
     		case 2:
     			Intent walletActivity = new Intent(this, WalletActivity.class);
     			startActivity(walletActivity);
-    			finish();
+//    			finish();
     			break;
 
     			// Closest Shop
     		case 3:
     			Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
     			startActivity(closestShopActivity);
-    			finish();
+//    			finish();
     			break;
 
     			// New Dive
     		case 4:
     			Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
     			startActivity(newDiveActivity);
-    			finish();
+//    			finish();
     			break;
 
     			// Settings
@@ -242,12 +256,12 @@ public class NavDrawer extends FragmentActivity {
 			requestWindowFeature(Window.FEATURE_NO_TITLE);
 			setContentView(R.layout.dialog_edit_confirm);
 			
-//			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface quickR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
     		TextView title = (TextView) findViewById(R.id.title);
     		TextView exitTV = (TextView) findViewById(R.id.exitTV);
-    		title.setTypeface(faceB);
+    		title.setTypeface(quickR);
     		title.setText(getResources().getString(R.string.exit_title));
     		exitTV.setTypeface(faceR);
     		exitTV.setText(getResources().getString(R.string.edit_confirm_title));
