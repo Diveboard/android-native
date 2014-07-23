@@ -202,9 +202,10 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	    }
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    
 	    mTitle = (TextView) findViewById(R.id.title);
-	    mTitle.setTypeface(mFaceB);
+	    mTitle.setTypeface(quicksandR);
 	    mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 	    
 	    Button save = (Button) findViewById(R.id.save_button);

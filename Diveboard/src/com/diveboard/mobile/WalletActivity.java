@@ -278,8 +278,9 @@ public class WalletActivity extends NavDrawer {
 	public void generateTableLayout()
 	{
 		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		TextView mTitle = (TextView) findViewById(R.id.title);
-		mTitle.setTypeface(mFaceB);
+		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.title_banner_wallet));
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setTypeface(mFaceB);
