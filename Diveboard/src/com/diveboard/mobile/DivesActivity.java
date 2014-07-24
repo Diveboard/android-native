@@ -156,25 +156,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			finish();
 			return ;
 		}
-		else if (AC.getRefresh() == 4)
-		{
-			AC.setRefresh(0);
-			AC.setPageIndex(0);
-			AC.setDataReady(false);
-			AC.getModel().stopPreloadPictures();
-			AC.setModel(null);
-			finish();
-			return ;
-		}else if (AC.getRefresh() == 5)
-		{
-			AC.setRefresh(0);
-			AC.setPageIndex(0);
-			AC.setDataReady(false);
-			AC.getModel().stopPreloadPictures();
-			AC.setModel(null);
-			finish();
-			return ;
-		}
 		
 	}
 	
@@ -905,8 +886,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 									position_stroke = max_strokes_possible;
 								upperStroke(position_stroke);
 								//((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
-								ArrayList<Dive> test = mModel.getDives();
-								Integer sz = mModel.getDives().size();
 								if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 									((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 								else

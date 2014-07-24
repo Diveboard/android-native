@@ -420,7 +420,7 @@ public class SettingsActivity extends PreferenceActivity {
 					@Override
 					public boolean onPreferenceChange(Preference preference, Object newValue) {
 						ApplicationController AC = ((ApplicationController)getApplicationContext());
-						AC.setRefresh(4);
+						AC.setRefresh(1);
 						ApplicationController.SudoId = Integer.parseInt(newValue.toString());
 						finish();
 						return false;
@@ -445,7 +445,7 @@ public class SettingsActivity extends PreferenceActivity {
 					@Override
 					public boolean onPreferenceClick(Preference preference) {
 						ApplicationController AC = ((ApplicationController)getApplicationContext());
-						AC.setRefresh(4);
+						AC.setRefresh(1);
 						ApplicationController.SudoId = 0;
 						finish();
 						return false;

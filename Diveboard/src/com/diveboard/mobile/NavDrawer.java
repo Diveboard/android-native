@@ -112,8 +112,11 @@ public class NavDrawer extends FragmentActivity {
     		case 0:
     			Intent logbookActivity = new Intent(this, DivesActivity.class);
     			startActivity(logbookActivity);
-    			if(!DivesActivity.active)
+    			if(!DivesActivity.active){
+					((ApplicationController)getApplicationContext()).setRefresh(1);
     				finish();
+    			}
+
     			break;
 
     			// Refresh
