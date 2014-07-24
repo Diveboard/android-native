@@ -148,6 +148,7 @@ public class WalletActivity extends NavDrawer {
 				if(!mIsUploading){
 					User user = mModel.getUser();
 					mModel.getDataManager().save(user);
+					((ApplicationController)getApplicationContext()).setRefresh(1);
 //					mModel.updateUser();
 					finish();
 				}

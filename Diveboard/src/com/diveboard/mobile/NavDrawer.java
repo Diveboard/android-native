@@ -110,12 +110,10 @@ public class NavDrawer extends FragmentActivity {
     		switch (position) {	
     		// Logbook
     		case 0:
-    			// AC.setRefresh(1);    			
-    			AC.setDataReady(false);
-    			AC.getModel().stopPreloadPictures();
-//    			ApplicationController.mForceRefresh = true;
-    			AC.setModel(null);
-    			finish();
+    			Intent logbookActivity = new Intent(this, DivesActivity.class);
+    			startActivity(logbookActivity);
+    			if(!DivesActivity.active)
+    				finish();
     			break;
 
     			// Refresh
@@ -131,27 +129,32 @@ public class NavDrawer extends FragmentActivity {
     		case 2:
     			Intent walletActivity = new Intent(this, WalletActivity.class);
     			startActivity(walletActivity);
-//    			finish();
+    			if(!DivesActivity.active)
+    				finish();
     			break;
 
     			// Closest Shop
     		case 3:
     			Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
     			startActivity(closestShopActivity);
-//    			finish();
+    			if(!DivesActivity.active)
+    				finish();
     			break;
 
     			// New Dive
     		case 4:
     			Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
     			startActivity(newDiveActivity);
-//    			finish();
+    			if(!DivesActivity.active)
+    				finish();
     			break;
 
     			// Settings
     		case 5:
     			Intent settingsActivity = new Intent(this, SettingsActivity.class);
     			startActivity(settingsActivity);
+    			if(!DivesActivity.active)
+    				finish();
     			break;
 
     			// bug report
@@ -179,7 +182,7 @@ public class NavDrawer extends FragmentActivity {
     			final Dialog dialog = new Dialog(this);
     			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
     			dialog.setContentView(R.layout.dialog_edit_confirm);
-    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Regular.ttf");
+    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Regular.otf");
     			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Light.ttf");
     			TextView title = (TextView) dialog.findViewById(R.id.title);
     			TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);

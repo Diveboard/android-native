@@ -123,6 +123,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	static ArrayList<Picture> 				mWalletPictures = null;
 	private Context 						mContext;
 	
+	// To know if DivesActivity is running or not
+	static boolean 							active = false;
+	
 	//controls to update navigation drawer
 	private ListView 						mDrawerList;
 	private String[] 						mLinksTitles;
@@ -178,6 +181,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	@Override
 	public void onStart() {
 		super.onStart();
+		active = true;
 		EasyTracker.getInstance(this).activityStart(this);
 		
 	}
@@ -185,6 +189,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	@Override
 	public void onStop() {
 		super.onStop();
+		active = false;
 		EasyTracker.getInstance(this).activityStop(this);
 	} 
 	
@@ -900,6 +905,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 									position_stroke = max_strokes_possible;
 								upperStroke(position_stroke);
 								//((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+								ArrayList<Dive> test = mModel.getDives();
+								Integer sz = mModel.getDives().size();
 								if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
 									((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
 								else

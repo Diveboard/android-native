@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_marginLeft="15dp"
             android:layout_marginRight="8dp"
-            android:background="@drawable/edit_primary_button_selector"
+            android:background="@drawable/primary_button_selector"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="16dp" />
@@ -54,7 +54,7 @@
             android:layout_width="85dp"
             android:layout_height="match_parent"
             android:layout_marginRight="8dp"
-            android:background="@drawable/edit_secondary_button_selector"
+            android:background="@drawable/secondary_button_selector"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="16dp" />
@@ -63,7 +63,7 @@
             android:id="@+id/cancel"
             android:layout_width="85dp"
             android:layout_height="match_parent"
-            android:background="@drawable/edit_secondary_button_selector"
+            android:background="@drawable/secondary_button_selector"
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="16dp" />
