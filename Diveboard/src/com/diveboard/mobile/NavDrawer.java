@@ -1,5 +1,7 @@
 package com.diveboard.mobile;
 
+import java.net.Inet4Address;
+
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
@@ -248,7 +250,10 @@ public class NavDrawer extends FragmentActivity {
     	AC.setDataReady(false);
     	AC.setPageIndex(0);
     	AC.getModel().doLogout();
-    	finish();
+    	Intent loginActivity = new Intent(this, DiveboardLoginActivity.class);
+    	loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+    	startActivity(loginActivity);
+    	
 	}
     
     public class SaveChangesDialog extends Dialog implements android.view.View.OnClickListener{
