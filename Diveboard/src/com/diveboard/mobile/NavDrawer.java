@@ -29,6 +29,7 @@ import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.ExitDialog;
 import com.facebook.Session;
 
 public class NavDrawer extends FragmentActivity {
@@ -101,7 +102,8 @@ public class NavDrawer extends FragmentActivity {
     	int currDive = AC.getModel().getDives().size() - AC.getPageIndex() - 1;
     	Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
     	//Check there are not unsaved changes
-    	if ((currDive >= 0 && mModel.getDives().get(currDive).getEditList().size() > 0)
+    	if (mModel.getDives().size() > 0 &&
+    			(currDive >= 0 && mModel.getDives().get(currDive).getEditList().size() > 0)
     			|| (mModel.getUser().getEditList().size() > 0)
     			|| (mDive != null && mDive.getEditList() != null && mDive.getEditList().size() > 0)) 
     	{			
@@ -184,40 +186,61 @@ public class NavDrawer extends FragmentActivity {
 
     			// Logout
     		case 7:
-    			final Dialog dialog = new Dialog(this);
-    			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-    			dialog.setContentView(R.layout.dialog_edit_confirm);
-    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Regular.otf");
-    			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Light.ttf");
-    			TextView title = (TextView) dialog.findViewById(R.id.title);
-    			TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-    			title.setTypeface(faceB);
-    			title.setText(getResources().getString(R.string.exit_title));
-    			exitTV.setTypeface(faceR);
-    			exitTV.setText(getResources().getString(R.string.confirm_exit));
-    			Button cancel = (Button) dialog.findViewById(R.id.cancel);
-    			cancel.setTypeface(faceR);
-    			cancel.setText(getResources().getString(R.string.cancel));
-    			cancel.setOnClickListener(new View.OnClickListener() {
+//    			final Dialog dialog = new Dialog(this);
+//    			dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//    			dialog.setContentView(R.layout.dialog_edit_confirm);
+//    			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Quicksand-Regular.otf");
+//    			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(),"fonts/Lato-Light.ttf");
+//    			TextView title = (TextView) dialog.findViewById(R.id.title);
+//    			TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
+//    			title.setTypeface(faceB);
+//    			title.setText(getResources().getString(R.string.exit_title));
+//    			exitTV.setTypeface(faceR);
+//    			exitTV.setText(getResources().getString(R.string.confirm_exit));
+//    			Button cancel = (Button) dialog.findViewById(R.id.cancel);
+//    			cancel.setTypeface(faceR);
+//    			cancel.setText(getResources().getString(R.string.cancel));
+//    			cancel.setOnClickListener(new View.OnClickListener() {
+//
+//    				@Override
+//    				public void onClick(View v) {
+//    					// TODO Auto-generated method stub
+//    					dialog.dismiss();
+//    				}
+//    			});
+//    			Button save = (Button) dialog.findViewById(R.id.save);
+//    			save.setTypeface(faceR);
+//    			save.setText(getResources().getString(R.string.menu_logout));
+//    			save.setOnClickListener(new View.OnClickListener() {
+//
+//    				@Override
+//    				public void onClick(View v) {
+//    					// TODO Auto-generated method stub
+//    					logout();
+//    				}
+//    			});
+//    			dialog.show();
+    			
+    			final ExitDialog exitDialog = new ExitDialog(this);
+    			exitDialog.setPositiveListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						logout();
+					}
+				});
 
-    				@Override
-    				public void onClick(View v) {
-    					// TODO Auto-generated method stub
-    					dialog.dismiss();
-    				}
-    			});
-    			Button save = (Button) dialog.findViewById(R.id.save);
-    			save.setTypeface(faceR);
-    			save.setText(getResources().getString(R.string.menu_logout));
-    			save.setOnClickListener(new View.OnClickListener() {
-
-    				@Override
-    				public void onClick(View v) {
-    					// TODO Auto-generated method stub
-    					logout();
-    				}
-    			});
-    			dialog.show();
+    			exitDialog.setNegativeListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						exitDialog.dismiss();
+					}
+				});
+    			
+    			exitDialog.show();
     			break;
 
     			// Rate app
