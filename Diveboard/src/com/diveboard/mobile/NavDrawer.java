@@ -110,8 +110,8 @@ public class NavDrawer extends FragmentActivity {
     		switch (position) {	
     		// Logbook
     		case 0:
-    			Intent logbookActivity = new Intent(this, DivesActivity.class);
-    			startActivity(logbookActivity);
+//    			Intent logbookActivity = new Intent(this, DivesActivity.class);
+//    			startActivity(logbookActivity);
     			if(!DivesActivity.active){
 					((ApplicationController)getApplicationContext()).setRefresh(1);
     				finish();
