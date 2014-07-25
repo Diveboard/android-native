@@ -53,7 +53,7 @@
     <string name="edit_weights_title">Weights</string>
     <string name="exit_title">Exit</string>
     <string name="edit_confirm_title">Exit without save?</string>
-    <string name="confirm_exit">Are you sure you want to logout?</string>
+    <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="bad_visibility">Bad (under 5m / 15ft)</string>
     <string name="average_visibility">Average (5-10m / 15-30ft)</string>
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>

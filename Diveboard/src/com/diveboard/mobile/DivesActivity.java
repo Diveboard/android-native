@@ -358,7 +358,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		    		title.setTypeface(faceB);
 		    		title.setText(getResources().getString(R.string.exit_title));
 		    		exitTV.setTypeface(faceR);
-		    		exitTV.setText(getResources().getString(R.string.confirm_exit));
+		    		exitTV.setText(getResources().getString(R.string.confirm_logout));
 		    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
 		    		cancel.setTypeface(faceR);
 		    		cancel.setText(getResources().getString(R.string.cancel));

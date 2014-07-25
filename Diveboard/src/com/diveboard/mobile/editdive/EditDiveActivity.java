@@ -188,7 +188,7 @@ public class EditDiveActivity extends NavDrawer implements
 					
 					mModel.getDataManager().save(dive);
 					//Refresh 2 is not as heavy as refresh 1, no loading screen cause it makes the changes on the background
-					((ApplicationController)getApplicationContext()).setRefresh(2);
+					((ApplicationController)getApplicationContext()).setRefresh(3);
 					finish();
 				}
 			}
