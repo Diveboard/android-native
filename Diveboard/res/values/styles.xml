@@ -33,8 +33,8 @@
         <item name="android:drawSelectorOnTop">true</item>
         <item name="android:listSelector">@drawable/photogrid_list_selector</item>
     </style>
-
     <style name="diveboardRatingBar" parent="@android:style/Widget.RatingBar">
+        <!-- <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item> -->
         <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item>
         <item name="android:minHeight">35dip</item>
         <item name="android:maxHeight">35dip</item>

@@ -156,7 +156,6 @@ public class EditDiveActivity extends NavDrawer implements
 				mError = false;
 				mModel = ((ApplicationController)getApplicationContext()).getModel();
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
-				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
 				ArrayList<Pair<String, String>> editList = dive.getEditList();
 				if (mNotes != null)
 					dive.setNotes(mNotes.getText().toString());
