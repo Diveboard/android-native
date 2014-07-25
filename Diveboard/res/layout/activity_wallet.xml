@@ -138,7 +138,7 @@
             android:layout_height="33dp"
             android:paddingTop="3dp"
             android:paddingBottom="3dp"
-            android:background="#FCD049"
+            android:background="@color/yellow"
             android:gravity="center" />
 
         <ListView
