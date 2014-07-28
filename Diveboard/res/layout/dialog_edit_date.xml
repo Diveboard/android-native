@@ -45,7 +45,7 @@
             android:id="@+id/cancel"
             android:layout_width="100dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/edit_secondary_button_selector"
+            android:background="@drawable/secondary_button_selector"
             android:textColor="@color/black" />
     </LinearLayout>
 
