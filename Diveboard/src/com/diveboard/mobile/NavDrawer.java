@@ -22,7 +22,7 @@ import android.widget.TextView;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.ExitDialog;
+import com.diveboard.util.ExitDialog;
 import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
@@ -59,14 +59,14 @@ public class NavDrawer extends FragmentActivity {
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        final Typeface test = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+        final Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
         	@Override
         	public View getView(int position, View convertView, ViewGroup parent) {
         		// TODO Auto-generated method stub
         		View v = super.getView(position, convertView, parent);
-				((TextView) v).setTypeface(test);
+				((TextView) v).setTypeface(faceR);
 				return v;
         		
         	}
@@ -140,7 +140,7 @@ public class NavDrawer extends FragmentActivity {
     		switch (position) {	
     		// Logbook
     		case 0:
-    			if(!(this instanceof WalletActivity)){
+    			if(!(this instanceof DivesActivity)){
 					((ApplicationController)getApplicationContext()).setRefresh(1);
     				finish();
     			}
