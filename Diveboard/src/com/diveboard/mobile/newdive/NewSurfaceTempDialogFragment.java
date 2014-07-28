@@ -33,12 +33,13 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 	{
         void					onSurfaceTempEditComplete(DialogFragment dialog);
     }
-	
+	private DiveboardModel		mModel;
 	private Dive				mDive;
 	private EditText			mSurfaceTemp;
 	private EditSurfaceTempDialogListener	mListener;
 	private Double				mTemperature;
 	private Spinner				temp_label;
+	private int					mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -60,7 +61,8 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getmLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -90,7 +92,19 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 //		temp_label.setTypeface(faceR);
 //		temp_label.setText("º" + mTemperature.getSmallName());
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(20);
+				return v;
+			}
+			public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+				View v =super.getDropDownView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				return v;
+			}
+		};
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mDive.getTempSurfaceUnit() == null)
 		{
@@ -170,8 +184,6 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 				dismiss();
 			}
 		});
-		
-        faceR = null;
 		return view;
 	}
 

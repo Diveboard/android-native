@@ -59,10 +59,10 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		
+		final Typeface faceR = mModel.getmLatoR();
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
@@ -96,7 +96,19 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
 //		temp_label.setTypeface(faceR);
 //		temp_label.setText("º" + mTemperature.getSmallName());
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(20);
+				return v;
+			}
+			public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+				View v =super.getDropDownView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				return v;
+			}
+		};
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mModel.getDives().get(getArguments().getInt("index")).getTempSurfaceUnit() == null)
 		{
@@ -177,7 +189,6 @@ public class					EditSurfaceTempDialogFragment extends DialogFragment implements
 			}
 		});
 		
-        faceR = null;
 		return view;
 	}
 

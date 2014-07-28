@@ -25,13 +25,14 @@
         android:gravity="center"
         android:hint="@string/tripname_hint"
         android:inputType="text"
-        android:textSize="20sp" />
+        android:textSize="25sp" />
 
     <ListView
         android:id="@+id/hintsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:visibility="gone" 
+        android:paddingLeft="15dp">
     </ListView>
 
     <LinearLayout

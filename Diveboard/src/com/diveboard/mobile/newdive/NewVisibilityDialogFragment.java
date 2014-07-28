@@ -38,10 +38,11 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 	{
         void					onVisibilityEditComplete(DialogFragment dialog);
     }
-	
-	private Dive				mDive;
-	private ListView				mVisibility;
+	private DiveboardModel 					mModel;
+	private Dive							mDive;
+	private ListView						mVisibility;
 	private EditVisibilityDialogListener	mListener;
+	private int								mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -63,7 +64,8 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getmLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_visibility, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -80,7 +82,14 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 		list.add(getResources().getString(R.string.average_visibility));
 		list.add(getResources().getString(R.string.good_visibility));
 		list.add(getResources().getString(R.string.excellent_visibility));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(mTextSize);
+				return v;
+			}
+		};
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mVisibility.setAdapter(dataAdapter);
@@ -101,50 +110,6 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 				
 			}
 		});
-//		if (mDive.getVisibility() == null)
-//			mVisibility.setSelection(0);
-//		else if (mDive.getVisibility().compareTo("bad") == 0)
-//			mVisibility.setSelection(1);
-//		else if (mDive.getVisibility().compareTo("average") == 0)
-//			mVisibility.setSelection(2);
-//		else if (mDive.getVisibility().compareTo("good") == 0)
-//			mVisibility.setSelection(3);
-//		else if (mDive.getVisibility().compareTo("excellent") == 0)
-//			mVisibility.setSelection(4);
-//		
-//		Button cancel = (Button) view.findViewById(R.id.cancel);
-//		cancel.setTypeface(faceR);
-//		cancel.setText(getResources().getString(R.string.cancel));
-//		cancel.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				dismiss();
-//			}
-//		});
-//		
-//		Button save = (Button) view.findViewById(R.id.save);
-//		save.setTypeface(faceR);
-//		save.setText(getResources().getString(R.string.save));
-//		save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				if (mVisibility.getSelectedItemPosition() == 0)
-//					mDive.setVisibility(null);
-//				else
-//				{
-//					String[] visibility = ((String)mVisibility.getSelectedItem()).split(" ");
-//					mDive.setVisibility(visibility[0].toLowerCase());
-//				}
-//				mListener.onVisibilityEditComplete(NewVisibilityDialogFragment.this);
-//				dismiss();
-//			}
-//		});
-		
-        faceR = null;
 		return view;
 	}
 

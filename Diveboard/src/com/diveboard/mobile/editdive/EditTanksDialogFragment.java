@@ -136,7 +136,8 @@ public class					EditTanksDialogFragment extends DialogFragment
 				View v =super.getDropDownView(position, convertView, parent);
 				((TextView) v).setTypeface(mFaceR);
 				return v;
-			}};
+			}
+		};
 		if(tank.getMultitank() == 2){
 			cylinderAdapter.add("2");
 			cylinderAdapter.add("1");

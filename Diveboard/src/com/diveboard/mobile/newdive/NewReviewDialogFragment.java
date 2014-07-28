@@ -48,13 +48,14 @@ public class NewReviewDialogFragment extends DialogFragment implements
 	public interface EditReviewDialogListener {
 		void onReviewEditComplete(DialogFragment dialog);
 	}
-
+	
+	private DiveboardModel mModel;
 	private Dive mDive;
 	private ListView mReview;
 	private EditReviewDialogListener mListener;
 	private RatingBar overall, difficulty, fish, life, wreck;
-	private TextView hintOverall, hintDifficulty, hintFish, hintLife,
-			hintWreck;
+	private TextView hintOverall, hintDifficulty, hintFish, hintLife, hintWreck;
+	private int mTextSize = 14;
 
 	@Override
 	public void onAttach(Activity activity) {
@@ -72,11 +73,14 @@ public class NewReviewDialogFragment extends DialogFragment implements
 	}
 
 	@Override
-	public View onCreateView(LayoutInflater inflater, ViewGroup container,
-			Bundle savedInstanceState) {
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.dialog_edit_review, container);
+
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
+
+		Typeface faceR = mModel.getmLatoR();
+		Typeface faceB = mModel.getmLatoB();
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -90,11 +94,37 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		ImageView delete4 = (ImageView) view.findViewById(R.id.DeleteBigFish);
 		ImageView delete5 = (ImageView) view.findViewById(R.id.DeleteWreck);
 		
+		TextView overallTV = (TextView) view.findViewById(R.id.OverallTV);
+		TextView difficultyTV = (TextView) view.findViewById(R.id.difficultyTV);
+		TextView lifeTV = (TextView) view.findViewById(R.id.lifeTV);
+		TextView fishTV = (TextView) view.findViewById(R.id.fishTV);
+		TextView wreckTV = (TextView) view.findViewById(R.id.wreckTV);
+		overallTV.setTypeface(faceB);
+		overallTV.setTextSize(mTextSize);
+		difficultyTV.setTypeface(faceB);
+		difficultyTV.setTextSize(mTextSize);
+		lifeTV.setTypeface(faceB);
+		lifeTV.setTextSize(mTextSize);
+		fishTV.setTypeface(faceB);
+		fishTV.setTextSize(mTextSize);
+		wreckTV.setTypeface(faceB);
+		wreckTV.setTextSize(mTextSize);
+		
 		hintOverall = (TextView) view.findViewById(R.id.OverallHintTV);
 		hintDifficulty = (TextView) view.findViewById(R.id.DifficultyHintTV);
 		hintLife = (TextView) view.findViewById(R.id.LifeHintTV);
 		hintFish = (TextView) view.findViewById(R.id.FishHintTV);
 		hintWreck = (TextView) view.findViewById(R.id.wreck_hintTV);
+		hintOverall.setTypeface(faceR);
+		hintOverall.setTextSize(mTextSize);
+		hintDifficulty.setTypeface(faceR);
+		hintDifficulty.setTextSize(mTextSize);
+		hintLife.setTypeface(faceR);
+		hintLife.setTextSize(mTextSize);
+		hintFish.setTypeface(faceR);
+		hintFish.setTextSize(mTextSize);
+		hintWreck.setTypeface(faceR);
+		hintWreck.setTextSize(mTextSize);
 
 		delete1.setOnClickListener(deleteReview);
 		delete2.setOnClickListener(deleteReview);

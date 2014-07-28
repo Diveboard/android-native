@@ -23,7 +23,7 @@
         android:gravity="center"
         android:hint="@string/guidename_hint"
         android:inputType="text"
-        android:textSize="30sp" />
+        android:textSize="25sp" />
 
     <LinearLayout
         android:layout_width="match_parent"

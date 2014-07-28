@@ -3,13 +3,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/white"
-    android:orientation="vertical" >
+    android:orientation="vertical"
+    android:padding="15dp" >
 
     <TextView
         android:id="@+id/title"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
-        android:padding="15dp"
         android:textAllCaps="true"
         android:textColor="@color/dark_grey"
         android:textSize="30sp" />
@@ -32,7 +32,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="15dp" >
+        android:paddingTop="15dp" >
 
         <Button
             android:id="@+id/save"

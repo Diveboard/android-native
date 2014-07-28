@@ -28,11 +28,12 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
         void					onDiveTypeEditComplete(DialogFragment dialog);
     }
 	
-	private DiveboardModel		mModel;
-	private ListView				mDiveType;
-	private EditDiveTypeDialogListener	mListener;
-	private Typeface			mFaceR;
-	private List<String>		mList;
+	private DiveboardModel					mModel;
+	private ListView						mDiveType;
+	private EditDiveTypeDialogListener		mListener;
+	private Typeface						mFaceR;
+	private List<String>					mList;
+	private int								mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -54,10 +55,10 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		
 		View view = inflater.inflate(R.layout.dialog_edit_divetype, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		
+		mFaceR = mModel.getmLatoR();
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
@@ -85,7 +86,8 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 				    public View getView(int position, View convertView, ViewGroup parent)
 					{
 				        TextView textView = (TextView) super.getView(position, convertView, parent);
-						
+						textView.setTypeface(mModel.getmLatoR());
+						textView.setTextSize(mTextSize);
 				        textView.setTextColor(getResources().getColor(R.color.dark_grey));
 				        return textView;
 				    }

@@ -34,11 +34,12 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
         void					onBottomTempEditComplete(DialogFragment dialog);
     }
 	
-	private Dive				mDive;
-	private EditText			mBottomTemp;
+	private Dive							mDive;
+	private EditText						mBottomTemp;
 	private EditBottomTempDialogListener	mListener;
-	private Double				mTemperature;
-	private Spinner				temp_label;
+	private Double							mTemperature;
+	private Spinner							temp_label;
+	private DiveboardModel					mModel;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -60,7 +61,8 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getmLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -170,8 +172,6 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 				dismiss();
 			}
 		});
-		
-        faceR = null;
 		return view;
 	}
 

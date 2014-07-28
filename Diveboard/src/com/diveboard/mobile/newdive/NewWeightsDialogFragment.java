@@ -33,11 +33,11 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 	{
         void					onWeightsEditComplete(DialogFragment dialog);
     }
-	
-	private Dive				mDive;
-	private EditText			mWeights;
-	private EditWeightsDialogListener	mListener;
-	private Spinner				weights_label;
+	private DiveboardModel					mModel;
+	private Dive							mDive;
+	private EditText						mWeights;
+	private EditWeightsDialogListener		mListener;
+	private Spinner							weights_label;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -59,7 +59,8 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getmLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_weights, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -94,7 +95,19 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 //			weights_label.setText(temp_weight.getSmallName());
 //		}
 		weights_label = (Spinner) view.findViewById(R.id.weights_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(20);
+				return v;
+			}
+			public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+				View v =super.getDropDownView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				return v;
+			}
+		};
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mDive.getWeightsUnit() == null)
 		{
@@ -162,8 +175,6 @@ public class					NewWeightsDialogFragment extends DialogFragment implements OnEd
 				dismiss();
 			}
 		});
-		
-        faceR = null;
 		return view;
 	}
 

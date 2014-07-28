@@ -38,10 +38,11 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 	{
         void					onCurrentEditComplete(DialogFragment dialog);
     }
-	
-	private Dive				mDive;
-	private ListView				mCurrent;
+	private DiveboardModel				mModel;
+	private Dive						mDive;
+	private ListView					mCurrent;
 	private EditCurrentDialogListener	mListener;
+	private int							mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -63,7 +64,8 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getmLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_current, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -81,7 +83,14 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 		list.add(getResources().getString(R.string.medium_current));
 		list.add(getResources().getString(R.string.strong_current));
 		list.add(getResources().getString(R.string.extreme_current));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(mTextSize);
+				return v;
+			}
+		};
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mCurrent.setAdapter(dataAdapter);
@@ -102,61 +111,6 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 				
 			}
 		});
-//		if (mDive.getCurrent() == null)
-//			mCurrent.setSelection(0);
-//		else if (mDive.getCurrent().compareTo("none") == 0)
-//			mCurrent.setSelection(1);
-//		else if (mDive.getCurrent().compareTo("light") == 0)
-//			mCurrent.setSelection(2);
-//		else if (mDive.getCurrent().compareTo("medium") == 0)
-//			mCurrent.setSelection(3);
-//		else if (mDive.getCurrent().compareTo("strong") == 0)
-//			mCurrent.setSelection(4);
-//		else if (mDive.getCurrent().compareTo("extreme") == 0)
-//			mCurrent.setSelection(5);
-//		
-//		if (mCurrent.getSelectedItemPosition() == 0)
-//			mDive.setCurrent(null);
-//		else
-//		{
-//			String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
-//			mDive.setCurrent(current[0].toLowerCase());
-//		}
-//		mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
-//		dismiss();
-//		Button cancel = (Button) view.findViewById(R.id.cancel);
-//		cancel.setTypeface(faceR);
-//		cancel.setText(getResources().getString(R.string.cancel));
-//		cancel.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				dismiss();
-//			}
-//		});
-//		
-//		Button save = (Button) view.findViewById(R.id.save);
-//		save.setTypeface(faceR);
-//		save.setText(getResources().getString(R.string.save));
-//		save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				if (mCurrent.getSelectedItemPosition() == 0)
-//					mDive.setCurrent(null);
-//				else
-//				{
-//					String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
-//					mDive.setCurrent(current[0].toLowerCase());
-//				}
-//				mListener.onCurrentEditComplete(NewCurrentDialogFragment.this);
-//				dismiss();
-//			}
-//		});
-		
-        faceR = null;
 		return view;
 	}
 

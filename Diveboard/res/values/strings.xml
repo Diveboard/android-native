@@ -112,6 +112,11 @@
     <string name="research_type">Research</string>
     <string name="admin_category">Admin</string>
     <string name="sudo_hint">User Id</string>
+    <string name="review_overall">Overall: </string>
+    <string name="review_difficulty">Dive difficulty: </string>
+    <string name="review_life">Marine life: </string>
+    <string name="review_fish">Big fish: </string>
+    <string name="review_wreck">Wreck sighted: </string>
     <string name="hint_poor">Poor</string>
     <string name="hint_terrible">Terrible</string>
     <string name="hint_average">Average</string>
