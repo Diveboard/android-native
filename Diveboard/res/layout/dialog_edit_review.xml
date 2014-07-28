@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/white" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,24 +13,21 @@
             android:id="@+id/title"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_title_background"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
+            android:paddingTop="15dp"
+            android:paddingLeft="15dp"
+            android:textAllCaps="true"
             android:textColor="@color/dark_grey"
             android:textSize="30sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_body_background"
             android:gravity="center"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFDADBDC" >
+                android:layout_height="wrap_content" >
 
                 <LinearLayout
                     android:id="@+id/layout_overall"
@@ -49,8 +47,7 @@
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
                             android:gravity="center"
-                            android:orientation="vertical"
-                            android:paddingTop="5dp" >
+                            android:orientation="vertical" >
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
@@ -115,8 +112,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -187,8 +183,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent" >
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -229,7 +224,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -259,8 +253,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -302,7 +295,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -332,8 +324,7 @@
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
@@ -377,7 +368,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -399,26 +389,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/cancel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_secondary_button_selector"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="15dp"
-                    android:textColor="@color/white" />
+                android:orientation="horizontal"
+                android:padding="15dp" >
 
                 <Button
                     android:id="@+id/save"
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_secondary_button_selector"
-                    android:textColor="@color/white" />
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/primary_button_selector"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/secondary_button_selector"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
