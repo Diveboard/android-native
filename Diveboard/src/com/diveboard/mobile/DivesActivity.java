@@ -126,10 +126,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	// To know if DivesActivity is running or not
 	static boolean 							active = false;
 	
-	//controls to update navigation drawer
-	private ListView 						mDrawerList;
-	private String[] 						mLinksTitles;
-	
 	@Override
 	protected void onResume()
 	{
@@ -247,21 +243,15 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	{
 		mTaskFragment = null;
 		showProgress(false);
-
+		final Typeface test = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+        
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			mDrawerList = (ListView) findViewById(R.id.menu_links);
-			if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
-				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
-				mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
-				System.out.println("User ALREADY rated app");
-			}
-			else {
-				mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
-				mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mLinksTitles));
-				System.out.println("User has NOT rated APP");				
-
+			if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
+			{
+				mLinksTitles.add(getString(R.string.menu_links_has_not_rated2));
+				((ArrayAdapter<String>)mDrawerList.getAdapter()).notifyDataSetChanged();
 			}
 			System.out.println("Launching AppRater");
 
