@@ -21,7 +21,7 @@ import android.widget.TextView;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.ExitDialog;
+import com.diveboard.util.ExitDialog;
 import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
