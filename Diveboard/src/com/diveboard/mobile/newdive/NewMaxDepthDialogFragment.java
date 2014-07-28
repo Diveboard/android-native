@@ -6,6 +6,7 @@ import com.diveboard.model.Distance;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
+import com.diveboard.util.EditDialog;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -58,8 +59,10 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		EditDialog editDialog = new EditDialog(getActivity());
+		editDialog.setTitle(getString(R.string.edit_max_depth_title));
+
+		final Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_max_depth, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -82,7 +85,19 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		mMaxDepth.setOnEditorActionListener(this);
 		
 		max_depth_label = (Spinner) view.findViewById(R.id.max_depth_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(20);
+				return v;
+			}
+			public View getDropDownView(int position,  View convertView,  ViewGroup parent) {
+				View v =super.getDropDownView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				return v;
+			}
+		};
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (Units.getDistanceUnit() == Units.Distance.KM)
 		{
@@ -133,7 +148,6 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 			}
 		});
 		
-        faceR = null;
 		return view;
 	}
 

@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
+import android.widget.EditText;
 import android.widget.ListView;
 
 import com.diveboard.mobile.ApplicationController;
@@ -17,18 +18,20 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
+import com.diveboard.util.EditDialog;
 
 public class					TabEditDetailsFragment extends Fragment
 {
 	private ListView			optionList;
 	private int					mIndex;
 	private DiveboardModel		mModel;
+	ApplicationController 		AC;
 	
 	@Override
 	public void onResume()
 	{
 		super.onResume();
-		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+		AC = (ApplicationController)getActivity().getApplicationContext();
 		AC.handleLowMemory();
 	}
 	
@@ -36,7 +39,7 @@ public class					TabEditDetailsFragment extends Fragment
     public void onCreate(Bundle savedInstanceState)
     {
 		super.onCreate(savedInstanceState);
-		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
+		AC = (ApplicationController)getActivity().getApplicationContext();
 		if (AC.handleLowMemory() == true)
 			return ;
 		mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
@@ -86,6 +89,7 @@ public class					TabEditDetailsFragment extends Fragment
     	args.putInt("index", mIndex);
     	dialog.setArguments(args);
     	dialog.show(getActivity().getSupportFragmentManager(), "EditMaxDepthDialogFragment");
+    
     }
     
     private void				_editDuration()

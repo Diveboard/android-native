@@ -46,6 +46,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
@@ -97,6 +98,11 @@ public class					DiveboardModel
 	public static boolean 		_searchtimedout = false;
 	private TokenExpireListener	mTokenExpireListener = null;
 	private boolean 			_force_refresh = false;
+	//Application fonts
+	private Typeface 			_latoR = null;
+	private Typeface 			_latoB = null;
+	private Typeface 			_quickR = null;
+	private Typeface 			_quickB = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -108,6 +114,10 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token, this);
+		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
+		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
+		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
+		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -118,6 +128,10 @@ public class					DiveboardModel
 	{
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
+		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
+		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
+		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -2121,5 +2135,21 @@ public class					DiveboardModel
 			return Long.valueOf(tmp);
 		}
 		return null;
+	}
+	
+	public Typeface getmLatoR() {
+		return _latoR;
+	}
+
+	public Typeface getmLatoB() {
+		return _latoB;
+	}
+
+	public Typeface getmQuickR() {
+		return _quickR;
+	}
+
+	public Typeface getmQuickB() {
+		return _quickB;
 	}
 }

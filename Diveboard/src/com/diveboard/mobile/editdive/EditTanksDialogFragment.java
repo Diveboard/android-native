@@ -115,7 +115,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 		cylinder.setOrientation(LinearLayout.HORIZONTAL);
 		cylinder.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
 		
-		TextView cylinder_title = new TextView(getActivity().getApplicationContext());
+		TextView cylinder_title = new TextView(getActivity().getApplicationContext());	
 		cylinder_title.setTypeface(mFaceR);
 		cylinder_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		cylinder_title.setTextSize(mTextSize);
