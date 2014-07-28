@@ -250,7 +250,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
 			{
-				mLinksTitles.add(getString(R.string.menu_links_has_not_rated2));
+				mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
 				((ArrayAdapter<String>)mDrawerList.getAdapter()).notifyDataSetChanged();
 			}
 			System.out.println("Launching AppRater");
