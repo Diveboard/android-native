@@ -1,37 +1,30 @@
 package com.diveboard.mobile;
 
-import java.net.Inet4Address;
-
-import android.app.Activity;
-import android.app.Dialog;
+import java.util.ArrayList;
+import java.util.Arrays;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.provider.CalendarContract.Instances;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.LinearLayout.LayoutParams;
 import android.widget.ListView;
 import android.widget.TextView;
-import com.uservoice.uservoicesdk.Config;
-import com.uservoice.uservoicesdk.UserVoice;
 
-import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.ExitDialog;
 import com.facebook.Session;
+import com.uservoice.uservoicesdk.Config;
+import com.uservoice.uservoicesdk.UserVoice;
 
 public class NavDrawer extends FragmentActivity {
 	
@@ -40,9 +33,9 @@ public class NavDrawer extends FragmentActivity {
 	
 	//controls for navigation drawer
 	private DrawerLayout 					mDrawerLayout;
-	private ListView 						mDrawerList;
+	protected ListView 						mDrawerList;
 	private LinearLayout 					mDrawerContainer;
-	private String[] 						mLinksTitles;
+	protected ArrayList<String> 						mLinksTitles;
 	
 
 	protected void onCreate(Bundle savedInstanceState, int resLayoutID) {
@@ -50,29 +43,27 @@ public class NavDrawer extends FragmentActivity {
 	    setContentView(resLayoutID);
 		AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
+		mLinksTitles = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.menu_links_has_rated)));
 		//Setting up controls for the navigation drawer 
-        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
-			mLinksTitles = getResources().getStringArray(R.array.menu_links_has_rated);
-        }
-        else
-        	mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
+//        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
+//			
+//        }
+//        else
+//        	mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
         mDrawerList = (ListView) findViewById(R.id.menu_links);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        
+        final Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
         	@Override
         	public View getView(int position, View convertView, ViewGroup parent) {
         		// TODO Auto-generated method stub
-        		
-        		Typeface mFaceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-        		View v = super.getView(position, null, null);
-				((TextView) v).setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf"));
-				
+        		View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
 				return v;
         		
         	}

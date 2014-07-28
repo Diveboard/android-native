@@ -160,17 +160,7 @@
     <string name="rate_refuse">Nope</string>
     <string name="rate_accept">Sure!</string>
 
-    <string-array name="menu_links_has_not_rated">
-        <item>Logbook</item>
-        <item>Refresh</item>
-        <item>See Wallet</item>
-        <item>Closest Shop</item>
-        <item>New Dive</item>
-        <item>Settings</item>
-        <item>Report a bug</item>
-        <item>Logout</item>
-        <item>Rate App</item>
-    </string-array>
+    <string name="menu_links_has_not_rated">Rate App</string>
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>
         <item>Refresh</item>
