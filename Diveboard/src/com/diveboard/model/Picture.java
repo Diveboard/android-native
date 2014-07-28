@@ -152,6 +152,23 @@ public class					Picture
 		return bitmap;
 	}
 	
+	public synchronized void				checkPicture(final Context context, Size size) throws IOException
+	{
+		if (UserPreference.getPictureQuality().equals("m_qual"))
+			size = Size.MEDIUM;
+		else
+			size = Size.LARGE;
+		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (!_checkCachePicture(context, size) || (_uniqId != null && networkInfo != null && networkInfo.isConnected()))
+		{
+			if (!loadPicture(context, size))
+				return;
+			_savePicture(context, size);
+		}
+		return;
+	}
+	
 	
 	/*Stores the picture in the local cache and updates the list of saved pictures */
 	public Bitmap							storePicture(final Context context) throws IOException{
@@ -300,6 +317,50 @@ public class					Picture
 			_bitmap = BitmapFactory.decodeStream(inputStream);
 			if (_bitmap == null)
 				return false;
+			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Private Method _checkCachePicture
+	 * Load picture from cache, returns false if picture not found
+	 * Argument :	pictureName : name of the picture to retrieve
+	 */
+	private synchronized boolean			_checkCachePicture(final Context context, final Size size) throws FileNotFoundException
+	{
+		String[] picture_name;
+		
+		switch (size)
+		{
+			case LARGE:
+				picture_name = _urlLarge.split("/");
+				break ;
+			case MEDIUM:
+				picture_name = _urlMedium.split("/");
+				break ;
+			case SMALL:
+				picture_name = _urlSmall.split("/");
+				break ;
+			case THUMB:
+				picture_name = _urlThumbnail.split("/");
+				break ;
+			default:
+				picture_name = _urlDefault.split("/");
+				break ;
+		}
+		
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
+		if (file.exists())
+		{
+//			FileInputStream inputStream = context.openFileInput(file.getName());
+//			_bitmap = BitmapFactory.decodeStream(inputStream);
+//			if (_bitmap == null)
+//				return false;
 			return true;
 		}
 		return false;
