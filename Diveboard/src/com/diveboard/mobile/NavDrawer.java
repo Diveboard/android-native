@@ -45,7 +45,7 @@ public class NavDrawer extends FragmentActivity {
 		AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
 		mLinksTitles = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.menu_links_has_rated)));
-		if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
+		if((AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp()))
 			mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
 		//Setting up controls for the navigation drawer 
 //        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
