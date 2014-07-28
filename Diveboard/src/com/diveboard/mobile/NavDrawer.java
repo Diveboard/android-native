@@ -30,7 +30,7 @@ import com.diveboard.mobile.WalletActivity.SaveChangesDialog;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.ExitDialog;
+import com.diveboard.util.ExitDialog;
 import com.facebook.Session;
 
 public class NavDrawer extends FragmentActivity {
