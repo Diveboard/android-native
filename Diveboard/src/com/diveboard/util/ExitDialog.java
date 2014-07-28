@@ -85,7 +85,6 @@ public class ExitDialog extends Dialog implements android.view.View.OnClickListe
 		
 		Typeface quickR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
-//		Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 		TextView title = (TextView) findViewById(R.id.title);
 		TextView exitTV = (TextView) findViewById(R.id.exitTV);
 		Button cancel = (Button) findViewById(R.id.cancel);
