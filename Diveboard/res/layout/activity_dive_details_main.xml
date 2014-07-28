@@ -556,6 +556,7 @@
             android:background="@color/white" >
 
             <LinearLayout
+                android:paddingBottom="10dp"
                 android:id="@+id/tank_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -578,6 +579,7 @@
             android:padding="10dp" >
 
             <LinearLayout
+                android:paddingBottom="10dp"
                 android:id="@+id/buddy_list_pictures"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
