@@ -84,30 +84,30 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 	// Number of pages in Dives
 	private int 							mNbPages = 1;
-	
+
 	// All you need to make the carousel
 	private ScreenSetup 					mScreenSetup;
 	private ViewPager 						mPager;
 	private PagerAdapter 					mPagerAdapter;
 	private ViewGroup 						mLayout;
 	private SeekBar 						mSeekBar;
-	
+
 	private RelativeLayout 					mScreen;
 	private ImageView 						mBackground1;
 	private ImageView 						mBackground2;
 	private	int 							mBackground = 1;
 	private TokenExpireListener 			mTokenExpireListener;
-	
+
 	private Integer 						max_strokes_possible;
 	private Double 							nb_dives_per_stroke;
 	private Integer 						nb_strokes = 0;
 	private Integer 						position_stroke;
 	private static final String 			DEBUG_TAG = "Gestures";
-    private GestureDetectorCompat			mDetector;
-    private OnTouchListener 				mGestureListener;
-    private boolean 						mIsScrolling = false;
-    private ArrayList<TrackingBarPosition> 	mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
-	
+	private GestureDetectorCompat			mDetector;
+	private OnTouchListener 				mGestureListener;
+	private boolean 						mIsScrolling = false;
+	private ArrayList<TrackingBarPosition> 	mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
+
 	// Thread for the data loading & the views associated
 	private TaskFragment 					mTaskFragment;
 	private View 							mLoadDataFormView;
@@ -115,17 +115,17 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	private TextView 						mLoadDataStatusMessageView;
 	private boolean							mDataLoaded = false;
 	private PopupMenu 						popup;
-	
+
 	// Model to display
 	private Bitmap 							strokeThumbnail = null;
 	private DiveboardModel 					mModel;
 	private DownloadImageTask 				mBackgroundImageTask = null;
 	static ArrayList<Picture> 				mWalletPictures = null;
 	private Context 						mContext;
-	
+
 	// To know if DivesActivity is running or not
 	static boolean 							active = false;
-	
+
 	@Override
 	protected void onResume()
 	{
@@ -152,15 +152,15 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			finish();
 			return ;
 		}
-		
+
 	}
-	
+
 	@Override
 	public void onStart() {
 		super.onStart();
 		active = true;
 		EasyTracker.getInstance(this).activityStart(this);
-		
+
 	}
 
 	@Override
@@ -169,7 +169,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		active = false;
 		EasyTracker.getInstance(this).activityStop(this);
 	} 
-	
+
 	@Override
 	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
@@ -178,51 +178,51 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (AC.getModel() == null)
 			System.out.println("model null");
-		
-//		setContentView(R.layout.activity_dives);
+
+		//		setContentView(R.layout.activity_dives);
 		mLoadDataFormView = findViewById(R.id.load_data_form);
 		mLoadDataStatusView = findViewById(R.id.load_data_status);
 		mLoadDataStatusMessageView = (TextView) findViewById(R.id.load_data_status_message);
 		// Initialize data
 		mModel = AC.getModel();
 		// Instantiate the gesture detector with the
-        // application context and an implementation of
-        // GestureDetector.OnGestureListener
-        mDetector = new GestureDetectorCompat(this,new MyGestureListener());
-        mDataLoaded = false;
-        
-        //Instantiate the current context so that we dont have to access everytime is needed
-        mContext = getApplicationContext();
-        
+		// application context and an implementation of
+		// GestureDetector.OnGestureListener
+		mDetector = new GestureDetectorCompat(this,new MyGestureListener());
+		mDataLoaded = false;
+
+		//Instantiate the current context so that we dont have to access everytime is needed
+		mContext = getApplicationContext();
+
 		if (AC.isDataReady() == false){
 			System.out.println("Data is not ready, loading data");
 			loadData();
-			
+
 		}
 		else{
 			System.out.println("Data is ready, creating pages");
 			createPages();
 		}
-					
+
 	}
-	
+
 	public void logout()
 	{
 		if (Session.getActiveSession() != null)
 			Session.getActiveSession().closeAndClearTokenInformation();
 		Session.setActiveSession(null);
 		ApplicationController AC = (ApplicationController)getApplicationContext();
-    	AC.setDataReady(false);
-    	AC.setPageIndex(0);
-    	AC.getModel().doLogout();
-    	finish();
+		AC.setDataReady(false);
+		AC.setPageIndex(0);
+		AC.getModel().doLogout();
+		finish();
 	}
-	
+
 	@Override
 	public void onBackPressed()
 	{		
 	};
-	
+
 	// The three methods below are called by the TaskFragment when new
 	// progress updates or results are available. The MainActivity 
 	// should respond by updating its UI to indicate the change.
@@ -230,28 +230,31 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	public void onPreExecute()
 	{
 	}
-	
+
 	@Override
 	public void onCancelled()
 	{
 		mTaskFragment = null;
 		showProgress(false);
 	}
-	
+
 	@Override
 	public void onPostExecute(final Boolean success)
 	{
 		mTaskFragment = null;
 		showProgress(false);
 		final Typeface test = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-        
+
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
 			if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
 			{
-				mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
-				((ArrayAdapter<String>)mDrawerList.getAdapter()).notifyDataSetChanged();
+				if (!mLinksTitles.contains(getString(R.string.menu_links_has_not_rated)))
+				{
+					mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
+					((ArrayAdapter<String>)mDrawerList.getAdapter()).notifyDataSetChanged();
+				}
 			}
 			System.out.println("Launching AppRater");
 
@@ -262,25 +265,25 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			createPages();
 		}
 	}
-	
 
-	
+
+
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {    
 
 	}
-	
+
 	public void goToMenuV3(View view)
 	{
 		popup = new PopupMenu(this, view);
-	    MenuInflater inflater = popup.getMenuInflater();
-	    inflater.inflate(R.menu.settings, popup.getMenu());
-	    if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
+		MenuInflater inflater = popup.getMenuInflater();
+		inflater.inflate(R.menu.settings, popup.getMenu());
+		if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
 			popup.getMenu().findItem(R.id.rate_app).setVisible(true);
 		}
-	    popup.show();
-	    popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-	    {
+		popup.show();
+		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+		{
 
 			@Override
 			public boolean onMenuItemClick(MenuItem item) {
@@ -296,9 +299,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 				case R.id.rate_app:
 					mModel.setHasRatedApp(true);
 					try {
-					    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
 					} catch (android.content.ActivityNotFoundException anfe) {
-					    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
 					}
 					return true;
 				case R.id.see_wallet:
@@ -311,77 +314,77 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					return true;
 				case R.id.add_dive:
 					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-		    	    startActivity(newDiveActivity);
-		    	    return true;
+					startActivity(newDiveActivity);
+					return true;
 				case R.id.menu_settings:
 					mModel.getDataManager().getMemoryUsed();
-		    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-		    	    startActivity(settingsActivity);
-		    	    return true;
-		        case R.id.report_bug:
-		        	if (true)
-		        	{
-		        		//Use of UserVoice report bug system
-	        			WaitDialogFragment dialog = new WaitDialogFragment();
-	        			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+					Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+					startActivity(settingsActivity);
+					return true;
+				case R.id.report_bug:
+					if (true)
+					{
+						//Use of UserVoice report bug system
+						WaitDialogFragment dialog = new WaitDialogFragment();
+						dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 						Config config = new Config("diveboard.uservoice.com");
 						if(mModel.getSessionEmail() != null)
 							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
 						UserVoice.init(config, DivesActivity.this);
 						config.setShowForum(false);
-					    config.setShowContactUs(true);
-					    config.setShowPostIdea(false);
-					    config.setShowKnowledgeBase(false);
+						config.setShowContactUs(true);
+						config.setShowPostIdea(false);
+						config.setShowKnowledgeBase(false);
 						ApplicationController.UserVoiceReady = true;
-		        		UserVoice.launchContactUs(DivesActivity.this);
-		        		dialog.dismiss();
-		        	}
-		            return true;
-		        case R.id.menu_logout:
-		        	final Dialog dialog = new Dialog(DivesActivity.this);
-		        	dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-		    		dialog.setContentView(R.layout.dialog_edit_confirm);
-		    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-		    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-		    		TextView title = (TextView) dialog.findViewById(R.id.title);
-		    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-		    		title.setTypeface(faceB);
-		    		title.setText(getResources().getString(R.string.exit_title));
-		    		exitTV.setTypeface(faceR);
-		    		exitTV.setText(getResources().getString(R.string.confirm_logout));
-		    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
-		    		cancel.setTypeface(faceR);
-		    		cancel.setText(getResources().getString(R.string.cancel));
-		    		cancel.setOnClickListener(new View.OnClickListener() {
-		    			
-		    			@Override
-		    			public void onClick(View v) {
-		    				// TODO Auto-generated method stub
-		    				dialog.dismiss();
-		    			}
-		    		});
-		    		Button save = (Button) dialog.findViewById(R.id.save);
-		    		save.setTypeface(faceR);
-		    		save.setText(getResources().getString(R.string.menu_logout));
-		    		save.setOnClickListener(new View.OnClickListener() {
-		    			
-		    			@Override
-		    			public void onClick(View v) {
-		    				// TODO Auto-generated method stub
-		    				logout();
-		    			}
-		    		});
-		    		dialog.show();
-		            return true;
-		        default:
-		            return false;
+						UserVoice.launchContactUs(DivesActivity.this);
+						dialog.dismiss();
+					}
+					return true;
+				case R.id.menu_logout:
+					final Dialog dialog = new Dialog(DivesActivity.this);
+					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+					dialog.setContentView(R.layout.dialog_edit_confirm);
+					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+					Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+					TextView title = (TextView) dialog.findViewById(R.id.title);
+					TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
+					title.setTypeface(faceB);
+					title.setText(getResources().getString(R.string.exit_title));
+					exitTV.setTypeface(faceR);
+					exitTV.setText(getResources().getString(R.string.confirm_logout));
+					Button cancel = (Button) dialog.findViewById(R.id.cancel);
+					cancel.setTypeface(faceR);
+					cancel.setText(getResources().getString(R.string.cancel));
+					cancel.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							dialog.dismiss();
+						}
+					});
+					Button save = (Button) dialog.findViewById(R.id.save);
+					save.setTypeface(faceR);
+					save.setText(getResources().getString(R.string.menu_logout));
+					save.setOnClickListener(new View.OnClickListener() {
+
+						@Override
+						public void onClick(View v) {
+							// TODO Auto-generated method stub
+							logout();
+						}
+					});
+					dialog.show();
+					return true;
+				default:
+					return false;
 				}
 			}
-	    	
-	    });
+
+		});
 
 	}
-	
+
 	public void goToMenuV2(View view)
 	{
 		// Settings floating menu
@@ -389,8 +392,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		openContextMenu(view);
 		unregisterForContextMenu(view);
 	}
-	
-//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+
+	//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	public void openMenu(View view)
 	{
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
@@ -400,53 +403,53 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		else
 			goToMenuV2(view);
 	}
-	
+
 	@Override
 	public boolean onContextItemSelected(MenuItem item) {
-	    AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-	    switch (item.getItemId()) {
-		    case R.id.refresh:
-		    	ApplicationController AC = (ApplicationController)getApplicationContext();
-		    	AC.setDataReady(false);
-		    	AC.getModel().stopPreloadPictures();
-				AC.setModel(null);
-				finish();
-				return true;
-	    	case R.id.add_dive:
-	    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-	    	    startActivity(newDiveActivity);
-	    	    return true;
-	    	case R.id.menu_settings:
-	    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	    	    startActivity(settingsActivity);
-	            return true;
-	    	case R.id.report_bug:
-	    		if (true)
-	        	{
-    				WaitDialogFragment dialog = new WaitDialogFragment();
-    				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-					Config config = new Config("diveboard.uservoice.com");
-					if(mModel.getSessionEmail() != null)
-						config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-					UserVoice.init(config, DivesActivity.this);
-					config.setShowForum(false);
-				    config.setShowContactUs(true);
-				    config.setShowPostIdea(false);
-				    config.setShowKnowledgeBase(false);
-					ApplicationController.UserVoiceReady = true;
-	        		UserVoice.launchContactUs(DivesActivity.this);
-	        		dialog.dismiss();
-	        	}
-	            return true;
-	    	case R.id.menu_logout:
-	        	logout();
-	            return true;
-	    	
-	        default:
-	            return super.onContextItemSelected(item);
-	    }
+		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+		switch (item.getItemId()) {
+		case R.id.refresh:
+			ApplicationController AC = (ApplicationController)getApplicationContext();
+			AC.setDataReady(false);
+			AC.getModel().stopPreloadPictures();
+			AC.setModel(null);
+			finish();
+			return true;
+		case R.id.add_dive:
+			Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+			startActivity(newDiveActivity);
+			return true;
+		case R.id.menu_settings:
+			Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+			startActivity(settingsActivity);
+			return true;
+		case R.id.report_bug:
+			if (true)
+			{
+				WaitDialogFragment dialog = new WaitDialogFragment();
+				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+				Config config = new Config("diveboard.uservoice.com");
+				if(mModel.getSessionEmail() != null)
+					config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+				UserVoice.init(config, DivesActivity.this);
+				config.setShowForum(false);
+				config.setShowContactUs(true);
+				config.setShowPostIdea(false);
+				config.setShowKnowledgeBase(false);
+				ApplicationController.UserVoiceReady = true;
+				UserVoice.launchContactUs(DivesActivity.this);
+				dialog.dismiss();
+			}
+			return true;
+		case R.id.menu_logout:
+			logout();
+			return true;
+
+		default:
+			return super.onContextItemSelected(item);
+		}
 	}
-	
+
 	public void goToDiveDetails(View view)
 	{
 		ApplicationController AC = (ApplicationController)getApplicationContext();
@@ -455,7 +458,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 		startActivity(diveDetailsActivity);
 	}
-	
+
 	public void goToGalleryCarousel(View view)
 	{
 		ApplicationController AC = (ApplicationController)getApplicationContext();
@@ -477,7 +480,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			e.printStackTrace();
 		}
 	}
-	
+
 	public void loadData()
 	{
 		if (mTaskFragment != null)
@@ -491,7 +494,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		showProgress(true);
 		FragmentManager fm = getSupportFragmentManager();
 		// If the Fragment is non-null, then it is currently being
-	    // retained across a configuration change.
+		// retained across a configuration change.
 		mTaskFragment = (TaskFragment) fm.findFragmentByTag("task");
 		if (mTaskFragment == null)
 		{
@@ -499,7 +502,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			fm.beginTransaction().add(mTaskFragment, "task").commit();
 		}
 	}
-	
+
 	/**
 	 * Shows the progress UI and hides the login form.
 	 */
@@ -514,25 +517,25 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 			mLoadDataStatusView.setVisibility(View.VISIBLE);
 			mLoadDataStatusView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 1 : 0)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoadDataStatusView.setVisibility(show ? View.VISIBLE
-									: View.GONE);
-						}
-					});
+			.alpha(show ? 1 : 0)
+			.setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					mLoadDataStatusView.setVisibility(show ? View.VISIBLE
+							: View.GONE);
+				}
+			});
 
 			mLoadDataFormView.setVisibility(View.VISIBLE);
 			mLoadDataFormView.animate().setDuration(shortAnimTime)
-					.alpha(show ? 0 : 1)
-					.setListener(new AnimatorListenerAdapter() {
-						@Override
-						public void onAnimationEnd(Animator animation) {
-							mLoadDataFormView.setVisibility(show ? View.GONE
-									: View.VISIBLE);
-						}
-					});
+			.alpha(show ? 0 : 1)
+			.setListener(new AnimatorListenerAdapter() {
+				@Override
+				public void onAnimationEnd(Animator animation) {
+					mLoadDataFormView.setVisibility(show ? View.GONE
+							: View.VISIBLE);
+				}
+			});
 		} else {
 			// The ViewPropertyAnimator APIs are not available, so simply show
 			// and hide the relevant UI components.
@@ -549,13 +552,13 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		else
 			AC.setPageIndex(0);
 	}
-	
+
 	@Override
 	protected void onActivityResult(int arg0, int arg1, Intent arg2) {
 		// TODO Auto-generated method stub
 		super.onActivityResult(arg0, arg1, arg2);
 	}
-	
+
 	@Override
 	public void onCreateContextMenu(ContextMenu menu, View v, ContextMenuInfo menuInfo)
 	{
@@ -605,15 +608,15 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 				(model.getDives().get(i).getLng() == null || model.getDives().get(i).getLng() == 0))
 			pos = "No spot assigned";
 		return (pos);
-		
+
 	}
-	
+
 	public static double roundToN(double number, int n){
-		
+
 		//Round number to n decimals
 		double mRounded;
 		int grade = 1;
-		
+
 		if(n < 1){
 			System.err.println("Number could not be rounded properly, provide a different number of decimals");
 			return 0.0;
@@ -621,10 +624,10 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		grade = (int) Math.pow(10.0, n);
 		mRounded = Math.round(number * grade);
 		mRounded = mRounded / grade;
-		
+
 		return mRounded;
 	}
-	
+
 	/**
 	 * ViewPager creation with all the fragments associated, resized according the screen size
 	 */
@@ -638,15 +641,15 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		mLayout = (ViewGroup)findViewById(R.id.pager);
 		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-		    @Override 
-		    public void onGlobalLayout() { 
-		    	
-		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
-		    	AC.setPageIndex(mModel.getDives().size() - 1);
-		        mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
-		        
-		        //We do all calculation of the dimension of the elements of the page according to the UI mobile guide
-		        mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
+			@Override 
+			public void onGlobalLayout() { 
+
+				ApplicationController AC = ((ApplicationController)getApplicationContext());
+				AC.setPageIndex(mModel.getDives().size() - 1);
+				mLayout.getViewTreeObserver().removeGlobalOnLayoutListener(this);
+
+				//We do all calculation of the dimension of the elements of the page according to the UI mobile guide
+				mScreenSetup = new ScreenSetup(mLayout.getMeasuredWidth(), mLayout.getMeasuredHeight());
 				int margin = (mScreenSetup.getScreenWidth() - mScreenSetup.getDiveListFragmentWidth()) * (-1);
 				int offset = 0;
 				if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT)
@@ -681,10 +684,10 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(
 							android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
 							mScreenSetup.getScreenHeight()
-									- mScreenSetup.getDiveListFooterHeight()
-									- mScreenSetup.getDiveListSeekBarHeight()
-									- mScreenSetup.getDiveListWhiteSpace4()
-									- -mScreenSetup.getDiveListWhiteSpace3());
+							- mScreenSetup.getDiveListFooterHeight()
+							- mScreenSetup.getDiveListSeekBarHeight()
+							- mScreenSetup.getDiveListWhiteSpace4()
+							- -mScreenSetup.getDiveListWhiteSpace3());
 					mPager.setLayoutParams(params);
 					//Returns the bitmap of each fragment (page) corresponding to the circle layout of the main picture of a page
 					//Each circle must be white with a transparent circle in the center
@@ -697,28 +700,28 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					mBackgroundImageTask = new DownloadImageTask();
 					mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
 					//Pager setting
-					
-			        mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
-			        if (mPagerAdapter == null)
-			        	System.out.println("mPagerAdapter == null");
-			        else if (mPager == null)
-			        	System.out.println("mPager == null");
-			        else
-			        	System.out.println("??? == null");
-			        mPager.setAdapter(mPagerAdapter);
-			        mPager.setPageMargin(margin + offset);
-			        mPager.setOffscreenPageLimit(2);
-			        if (AC.getPageIndex() >= mModel.getDives().size())
-			        {
-			        	mPager.setCurrentItem(mModel.getDives().size() - 1);
-			        	AC.setPageIndex(mModel.getDives().size() - 1);
-			        }
-			        else
-			        	mPager.setCurrentItem(AC.getPageIndex());
-			        ((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
+
+					mPagerAdapter = new DivesPagerAdapter(getSupportFragmentManager(), mModel.getDives(), mScreenSetup, bitmap, bitmap_small);
+					if (mPagerAdapter == null)
+						System.out.println("mPagerAdapter == null");
+					else if (mPager == null)
+						System.out.println("mPager == null");
+					else
+						System.out.println("??? == null");
+					mPager.setAdapter(mPagerAdapter);
+					mPager.setPageMargin(margin + offset);
+					mPager.setOffscreenPageLimit(2);
+					if (AC.getPageIndex() >= mModel.getDives().size())
+					{
+						mPager.setCurrentItem(mModel.getDives().size() - 1);
+						AC.setPageIndex(mModel.getDives().size() - 1);
+					}
+					else
+						mPager.setCurrentItem(AC.getPageIndex());
+					((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceB);
 					((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
-			        mPager.setOnTouchListener(new OnTouchListener() {
+					mPager.setOnTouchListener(new OnTouchListener() {
 						@Override
 						public boolean onTouch(View v, MotionEvent event) {
 							final String DEBUG_TAG = "DivesActivity";
@@ -726,122 +729,122 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 							return false;
 						}
 					});
-			        //mPager.setPageTransformer(true, new ZoomOutPageTransformer());
-			        //The tracking bar is set
-			        //RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
-			        RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 200);
-			        tracking_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-			        tracking_bar_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
-			        ((RelativeLayout)findViewById(R.id.tracking_bar)).setLayoutParams(tracking_bar_params);
-			        //((RelativeLayout)findViewById(R.id.tracking_bar)).setBackgroundColor(Color.CYAN);
-			        
-			        RelativeLayout.LayoutParams left_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
-			        left_side_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-			        ((RelativeLayout)findViewById(R.id.left_side)).setLayoutParams(left_side_params);
-			        
-			        RelativeLayout.LayoutParams left_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
-			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
-			        left_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-			        ((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
-			        RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
-			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			        right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
-			        ((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
-			        ((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
-			        //((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
-			        if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
-	        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
-	        		else
-	        			((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
-			        ((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
-			        ((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
-			        
-			        //RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, mScreenSetup.getDiveListSeekBarHeight());
-			        RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, 200);
-			        center_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-			        center_bar_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-			        ((RelativeLayout)findViewById(R.id.center_bar)).setLayoutParams(center_bar_params);
-			        max_strokes_possible = (mScreenSetup.getScreenWidth() * 68 / 100) / (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100);
-			        nb_dives_per_stroke = (Double.parseDouble(Integer.toString(mModel.getDives().size())) / max_strokes_possible);
-			        
-			        //System.out.println("nb_dives_per_stroke = " + nb_dives_per_stroke + "max_strokes_possible = " + max_strokes_possible);
-			        
-			        if (nb_dives_per_stroke < 1)
-			        {
-			        	nb_dives_per_stroke = (double) 1;
-			        	nb_strokes = mModel.getDives().size();
-			        }
-			        else
-			        {
-			        	nb_strokes = max_strokes_possible;
-			        }
-			        position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
-			        if (position_stroke > max_strokes_possible)
-			        	position_stroke = max_strokes_possible;
-			        int i = 1;
-			        for (; i < nb_strokes + 1; i++)
-			        {
-			        	RelativeLayout child = new RelativeLayout(DivesActivity.this);
-				        //RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, mScreenSetup.getDiveListSeekBarHeight());
-				        RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, 200);
-				        mGestureListener = new View.OnTouchListener() {
-				            public boolean onTouch(View v, MotionEvent event) {
+					//mPager.setPageTransformer(true, new ZoomOutPageTransformer());
+					//The tracking bar is set
+					//RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListSeekBarHeight());
+					RelativeLayout.LayoutParams tracking_bar_params = new RelativeLayout.LayoutParams(android.widget.LinearLayout.LayoutParams.MATCH_PARENT, 200);
+					tracking_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					tracking_bar_params.setMargins(0, mScreenSetup.getDiveListWhiteSpace3(), 0, mScreenSetup.getDiveListWhiteSpace4());
+					((RelativeLayout)findViewById(R.id.tracking_bar)).setLayoutParams(tracking_bar_params);
+					//((RelativeLayout)findViewById(R.id.tracking_bar)).setBackgroundColor(Color.CYAN);
 
-				                if (mDetector.onTouchEvent(event)) {
-				                    return true;
-				                }
+					RelativeLayout.LayoutParams left_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+					left_side_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					((RelativeLayout)findViewById(R.id.left_side)).setLayoutParams(left_side_params);
 
-				                if(event.getAction() == MotionEvent.ACTION_UP) {
-				                    {
-				                    	if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getChildCount() > 1)
-				                    		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).removeViewAt(1);
-				                    	if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
-				                    		((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
-				                    	if (position_stroke == 1)
-				                    	{
-				                    		ApplicationController AC = ((ApplicationController)getApplicationContext());
-				                    		AC.setPageIndex(0);
-				                    		mPager.setCurrentItem(0, true);
-				                    	}
-				                    	else
-				                    		mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
-				                        mIsScrolling  = false;
-				                    };
-				                }
+					RelativeLayout.LayoutParams left_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+					left_number_params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
+					left_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
+					RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+					right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+					right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
+					((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
+					((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
+					//((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
+					if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
+						((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
+					else
+						((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
+					((TextView)findViewById(R.id.right_data)).setTypeface(faceR);
+					((TextView)findViewById(R.id.right_data)).setText(Integer.toString(mModel.getDives().size()));
 
-				                return false;
-				            }
-				        };
-				        ((RelativeLayout)findViewById(R.id.screen)).setOnTouchListener(mGestureListener);
-				        ((RelativeLayout)findViewById(R.id.dive_footer)).setOnTouchListener(mGestureListener);
-				        child.setId(i);
-				        if (i > 1)
-				        	child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
-				        child.setLayoutParams(child_params);				        
-				        RelativeLayout child_2 = new RelativeLayout(DivesActivity.this);
-				        RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
-				        child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-				        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-				        child_2.setBackgroundColor(Color.WHITE);
-				        child_2.setLayoutParams(child_2_params);
-				        if (i == position_stroke)
-				        {
-				        	child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
-					        child_2.getBackground().setAlpha(230);
-				        }
-				        else
-				        {
-					        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-					        child_2.getBackground().setAlpha(125);
-				        }
-				        child.addView(child_2);
-				        ((RelativeLayout)findViewById(R.id.center_bar)).addView(child);
-			        }
-			        i++;
-			        RelativeLayout.LayoutParams right_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
-			        right_side_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-			        ((RelativeLayout)findViewById(R.id.right_side)).setLayoutParams(right_side_params);
-			        new Thread(new Runnable()
+					//RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, mScreenSetup.getDiveListSeekBarHeight());
+					RelativeLayout.LayoutParams center_bar_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 68 / 100, 200);
+					center_bar_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					center_bar_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+					((RelativeLayout)findViewById(R.id.center_bar)).setLayoutParams(center_bar_params);
+					max_strokes_possible = (mScreenSetup.getScreenWidth() * 68 / 100) / (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100);
+					nb_dives_per_stroke = (Double.parseDouble(Integer.toString(mModel.getDives().size())) / max_strokes_possible);
+
+					//System.out.println("nb_dives_per_stroke = " + nb_dives_per_stroke + "max_strokes_possible = " + max_strokes_possible);
+
+					if (nb_dives_per_stroke < 1)
+					{
+						nb_dives_per_stroke = (double) 1;
+						nb_strokes = mModel.getDives().size();
+					}
+					else
+					{
+						nb_strokes = max_strokes_possible;
+					}
+					position_stroke = (int) Math.ceil((AC.getPageIndex() + 1) / nb_dives_per_stroke);
+					if (position_stroke > max_strokes_possible)
+						position_stroke = max_strokes_possible;
+					int i = 1;
+					for (; i < nb_strokes + 1; i++)
+					{
+						RelativeLayout child = new RelativeLayout(DivesActivity.this);
+						//RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, mScreenSetup.getDiveListSeekBarHeight());
+						RelativeLayout.LayoutParams child_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 33 / 100, 200);
+						mGestureListener = new View.OnTouchListener() {
+							public boolean onTouch(View v, MotionEvent event) {
+
+								if (mDetector.onTouchEvent(event)) {
+									return true;
+								}
+
+								if(event.getAction() == MotionEvent.ACTION_UP) {
+									{
+										if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getChildCount() > 1)
+											((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).removeViewAt(1);
+										if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
+											((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
+										if (position_stroke == 1)
+										{
+											ApplicationController AC = ((ApplicationController)getApplicationContext());
+											AC.setPageIndex(0);
+											mPager.setCurrentItem(0, true);
+										}
+										else
+											mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
+										mIsScrolling  = false;
+									};
+								}
+
+								return false;
+							}
+						};
+						((RelativeLayout)findViewById(R.id.screen)).setOnTouchListener(mGestureListener);
+						((RelativeLayout)findViewById(R.id.dive_footer)).setOnTouchListener(mGestureListener);
+						child.setId(i);
+						if (i > 1)
+							child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
+						child.setLayoutParams(child_params);				        
+						RelativeLayout child_2 = new RelativeLayout(DivesActivity.this);
+						RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+						child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+						child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+						child_2.setBackgroundColor(Color.WHITE);
+						child_2.setLayoutParams(child_2_params);
+						if (i == position_stroke)
+						{
+							child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
+							child_2.getBackground().setAlpha(230);
+						}
+						else
+						{
+							child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+							child_2.getBackground().setAlpha(125);
+						}
+						child.addView(child_2);
+						((RelativeLayout)findViewById(R.id.center_bar)).addView(child);
+					}
+					i++;
+					RelativeLayout.LayoutParams right_side_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 6 / 100, mScreenSetup.getDiveListSeekBarHeight());
+					right_side_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+					((RelativeLayout)findViewById(R.id.right_side)).setLayoutParams(right_side_params);
+					new Thread(new Runnable()
 					{
 						public void run()
 						{
@@ -851,19 +854,19 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 								// TODO Auto-generated catch block
 								e.printStackTrace();
 							}
-					        for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
-					        {
-					        	TrackingBarPosition childPos = new TrackingBarPosition( 
-					        			(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
-					        			((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
-						        		mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
-						        		(mScreenSetup.getScreenHeight()));
-						        mTrackingBarPosition.add(childPos);
-					        }
+							for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
+							{
+								TrackingBarPosition childPos = new TrackingBarPosition( 
+										(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
+										((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
+										mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
+										(mScreenSetup.getScreenHeight()));
+								mTrackingBarPosition.add(childPos);
+							}
 						}
 					}).start();
-			        mPager.setOnPageChangeListener(new OnPageChangeListener()
-			        {
+					mPager.setOnPageChangeListener(new OnPageChangeListener()
+					{
 						@Override
 						public void onPageScrollStateChanged(int arg0) {
 							if (arg0 == 0)
@@ -889,7 +892,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 									mBackgroundImageTask.cancel(true);
 								mBackgroundImageTask = new DownloadImageTask();
 								mBackgroundImageTask.execute(AC.getModel().getDives().size() - AC.getPageIndex() - 1);
-								
+
 							}
 						}
 
@@ -900,12 +903,12 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 						@Override
 						public void onPageSelected(int arg0) {
 						}
-			        });
-			        if (ApplicationController.mDataRefreshed != true)
-			        {
-			        	ApplicationController.mDataRefreshed = true;
-				        mModel.setOnDataRefreshComplete(new DataRefreshListener()
-				        {
+					});
+					if (ApplicationController.mDataRefreshed != true)
+					{
+						ApplicationController.mDataRefreshed = true;
+						mModel.setOnDataRefreshComplete(new DataRefreshListener()
+						{
 							@Override
 							public void onDataRefreshComplete() {
 								System.out.println("Data refresh complete");
@@ -915,11 +918,11 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 								} catch (IOException e) {
 									e.printStackTrace();
 								}
-								
+
 							}
-				        	
-				        });
-				        mTokenExpireListener = new TokenExpireListener() {
+
+						});
+						mTokenExpireListener = new TokenExpireListener() {
 							@Override
 							public void onTokenExpire() {
 								ApplicationController.tokenExpired = true;
@@ -927,49 +930,49 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 							}
 						};
 						mModel.attackTokenExpireListener(mTokenExpireListener);
-				        mModel.refreshData(false);
-				        mDataLoaded = true;
-			        }
+						mModel.refreshData(false);
+						mDataLoaded = true;
+					}
 				}
-		    }
+			}
 		});
 		System.out.println("Pages have been created successfully");
 	}
 
 	public final void upperStroke(final int index)
 	{
-    	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
-    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(230);
-    	child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
-    	child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
-        child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-    	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
-    	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).setId(index);
+		RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+		((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(230);
+		child_2_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() / 3;
+		child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
+		child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).setId(index);
 	}
-	
+
 	public final void lowerStroke(final int index)
 	{
-    	RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
-    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(125);
-    	child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-    	child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
-    	((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
-    	if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildCount() > 1)
-    		((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).removeViewAt(1);
-    	if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
-    		((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
+		RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
+		((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).getBackground().setAlpha(125);
+		child_2_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+		child_2_params.addRule(RelativeLayout.CENTER_IN_PARENT);
+		((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildAt(0).setLayoutParams(child_2_params);
+		if (((ViewGroup)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).getChildCount() > 1)
+			((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).removeViewAt(1);
+		if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
+			((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
 	}
-	
+
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
 	{
 		private final WeakReference<RelativeLayout> screenReference;
 		private Integer mItemNb;
-		
+
 		public DownloadImageTask()
 		{
 			screenReference = new WeakReference<RelativeLayout>(mScreen);
 		}
-		
+
 		protected Bitmap doInBackground(Integer... args)
 		{
 			mItemNb = args[0];
@@ -1001,7 +1004,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			}
 			return null;
 		}
-		
+
 		/**
 		 * We do here the fade in/out animation for the background
 		 */
@@ -1012,79 +1015,79 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			{
 				final RelativeLayout screenView = screenReference.get();
 				if (screenView != null)
-				if (true)
-				{
-					if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
+					if (true)
 					{
-						
-						if (mBackground == 1)
+						if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB_MR2)
 						{
-							mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
-							AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
-							anim.setAnimationListener(new AnimationListener()
+
+							if (mBackground == 1)
 							{
-								@Override
-								public void onAnimationEnd(Animation arg0)
+								mBackground2.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+								AlphaAnimation anim = new AlphaAnimation(0.0f, 1.0f);
+								anim.setAnimationListener(new AnimationListener()
 								{
-									mBackground2.setAlpha(1.0f);
-								}
-	
-								@Override
-								public void onAnimationRepeat(Animation animation) {
-									// TODO Auto-generated method stub
-									
-								}
-	
-								@Override
-								public void onAnimationStart(Animation animation) {
-									// TODO Auto-generated method stub
-									ImageView back2 = (ImageView) findViewById(R.id.background2);
-									back2.setAlpha(1.0f);
-								}
-							});
-							anim.setDuration(500);
-							mBackground2.startAnimation(anim);
-							mBackground = 2;
+									@Override
+									public void onAnimationEnd(Animation arg0)
+									{
+										mBackground2.setAlpha(1.0f);
+									}
+
+									@Override
+									public void onAnimationRepeat(Animation animation) {
+										// TODO Auto-generated method stub
+
+									}
+
+									@Override
+									public void onAnimationStart(Animation animation) {
+										// TODO Auto-generated method stub
+										ImageView back2 = (ImageView) findViewById(R.id.background2);
+										back2.setAlpha(1.0f);
+									}
+								});
+								anim.setDuration(500);
+								mBackground2.startAnimation(anim);
+								mBackground = 2;
+							}
+							else
+							{
+								mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
+								AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
+								anim.setDuration(500);
+								mBackground2.startAnimation(anim);
+								anim.setAnimationListener(new AnimationListener()
+								{
+									@Override
+									public void onAnimationEnd(Animation arg0)
+									{
+										mBackground2.setAlpha(0.0f);
+									}
+
+									@Override
+									public void onAnimationRepeat(
+											Animation animation) {
+										// TODO Auto-generated method stub
+
+									}
+
+									@Override
+									public void onAnimationStart(Animation animation) {
+										// TODO Auto-generated method stub
+
+									}
+								});
+								mBackground = 1;
+							}
 						}
 						else
 						{
 							mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
-							AlphaAnimation anim = new AlphaAnimation(1.0f, 0.0f);
-							anim.setDuration(500);
-							mBackground2.startAnimation(anim);
-							anim.setAnimationListener(new AnimationListener()
-							{
-								@Override
-								public void onAnimationEnd(Animation arg0)
-								{
-									mBackground2.setAlpha(0.0f);
-								}
-
-								@Override
-								public void onAnimationRepeat(
-										Animation animation) {
-									// TODO Auto-generated method stub
-									
-								}
-
-								@Override
-								public void onAnimationStart(Animation animation) {
-									// TODO Auto-generated method stub
-									
-								}
-							});
-							mBackground = 1;
 						}
 					}
-					else
-					{
-						mBackground1.setBackgroundDrawable(new BitmapDrawable(getResources(), result));
-					}
-				}
 			}
 		}
 	}
-	
+
 	/**
 	 * Generate the dives pagesDive dive
 	 */
@@ -1094,36 +1097,36 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		private ScreenSetup mScreenSetup;
 		private Bitmap mRoundedLayer;
 		private Bitmap mRoundedLayerSmall;
-		
+
 		public DivesPagerAdapter(FragmentManager fragmentManager, ArrayList<Dive> dives, ScreenSetup screenSetup, Bitmap rounded_layer, Bitmap rounded_layer_small) {
-            super(fragmentManager);
+			super(fragmentManager);
 			mDives = dives;
 			mScreenSetup = screenSetup;
 			mRoundedLayer = rounded_layer;
 			mRoundedLayerSmall = rounded_layer_small;
-        }
+		}
 
-        @Override
-        public Fragment getItem(int position) {
-            return new DivesFragment(mDives.get(mDives.size() - position - 1), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
-        }
+		@Override
+		public Fragment getItem(int position) {
+			return new DivesFragment(mDives.get(mDives.size() - position - 1), mScreenSetup, mRoundedLayer, mRoundedLayerSmall);
+		}
 
-        @Override
-        public int getCount() {
-            return mNbPages;
-        }
+		@Override
+		public int getCount() {
+			return mNbPages;
+		}
 	}
 
-    @Override 
-    public boolean onTouchEvent(MotionEvent event){ 
-//    	if(mDataLoaded){
+	@Override 
+	public boolean onTouchEvent(MotionEvent event){ 
+		//    	if(mDataLoaded){
 		this.mDetector.onTouchEvent(event);
-        // Be sure to call the superclass implementation
-        return super.onTouchEvent(event);
-//    	}
-//    	else 
-//    		return false;
-    }
+		// Be sure to call the superclass implementation
+		return super.onTouchEvent(event);
+		//    	}
+		//    	else 
+		//    		return false;
+	}
 
 	public int stroke_selected(int x, int y)
 	{
@@ -1136,349 +1139,349 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		mIsScrolling = false;
 		return 0;
 	}
-    
-    public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
-        @Override
+
+	public class MyGestureListener extends GestureDetector.SimpleOnGestureListener {
+		@Override
 		public boolean onSingleTapUp(MotionEvent e) {
 			return super.onSingleTapUp(e);
 		}
 
 		private static final String DEBUG_TAG = "Gestures"; 
-        
-        @Override
-        public boolean onDown(MotionEvent event) { 
-        	int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
-        	if (stroke_selected == 0)
-        	{
-        		mIsScrolling = false;
-        	}
-        	else
-        	{
-        		mIsScrolling = true;
-        		lowerStroke(position_stroke);
-        		position_stroke = stroke_selected;
-        		upperStroke(position_stroke);
-        	}
-        	return true;
-        }
+
+		@Override
+		public boolean onDown(MotionEvent event) { 
+			int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
+			if (stroke_selected == 0)
+			{
+				mIsScrolling = false;
+			}
+			else
+			{
+				mIsScrolling = true;
+				lowerStroke(position_stroke);
+				position_stroke = stroke_selected;
+				upperStroke(position_stroke);
+			}
+			return true;
+		}
 
 		@Override
 		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
 			if(mDataLoaded){	
-					System.out.println("Value of mDAtaloaded is true");
-					int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
-					int bubbleWidth;
-					if(mScreenSetup.getScreenWidth()> mScreenSetup.getScreenHeight()){
-						bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 4 );
+				System.out.println("Value of mDAtaloaded is true");
+				int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
+				int bubbleWidth;
+				if(mScreenSetup.getScreenWidth()> mScreenSetup.getScreenHeight()){
+					bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 4 );
+				}
+				else
+					bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 3);
+				int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
+				if (stroke_selected != 0)
+				{
+					System.out.println("Stroke selected is " + stroke_selected);
+					ApplicationController AC = ((ApplicationController)getApplicationContext());
+					lowerStroke(position_stroke);
+					position_stroke = stroke_selected;
+					upperStroke(position_stroke);
+					//((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
+					if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
+						((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
+					else
+						((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
+					RelativeLayout rl = new RelativeLayout(DivesActivity.this);
+					rl.setBackgroundResource(R.drawable.ic_triangle);
+					RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					lp.addRule(RelativeLayout.ALIGN_TOP, ((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getId());
+					lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
+					lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
+					rl.setLayoutParams(lp);
+					BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
+
+					RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
+					RelativeLayout text = new RelativeLayout(DivesActivity.this);
+					RelativeLayout.LayoutParams dateLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					RelativeLayout.LayoutParams countryLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
+					//	            	dateLP.topMargin = ((int) (bubbleHeight / 15)); 
+
+					dateLP.topMargin = (int) (bubbleHeight * 15/100);
+					dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+					placeLP.addRule(RelativeLayout.BELOW, 2000);
+					placeLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+
+					//	            	text.setGravity(Gravity.CENTER);
+
+					bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
+					bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
+					bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar) + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
+					bubble_params.leftMargin = (int)event2.getX() - bubbleWidth / 2;
+					bubble.setPadding((int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar));
+					bubble.setLayoutParams(bubble_params);
+					bubble.setGravity(Gravity.CENTER_HORIZONTAL);
+
+					Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+					Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+					TextView tv = new TextView(DivesActivity.this);
+					TextView country = new TextView(DivesActivity.this);
+					TextView place = new TextView(DivesActivity.this);
+					tv.setGravity(Gravity.CENTER_HORIZONTAL);
+					country.setGravity(Gravity.CENTER_HORIZONTAL);
+					place.setGravity(Gravity.CENTER_HORIZONTAL);
+					tv.setId(1000);
+					country.setId(2000);
+					tv.setTextColor(Color.WHITE);
+					country.setTextColor(Color.WHITE);
+					place.setTextColor(getResources().getColor(R.color.gray_light));
+					countryLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
+					countryLP.addRule(RelativeLayout.BELOW, 1000);
+					tv.setLayoutParams(dateLP);
+					country.setLayoutParams(countryLP);
+					place.setLayoutParams(placeLP);
+					tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+					country.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+					place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
+					tv.setTypeface(faceB);
+					country.setTypeface(faceB);
+					place.setTypeface(faceB);
+					if (position_stroke == 1)
+					{
+						tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
+
+						if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != 1)
+							country.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getCountryName().toUpperCase());
+
+						if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName() != null)
+							place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName());
+						else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
+							place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName());
+						else
+							place.setText("");
+						place.setMaxLines(3);
 					}
 					else
-						bubbleWidth = (int) (mScreenSetup.getScreenWidth() / 3);
-					int stroke_selected = stroke_selected((int)event2.getX(), (int)event2.getY());
-					if (stroke_selected != 0)
 					{
-						System.out.println("Stroke selected is " + stroke_selected);
-						ApplicationController AC = ((ApplicationController)getApplicationContext());
-						lowerStroke(position_stroke);
-		        		position_stroke = stroke_selected;
-		        		upperStroke(position_stroke);
-		        		//((TextView)findViewById(R.id.left_data)).setText(Integer.toString((int) (position_stroke * nb_dives_per_stroke)));
-		        		if (mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber() != null)
-		        			((TextView)findViewById(R.id.left_data)).setText(String.valueOf(mModel.getDives().get(mModel.getDives().size() - AC.getPageIndex() - 1).getNumber()));
-		        		else
-		        			((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
-		        		RelativeLayout rl = new RelativeLayout(DivesActivity.this);
-		            	rl.setBackgroundResource(R.drawable.ic_triangle);
-		            	RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		            	lp.addRule(RelativeLayout.ALIGN_TOP, ((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).getId());
-		            	lp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		            	lp.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		            	lp.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar);
-		            	rl.setLayoutParams(lp);
-		            	BitmapDrawable bd = (BitmapDrawable) getResources().getDrawable(R.drawable.ic_triangle);
-		            	
-		            	RelativeLayout bubble = new RelativeLayout(DivesActivity.this);
-		            	RelativeLayout text = new RelativeLayout(DivesActivity.this);
-		            	RelativeLayout.LayoutParams dateLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		            	RelativeLayout.LayoutParams countryLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		            	RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-		            	RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
-	//	            	dateLP.topMargin = ((int) (bubbleHeight / 15)); 
-		            	
-		            	dateLP.topMargin = (int) (bubbleHeight * 15/100);
-		            	dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		            	placeLP.addRule(RelativeLayout.BELOW, 2000);
-		            	placeLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		            	
-	//	            	text.setGravity(Gravity.CENTER);
-		            	
-		            	bubble.setBackgroundColor(getResources().getColor(R.color.dark_grey));
-		            	bubble_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-		            	bubble_params.bottomMargin = mScreenSetup.getDiveListSeekBarHeight() + (int) getResources().getDimension(R.dimen.space_bubble_bar) + bd.getBitmap().getHeight() + mScreenSetup.getDiveListWhiteSpace4();
-		            	bubble_params.leftMargin = (int)event2.getX() - bubbleWidth / 2;
-		            	bubble.setPadding((int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar), (int) (getResources().getDimension(R.dimen.space_bubble_bar) * 1.5), (int) getResources().getDimension(R.dimen.space_bubble_bar));
-		            	bubble.setLayoutParams(bubble_params);
-		            	bubble.setGravity(Gravity.CENTER_HORIZONTAL);
-		            	
-		            	Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-						Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		            	TextView tv = new TextView(DivesActivity.this);
-		            	TextView country = new TextView(DivesActivity.this);
-		            	TextView place = new TextView(DivesActivity.this);
-		            	tv.setGravity(Gravity.CENTER_HORIZONTAL);
-		            	country.setGravity(Gravity.CENTER_HORIZONTAL);
-		            	place.setGravity(Gravity.CENTER_HORIZONTAL);
-		            	tv.setId(1000);
-		            	country.setId(2000);
-		            	tv.setTextColor(Color.WHITE);
-		            	country.setTextColor(Color.WHITE);
-		            	place.setTextColor(getResources().getColor(R.color.gray_light));
-		            	countryLP.addRule(RelativeLayout.CENTER_HORIZONTAL);
-		            	countryLP.addRule(RelativeLayout.BELOW, 1000);
-		            	tv.setLayoutParams(dateLP);
-		            	country.setLayoutParams(countryLP);
-		            	place.setLayoutParams(placeLP);
-		            	tv.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-		            	country.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-		            	place.setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 20 / 100));
-		            	tv.setTypeface(faceB);
-		            	country.setTypeface(faceB);
-		            	place.setTypeface(faceB);
-		            	if (position_stroke == 1)
-	                	{
-		            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getDate());
-		            		
-		            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getId() != 1)
-		            			country.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getCountryName().toUpperCase());
-		            		
-		            		if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName() != null)
-		            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getTripName());
-		            		else if (mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName() != null)
-		            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - 1).getSpot().getName());
-		            		else
-		            			place.setText("");
-		            		place.setMaxLines(3);
-	                	}
-		            	else
-		            	{
-		            		tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
-		            		
-							if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != 1)
-		            			country.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getCountryName().toUpperCase());
-		            		
-		            		if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName() != null)
-		            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName());
-		            		else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
-		            			place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName());
-		            		else
-		            			place.setText("");
-		            		place.setMaxLines(3);
-		            	}
-		            	text.addView(tv);
-		            	text.addView(place);
-		            	text.addView(country);
-		            	bubble.addView(text);
-		            	((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
-		            	((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
-		            	
+						tv.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getDate());
+
+						if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getId() != 1)
+							country.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getCountryName().toUpperCase());
+
+						if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName() != null)
+							place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getTripName());
+						else if (mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot() != null && mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName() != null)
+							place.setText(mModel.getDives().get(AC.getModel().getDives().size() - (int) (position_stroke * nb_dives_per_stroke)).getSpot().getName());
+						else
+							place.setText("");
+						place.setMaxLines(3);
 					}
-					return true;
+					text.addView(tv);
+					text.addView(place);
+					text.addView(country);
+					bubble.addView(text);
+					((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(position_stroke)).addView(rl);
+					((RelativeLayout)findViewById(R.id.screen)).addView(bubble);
+
 				}
-				
-//			}
+				return true;
+			}
+
+			//			}
 			else{
 				System.out.println("Value of mDAtaloaded is false");
 				return false;
 			}
-				
+
 		}
-    }
-    
-  //Tracking bar
-  	public class TrackingBarPosition
-  	{
-  		int x;
-  		int y;
-  		int X;
-  		int Y;
-  		public TrackingBarPosition(int x, int X, int y, int Y)
-  		{
-  			this.x = x;
-  			this.y = y;
-  			this.X = X;
-  			this.Y = Y;
-  		}
-  		public int getx() {
-  			return x;
-  		}
-  		public void setx(int x) {
-  			this.x = x;
-  		}
-  		public int gety() {
-  			return y;
-  		}
-  		public void sety(int y) {
-  			this.y = y;
-  		}
-  		public int getX() {
-  			return X;
-  		}
-  		public void setX(int x) {
-  			X = x;
-  		}
-  		public int getY() {
-  			return Y;
-  		}
-  		public void setY(int y) {
-  			Y = y;
-  		}
+	}
 
-  	}
-    
-    
-    @Override
-    public boolean onKeyDown(int keycode, KeyEvent e) {
-        switch(keycode) {
-            case KeyEvent.KEYCODE_MENU:
-            	openMenu(findViewById(R.id.load_data_form));
-                return true;
-        }
+	//Tracking bar
+	public class TrackingBarPosition
+	{
+		int x;
+		int y;
+		int X;
+		int Y;
+		public TrackingBarPosition(int x, int X, int y, int Y)
+		{
+			this.x = x;
+			this.y = y;
+			this.X = X;
+			this.Y = Y;
+		}
+		public int getx() {
+			return x;
+		}
+		public void setx(int x) {
+			this.x = x;
+		}
+		public int gety() {
+			return y;
+		}
+		public void sety(int y) {
+			this.y = y;
+		}
+		public int getX() {
+			return X;
+		}
+		public void setX(int x) {
+			X = x;
+		}
+		public int getY() {
+			return Y;
+		}
+		public void setY(int y) {
+			Y = y;
+		}
 
-        return super.onKeyDown(keycode, e);
-    }
-    
-//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-//        @Override
-//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-//            selectItem(position);
-//        }
-//    }
-//    
-//    private void selectItem(int position) {
-//
-//    	switch (position) {
-//
-//    	//Logbook
-//    	case 0:
-////    		mDrawerList.setItemChecked(position, true);
-//    		finish();
-//    		Intent logbookActivity = new Intent(this, DivesActivity.class);
-//    		startActivity(logbookActivity);
-//    		break;
-//    	
-//    	//Refresh
-//    	case 1:
-//    		
-//    		ApplicationController AC = (ApplicationController)getApplicationContext();
-//    		AC.setDataReady(false);
-//    		AC.getModel().stopPreloadPictures();
-//    		ApplicationController.mForceRefresh = true;
-//    		AC.setModel(null);
-//    		finish();
-//    		break;
-//
-//    	//Wallet Activity
-//    	case 2:
-//    		finish();
-//    		Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
-//    		startActivity(walletActivity);
-//    		
-//    		break;
-//    		
-//    	//Closest Shop    			
-//    	case 3:
-//    		Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
-//    		startActivity(closestShopActivity);
-//    		break;
-//
-//    	//New Dive	
-//    	case 4:
-//    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//    		startActivity(newDiveActivity);
-//    		break;
-//    	
-//    	//Settings	
-//    	case 5:    		
-//    		mModel.getDataManager().getMemoryUsed();
-//    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//    		startActivity(settingsActivity);
-//    		break;
-//
-//    	//bug report
-//    	case 6:
-//    		if (true)
-//    		{
-//    			//Use of UserVoice report bug system
-//    			WaitDialogFragment dialog = new WaitDialogFragment();
-//    			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//    			Config config = new Config("diveboard.uservoice.com");
-//    			if(mModel.getSessionEmail() != null)
-//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//    			UserVoice.init(config, DivesActivity.this);
-//    			config.setShowForum(false);
-//    			config.setShowContactUs(true);
-//    			config.setShowPostIdea(false);
-//    			config.setShowKnowledgeBase(false);
-//    			ApplicationController.UserVoiceReady = true;
-//    			UserVoice.launchContactUs(DivesActivity.this);
-//    			dialog.dismiss();
-//    		}
-//    		break;
-//    		
-//    	//Logout	
-//    	case 7:
-//    		final Dialog dialog = new Dialog(DivesActivity.this);
-//    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//    		dialog.setContentView(R.layout.dialog_edit_confirm);
-//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-//    		TextView title = (TextView) dialog.findViewById(R.id.title);
-//    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-//    		title.setTypeface(faceB);
-//    		title.setText(getResources().getString(R.string.exit_title));
-//    		exitTV.setTypeface(faceR);
-//    		exitTV.setText(getResources().getString(R.string.confirm_exit));
-//    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
-//    		cancel.setTypeface(faceR);
-//    		cancel.setText(getResources().getString(R.string.cancel));
-//    		cancel.setOnClickListener(new View.OnClickListener() {
-//
-//    			@Override
-//    			public void onClick(View v) {
-//    				// TODO Auto-generated method stub
-//    				dialog.dismiss();
-//    			}
-//    		});
-//    		Button save = (Button) dialog.findViewById(R.id.save);
-//    		save.setTypeface(faceR);
-//    		save.setText(getResources().getString(R.string.menu_logout));
-//    		save.setOnClickListener(new View.OnClickListener() {
-//
-//    			@Override
-//    			public void onClick(View v) {
-//    				// TODO Auto-generated method stub
-//    				logout();
-//    			}
-//    		});
-//    		dialog.show();
-//    		break;
-//    		
-//    		//Rate app
-//    	case 8:
-//    		mModel.setHasRatedApp(true);
-//			try {
-//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
-//			} catch (android.content.ActivityNotFoundException anfe) {
-//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
-//			}
-//    		break;	
-//    		
-//    	default:
-//    		break ;
-//    	}
-//
-//        // update selected item and title, then close the drawer
-//        mDrawerList.setItemChecked(position, false);
-//        mDrawerLayout.closeDrawer(mDrawerContainer);
-//    }
-    
+	}
+
+
+	@Override
+	public boolean onKeyDown(int keycode, KeyEvent e) {
+		switch(keycode) {
+		case KeyEvent.KEYCODE_MENU:
+			openMenu(findViewById(R.id.load_data_form));
+			return true;
+		}
+
+		return super.onKeyDown(keycode, e);
+	}
+
+	//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+	//        @Override
+	//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+	//            selectItem(position);
+	//        }
+	//    }
+	//    
+	//    private void selectItem(int position) {
+	//
+	//    	switch (position) {
+	//
+	//    	//Logbook
+	//    	case 0:
+	////    		mDrawerList.setItemChecked(position, true);
+	//    		finish();
+	//    		Intent logbookActivity = new Intent(this, DivesActivity.class);
+	//    		startActivity(logbookActivity);
+	//    		break;
+	//    	
+	//    	//Refresh
+	//    	case 1:
+	//    		
+	//    		ApplicationController AC = (ApplicationController)getApplicationContext();
+	//    		AC.setDataReady(false);
+	//    		AC.getModel().stopPreloadPictures();
+	//    		ApplicationController.mForceRefresh = true;
+	//    		AC.setModel(null);
+	//    		finish();
+	//    		break;
+	//
+	//    	//Wallet Activity
+	//    	case 2:
+	//    		finish();
+	//    		Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
+	//    		startActivity(walletActivity);
+	//    		
+	//    		break;
+	//    		
+	//    	//Closest Shop    			
+	//    	case 3:
+	//    		Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
+	//    		startActivity(closestShopActivity);
+	//    		break;
+	//
+	//    	//New Dive	
+	//    	case 4:
+	//    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+	//    		startActivity(newDiveActivity);
+	//    		break;
+	//    	
+	//    	//Settings	
+	//    	case 5:    		
+	//    		mModel.getDataManager().getMemoryUsed();
+	//    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+	//    		startActivity(settingsActivity);
+	//    		break;
+	//
+	//    	//bug report
+	//    	case 6:
+	//    		if (true)
+	//    		{
+	//    			//Use of UserVoice report bug system
+	//    			WaitDialogFragment dialog = new WaitDialogFragment();
+	//    			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+	//    			Config config = new Config("diveboard.uservoice.com");
+	//    			if(mModel.getSessionEmail() != null)
+	//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+	//    			UserVoice.init(config, DivesActivity.this);
+	//    			config.setShowForum(false);
+	//    			config.setShowContactUs(true);
+	//    			config.setShowPostIdea(false);
+	//    			config.setShowKnowledgeBase(false);
+	//    			ApplicationController.UserVoiceReady = true;
+	//    			UserVoice.launchContactUs(DivesActivity.this);
+	//    			dialog.dismiss();
+	//    		}
+	//    		break;
+	//    		
+	//    	//Logout	
+	//    	case 7:
+	//    		final Dialog dialog = new Dialog(DivesActivity.this);
+	//    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+	//    		dialog.setContentView(R.layout.dialog_edit_confirm);
+	//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+	//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+	//    		TextView title = (TextView) dialog.findViewById(R.id.title);
+	//    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
+	//    		title.setTypeface(faceB);
+	//    		title.setText(getResources().getString(R.string.exit_title));
+	//    		exitTV.setTypeface(faceR);
+	//    		exitTV.setText(getResources().getString(R.string.confirm_exit));
+	//    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
+	//    		cancel.setTypeface(faceR);
+	//    		cancel.setText(getResources().getString(R.string.cancel));
+	//    		cancel.setOnClickListener(new View.OnClickListener() {
+	//
+	//    			@Override
+	//    			public void onClick(View v) {
+	//    				// TODO Auto-generated method stub
+	//    				dialog.dismiss();
+	//    			}
+	//    		});
+	//    		Button save = (Button) dialog.findViewById(R.id.save);
+	//    		save.setTypeface(faceR);
+	//    		save.setText(getResources().getString(R.string.menu_logout));
+	//    		save.setOnClickListener(new View.OnClickListener() {
+	//
+	//    			@Override
+	//    			public void onClick(View v) {
+	//    				// TODO Auto-generated method stub
+	//    				logout();
+	//    			}
+	//    		});
+	//    		dialog.show();
+	//    		break;
+	//    		
+	//    		//Rate app
+	//    	case 8:
+	//    		mModel.setHasRatedApp(true);
+	//			try {
+	//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+	//			} catch (android.content.ActivityNotFoundException anfe) {
+	//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+	//			}
+	//    		break;	
+	//    		
+	//    	default:
+	//    		break ;
+	//    	}
+	//
+	//        // update selected item and title, then close the drawer
+	//        mDrawerList.setItemChecked(position, false);
+	//        mDrawerLayout.closeDrawer(mDrawerContainer);
+	//    }
+
 }
