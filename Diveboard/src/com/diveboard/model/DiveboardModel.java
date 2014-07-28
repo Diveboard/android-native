@@ -50,6 +50,7 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.util.Log;
 import android.util.Pair;
 
 import com.diveboard.config.AppConfig;
@@ -1027,6 +1028,7 @@ public class					DiveboardModel
 		
 		public LoadPictureThread(int start, int increment, int locknb)
 		{
+			Log.d("picture", "Launch thread");
 			_start = start;
 			_increment = increment;
 			_run = true;
@@ -1068,12 +1070,12 @@ public class					DiveboardModel
 								if(UserPreference.getPictureQuality().equals("m_qual")){
 									if (!_run || !wifiNetwork.isConnected())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
 									if (!_run || !wifiNetwork.isConnected())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
 //								//System.out.println("Loading pictures " + i);
 //								if (!_run || !wifiNetwork.isConnected())
@@ -1093,12 +1095,12 @@ public class					DiveboardModel
 								if(UserPreference.getPictureQuality().equals("m_qual")){
 									if (!_run || !wifiNetwork.isConnected())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
 									if (!_run || !wifiNetwork.isConnected())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
 //								if (!_run || !wifiNetwork.isConnected())
 //									break ;
@@ -1152,12 +1154,12 @@ public class					DiveboardModel
 						if(UserPreference.getPictureQuality().equals("m_qual")){
 							if (!_run || !wifiNetwork.isConnected())
 								break ;
-							pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+							pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 						}
 						else{
 							if (!_run || !wifiNetwork.isConnected())
 								break ;
-							pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+							pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 						}
 						
 					}
