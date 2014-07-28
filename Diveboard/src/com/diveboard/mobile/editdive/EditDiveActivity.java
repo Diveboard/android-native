@@ -157,7 +157,9 @@ public class EditDiveActivity extends NavDrawer implements
 				mModel = ((ApplicationController)getApplicationContext()).getModel();
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
 				ArrayList<Pair<String, String>> editList = dive.getEditList();
-				if (mNotes != null)
+				if (mNotes != null && !mNotes.getText().toString().isEmpty() && !mNotes.getText().toString().equals(dive.getNotes()))
+					dive.setNotes(mNotes.getText().toString());
+				if (mNotes != null && mNotes.getText().toString().isEmpty() && dive.getNotes() != null && !dive.getNotes().isEmpty())
 					dive.setNotes(mNotes.getText().toString());
 				if(TabEditSpotsFragment.manualSpotActivated){
 					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.spot_missing), Toast.LENGTH_LONG);
