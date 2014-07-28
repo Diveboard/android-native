@@ -1317,7 +1317,7 @@ public class					DiveboardModel
 					if (i != 0)
 						match_str += " ";
 					match_str += strarr[i] + "*";
-				}
+				}	
 				if (condition_str.length() == 0)
 					condition_str += "spots_fts.name MATCH '" + match_str + "'";
 				else
