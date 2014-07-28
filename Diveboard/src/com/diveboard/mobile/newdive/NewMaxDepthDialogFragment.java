@@ -58,6 +58,7 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
+		
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_max_depth, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
@@ -80,15 +81,6 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		getDialog().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_VISIBLE);
 		mMaxDepth.setOnEditorActionListener(this);
 		
-//		TextView max_depth_label = (TextView) view.findViewById(R.id.max_depth_label);
-//		max_depth_label.setTypeface(faceR);
-//		if (mDive.getMaxdepth() != null)
-//			max_depth_label.setText(mDive.getMaxdepth().getSmallName());
-//		else
-//		{
-//			Distance distance = new Distance(0.0);
-//			max_depth_label.setText(distance.getSmallName());
-//		}
 		max_depth_label = (Spinner) view.findViewById(R.id.max_depth_label);
 		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);

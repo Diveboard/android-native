@@ -273,182 +273,182 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 	}
 
-	public void goToMenuV3(View view)
-	{
-		popup = new PopupMenu(this, view);
-		MenuInflater inflater = popup.getMenuInflater();
-		inflater.inflate(R.menu.settings, popup.getMenu());
-		if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
-			popup.getMenu().findItem(R.id.rate_app).setVisible(true);
-		}
-		popup.show();
-		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-		{
-
-			@Override
-			public boolean onMenuItemClick(MenuItem item) {
-				switch (item.getItemId()) {
-				case R.id.refresh:
-					ApplicationController AC = (ApplicationController)getApplicationContext();
-					AC.setDataReady(false);
-					AC.getModel().stopPreloadPictures();
-					ApplicationController.mForceRefresh = true;
-					AC.setModel(null);
-					finish();
-					return true;
-				case R.id.rate_app:
-					mModel.setHasRatedApp(true);
-					try {
-						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
-					} catch (android.content.ActivityNotFoundException anfe) {
-						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
-					}
-					return true;
-				case R.id.see_wallet:
-					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
-					startActivity(walletActivity);
-					return true;
-				case R.id.closest_shop:
-					Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
-					startActivity(closestShopActivity);
-					return true;
-				case R.id.add_dive:
-					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-					startActivity(newDiveActivity);
-					return true;
-				case R.id.menu_settings:
-					mModel.getDataManager().getMemoryUsed();
-					Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-					startActivity(settingsActivity);
-					return true;
-				case R.id.report_bug:
-					if (true)
-					{
-						//Use of UserVoice report bug system
-						WaitDialogFragment dialog = new WaitDialogFragment();
-						dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-						Config config = new Config("diveboard.uservoice.com");
-						if(mModel.getSessionEmail() != null)
-							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-						UserVoice.init(config, DivesActivity.this);
-						config.setShowForum(false);
-						config.setShowContactUs(true);
-						config.setShowPostIdea(false);
-						config.setShowKnowledgeBase(false);
-						ApplicationController.UserVoiceReady = true;
-						UserVoice.launchContactUs(DivesActivity.this);
-						dialog.dismiss();
-					}
-					return true;
-				case R.id.menu_logout:
-					final Dialog dialog = new Dialog(DivesActivity.this);
-					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-					dialog.setContentView(R.layout.dialog_edit_confirm);
-					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-					Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-					TextView title = (TextView) dialog.findViewById(R.id.title);
-					TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-					title.setTypeface(faceB);
-					title.setText(getResources().getString(R.string.exit_title));
-					exitTV.setTypeface(faceR);
-					exitTV.setText(getResources().getString(R.string.confirm_logout));
-					Button cancel = (Button) dialog.findViewById(R.id.cancel);
-					cancel.setTypeface(faceR);
-					cancel.setText(getResources().getString(R.string.cancel));
-					cancel.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							dialog.dismiss();
-						}
-					});
-					Button save = (Button) dialog.findViewById(R.id.save);
-					save.setTypeface(faceR);
-					save.setText(getResources().getString(R.string.menu_logout));
-					save.setOnClickListener(new View.OnClickListener() {
-
-						@Override
-						public void onClick(View v) {
-							// TODO Auto-generated method stub
-							logout();
-						}
-					});
-					dialog.show();
-					return true;
-				default:
-					return false;
-				}
-			}
-
-		});
-
-	}
-
-	public void goToMenuV2(View view)
-	{
-		// Settings floating menu
-		registerForContextMenu(view);
-		openContextMenu(view);
-		unregisterForContextMenu(view);
-	}
-
-	//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-	public void openMenu(View view)
-	{
-		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-		{
-			goToMenuV3(view);
-		}
-		else
-			goToMenuV2(view);
-	}
-
-	@Override
-	public boolean onContextItemSelected(MenuItem item) {
-		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-		switch (item.getItemId()) {
-		case R.id.refresh:
-			ApplicationController AC = (ApplicationController)getApplicationContext();
-			AC.setDataReady(false);
-			AC.getModel().stopPreloadPictures();
-			AC.setModel(null);
-			finish();
-			return true;
-		case R.id.add_dive:
-			Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-			startActivity(newDiveActivity);
-			return true;
-		case R.id.menu_settings:
-			Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-			startActivity(settingsActivity);
-			return true;
-		case R.id.report_bug:
-			if (true)
-			{
-				WaitDialogFragment dialog = new WaitDialogFragment();
-				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-				Config config = new Config("diveboard.uservoice.com");
-				if(mModel.getSessionEmail() != null)
-					config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-				UserVoice.init(config, DivesActivity.this);
-				config.setShowForum(false);
-				config.setShowContactUs(true);
-				config.setShowPostIdea(false);
-				config.setShowKnowledgeBase(false);
-				ApplicationController.UserVoiceReady = true;
-				UserVoice.launchContactUs(DivesActivity.this);
-				dialog.dismiss();
-			}
-			return true;
-		case R.id.menu_logout:
-			logout();
-			return true;
-
-		default:
-			return super.onContextItemSelected(item);
-		}
-	}
+//	public void goToMenuV3(View view)
+//	{
+//		popup = new PopupMenu(this, view);
+//		MenuInflater inflater = popup.getMenuInflater();
+//		inflater.inflate(R.menu.settings, popup.getMenu());
+//		if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
+//			popup.getMenu().findItem(R.id.rate_app).setVisible(true);
+//		}
+//		popup.show();
+//		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
+//		{
+//
+//			@Override
+//			public boolean onMenuItemClick(MenuItem item) {
+//				switch (item.getItemId()) {
+//				case R.id.refresh:
+//					ApplicationController AC = (ApplicationController)getApplicationContext();
+//					AC.setDataReady(false);
+//					AC.getModel().stopPreloadPictures();
+//					ApplicationController.mForceRefresh = true;
+//					AC.setModel(null);
+//					finish();
+//					return true;
+//				case R.id.rate_app:
+//					mModel.setHasRatedApp(true);
+//					try {
+//						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+//					} catch (android.content.ActivityNotFoundException anfe) {
+//						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+//					}
+//					return true;
+//				case R.id.see_wallet:
+//					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
+//					startActivity(walletActivity);
+//					return true;
+//				case R.id.closest_shop:
+//					Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
+//					startActivity(closestShopActivity);
+//					return true;
+//				case R.id.add_dive:
+//					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+//					startActivity(newDiveActivity);
+//					return true;
+//				case R.id.menu_settings:
+//					mModel.getDataManager().getMemoryUsed();
+//					Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+//					startActivity(settingsActivity);
+//					return true;
+//				case R.id.report_bug:
+//					if (true)
+//					{
+//						//Use of UserVoice report bug system
+//						WaitDialogFragment dialog = new WaitDialogFragment();
+//						dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+//						Config config = new Config("diveboard.uservoice.com");
+//						if(mModel.getSessionEmail() != null)
+//							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+//						UserVoice.init(config, DivesActivity.this);
+//						config.setShowForum(false);
+//						config.setShowContactUs(true);
+//						config.setShowPostIdea(false);
+//						config.setShowKnowledgeBase(false);
+//						ApplicationController.UserVoiceReady = true;
+//						UserVoice.launchContactUs(DivesActivity.this);
+//						dialog.dismiss();
+//					}
+//					return true;
+//				case R.id.menu_logout:
+//					final Dialog dialog = new Dialog(DivesActivity.this);
+//					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//					dialog.setContentView(R.layout.dialog_edit_confirm);
+//					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+//					Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+//					TextView title = (TextView) dialog.findViewById(R.id.title);
+//					TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
+//					title.setTypeface(faceB);
+//					title.setText(getResources().getString(R.string.exit_title));
+//					exitTV.setTypeface(faceR);
+//					exitTV.setText(getResources().getString(R.string.confirm_logout));
+//					Button cancel = (Button) dialog.findViewById(R.id.cancel);
+//					cancel.setTypeface(faceR);
+//					cancel.setText(getResources().getString(R.string.cancel));
+//					cancel.setOnClickListener(new View.OnClickListener() {
+//
+//						@Override
+//						public void onClick(View v) {
+//							// TODO Auto-generated method stub
+//							dialog.dismiss();
+//						}
+//					});
+//					Button save = (Button) dialog.findViewById(R.id.save);
+//					save.setTypeface(faceR);
+//					save.setText(getResources().getString(R.string.menu_logout));
+//					save.setOnClickListener(new View.OnClickListener() {
+//
+//						@Override
+//						public void onClick(View v) {
+//							// TODO Auto-generated method stub
+//							logout();
+//						}
+//					});
+//					dialog.show();
+//					return true;
+//				default:
+//					return false;
+//				}
+//			}
+//
+//		});
+//
+//	}
+//
+//	public void goToMenuV2(View view)
+//	{
+//		// Settings floating menu
+//		registerForContextMenu(view);
+//		openContextMenu(view);
+//		unregisterForContextMenu(view);
+//	}
+//
+//	//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
+//	public void openMenu(View view)
+//	{
+//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
+//		{
+//			goToMenuV3(view);
+//		}
+//		else
+//			goToMenuV2(view);
+//	}
+//
+//	@Override
+//	public boolean onContextItemSelected(MenuItem item) {
+//		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
+//		switch (item.getItemId()) {
+//		case R.id.refresh:
+//			ApplicationController AC = (ApplicationController)getApplicationContext();
+//			AC.setDataReady(false);
+//			AC.getModel().stopPreloadPictures();
+//			AC.setModel(null);
+//			finish();
+//			return true;
+//		case R.id.add_dive:
+//			Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
+//			startActivity(newDiveActivity);
+//			return true;
+//		case R.id.menu_settings:
+//			Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
+//			startActivity(settingsActivity);
+//			return true;
+//		case R.id.report_bug:
+//			if (true)
+//			{
+//				WaitDialogFragment dialog = new WaitDialogFragment();
+//				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+//				Config config = new Config("diveboard.uservoice.com");
+//				if(mModel.getSessionEmail() != null)
+//					config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+//				UserVoice.init(config, DivesActivity.this);
+//				config.setShowForum(false);
+//				config.setShowContactUs(true);
+//				config.setShowPostIdea(false);
+//				config.setShowKnowledgeBase(false);
+//				ApplicationController.UserVoiceReady = true;
+//				UserVoice.launchContactUs(DivesActivity.this);
+//				dialog.dismiss();
+//			}
+//			return true;
+//		case R.id.menu_logout:
+//			logout();
+//			return true;
+//
+//		default:
+//			return super.onContextItemSelected(item);
+//		}
+//	}
 
 	public void goToDiveDetails(View view)
 	{
@@ -1338,16 +1338,16 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	}
 
 
-	@Override
-	public boolean onKeyDown(int keycode, KeyEvent e) {
-		switch(keycode) {
-		case KeyEvent.KEYCODE_MENU:
-			openMenu(findViewById(R.id.load_data_form));
-			return true;
-		}
-
-		return super.onKeyDown(keycode, e);
-	}
+//	@Override
+//	public boolean onKeyDown(int keycode, KeyEvent e) {
+//		switch(keycode) {
+//		case KeyEvent.KEYCODE_MENU:
+//			openMenu(findViewById(R.id.load_data_form));
+//			return true;
+//		}
+//
+//		return super.onKeyDown(keycode, e);
+//	}
 
 	//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
 	//        @Override
