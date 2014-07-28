@@ -59,9 +59,6 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		EditDialog editDialog = new EditDialog(getActivity());
-		editDialog.setTitle(getString(R.string.edit_max_depth_title));
-
 		final Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_max_depth, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
