@@ -70,7 +70,7 @@ public class NavDrawer extends FragmentActivity {
         		// TODO Auto-generated method stub
         		
         		Typeface mFaceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-        		View v = super.getView(position, convertView, parent);
+        		View v = super.getView(position, null, null);
 				((TextView) v).setTypeface(Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf"));
 				
 				return v;
@@ -146,7 +146,7 @@ public class NavDrawer extends FragmentActivity {
     		switch (position) {	
     		// Logbook
     		case 0:
-    			if(!(this instanceof WalletActivity)){
+    			if(!(this instanceof DivesActivity)){
 					((ApplicationController)getApplicationContext()).setRefresh(1);
     				finish();
     			}
