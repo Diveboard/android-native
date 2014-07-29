@@ -368,22 +368,36 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="1dp"
-        android:background="@color/white"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content" 
+        android:orientation="vertical"
+        android:background="#FFDADBDC">
+
+        <TextView
+            android:id="@+id/review_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:padding="10dp"
+            android:text="@string/edit_review_title"
+            android:textAllCaps="true"
+            android:background="@color/white"
+            android:textColor="#000000" />
 
         <LinearLayout
             android:id="@+id/layout_review"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            
+            android:baselineAligned="false"
             android:gravity="center"
-            android:orientation="horizontal" >
+            android:orientation="horizontal"
+            android:layout_marginBottom="1dp" >
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.35"
+                android:background="@color/white"
                 android:gravity="right"
                 android:orientation="vertical" >
 
@@ -391,10 +405,10 @@
                     android:id="@+id/overallTV"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_weight="0.3"
+                    android:layout_weight="0.5"
                     android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:text="Overall"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_overall"
                     android:textColor="#000000" />
 
                 <TextView
@@ -403,8 +417,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:text="Difficulty"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_difficulty"
                     android:textColor="#000000" />
 
                 <TextView
@@ -413,8 +427,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:text="Marine life quality"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_life"
                     android:textColor="#000000" />
 
                 <TextView
@@ -423,8 +437,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:text="Big Fish"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_fish"
                     android:textColor="#000000" />
 
                 <TextView
@@ -433,8 +447,8 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="0.5"
                     android:gravity="center"
-                    android:paddingTop="5dp"
-                    android:text="Wreck"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_wreck"
                     android:textColor="#000000" />
             </LinearLayout>
 
@@ -442,6 +456,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="0.65"
+                android:background="@color/white"
                 android:orientation="vertical" >
 
                 <RatingBar
@@ -454,7 +469,7 @@
                     android:clickable="false"
                     android:isIndicator="false"
                     android:numStars="5"
-                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:rating="0.0"
                     android:stepSize="1.0" />
 
@@ -468,7 +483,7 @@
                     android:clickable="false"
                     android:gravity="center"
                     android:numStars="5"
-                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:rating="0.0"
                     android:stepSize="1.0" />
 
@@ -482,7 +497,7 @@
                     android:clickable="false"
                     android:gravity="center"
                     android:numStars="5"
-                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:rating="0.0"
                     android:stepSize="1.0" />
 
@@ -496,7 +511,7 @@
                     android:clickable="false"
                     android:gravity="center"
                     android:numStars="5"
-                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:rating="0.0"
                     android:stepSize="1.0" />
 
@@ -510,7 +525,7 @@
                     android:clickable="false"
                     android:gravity="center"
                     android:numStars="5"
-                    android:paddingTop="5dp"
+                    android:paddingBottom="5dp"
                     android:rating="0.0"
                     android:stepSize="1.0" />
             </LinearLayout>
@@ -527,7 +542,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="1dp"
-            android:layout_marginTop="1dp"
             android:background="@color/white"
             android:orientation="vertical"
             android:padding="10dp" >
@@ -559,21 +573,22 @@
             android:background="@color/white"
             android:paddingLeft="10dp"
             android:paddingTop="10dp"
-            android:text="TANKS:"
+            android:text="@string/tanks_label"
+            android:textAllCaps="true"
             android:textColor="#000000" />
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/white"
-            android:paddingBottom="10dp" >
+            android:paddingBottom="5dp" >
 
             <LinearLayout
                 android:id="@+id/tank_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:paddingBottom="10dp" >
+                android:paddingBottom="5dp" >
             </LinearLayout>
         </HorizontalScrollView>
     </LinearLayout>

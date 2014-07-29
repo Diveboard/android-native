@@ -62,7 +62,7 @@ public class					EditTanksDialogFragment extends DialogFragment
 	private Spinner					mVolumeLabel;
 	private Spinner					mMixLabel;
 	private Spinner					mPressureLabel;
-	private int						mTextSize = 15;
+	private int						mTextSize = 20;
 	
 	 @Override
 	 public void onAttach(Activity activity)
