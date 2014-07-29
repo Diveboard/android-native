@@ -9,6 +9,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 
 import android.support.v4.app.DialogFragment;
 import android.text.InputType;
@@ -121,7 +122,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		depth.addView(mDepthField);
 		
 		mDepthLabel = new Spinner(getActivity().getApplicationContext());
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		String safetystop_unit = mSafetyStops.get(mIndex).getUnit();
 		if (safetystop_unit == null)
 		{
@@ -218,8 +219,6 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 				if (mDurationField.getText().toString().isEmpty())
 					mDurationField.setText("0");
 				mSafetyStops.set(mIndex, new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
-				mDepthField = null;
-				mDepthField = null;
 				mIndex = null;
 				openSafetyStopsList();
 			}
@@ -258,7 +257,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		depth.addView(mDepthField);
 		
 		mDepthLabel = new Spinner(getActivity().getApplicationContext());
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		if (Units.getDistanceUnit() == Units.Distance.KM)
 		{
 			adapter.add(getResources().getString(R.string.unit_m));

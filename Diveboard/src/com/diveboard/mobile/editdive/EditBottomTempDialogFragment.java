@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -89,7 +90,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 //		temp_label.setTypeface(faceR);
 //		temp_label.setText("º" + mTemperature.getSmallName());
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		DiveboardSpinnerAdapter adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mModel.getDives().get(getArguments().getInt("index")).getTempBottomUnit() == null)
 		{
