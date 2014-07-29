@@ -23,7 +23,9 @@
     </issue>
     <issue id="RtlCompat" severity="error" />
     <issue id="RtlEnabled" severity="warning" />
-    <issue id="RtlHardcoded" severity="warning" />
+    <issue id="RtlHardcoded" severity="warning">
+        <ignore path="res/layout/dialog_review.xml" />
+    </issue>
     <issue id="SelectableText" severity="warning" />
     <issue id="StopShip" severity="warning" />
     <issue id="StringFormatInvalid" severity="informational" />

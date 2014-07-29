@@ -18,11 +18,11 @@ import android.widget.TextView;
 
 public class EditDialog extends Dialog implements android.view.View.OnClickListener{
 
-	private String 					mTitle ="";
-	private String 					mBody = "";
-	private String 					okText, cancelText;
-	private Context 				mContext;
-	private View.OnClickListener 	positiveBtn, negativeBtn;	
+	protected String 					mTitle ="";
+	protected String 					mBody = "";
+	protected String 					okText, cancelText;
+	protected Context 				mContext;
+	protected View.OnClickListener 	positiveBtn, negativeBtn;	
 	protected View 					mContent;
 	
 	public EditDialog(Activity a) {
@@ -107,7 +107,7 @@ public class EditDialog extends Dialog implements android.view.View.OnClickListe
 		title.setText(getTitle().toUpperCase());
 		exitTV.setVisibility(View.GONE);
 		if(mContent != null){
-			LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+			LayoutParams lp = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
 //			mContent.setLayoutParams(lp);
 			dialogContent.setPadding(15, 15, 15, 15);
 			dialogContent.setLayoutParams(lp);
