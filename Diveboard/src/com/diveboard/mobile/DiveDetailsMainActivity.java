@@ -3,6 +3,32 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import android.app.Activity;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Paint;
+import android.graphics.Typeface;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentActivity;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+import android.view.Gravity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
+import android.widget.LinearLayout;
+import android.widget.RatingBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
 import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditDiveActivity;
@@ -10,36 +36,12 @@ import com.diveboard.model.Buddy;
 import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveDeleteListener;
-import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.model.Utils;
-import com.diveboard.util.ImageFetcher;
+import com.diveboard.util.EditDialog;
 import com.diveboard.util.ImageCache.ImageCacheParams;
-
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.Paint;
-import android.graphics.Typeface;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
-import android.util.DisplayMetrics;
-import android.util.TypedValue;
-import android.view.Gravity;
-import android.view.View;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup.LayoutParams;
-import android.view.ViewGroup.MarginLayoutParams;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RatingBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
+import com.diveboard.util.ImageFetcher;
 
 public class DiveDetailsMainActivity extends FragmentActivity implements
 DeleteConfirmDialogListener {
@@ -59,7 +61,6 @@ DeleteConfirmDialogListener {
 	private static final String IMAGE_CACHE_DIR = "thumbs";
 	private LinearLayout mListBuddyPictures;
 	private LinearLayout mListTanks;
-	private DiveboardModel mModel;
 
 	public int dpToPx(int dp) {
 		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -113,11 +114,10 @@ DeleteConfirmDialogListener {
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 
 		setContentView(R.layout.activity_dive_details_main);
-
-		mModel = ((ApplicationController)getApplicationContext()).getModel();
+		// System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
-		Typeface faceR = mModel.getmLatoR();
-		Typeface faceB = mModel.getmLatoB();
+		Typeface faceR = Typeface.createFromAsset(getAssets(),"fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(),"fonts/Lato-Regular.ttf");
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
@@ -159,7 +159,26 @@ DeleteConfirmDialogListener {
 			((TextView) findViewById(R.id.shop_name)).setTypeface(faceB);
 			((TextView) findViewById(R.id.shop_name)).setTextSize(
 					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			// ((TextView)findViewById(R.id.shop_reviews)).setText("0 REVIEW");
+			((TextView)findViewById(R.id.shop_review)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					final ReviewDialog d = new ReviewDialog(getParent());
+					d.setPositiveListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							d.dismiss();
+						}
+					});
+					d.setNegativeListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							d.dismiss();
+						}
+					});
+					d.show();
+				}
+			});
+			((TextView)findViewById(R.id.shop_review)).setVisibility(View.VISIBLE);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP,
 			// FONT_SIZE);
@@ -343,14 +362,6 @@ DeleteConfirmDialogListener {
 		}
 
 		// Visualizing Reviews
-		TextView reviewTitle = (TextView) findViewById(R.id.review_title);
-		reviewTitle.setTypeface(faceB);
-		reviewTitle.setTextSize(15);
-		((TextView) findViewById(R.id.overallTV)).setTypeface(faceR);
-		((TextView) findViewById(R.id.difficultyTV)).setTypeface(faceR);
-		((TextView) findViewById(R.id.lifeTV)).setTypeface(faceR);
-		((TextView) findViewById(R.id.fishTV)).setTypeface(faceR);
-		((TextView) findViewById(R.id.wreckTV)).setTypeface(faceR);
 		mOverall = (RatingBar) findViewById(R.id.overall_review);
 		mDifficulty = (RatingBar) findViewById(R.id.difficulty_review);
 		mFish = (RatingBar) findViewById(R.id.fish_review);
@@ -423,9 +434,7 @@ DeleteConfirmDialogListener {
 		for (Buddy b : mDive.getBuddies())
 		{
 			LinearLayout layout = new LinearLayout(getApplicationContext());
-			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(250, 290);
-//			lp.setMargins(0, 0, 0, 20);
-			layout.setLayoutParams(lp);
+			layout.setLayoutParams(new LayoutParams(250, 250));
 			layout.setOrientation(LinearLayout.VERTICAL);
 			layout.setGravity(Gravity.CENTER);
 
@@ -448,176 +457,191 @@ DeleteConfirmDialogListener {
 		title.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		for (Tank tank : mDive.getTanks())
 		{
-				final float scale = getResources().getDisplayMetrics().density;
-				LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-				LinearLayout tankElem = new LinearLayout(getApplicationContext());
-				tankElem.setLayoutParams(params);
-				tankElem.setOrientation(LinearLayout.HORIZONTAL);
-				tankElem.setGravity(Gravity.CENTER);
-				tankElem.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
-				TextView text = new TextView(getApplicationContext());
-				text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
-				text.setTypeface(faceR);
-				//				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
-				text.setTextSize(15);
-				text.setPadding((int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),0);
+			final float scale = getResources().getDisplayMetrics().density;
+			LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			LinearLayout tankElem = new LinearLayout(getApplicationContext());
+			tankElem.setLayoutParams(params);
+			tankElem.setOrientation(LinearLayout.HORIZONTAL);
+			tankElem.setGravity(Gravity.CENTER);
+			tankElem.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
+			TextView text = new TextView(getApplicationContext());
+			text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			text.setTypeface(faceR);
+			//				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
+			text.setTextSize(15);
+			text.setPadding((int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),0);
 
-				//Writing the summary string of the tank
-				String tanksSummary = "";
-				if(tank.getMultitank() == 2)
-					tanksSummary = "2x";
-				tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
-				if(tank.getGasType().equals("nitrox"))
-					tanksSummary += "Nx " + tank.getO2();
-				else if (tank.getGasType().equals("trimix"))
-					tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
-				else if (tank.getGasType().equals("air"))
-					tanksSummary += getResources().getString(R.string.air_mix);
-				else
-					tanksSummary += tank.getGasType().toUpperCase();
-				tanksSummary +="\n";
-				tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
-				if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
-					tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
+			//Writing the summary string of the tank
+			String tanksSummary = "";
+			if(tank.getMultitank() == 2)
+				tanksSummary = "2x";
+			tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
+			if(tank.getGasType().equals("nitrox"))
+				tanksSummary += "Nx " + tank.getO2();
+			else if (tank.getGasType().equals("trimix"))
+				tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
+			else if (tank.getGasType().equals("air"))
+				tanksSummary += getResources().getString(R.string.air_mix);
+			else
+				tanksSummary += tank.getGasType().toUpperCase();
+			tanksSummary +="\n";
+			tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
+			if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
+				tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
 
-				text.setText(tanksSummary);
-				text.setTextColor(getResources().getColor(R.color.dark_grey));
-				text.setGravity(Gravity.LEFT);
+			text.setText(tanksSummary);
+			text.setTextColor(getResources().getColor(R.color.dark_grey));
+			text.setGravity(Gravity.LEFT);
 
-				tankElem.addView(text);
-				tankElem.setBackgroundResource(R.color.white);
-				mListTanks.addView(tankElem);
-			}
-			mDownloadImageTask = new DownloadImageTask(mPic);
-			mDownloadImageTask.execute();
+			tankElem.addView(text);
+			tankElem.setBackgroundResource(R.color.white);
+			mListTanks.addView(tankElem);
+		}
+		mDownloadImageTask = new DownloadImageTask(mPic);
+		mDownloadImageTask.execute();
+	}
+
+	private class DownloadShopLogoTask extends AsyncTask<Void, Void, Bitmap> {
+		private final WeakReference<ImageView> imageViewReference;
+		private boolean isPicture = false;
+
+		public DownloadShopLogoTask(ImageView imageView) {
+			imageViewReference = new WeakReference<ImageView>(imageView);
 		}
 
-		private class DownloadShopLogoTask extends AsyncTask<Void, Void, Bitmap> {
-			private final WeakReference<ImageView> imageViewReference;
-			private boolean isPicture = false;
-
-			public DownloadShopLogoTask(ImageView imageView) {
-				imageViewReference = new WeakReference<ImageView>(imageView);
+		protected Bitmap doInBackground(Void... voids) {
+			try {
+				if (mDive.getShopPicture() != null)
+					return mDive.getShopPicture().getPicture(
+							DiveDetailsMainActivity.this);
+				// return
+				// mDive.getShop().getLogo().getPicture(DiveDetailsMainActivity.this);
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
 			}
-
-			protected Bitmap doInBackground(Void... voids) {
-				try {
-					if (mDive.getShopPicture() != null)
-						return mDive.getShopPicture().getPicture(
-								DiveDetailsMainActivity.this);
-					// return
-					// mDive.getShop().getLogo().getPicture(DiveDetailsMainActivity.this);
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				return null;
-			}
-
-			protected void onPostExecute(Bitmap result) {
-				if (imageViewReference != null) {
-					final ImageView imageView = imageViewReference.get();
-					if (result != null && imageView != null) {
-						System.out.println("Shop result = " + result);
-						mShopLogo.setVisibility(View.VISIBLE);
-						mShopLogo.setImageBitmap(result);
-						mShopLogo.setScaleType(ScaleType.FIT_CENTER);
-					}
-				}
-			}
-
-			@Override
-			protected void onCancelled() {
-				mDownloadImageTask = null;
-			}
+			return null;
 		}
 
-		private class DownloadGraphTask extends AsyncTask<Void, Void, Bitmap> {
-			private final WeakReference<ImageView> imageViewReference;
-
-			public DownloadGraphTask(ImageView imageView) {
-				imageViewReference = new WeakReference<ImageView>(imageView);
-			}
-
-			protected Bitmap doInBackground(Void... voids) {
-				try {
-					if (DiveDetailsMainActivity.this != null
-							&& mDive.getProfile() != null) {
-						return mDive.getProfile().getPicture(
-								getApplicationContext());
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				} catch (NullPointerException e) {
-					return null;
+		protected void onPostExecute(Bitmap result) {
+			if (imageViewReference != null) {
+				final ImageView imageView = imageViewReference.get();
+				if (result != null && imageView != null) {
+					System.out.println("Shop result = " + result);
+					mShopLogo.setVisibility(View.VISIBLE);
+					mShopLogo.setImageBitmap(result);
+					mShopLogo.setScaleType(ScaleType.FIT_CENTER);
 				}
-				return null;
-			}
-
-			protected void onPostExecute(Bitmap result) {
-				if (imageViewReference != null) {
-					final ImageView imageView = imageViewReference.get();
-					if (result != null && imageView != null) {
-						imageView.setImageBitmap(result);
-					}
-				}
-			}
-
-			@Override
-			protected void onCancelled() {
-				mDownloadGraphTask = null;
-			}
-		}
-
-		private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
-			private final WeakReference<ImageView> imageViewReference;
-			private boolean isPicture = false;
-
-			public DownloadImageTask(ImageView imageView) {
-				imageViewReference = new WeakReference<ImageView>(imageView);
-			}
-
-			protected Bitmap doInBackground(Void... voids) {
-				try {
-					if (DiveDetailsMainActivity.this != null) {
-						ApplicationController AC = ((ApplicationController) getApplicationContext());
-						if(AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext()) != null )
-							return AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext());
-						else 
-							return null;
-					}
-				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-
-				} catch (RuntimeException e){
-					e.printStackTrace();
-				}
-
-				return null;
-			}
-
-			protected void onPostExecute(Bitmap result) {
-				if (imageViewReference != null) {
-					final ImageView imageView = imageViewReference.get();
-					if (result != null && imageView != null) {
-						imageView.setImageBitmap(result);
-						mRoundedPic.setImageBitmap(mRoundedLayerSmall);
-						imageView.setScaleType(ScaleType.CENTER_CROP);
-					}
-				}
-			}
-
-			@Override
-			protected void onCancelled() {
-				mDownloadImageTask = null;
 			}
 		}
 
 		@Override
-		public void onDeleteConfirm(DialogFragment dialog) {
-			goToDeleteDive();
+		protected void onCancelled() {
+			mDownloadImageTask = null;
+		}
+	}
+
+	private class DownloadGraphTask extends AsyncTask<Void, Void, Bitmap> {
+		private final WeakReference<ImageView> imageViewReference;
+
+		public DownloadGraphTask(ImageView imageView) {
+			imageViewReference = new WeakReference<ImageView>(imageView);
 		}
 
+		protected Bitmap doInBackground(Void... voids) {
+			try {
+				if (DiveDetailsMainActivity.this != null
+						&& mDive.getProfile() != null) {
+					return mDive.getProfile().getPicture(
+							getApplicationContext());
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			} catch (NullPointerException e) {
+				return null;
+			}
+			return null;
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			if (imageViewReference != null) {
+				final ImageView imageView = imageViewReference.get();
+				if (result != null && imageView != null) {
+					imageView.setImageBitmap(result);
+				}
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mDownloadGraphTask = null;
+		}
 	}
+
+	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap> {
+		private final WeakReference<ImageView> imageViewReference;
+		private boolean isPicture = false;
+
+		public DownloadImageTask(ImageView imageView) {
+			imageViewReference = new WeakReference<ImageView>(imageView);
+		}
+
+		protected Bitmap doInBackground(Void... voids) {
+			try {
+				if (DiveDetailsMainActivity.this != null) {
+					ApplicationController AC = ((ApplicationController) getApplicationContext());
+					if(AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext()) != null )
+						return AC.getModel().getUser().getPictureSmall().getPicture(getApplicationContext());
+					else 
+						return null;
+				}
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+
+			} catch (RuntimeException e){
+				e.printStackTrace();
+			}
+
+			return null;
+		}
+
+		protected void onPostExecute(Bitmap result) {
+			if (imageViewReference != null) {
+				final ImageView imageView = imageViewReference.get();
+				if (result != null && imageView != null) {
+					imageView.setImageBitmap(result);
+					mRoundedPic.setImageBitmap(mRoundedLayerSmall);
+					imageView.setScaleType(ScaleType.CENTER_CROP);
+				}
+			}
+		}
+
+		@Override
+		protected void onCancelled() {
+			mDownloadImageTask = null;
+		}
+	}
+
+	@Override
+	public void onDeleteConfirm(DialogFragment dialog) {
+		goToDeleteDive();
+	}
+	
+	private class ReviewDialog extends EditDialog
+	{
+		public ReviewDialog(Activity a) {
+			super(a);
+			View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_review, null);
+			mTitle = getString(R.string.shop_review_title);
+			
+			Spinner spinner = (Spinner) v.findViewById(R.id.shop_review_service);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext,
+			        R.array.shop_review_service, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			mContent = v;
+		}
+	}
+}

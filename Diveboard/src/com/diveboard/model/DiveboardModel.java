@@ -1028,7 +1028,6 @@ public class					DiveboardModel
 		
 		public LoadPictureThread(int start, int increment, int locknb)
 		{
-			Log.d("picture", "Launch thread");
 			_start = start;
 			_increment = increment;
 			_run = true;
