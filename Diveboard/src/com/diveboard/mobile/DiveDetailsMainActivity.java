@@ -10,6 +10,7 @@ import com.diveboard.model.Buddy;
 import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveDeleteListener;
+import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.model.Utils;
@@ -58,6 +59,7 @@ DeleteConfirmDialogListener {
 	private static final String IMAGE_CACHE_DIR = "thumbs";
 	private LinearLayout mListBuddyPictures;
 	private LinearLayout mListTanks;
+	private DiveboardModel mModel;
 
 	public int dpToPx(int dp) {
 		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -111,10 +113,11 @@ DeleteConfirmDialogListener {
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 
 		setContentView(R.layout.activity_dive_details_main);
-		// System.out.println(dpToPx(50));
+
+		mModel = ((ApplicationController)getApplicationContext()).getModel();
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
-		Typeface faceR = Typeface.createFromAsset(getAssets(),"fonts/Lato-Light.ttf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(),"fonts/Lato-Regular.ttf");
+		Typeface faceR = mModel.getmLatoR();
+		Typeface faceB = mModel.getmLatoB();
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
@@ -340,6 +343,13 @@ DeleteConfirmDialogListener {
 		}
 
 		// Visualizing Reviews
+		TextView reviewTitle = (TextView) findViewById(R.id.review_title);
+		reviewTitle.setTypeface(faceB);
+		((TextView) findViewById(R.id.overallTV)).setTypeface(faceR);
+		((TextView) findViewById(R.id.difficultyTV)).setTypeface(faceR);
+		((TextView) findViewById(R.id.lifeTV)).setTypeface(faceR);
+		((TextView) findViewById(R.id.fishTV)).setTypeface(faceR);
+		((TextView) findViewById(R.id.wreckTV)).setTypeface(faceR);
 		mOverall = (RatingBar) findViewById(R.id.overall_review);
 		mDifficulty = (RatingBar) findViewById(R.id.difficulty_review);
 		mFish = (RatingBar) findViewById(R.id.fish_review);
@@ -412,7 +422,9 @@ DeleteConfirmDialogListener {
 		for (Buddy b : mDive.getBuddies())
 		{
 			LinearLayout layout = new LinearLayout(getApplicationContext());
-			layout.setLayoutParams(new LayoutParams(250, 250));
+			LinearLayout.LayoutParams lp = new LinearLayout.LayoutParams(250, 290);
+//			lp.setMargins(0, 0, 0, 20);
+			layout.setLayoutParams(lp);
 			layout.setOrientation(LinearLayout.VERTICAL);
 			layout.setGravity(Gravity.CENTER);
 

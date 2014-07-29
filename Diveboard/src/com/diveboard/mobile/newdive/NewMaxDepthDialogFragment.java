@@ -71,8 +71,6 @@ public class					NewMaxDepthDialogFragment extends DialogFragment implements OnE
 		
 		mMaxDepth = (EditText) view.findViewById(R.id.max_depth);
 		mMaxDepth.setTypeface(faceR);
-//		if (mDive.getMaxdepth() != null)
-//			mMaxDepth.setText(Double.toString(mDive.getMaxdepth().getDistance()));
 		if (mDive.getMaxdepth() != null)
 			mMaxDepth.setText(Double.toString(mDive.getMaxdepth()));
 		mMaxDepth.setSelection(mMaxDepth.getText().length());
