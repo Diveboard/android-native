@@ -345,6 +345,7 @@ DeleteConfirmDialogListener {
 		// Visualizing Reviews
 		TextView reviewTitle = (TextView) findViewById(R.id.review_title);
 		reviewTitle.setTypeface(faceB);
+		reviewTitle.setTextSize(15);
 		((TextView) findViewById(R.id.overallTV)).setTypeface(faceR);
 		((TextView) findViewById(R.id.difficultyTV)).setTypeface(faceR);
 		((TextView) findViewById(R.id.lifeTV)).setTypeface(faceR);
