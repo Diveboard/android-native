@@ -46,15 +46,16 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
         void					onSafetyStopsEditComplete(DialogFragment dialog);
     }
 	
-	private ArrayList<SafetyStop>	mSafetyStops;
-	private DiveboardModel		mModel;
-	private Typeface			mFaceR;
-	private View				mView;
-	EditSafetyStopsDialogListener	mListener;
-	private EditText			mDepthField;
-	private EditText			mDurationField;
-	private Integer				mIndex;
-	private Spinner				mDepthLabel;
+	private ArrayList<SafetyStop>		mSafetyStops;
+	private DiveboardModel				mModel;
+	private Typeface					mFaceR;
+	private View						mView;
+	EditSafetyStopsDialogListener		mListener;
+	private EditText					mDepthField;
+	private EditText					mDurationField;
+	private Integer						mIndex;
+	private Spinner						mDepthLabel;
+	private int							mTextSize = 30;
 	
 	 @Override
 	 public void onAttach(Activity activity)
@@ -81,20 +82,23 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		text.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
 		text.setTypeface(mFaceR);
 		text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
-		text.setTextSize(30);
+		text.setTextSize(mTextSize);
 		text.setText(getResources().getString(R.string.no_safety_stops));
 		text.setTextColor(getResources().getColor(R.color.dark_grey));
 		text.setGravity(Gravity.CENTER);
 		layout.addView(text);
 	}
 	
-	private void				openSafetyStopsEdit(Integer index)
+	private void				openSafetyStopsEdit(final Integer index)
 	{
-		mIndex = index;
+		if(index == -1)
+			mIndex = mSafetyStops.size() - 1;
+		else
+			mIndex = index;
 		LinearLayout safetylist = (LinearLayout) mView.findViewById(R.id.safetyfields);
 		safetylist.removeAllViews();
 		final float scale = getResources().getDisplayMetrics().density;
-		SafetyStop safetyStop = mSafetyStops.get(index);
+		SafetyStop safetyStop = mSafetyStops.get(mIndex);
 		
 		Button add_button = (Button) mView.findViewById(R.id.add_button);
 		add_button.setVisibility(Button.GONE);
@@ -109,15 +113,15 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		depth_title.setTypeface(mFaceR);
 		depth_title.setTextColor(getResources().getColor(R.color.dark_grey));
 		depth_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		depth_title.setTextSize(30);
+		depth_title.setTextSize(mTextSize);
 		depth_title.setText(getResources().getString(R.string.depth_label) +" :");
 		depth.addView(depth_title);
 		
 		mDepthField = new EditText(getActivity().getApplicationContext());
-		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDepthField.setInputType(InputType.TYPE_CLASS_NUMBER );
 		mDepthField.setTypeface(mFaceR);
 		mDepthField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mDepthField.setTextSize(30);
+		mDepthField.setTextSize(mTextSize);
 		mDepthField.setText(safetyStop.getDepth().toString());
 		depth.addView(mDepthField);
 		
@@ -165,23 +169,23 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 		TextView duration_title = new TextView(getActivity().getApplicationContext());
 		duration_title.setTypeface(mFaceR);
 		duration_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		duration_title.setTextSize(30);
+		duration_title.setTextSize(mTextSize);
 		duration_title.setText(getResources().getString(R.string.duration_label) + " :");
 		duration_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
 		duration.addView(duration_title);
 		
 		mDurationField = new EditText(getActivity().getApplicationContext());
-		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
+		mDurationField.setInputType(InputType.TYPE_CLASS_NUMBER );
 		mDurationField.setTypeface(mFaceR);
 		mDurationField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mDurationField.setTextSize(30);
+		mDurationField.setTextSize(mTextSize);
 		mDurationField.setText(safetyStop.getDuration().toString());
 		duration.addView(mDurationField);
 		
 		TextView duration_label = new TextView(getActivity().getApplicationContext());
 		duration_label.setTypeface(mFaceR);
 		duration_label.setTextColor(getResources().getColor(R.color.dark_grey));
-		duration_label.setTextSize(30);
+		duration_label.setTextSize(mTextSize);
 		duration_label.setText(getResources().getString(R.string.unit_min));
 		duration.addView(duration_label);
 		
@@ -200,6 +204,12 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 				mDepthField = null;
 				mDepthField = null;
 				mIndex = null;
+
+				//it is a new safetyStop
+				if(index == -1){
+					mSafetyStops.remove(mSafetyStops.size() - 1);
+				}				
+				
 				openSafetyStopsList();
 			}
 		});
@@ -220,124 +230,6 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 					mDurationField.setText("0");
 				mSafetyStops.set(mIndex, new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
 				mIndex = null;
-				openSafetyStopsList();
-			}
-		});
-	}
-	
-	private void				openSafetyStopsNew()
-	{
-		LinearLayout safetylist = (LinearLayout) mView.findViewById(R.id.safetyfields);
-		safetylist.removeAllViews();
-		final float scale = getResources().getDisplayMetrics().density;
-		
-		Button add_button = (Button) mView.findViewById(R.id.add_button);
-		add_button.setVisibility(Button.GONE);
-		
-		LinearLayout depth = new LinearLayout(getActivity().getApplicationContext());
-		LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		depth.setLayoutParams(params);
-		depth.setOrientation(LinearLayout.HORIZONTAL);
-		depth.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
-		
-		TextView depth_title = new TextView(getActivity().getApplicationContext());
-		depth_title.setTypeface(mFaceR);
-		depth_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		depth_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		depth_title.setTextSize(30);
-		depth_title.setText(getResources().getString(R.string.depth_label) + " :");
-		depth.addView(depth_title);
-		
-		mDepthField = new EditText(getActivity().getApplicationContext());
-		mDepthField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		mDepthField.setTypeface(mFaceR);
-		mDepthField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mDepthField.setTextSize(30);
-		mDepthField.setText("3");
-		depth.addView(mDepthField);
-		
-		mDepthLabel = new Spinner(getActivity().getApplicationContext());
-		ArrayAdapter<String> adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
-		if (Units.getDistanceUnit() == Units.Distance.KM)
-		{
-			adapter.add(getResources().getString(R.string.unit_m));
-			adapter.add(getResources().getString(R.string.unit_ft));
-		}
-		else
-		{
-			adapter.add(getResources().getString(R.string.unit_ft));
-			adapter.add(getResources().getString(R.string.unit_m));
-		}
-		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
-		mDepthLabel.setAdapter(adapter);
-		depth.addView(mDepthLabel);
-		
-		safetylist.addView(depth);
-		
-		LinearLayout duration = new LinearLayout(getActivity().getApplicationContext());
-		params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
-		duration.setLayoutParams(params);
-		duration.setOrientation(LinearLayout.HORIZONTAL);
-		duration.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
-		
-		TextView duration_title = new TextView(getActivity().getApplicationContext());
-		duration_title.setTypeface(mFaceR);
-		duration_title.setTextColor(getResources().getColor(R.color.dark_grey));
-		duration_title.setTextSize(30);
-		duration_title.setText(getResources().getString(R.string.duration_label) + " :");
-		duration_title.setPadding((int)(10 * scale + 0.5f), 0, 0, 0);
-		duration.addView(duration_title);
-		
-		mDurationField = new EditText(getActivity().getApplicationContext());
-		mDurationField.setRawInputType(InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL);
-		mDurationField.setTypeface(mFaceR);
-		mDurationField.setTextColor(getResources().getColor(R.color.dark_grey));
-		mDurationField.setTextSize(30);
-		mDurationField.setText("3");
-		duration.addView(mDurationField);
-		
-		TextView duration_label = new TextView(getActivity().getApplicationContext());
-		duration_label.setTypeface(mFaceR);
-		duration_label.setTextColor(getResources().getColor(R.color.dark_grey));
-		duration_label.setTextSize(30);
-		duration_label.setText(getResources().getString(R.string.unit_min));
-		duration.addView(duration_label);
-		
-		safetylist.addView(duration);
-		
-        Button cancel = (Button) mView.findViewById(R.id.cancel);
-        cancel.setTypeface(mFaceR);
-        cancel.setText(getResources().getString(R.string.cancel));
-        cancel.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v)
-			{
-				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
-				mDepthField = null;
-				mDepthField = null;
-				openSafetyStopsList();
-			}
-		});
-        
-        Button save = (Button) mView.findViewById(R.id.save);
-        save.setTypeface(mFaceR);
-        save.setText(getResources().getString(R.string.save));
-        save.setOnClickListener(new OnClickListener()
-        {
-			@Override
-			public void onClick(View v)
-			{
-				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
-				imm.hideSoftInputFromWindow(mDurationField.getWindowToken(), 0);
-				if (mDepthField.getText().toString().isEmpty())
-					mDepthField.setText("0");
-				if (mDurationField.getText().toString().isEmpty())
-					mDurationField.setText("0");
-				mSafetyStops.add(new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
-				mDepthField = null;
-				mDepthField = null;
 				openSafetyStopsList();
 			}
 		});
@@ -381,7 +273,7 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 				text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT, 1f));
 				text.setTypeface(mFaceR);
 				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
-				text.setTextSize(30);
+				text.setTextSize(mTextSize);
 				text.setText(mSafetyStops.get(i).getDepth() + mSafetyStops.get(i).getUnit() + " - " + mSafetyStops.get(i).getDuration() + getResources().getString(R.string.unit_min));
 				text.setTextColor(getResources().getColor(R.color.dark_grey));
 				text.setGravity(Gravity.CENTER);
@@ -418,12 +310,17 @@ public class					EditSafetyStopsDialogFragment extends DialogFragment
 			@Override
 			public void onClick(View v)
 			{
-				openSafetyStopsNew();
+//				openSafetyStopsNew();
+				SafetyStop newStop;
+				if (Units.getDistanceUnit() == Units.Distance.KM){
+					newStop = new SafetyStop(3, 3, "m");
+				}else
+					newStop = new SafetyStop(3, 3, "ft");
+				mSafetyStops.add(newStop);
+				openSafetyStopsEdit(-1);
 			}
 		});
 		add_button.setVisibility(Button.VISIBLE);
-//		if (mSafetyStops.size() >= 3)
-//			add_button.setVisibility(Button.GONE);
         
         Button cancel = (Button) mView.findViewById(R.id.cancel);
         cancel.setTypeface(mFaceR);
