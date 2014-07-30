@@ -2138,19 +2138,19 @@ public class					DiveboardModel
 		return null;
 	}
 	
-	public Typeface getmLatoR() {
+	public Typeface getLatoR() {
 		return _latoR;
 	}
 
-	public Typeface getmLatoB() {
+	public Typeface getLatoB() {
 		return _latoB;
 	}
 
-	public Typeface getmQuickR() {
+	public Typeface getQuickR() {
 		return _quickR;
 	}
 
-	public Typeface getmQuickB() {
+	public Typeface getQuickB() {
 		return _quickB;
 	}
 }

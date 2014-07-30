@@ -74,8 +74,8 @@ public class EditReviewDialogFragment extends DialogFragment implements
 		View view = inflater.inflate(R.layout.dialog_edit_review, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		mDive = mModel.getDives().get(getArguments().getInt("index"));
-		Typeface faceR = mModel.getmLatoR();
-		Typeface faceB = mModel.getmLatoB();
+		Typeface faceR = mModel.getLatoR();
+		Typeface faceB = mModel.getLatoB();
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 

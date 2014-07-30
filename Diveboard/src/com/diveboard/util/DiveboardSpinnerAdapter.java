@@ -21,7 +21,7 @@ public class DiveboardSpinnerAdapter extends ArrayAdapter<String> {
 	public DiveboardSpinnerAdapter(Context context, int resource) {
 		super(context, resource);
 		// TODO Auto-generated constructor stub
-		mFaceR = ((ApplicationController)context).getModel().getmLatoR();
+		mFaceR = ((ApplicationController)context).getModel().getLatoR();
 		mTextSize = 20;
 	}
 	 
@@ -29,7 +29,7 @@ public class DiveboardSpinnerAdapter extends ArrayAdapter<String> {
 		super(context, resource, items);
 		// TODO Auto-generated constructor stub
 //		mItemsList = items;
-		mFaceR = ((ApplicationController)context).getModel().getmLatoR();
+		mFaceR = ((ApplicationController)context).getModel().getLatoR();
 		mTextSize = 20;
 		
 	}

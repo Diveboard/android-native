@@ -79,8 +79,8 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 
-		Typeface faceR = mModel.getmLatoR();
-		Typeface faceB = mModel.getmLatoB();
+		Typeface faceR = mModel.getLatoR();
+		Typeface faceB = mModel.getLatoB();
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 

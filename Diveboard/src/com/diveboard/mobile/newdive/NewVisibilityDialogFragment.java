@@ -65,7 +65,7 @@ public class					NewVisibilityDialogFragment extends DialogFragment implements O
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		final Typeface faceR = mModel.getmLatoR();
+		final Typeface faceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_visibility, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
