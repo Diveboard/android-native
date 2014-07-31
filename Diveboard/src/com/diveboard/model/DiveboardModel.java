@@ -50,6 +50,7 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.os.RecoverySystem.ProgressListener;
 import android.util.Log;
 import android.util.Pair;
 
@@ -1930,6 +1931,64 @@ public class					DiveboardModel
 				if (json.getBoolean("success") == false)
 					return null;
 				return (new Picture(json.getJSONObject("result")));
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
+	public static interface ProgressListener {
+		
+		void progress(int progress);
+	}
+	
+	public Picture							uploadPicture(File picture_file, ProgressListener mProgressListener)
+	{
+		HttpClient							httpClient = new DefaultHttpClient();
+		HttpContext							localContext = new BasicHttpContext();
+		HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		int 								mUploadProgress = 0;
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+				mUploadProgress += 30;
+				mProgressListener.progress(mUploadProgress);
+				byte[] b = baos.toByteArray();
+				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+				entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+				entity.addPart("auth_token", new StringBody(_token));
+				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("flavour", new StringBody("private"));
+				httpPost.setEntity(entity);
+				mUploadProgress += 20;
+				mProgressListener.progress(mUploadProgress);
+				HttpResponse response = httpClient.execute(httpPost, localContext);
+				HttpEntity entity_response = response.getEntity();
+				String result = ContentExtractor.getASCII(entity_response);
+				mUploadProgress += 40;
+				mProgressListener.progress(mUploadProgress);
+				System.out.println("PICTURE UPLOADED SUCCESSFULLY!\n " + result);
+				JSONObject json = new JSONObject(result);
+				if (json.getBoolean("success") == false)
+					return null;
+				Picture p = new Picture(json.getJSONObject("result"));
+				mUploadProgress += 10;
+				mProgressListener.progress(mUploadProgress);
+				return p;
 			} catch (UnsupportedEncodingException e) {
 				e.printStackTrace();
 			} catch (ClientProtocolException e) {
