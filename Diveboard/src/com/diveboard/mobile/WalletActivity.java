@@ -988,6 +988,7 @@ public class WalletActivity extends NavDrawer {
 					// TODO Auto-generated method stub
 					mModel.getUser().clearEditList();
 					saveDialog.dismiss();
+					finish();
 				}
 
     		});
