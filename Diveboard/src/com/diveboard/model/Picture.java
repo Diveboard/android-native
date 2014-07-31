@@ -117,6 +117,7 @@ public class					Picture
 			try {
 				_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
 			} catch (SocketException e) {
+				e.printStackTrace();
 				Log.d("Diveboard Socket error", "Diveboard Socket error : " + url.toExternalForm());
 				return false;
 			}
