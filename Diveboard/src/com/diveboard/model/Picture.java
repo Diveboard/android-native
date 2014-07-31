@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
 
 import org.json.JSONException;
@@ -15,6 +16,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.util.Log;
 import android.util.Pair;
 
 public class					Picture
@@ -112,7 +114,13 @@ public class					Picture
 					url = new URL(_urlDefault);
 					break ;
 			}
-			_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+			try {
+				_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+			} catch (SocketException e) {
+				e.printStackTrace();
+				Log.d("Diveboard Socket error", "Diveboard Socket error : " + url.toExternalForm());
+				return false;
+			}
 			return true;
 		}
 		return false;
