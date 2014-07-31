@@ -48,18 +48,13 @@ public class NavDrawer extends FragmentActivity {
 		if((AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp()))
 			mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
 		//Setting up controls for the navigation drawer 
-//        if(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()){
-//			
-//        }
-//        else
-//        	mLinksTitles = getResources().getStringArray(R.array.menu_links_has_not_rated);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
         mDrawerList = (ListView) findViewById(R.id.menu_links);
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        final Typeface faceR = mModel.getmLatoR();
+        final Typeface faceR = mModel.getLatoR();
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
         	@Override

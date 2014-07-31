@@ -58,7 +58,7 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 		
 		View view = inflater.inflate(R.layout.dialog_edit_divetype, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		mFaceR = mModel.getmLatoR();
+		mFaceR = mModel.getLatoR();
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
@@ -86,7 +86,7 @@ public class					EditDiveTypeDialogFragment extends DialogFragment
 				    public View getView(int position, View convertView, ViewGroup parent)
 					{
 				        TextView textView = (TextView) super.getView(position, convertView, parent);
-						textView.setTypeface(mModel.getmLatoR());
+						textView.setTypeface(mModel.getLatoR());
 						textView.setTextSize(mTextSize);
 				        textView.setTextColor(getResources().getColor(R.color.dark_grey));
 				        return textView;

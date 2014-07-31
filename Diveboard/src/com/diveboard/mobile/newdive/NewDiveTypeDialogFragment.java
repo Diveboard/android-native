@@ -59,7 +59,7 @@ public class					NewDiveTypeDialogFragment extends DialogFragment
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		mFaceR = mModel.getmLatoR();
+		mFaceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_divetype, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -90,7 +90,7 @@ public class					NewDiveTypeDialogFragment extends DialogFragment
 				    public View getView(int position, View convertView, ViewGroup parent)
 					{
 				        TextView textView = (TextView) super.getView(position, convertView, parent);
-						textView.setTypeface(mModel.getmLatoR());
+						textView.setTypeface(mModel.getLatoR());
 						textView.setTextSize(mTextSize);
 				        textView.setTextColor(getResources().getColor(R.color.dark_grey));
 				        return textView;

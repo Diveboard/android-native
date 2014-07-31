@@ -434,7 +434,7 @@ DeleteConfirmDialogListener {
 		for (Buddy b : mDive.getBuddies())
 		{
 			LinearLayout layout = new LinearLayout(getApplicationContext());
-			layout.setLayoutParams(new LayoutParams(250, 250));
+			layout.setLayoutParams(new LayoutParams(250, 300));
 			layout.setOrientation(LinearLayout.VERTICAL);
 			layout.setGravity(Gravity.CENTER);
 

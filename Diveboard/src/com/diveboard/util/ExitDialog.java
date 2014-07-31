@@ -25,7 +25,8 @@ public class ExitDialog extends Dialog implements android.view.View.OnClickListe
 		// TODO Auto-generated constructor stub
 		super(a);
 		mContext = a;
-		mTitle = mContext.getResources().getString(R.string.exit_title);
+//		mTitle = mContext.getResources().getString(R.string.exit_title);
+		mTitle = "WARNING";
 		mBody = mContext.getResources().getString(R.string.edit_confirm_title);
 		okText = mContext.getResources().getString(R.string.save);
 		cancelText = mContext.getResources().getString(R.string.cancel);
@@ -83,13 +84,13 @@ public class ExitDialog extends Dialog implements android.view.View.OnClickListe
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_edit_confirm);
 		
-		Typeface quickR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 		Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
 		TextView title = (TextView) findViewById(R.id.title);
 		TextView exitTV = (TextView) findViewById(R.id.exitTV);
 		Button cancel = (Button) findViewById(R.id.cancel);
 		Button save = (Button) findViewById(R.id.save);
-		title.setTypeface(quickR);
+		title.setTypeface(faceB);
 		title.setText(getTitle().toUpperCase());
 		exitTV.setTypeface(faceR);
 		exitTV.setText(getBody());

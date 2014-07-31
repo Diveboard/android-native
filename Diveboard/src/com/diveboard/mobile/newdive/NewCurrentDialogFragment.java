@@ -65,7 +65,7 @@ public class					NewCurrentDialogFragment extends DialogFragment implements OnEd
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		final Typeface faceR = mModel.getmLatoR();
+		final Typeface faceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_current, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		

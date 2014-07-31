@@ -86,6 +86,7 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.diveboard.model.User;
+import com.diveboard.util.ExitDialog;
 
 public class WalletActivity extends NavDrawer {
 
@@ -977,8 +978,28 @@ public class WalletActivity extends NavDrawer {
 	{
 		if (mModel.getUser().getEditList().size() > 0)
 		{
-			SaveChangesDialog dialog = new SaveChangesDialog(this);
-			dialog.show();
+			final ExitDialog saveDialog = new ExitDialog(this);
+    		saveDialog.setTitle(getResources().getString(R.string.exit_title));
+    		saveDialog.setBody(getResources().getString(R.string.edit_confirm_title));
+    		saveDialog.setPositiveListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mModel.getUser().clearEditList();
+					saveDialog.dismiss();
+				}
+
+    		});
+    		saveDialog.setNegativeListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					saveDialog.dismiss();
+				}
+			});
+    		saveDialog.show();
 		}
 		else
 		{

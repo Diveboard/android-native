@@ -62,7 +62,7 @@ public class					NewSurfaceTempDialogFragment extends DialogFragment implements 
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		final Typeface faceR = mModel.getmLatoR();
+		final Typeface faceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		

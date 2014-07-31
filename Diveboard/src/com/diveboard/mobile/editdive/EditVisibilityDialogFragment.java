@@ -67,7 +67,7 @@ public class					EditVisibilityDialogFragment extends DialogFragment implements 
 		
 		View view = inflater.inflate(R.layout.dialog_edit_visibility, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		final Typeface faceR = mModel.getmLatoR();
+		final Typeface faceR = mModel.getLatoR();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		

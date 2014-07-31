@@ -61,7 +61,7 @@ public class					EditWeightsDialogFragment extends DialogFragment implements OnE
 		
 		View view = inflater.inflate(R.layout.dialog_edit_weights, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		final Typeface faceR = mModel.getmLatoR();
+		final Typeface faceR = mModel.getLatoR();
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
