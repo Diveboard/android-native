@@ -650,12 +650,13 @@ public class WalletActivity extends NavDrawer {
 			bar.setIndeterminate(false);
 			bar.setProgress(0);
 			bar.setMax(100);
+			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
 			mIsUploading = false;
 		}
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-
+			mIsUploading = true;
 			System.out.println("Uploading picture to the server ");
 			picture = mModel.uploadPicture(mFile, this);		
 			
@@ -942,8 +943,11 @@ public class WalletActivity extends NavDrawer {
 			});
     		saveDialog.show();
 		}
-		else
-		{
+		else if (mIsUploading){
+			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		} else	{
 			finish();
 		}
 	};
