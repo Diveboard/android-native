@@ -156,7 +156,7 @@ public class EditDiveActivity extends NavDrawer implements
 				mError = false;
 				mModel = ((ApplicationController)getApplicationContext()).getModel();
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
-				ArrayList<Pair<String, String>> editList = dive.getEditList();
+//				ArrayList<Pair<String, String>> editList = dive.getEditList();
 				if (mNotes != null && !mNotes.getText().toString().isEmpty() && !mNotes.getText().toString().equals(dive.getNotes()))
 					dive.setNotes(mNotes.getText().toString());
 				if (mNotes != null && mNotes.getText().toString().isEmpty() && dive.getNotes() != null && !dive.getNotes().isEmpty())
@@ -169,23 +169,23 @@ public class EditDiveActivity extends NavDrawer implements
 				}
 				if(!mError){
 			
-					if (editList != null && editList.size() > 0)
-					{
-						JSONObject edit = new JSONObject(); 
-						for (int i = 0, size = editList.size(); i < size; i++)
-							try {
-								if (editList.get(i).first.equals("spot")){
-									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-								}
-									
-								else if (editList.get(i).first.equals("shop"))
-									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-								else
-									edit.put(editList.get(i).first, editList.get(i).second);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-					}
+//					if (editList != null && editList.size() > 0)
+//					{
+//						JSONObject edit = new JSONObject(); 
+//						for (int i = 0, size = editList.size(); i < size; i++)
+//							try {
+//								if (editList.get(i).first.equals("spot")){
+//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+//								}
+//									
+//								else if (editList.get(i).first.equals("shop"))
+//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+//								else
+//									edit.put(editList.get(i).first, editList.get(i).second);
+//							} catch (JSONException e) {
+//								e.printStackTrace();
+//							}
+//					}
 					
 					mModel.getDataManager().save(dive);
 					//Refresh 2 is not as heavy as refresh 1, no loading screen cause it makes the changes on the background
