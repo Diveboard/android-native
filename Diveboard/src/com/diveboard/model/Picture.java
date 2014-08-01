@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.SocketException;
 import java.net.URL;
+import java.net.URLConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -115,7 +116,9 @@ public class					Picture
 					break ;
 			}
 			try {
-				_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+				final URLConnection u = url.openConnection();
+				_bitmap = BitmapFactory.decodeStream(u.getInputStream());
+				u.getInputStream().close();
 			} catch (SocketException e) {
 				e.printStackTrace();
 				Log.d("Diveboard Socket error", "Diveboard Socket error : " + url.toExternalForm());
@@ -167,6 +170,7 @@ public class					Picture
 			if (!loadPicture(context, size))
 				return;
 			_savePicture(context, size);
+			_bitmap.recycle();
 		}
 		return;
 	}
