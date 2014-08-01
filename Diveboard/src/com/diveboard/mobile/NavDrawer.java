@@ -27,7 +27,7 @@ import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
-public class NavDrawer extends FragmentActivity {
+public abstract class NavDrawer extends FragmentActivity {
 	
 	private DiveboardModel 					mModel;
 	private ApplicationController			AC;

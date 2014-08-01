@@ -25,7 +25,6 @@ import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -956,7 +955,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 		protected Bitmap doInBackground(Integer... args)
 		{
-			Log.d("Pcture", "start");
 			mItemNb = args[0];
 			Bitmap result = null;
 			try {

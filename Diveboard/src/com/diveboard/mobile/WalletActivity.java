@@ -83,6 +83,7 @@ import android.widget.Toast;
 import com.diveboard.config.AppConfig;
 import com.diveboard.model.ContentExtractor;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.ProgressListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.diveboard.model.User;
@@ -108,7 +109,6 @@ public class WalletActivity extends NavDrawer {
 	private UploadPictureTask 			mUploadPictureTask = null;
 	public boolean 						isAddingPic = false;
 	private int 						mImageSelected;
-	public static int					mUploadProgress;
 	ConnectivityManager 				_connMgr;
 	NetworkInfo 						networkInfo;
 	private boolean						mIsUploading = false;
@@ -631,7 +631,7 @@ public class WalletActivity extends NavDrawer {
 		}
 	}
 	
-	private class UploadPictureTask extends AsyncTask<Void, Integer, Void>
+	private class UploadPictureTask extends AsyncTask<Void, Integer, Void> implements ProgressListener
 	{
 		private File mFile;
 		private Picture picture = null;
@@ -639,6 +639,7 @@ public class WalletActivity extends NavDrawer {
 		LinearLayout rl = (LinearLayout)(mAddPhotoView.getParent());
 		ProgressBar bar = (ProgressBar)findViewById(1000);
 		JSONObject result = new JSONObject();
+		private int mUploadProgress;
 		
 		
 		public UploadPictureTask(File file)
@@ -649,95 +650,28 @@ public class WalletActivity extends NavDrawer {
 			bar.setIndeterminate(false);
 			bar.setProgress(0);
 			bar.setMax(100);
+			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
 			mIsUploading = false;
 		}
 
 		@Override
 		protected Void doInBackground(Void... arg0) {
-
+			mIsUploading = true;
 			System.out.println("Uploading picture to the server ");
-//			JSONObject result = mModel.uploadWalletPicture(mFile);
-			
-			
-			File picture_file = mFile;
-			HttpClient							httpClient = new DefaultHttpClient();
-			HttpContext							localContext = new BasicHttpContext();
-			HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
-			
-			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-			// Test connectivity
-			if (networkInfo != null && networkInfo.isConnected())
-			{
-				try {
-					mIsUploading = true;
-					MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-					Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
-					mUploadProgress += 5;
-					publishProgress(mUploadProgress);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-					mUploadProgress += 5;
-					publishProgress(mUploadProgress);
-					bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
-					mUploadProgress += 10;
-					publishProgress(mUploadProgress);
-					byte[] b = baos.toByteArray();
-					//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-					entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
-					entity.addPart("auth_token", new StringBody(mModel.getToken()));
-					entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
-					entity.addPart("flavour", new StringBody("private"));
-//					entity.addPart("album", new StringBody("wallet"));
-					httpPost.setEntity(entity);
-					mUploadProgress += 20;
-					publishProgress(mUploadProgress);
-					HttpResponse response = httpClient.execute(httpPost, localContext);
-					mUploadProgress += 20;
-					publishProgress(mUploadProgress);
-					HttpEntity entity_response = response.getEntity();
-					String res = ContentExtractor.getASCII(entity_response);
-					System.out.println("WALLET PICTURE UPLOADED SUCCESSFULLY!\n" + res);
-					mUploadProgress += 10;
-					publishProgress(mUploadProgress);
-					JSONObject json = new JSONObject(res);
-					if (json.getBoolean("success") == false)
-						result = null;
-					result = json;
-//					return (json);
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (IOException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (JSONException e) {
-					e.printStackTrace();
-					result = null;
-				}finally{
-					
-				}
-			}
-			else
-				result = null;
-			
-			
+			picture = mModel.uploadPicture(mFile, this);		
 			
 			try{
-				if(result != null && result.getBoolean("success")){
-//					Wallet tmp = mModel.getUser().getWallet();
-					picture = new Picture(result.getJSONObject("result"));
+				if(picture != null){
 					picture.storePicture(mContext);
 					mUploadProgress += 20;
 					publishProgress(mUploadProgress);
-					pictureId = result.getJSONObject("picture").getInt("id");
+					pictureId = picture.getJson().getInt("id");
 					mListPictures.add(picture);
 					mPicturesIDS.add(pictureId);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
 					mModel.getUser().setWalletPictures(mListPictures);
 					mModel.getUser().setWalletPictureIds(mPicturesIDS);
-					mUploadProgress += 10;
+					mUploadProgress += 5;
 					publishProgress(mUploadProgress);
 				}
 			}catch (JSONException e){
@@ -771,6 +705,17 @@ public class WalletActivity extends NavDrawer {
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
+		}
+
+		@Override
+		public void progress(int progress) {
+			//the progress received goes from 0 to 100, so we assume
+			//half of the progress is uploading pic to the server and
+			//the other half is regenerating it from the class Picture
+			mUploadProgress = (int) Math.round(progress * 0.75);
+			System.out.println("Current upload progress is " + mUploadProgress);
+			publishProgress(mUploadProgress);
+			
 		}
 
 	}
@@ -853,9 +798,6 @@ public class WalletActivity extends NavDrawer {
 				break;
 			case DragEvent.ACTION_DROP:
 				mChoosenImage = (ImageView) event.getLocalState();
-//				Intent share = new Intent(Intent.ACTION_SEND);
-//				startActivity(Intent.createChooser(share, "Share Image"));
-//				System.out.println(Integer.valueOf(v.getContentDescription().toString()));
 
 				Bitmap icon = null;
 				try {
@@ -925,7 +867,6 @@ public class WalletActivity extends NavDrawer {
 				// Dropped, reassign View to ViewGroup
 				System.out.println("drop picture");
 				System.out.println("index =" + mImageSelected);
-//				Wallet tmp = mModel.getUser().getWallet();
 				mListPictures.remove(mImageSelected);
 				mPicturesIDS.remove(mImageSelected);
 				mModel.getUser().setWalletPictures(mListPictures);
@@ -988,6 +929,7 @@ public class WalletActivity extends NavDrawer {
 					// TODO Auto-generated method stub
 					mModel.getUser().clearEditList();
 					saveDialog.dismiss();
+					finish();
 				}
 
     		});
@@ -1001,56 +943,14 @@ public class WalletActivity extends NavDrawer {
 			});
     		saveDialog.show();
 		}
-		else
-		{
+		else if (mIsUploading){
+			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		} else	{
 			finish();
 		}
 	};
-	
-	public class SaveChangesDialog extends Dialog implements android.view.View.OnClickListener{
-		public SaveChangesDialog(Activity a) {
-			super(a);
-		}
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			setContentView(R.layout.dialog_edit_confirm);
-			
-			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-    		TextView title = (TextView) findViewById(R.id.title);
-    		TextView exitTV = (TextView) findViewById(R.id.exitTV);
-    		title.setTypeface(faceB);
-    		title.setText(getResources().getString(R.string.exit_title));
-    		exitTV.setTypeface(faceR);
-    		exitTV.setText(getResources().getString(R.string.edit_confirm_title));
-			Button cancel = (Button) findViewById(R.id.cancel);
-			cancel.setTypeface(faceR);
-			cancel.setText(getResources().getString(R.string.cancel));
-			cancel.setOnClickListener(this);
-			Button save = (Button) findViewById(R.id.save);
-			save.setTypeface(faceR);
-			save.setText(getResources().getString(R.string.save));
-			save.setOnClickListener(this);
-		}
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			switch (v.getId()) {
-		    case R.id.cancel:
-		      break;
-		    case R.id.save:
-		    	mModel.getUser().clearEditList();
-//				Intent intent = new Intent(mContext, DivesActivity.class);
-//				startActivity(intent);
-				finish();
-		      break;
-		    default:
-		      break;
-		    }
-		    dismiss();
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
