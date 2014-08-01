@@ -960,17 +960,22 @@ public class					DiveboardModel
 		}
 	}
 	
+	private boolean checkNetwork()
+	{
+		final NetworkInfo wifiNetwork = _connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		
+		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+			return false;
+		return true;
+	}
+	
 	/*
 	 * Method preloadPictures
 	 * When launched, it will preload all created picture in the model.
 	 */
 	public void					preloadPictures()
 	{
-		ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		//NetworkInfo mobileNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		
-		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+		if (checkNetwork() == false)
 			return ;
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
@@ -1053,14 +1058,11 @@ public class					DiveboardModel
 		@Override
 		public void run()
 		{
-			ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-			
+			Log.d("Picture", "start");
 			if (_increment > 0)
 			{
 				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0 && _run; i += _increment)
 				{
-					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					try
 					{
 						if (_locknb == 1)
@@ -1068,12 +1070,12 @@ public class					DiveboardModel
 							synchronized (_lock1)
 							{
 								if(UserPreference.getPictureQuality().equals("m_qual")){
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
@@ -1093,12 +1095,12 @@ public class					DiveboardModel
 							synchronized (_lock2)
 							{
 								if(UserPreference.getPictureQuality().equals("m_qual")){
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
@@ -1141,7 +1143,6 @@ public class					DiveboardModel
 			{
 				for (int i = _start; i >= 0 && _pictureCount > 0 && _run; i += _increment)
 				{
-					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					//System.out.println("Loading pictures " + i);
 					try
 					{
@@ -1152,12 +1153,12 @@ public class					DiveboardModel
 //							break ;
 //						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
 						if(UserPreference.getPictureQuality().equals("m_qual")){
-							if (!_run || !wifiNetwork.isConnected())
+							if (!_run || !checkNetwork())
 								break ;
 							pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 						}
 						else{
-							if (!_run || !wifiNetwork.isConnected())
+							if (!_run || !checkNetwork())
 								break ;
 							pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 						}
