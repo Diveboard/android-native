@@ -36,6 +36,7 @@ import com.diveboard.model.Buddy;
 import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveDeleteListener;
+import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.model.Utils;
@@ -61,6 +62,7 @@ DeleteConfirmDialogListener {
 	private static final String IMAGE_CACHE_DIR = "thumbs";
 	private LinearLayout mListBuddyPictures;
 	private LinearLayout mListTanks;
+	private DiveboardModel mModel;
 
 	public int dpToPx(int dp) {
 		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -112,7 +114,7 @@ DeleteConfirmDialogListener {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		ApplicationController AC = (ApplicationController) getApplicationContext();
-
+		mModel = AC.getModel();
 		setContentView(R.layout.activity_dive_details_main);
 		// System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
@@ -122,8 +124,7 @@ DeleteConfirmDialogListener {
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
-			((TextView) findViewById(R.id.dive_note))
-			.setText(getResources().getString(R.string.no_note));
+			((TextView) findViewById(R.id.dive_note)).setText(getResources().getString(R.string.no_note));
 		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
 			((TextView) findViewById(R.id.dive_url)).setText("");
 		((TextView) findViewById(R.id.dive_url)).setPaintFlags(((TextView) findViewById(R.id.dive_url)).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -372,7 +373,9 @@ DeleteConfirmDialogListener {
 		mFish.setIsIndicator(true);
 		mWreck.setIsIndicator(true);
 		mLife.setIsIndicator(true);
-		if (mDive.getDiveReviews() != null) {
+		if (mDive.getDiveReviews().getDifficulty() != null || mDive.getDiveReviews().getOverall() != null ||
+				mDive.getDiveReviews().getBigFish() != null || mDive.getDiveReviews().getMarine() != null || 
+				mDive.getDiveReviews().getWreck() != null) {
 			if (mDive.getDiveReviews().getOverall() == null) {
 				((TextView) findViewById(R.id.overallTV)).setVisibility(View.GONE);
 				((RatingBar) findViewById(R.id.overall_review)).setVisibility(View.GONE);
@@ -415,8 +418,11 @@ DeleteConfirmDialogListener {
 
 			}
 		} else {
-			((LinearLayout) findViewById(R.id.layout_review))
-			.setVisibility(View.GONE);
+			((TextView) findViewById(R.id.review_title)).setText(getResources().getString(R.string.no_reviews));
+			((TextView) findViewById(R.id.review_title)).setAllCaps(false);
+			((TextView) findViewById(R.id.review_title)).setTypeface(AC.getModel().getLatoR());
+			((TextView) findViewById(R.id.review_title)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+			((LinearLayout) findViewById(R.id.layout_review)).setVisibility(View.GONE);
 		}
 
 		mPic = ((ImageView) findViewById(R.id.profile_image));
@@ -453,8 +459,12 @@ DeleteConfirmDialogListener {
 			mListBuddyPictures.addView(layout);
 		}
 		TextView title = (TextView) findViewById(R.id.tank_title);
-		title.setTypeface(faceB);
+		title.setTypeface(mModel.getLatoB());
 		title.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		if(mDive.getTanks() == null || mDive.getTanks().isEmpty()){
+			((LinearLayout)findViewById(R.id.tanks)).setVisibility(View.GONE);
+		}
+			
 		for (Tank tank : mDive.getTanks())
 		{
 			final float scale = getResources().getDisplayMetrics().density;

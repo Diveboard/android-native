@@ -170,7 +170,8 @@ public class					Picture
 			if (!loadPicture(context, size))
 				return;
 			_savePicture(context, size);
-			_bitmap.recycle();
+			if (_bitmap != null)
+				_bitmap.recycle();
 		}
 		return;
 	}
