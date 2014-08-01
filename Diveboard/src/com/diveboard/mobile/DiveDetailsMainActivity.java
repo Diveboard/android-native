@@ -178,7 +178,7 @@ DeleteConfirmDialogListener {
 					d.show();
 				}
 			});
-			((TextView)findViewById(R.id.shop_review)).setVisibility(View.VISIBLE);
+//			((TextView)findViewById(R.id.shop_review)).setVisibility(View.VISIBLE);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP,
 			// FONT_SIZE);
