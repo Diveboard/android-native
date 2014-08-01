@@ -94,7 +94,7 @@ public class TabEditPhotosFragment extends Fragment {
 	public ImageView 						mPhotoView;
 	public ArrayList<Picture>				mListPictures = null;
 	public boolean 							isAddingPic = false;
-	private boolean							mIsUploading = false;
+	public static boolean					mIsUploading = false;
 	private int								size;
 	
 	@Override
@@ -148,7 +148,7 @@ public class TabEditPhotosFragment extends Fragment {
 				
 				if (requestCode == TAKE_PICTURE)
 				{
-					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/DiveboardPictures/"; 
 					File file = new File(dir+"diveboard.jpg");
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
@@ -317,7 +317,7 @@ public class TabEditPhotosFragment extends Fragment {
 	public void generateTableLayout()
 	{
 		try{
-			Typeface mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+			Typeface mFaceB = mModel.getLatoR();
 			((TextView)mRootView.findViewById(R.id.drop_text)).setTypeface(mFaceB);
 			((TextView)mRootView.findViewById(R.id.main_text)).setTypeface(mFaceB);
 		} catch(NullPointerException e){
@@ -548,7 +548,7 @@ public class TabEditPhotosFragment extends Fragment {
 		System.out.println("Entre");
 		switch (item.getItemId()) {
 		case R.id.take_picture:
-			final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+			final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/DiveboardPictures/"; 
 			File newdir = new File(dir); 
 			newdir.mkdirs();
 			String file = dir+"test.jpg";
@@ -595,7 +595,7 @@ public class TabEditPhotosFragment extends Fragment {
 				Intent intent;
 				switch (item.getItemId()) {
 				case R.id.take_picture:
-					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
+					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/DiveboardPictures/"; 
 					File newdir = new File(dir); 
 					newdir.mkdirs();
 					String file = dir+"diveboard.jpg";

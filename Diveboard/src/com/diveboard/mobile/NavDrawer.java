@@ -36,7 +36,7 @@ public abstract class NavDrawer extends FragmentActivity {
 	private DrawerLayout 					mDrawerLayout;
 	protected ListView 						mDrawerList;
 	private LinearLayout 					mDrawerContainer;
-	protected ArrayList<String> 						mLinksTitles;
+	protected ArrayList<String> 			mLinksTitles;
 	
 
 	protected void onCreate(Bundle savedInstanceState, int resLayoutID) {
@@ -70,14 +70,24 @@ public abstract class NavDrawer extends FragmentActivity {
         ImageView mDrawerTitle = (ImageView)findViewById(R.id.drawer_title);
         mDrawerTitle.setImageDrawable(getResources().getDrawable(R.drawable.logo_250));
         ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
-        mDrawerMenu.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				mDrawerLayout.openDrawer(mDrawerContainer);
-			}
-		});
+        if(mDrawerMenu != null)
+        	mDrawerMenu.setOnClickListener(new View.OnClickListener() {
+
+        		@Override
+        		public void onClick(View v) {
+        			// TODO Auto-generated method stub
+        			mDrawerLayout.openDrawer(mDrawerContainer);
+        		}
+        	});
+        
+//        if(this instanceof DivesActivity)
+//        	mDrawerList.setItemChecked(0, true);
+//        else if(this instanceof NewDiveActivity)
+//        	mDrawerList.setItemChecked(1, true);
+//        else if(this instanceof WalletActivity)
+//        	mDrawerList.setItemChecked(2, true);
+//        else if(this instanceof ClosestShopActivity)
+//        	mDrawerList.setItemChecked(3, true);
 	}
 	
 	
@@ -141,17 +151,18 @@ public abstract class NavDrawer extends FragmentActivity {
     			}
 
     			break;
-
-    			// Refresh
+    			
+    		//New Dive
     		case 1:
-    			AC.setDataReady(false);
-    			AC.getModel().stopPreloadPictures();
-    			ApplicationController.mForceRefresh = true;
-    			AC.setModel(null);
-    			finish();
+    			if(!(this instanceof NewDiveActivity)){
+    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
+    				startActivity(newDiveActivity);
+    				if(!(this instanceof DivesActivity))
+    					finish();
+    			}
     			break;
-
-    			// Wallet Activity
+    			
+    		// Wallet Activity
     		case 2:
     			if(!(this instanceof WalletActivity)){
     				Intent walletActivity = new Intent(this, WalletActivity.class);
@@ -161,7 +172,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			}
     			break;
 
-    			// Closest Shop
+    		// Closest Shop
     		case 3:
     			if(!(this instanceof ClosestShopActivity)){
     				Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
@@ -170,18 +181,17 @@ public abstract class NavDrawer extends FragmentActivity {
     					finish();
     			}
     			break;
-
-    			// New Dive
+    			
+    		// Refresh
     		case 4:
-    			if(!(this instanceof NewDiveActivity)){
-    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
-    				startActivity(newDiveActivity);
-    				if(!(this instanceof DivesActivity))
-    					finish();
-    			}
+    			AC.setDataReady(false);
+    			AC.getModel().stopPreloadPictures();
+    			ApplicationController.mForceRefresh = true;
+    			AC.setModel(null);
+    			finish();
     			break;
-
-    			// Settings
+    			
+    		// Settings
     		case 5:
     			Intent settingsActivity = new Intent(this, SettingsActivity.class);
     			startActivity(settingsActivity);

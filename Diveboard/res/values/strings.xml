@@ -158,6 +158,7 @@
     <string name="choose_gallery">Choose from gallery</string>
     <string name="take_picture">Take a picture</string>
     <string name="upload_not_finished">Please wait until the picture has been uploaded to the server to save</string>
+    <string name="upload_not_finished_exit">Please wait until the picture has been uploaded to the server to exit</string>
     <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
     <string name="rate_title">Rate Diveboard</string>
     <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us on the play store?\nThanks!!</string>
@@ -168,12 +169,21 @@
     <string name="menu_links_has_not_rated">Rate App</string>
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>
-        <item>Refresh</item>
-        <item>See Wallet</item>
-        <item>Closest Shop</item>
         <item>New Dive</item>
+        <item>Wallet</item>
+        <item>Closest Shop</item>
+        <item>Refresh</item>
         <item>Settings</item>
         <item>Report a bug</item>
+        <item>Logout</item>
+    </string-array>
+    <string-array name="menu_links_has_rated_nobug">
+        <item>Logbook</item>
+        <item>New Dive</item>
+        <item>Wallet</item>
+        <item>Closest Shop</item>
+        <item>Refresh</item>
+        <item>Settings</item>
         <item>Logout</item>
     </string-array>
 
