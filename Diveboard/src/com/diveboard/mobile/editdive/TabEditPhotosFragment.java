@@ -17,6 +17,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.LightingColorFilter;
@@ -68,52 +69,43 @@ import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.ProgressListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 
 public class TabEditPhotosFragment extends Fragment {
 
-	private DiveboardModel mModel;
-	private int mPhotoPos = 0;
-	private DownloadImageTask mDownloadImageTask;
+	private DiveboardModel 					mModel;
+	private Context							mContext;
+	private int 							mPhotoPos = 0;
+	private DownloadImageTask 				mDownloadImageTask;
 	//private ImageView mImageView;
 	//private List<Picture> mItems;
-	private Size mSizePicture;
-	private ViewGroup mRootView;
-	private RelativeLayout mChangeItem;
-	private int nbPicture;
-	ArrayList<Pair<ImageView, Picture>> arrayPair = new ArrayList<Pair<ImageView, Picture>>();
-	public final int SELECT_PICTURE = 1;
-	public final int TAKE_PICTURE = 2;
-	private UploadPictureTask mUploadPictureTask = null;
-	public int mMenuType = 0;
-	public int mImageSelected;
-	public ImageView mPhotoView;
-	public ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
-	public boolean isAddingPic = false;
+	private Size 							mSizePicture;
+	private ViewGroup 						mRootView;
+	private RelativeLayout 					mChangeItem;
+	private int 							nbPicture;
+	ArrayList<Pair<ImageView, Picture>> 	arrayPair = new ArrayList<Pair<ImageView, Picture>>();
+	public final int 						SELECT_PICTURE = 1;
+	public final int 						TAKE_PICTURE = 2;
+	private UploadPictureTask				mUploadPictureTask = null;
+	public int 								mMenuType = 0;
+	public int 								mImageSelected;
+	public ImageView 						mPhotoView;
+	public ArrayList<Picture>				mListPictures = null;
+	public boolean 							isAddingPic = false;
+	private boolean							mIsUploading = false;
+	private int								size;
 	
-	//private DropPictureTask mDropPictureTask = null;
-
-	//	@Override
-	//	protected void onResume()
-	//	{
-	//		super.onResume();
-	//		ApplicationController AC = (ApplicationController)getApplicationContext();
-	//		AC.handleLowMemory();
-	//		//((ScrollView)getParent().findViewById(R.id.scroll)).smoothScrollTo(0, 0);
-	//	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
 	{
 		ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_photos, container, false);
 		mModel = AC.getModel();
+		mContext = getActivity().getApplicationContext();
 		mListPictures = mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures();
 		System.out.println("LIST PICTURE : " + mListPictures);
-//		for (int i = 0; i < EditDiveActivity.mListPictures.size(); i++)
-//		{
-//			System.out.println(EditDiveActivity.mListPictures.get(i).getJson());
-//		}
 		new Thread(new Runnable() {
 			public void run() {
 				try {
@@ -140,13 +132,6 @@ public class TabEditPhotosFragment extends Fragment {
 		super.onDestroy();
 	}
 
-	
-//	@Override
-//	public void onPause() {
-//		if (mUploadPictureTask != null)
-//			mUploadPictureTask.cancel(true);
-//		super.onPause();
-//	}
 
 	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -163,18 +148,28 @@ public class TabEditPhotosFragment extends Fragment {
 				
 				if (requestCode == TAKE_PICTURE)
 				{
-					//					try {
-					//InputStream stream = getContentResolver().openInputStream(data.getData());
 					final String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) + "/picFolder/"; 
 					File file = new File(dir+"diveboard.jpg");
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mPhotoView.getParent();
-					ProgressBar bar = new ProgressBar(getActivity().getApplicationContext());
-					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+					ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
+					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+					params.addRule(RelativeLayout.CENTER_IN_PARENT);
 					bar.setVisibility(View.VISIBLE);
 					bar.setLayoutParams(params);
-					parent.addView(bar);
+					bar.setId(1000);
 					mPhotoView.setVisibility(View.GONE);
+					ImageView newPic = new ImageView(mContext);
+					RelativeLayout newObj = new RelativeLayout(mContext);
+					newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+					newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
+					newPic.setAlpha((float)(0.5));
+					Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+					newPic.setImageBitmap(b);
+					newObj.setGravity(Gravity.CENTER);
+					newObj.addView(newPic);
+					newObj.addView(bar);
+					parent.addView(newObj);
 					mUploadPictureTask = new UploadPictureTask(file);
 					mUploadPictureTask.execute();
 				}
@@ -198,11 +193,24 @@ public class TabEditPhotosFragment extends Fragment {
 
 						//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 						LinearLayout parent = (LinearLayout) mPhotoView.getParent();
-						ProgressBar bar = new ProgressBar(getActivity().getApplicationContext());
-						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
+						ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
+						RelativeLayout newObj = new RelativeLayout(mContext);
+						RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+						params.addRule(RelativeLayout.CENTER_IN_PARENT);
 						bar.setVisibility(View.VISIBLE);
 						bar.setLayoutParams(params);
-						parent.addView(bar);
+						ImageView newPic = new ImageView(mContext);
+						newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
+						newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
+						bar.setId(1000);
+						newObj.setGravity(Gravity.CENTER);
+						newObj.setLayoutParams(params);
+						newPic.setAlpha((float)(0.5));
+						Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
+						newPic.setImageBitmap(b);
+						newObj.addView(newPic);
+						newObj.addView(bar);
+						parent.addView(newObj);
 						mPhotoView.setVisibility(View.GONE);
 						mUploadPictureTask = new UploadPictureTask(file);
 						mUploadPictureTask.execute();
@@ -225,57 +233,83 @@ public class TabEditPhotosFragment extends Fragment {
 			toast.show();
 			
 		}
-		//		else if (requestCode == CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE) {
-		//	        if (resultCode == RESULT_OK) {
-		//	        	// Video captured and saved to fileUri specified in the Intent
-		//	            Toast.makeText(this, "Video saved to:\n" +
-		//	                     data.getData(), Toast.LENGTH_LONG).show();
-		//	        } else if (resultCode == RESULT_CANCELED) {
-		//	            // User cancelled the video capture
-		//	        } else {
-		//	            // Video capture failed, advise user
-		//	        }
-		//	    }
 		super.onActivityResult(requestCode, resultCode, data);
 	}
 
 	
-	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
+	private class UploadPictureTask extends AsyncTask<Void, Integer, Picture> implements ProgressListener
 	{
-		private File mFile;
+		private File 			mFile;
+		ProgressBar 			bar = (ProgressBar)mRootView.findViewById(1000);
+		private int 			mUploadProgress;
+		private Picture 		picture = null;
 
 		public UploadPictureTask(File file)
 		{
 			mFile = file;
+			mUploadProgress = 0;
+			mIsUploading = false;
+			bar.setIndeterminate(false);
+			bar.setProgress(0);
+			bar.setMax(100);
+			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
 		}
 
 		@Override
 		protected Picture doInBackground(Void... arg0) {
-
-			Picture picture = mModel.uploadPicture(mFile);
+			mIsUploading = true;
+			picture = mModel.uploadPicture(mFile, this);
+			if(picture != null){
+				try {
+					picture.storePicture(mContext);
+					mUploadProgress += 20;
+					publishProgress(mUploadProgress);
+					mListPictures.add(picture);
+					mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
+					mUploadProgress += 5;
+					publishProgress(mUploadProgress);
+				} catch (IOException e) {
+					e.printStackTrace();
+					mIsUploading = false;
+					return null;
+				}
+			}
+				
+			mIsUploading = false;
 			return picture;
 		}
 
 		@Override
 		protected void onPostExecute(Picture result) {
 			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
-			if(result != null){
-				mListPictures.add(result);
-				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
-			} else {
+			if(result == null){
 				Toast toast = Toast.makeText(getActivity().getApplicationContext(), getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
 				toast.setGravity(Gravity.CENTER, 0, 0);
 				toast.show();
 			}
 			
 			mPhotoView.setVisibility(View.VISIBLE);
-			LinearLayout rl = (LinearLayout)(mPhotoView.getParent());
-			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
 			bar.setVisibility(View.GONE);
-//			mListPictures.add(result);
-//			mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
 			generateTableLayout();
 			isAddingPic = false;
+		}
+
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+			bar.setProgress(values[0]);
+			System.out.println("Progress of " + bar.getProgress() + "%");
+		}
+		
+		@Override
+		public void progress(int progress) {
+			//the progress received goes from 0 to 100, so we assume
+			//half of the progress is uploading pic to the server and
+			//the other half is regenerating it from the class Picture
+			mUploadProgress = (int) Math.round(progress * 0.75);
+			System.out.println("Current upload progress is " + mUploadProgress);
+			publishProgress(mUploadProgress);
+			
 		}
 
 	}
@@ -346,7 +380,7 @@ public class TabEditPhotosFragment extends Fragment {
 			TableRow row = new TableRow(getActivity().getApplicationContext());
 			for (int j = 0; j < nbPicture && i < mListPictures.size(); j++)
 			{
-				int size = ((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getMeasuredWidth();
+				size = screenWidth;
 				LinearLayout linearLayout = new LinearLayout(getActivity().getApplicationContext());
 				TableRow.LayoutParams tbparam = new TableRow.LayoutParams(size / nbPicture, size / nbPicture);
 				tbparam.gravity = Gravity.CENTER;
@@ -358,11 +392,6 @@ public class TabEditPhotosFragment extends Fragment {
 				imageView.setContentDescription(String.valueOf(i));
 				imageView.setVisibility(View.GONE);
 				imageView.setOnLongClickListener(new MyTouchListener(i));
-
-				//								int shortAnimTime = getResources().getInteger(
-				//										android.R.integer.config_shortAnimTime);
-				//								imageView.setVisibility(View.VISIBLE);
-				//								imageView.animate().setDuration(shortAnimTime).alpha(1);
 				ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 				if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 						&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)
@@ -578,12 +607,8 @@ public class TabEditPhotosFragment extends Fragment {
 					Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
 					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
 					startActivityForResult(cameraIntent, TAKE_PICTURE);
-					//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-					//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-					//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-					//			        startActivityForResult(intent, TAKE_PICTURE);
 					return true;
+
 				case R.id.gallery:
 					intent = new Intent();
 					intent.setType("image/*");
@@ -700,10 +725,6 @@ public class TabEditPhotosFragment extends Fragment {
 
 						@Override
 						public void onAnimationEnd(Animation animation) {
-							//		        	ScrollView scroll = ((ScrollView)mRootView.findViewById(R.id.scroll));
-							//		        	RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-							//		        	params.addRule(RelativeLayout.BELOW, mChangeItem.getId());
-							//		        	scroll.setLayoutParams(params);
 						}
 					});
 
@@ -719,19 +740,6 @@ public class TabEditPhotosFragment extends Fragment {
 			return true;
 		}
 	}
-
-
-
-	//	private class DropPictureTask extends AsyncTask<Void, Void, Void>
-	//	{
-	//
-	//		@Override
-	//		protected Void doInBackground(Void... params) {
-	//			EditDiveActivity.mListPictures.
-	//			return null;
-	//		}
-	//		
-	//	}
 
 	private class MyMainDragListener implements OnDragListener {
 		private int mPosition;
@@ -749,78 +757,27 @@ public class TabEditPhotosFragment extends Fragment {
 			case DragEvent.ACTION_DRAG_ENTERED:
 				ImageView myIcon = (ImageView) v.findViewById(R.id.main_icon); 
 				((TextView) v.findViewById(R.id.main_text)).setTextColor(getActivity().getResources().getColor(R.color.yellow));
-				//ColorFilter filter = new LightingColorFilter(getActivity().getResources().getColor(R.color.yellow), getActivity().getResources().getColor(R.color.yellow));
 				ColorFilter filter = new PorterDuffColorFilter(getActivity().getResources().getColor(R.color.yellow), PorterDuff.Mode.MULTIPLY);
 				myIcon.setColorFilter(filter);
-				//v.setBackgroundDrawable(enterShape);
 				break;
 			case DragEvent.ACTION_DRAG_EXITED:
 				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
 				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
-				//v.setBackgroundDrawable(normalShape);
 				break;
 			case DragEvent.ACTION_DROP:
 				// Dropped, reassign View to ViewGroup
 				mChoosenImage = (ImageView) event.getLocalState();
-//				ViewGroup owner = (ViewGroup) mChoosenImage.getParent();
-//				owner.removeView(mChoosenImage);
-//				mChoosenImage.setVisibility(View.VISIBLE);
-				//			RelativeLayout container = (RelativeLayout) v;
-				//			container.addView(view);
 
 				Collections.swap(mListPictures,0, mImageSelected);
 				mModel.getDives().get(getActivity().getIntent().getIntExtra("index", -1)).setPictures(mListPictures);
 				System.out.println("Set as main picture");
-//				TableRow row = (TableRow)((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getChildAt(0);
-//				LinearLayout layout = (LinearLayout) row.getChildAt(0);
-//				ImageView firstimage = (ImageView) layout.getChildAt(0);
-//				Drawable firstdrawable = firstimage.getDrawable();
-//				ImageView choosenimage = (ImageView) mChoosenImage;
-//				Drawable choosedrawable = choosenimage.getDrawable();
-//				firstimage.setImageDrawable(choosedrawable);
-//				choosenimage.setImageDrawable(firstdrawable);
 				break;
 			case DragEvent.ACTION_DRAG_ENDED:
 				System.out.println("action drag ended main");
 				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
 				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
 				
-//				((ImageView) v.findViewById(R.id.main_icon)).setColorFilter(null);
-//				((TextView) v.findViewById(R.id.main_text)).setTextColor(Color.WHITE);
-//				//mChangeItem.setVisibility(View.GONE);
-//				
-//				Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_up);
-//				((ScrollView)mRootView.findViewById(R.id.scroll)).startAnimation(animation);
-//				//v.setBackgroundDrawable(normalShape);
-//				animation.setAnimationListener(new AnimationListener() {
-//					@Override
-//					public void onAnimationStart(Animation animation) {}
-//
-//					@Override
-//					public void onAnimationRepeat(Animation animation) {}
-//
-//					@Override
-//					public void onAnimationEnd(Animation animation) {
-//						TableRow row = (TableRow)((TableLayout)(mRootView.findViewById(R.id.tablelayout))).getChildAt(0);
-//						LinearLayout layout = (LinearLayout) row.getChildAt(0);
-//						ImageView firstimage = (ImageView) layout.getChildAt(0);
-//						Drawable firstdrawable = firstimage.getDrawable();
-//						ImageView choosenimage = (ImageView) mChoosenImage;
-//						Drawable choosedrawable = choosenimage.getDrawable();
-//						firstimage.setImageDrawable(choosedrawable);
-//						choosenimage.setImageDrawable(firstdrawable);
-//						
-////						System.out.println("entre");
-////						Intent intent = getActivity().getIntent();
-////						getActivity().finish();
-//						//startActivity(intent);
-//						//EditDiveActivity.adapterViewPager.notifyDataSetChanged();
-//						//		        	ScrollView scroll = ((ScrollView)mRootView.findViewById(R.id.scroll));
-//						//		        	RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-//						//		        	params.addRule(RelativeLayout.BELOW, mChangeItem.getId());
-//						//		        	scroll.setLayoutParams(params);
-//					}
-//				});
+
 				
 			default:
 				break;
@@ -855,13 +812,6 @@ public class TabEditPhotosFragment extends Fragment {
 				//v.setBackgroundDrawable(normalShape);
 				break;
 			case DragEvent.ACTION_DROP:
-				// Dropped, reassign View to ViewGroup
-//				view = (ImageView) event.getLocalState();
-//				owner = (ViewGroup) view.getParent();
-//				owner.removeView(view);
-//				//				RelativeLayout container = (RelativeLayout) v;
-//				//				container.addView(view);
-//				view.setVisibility(View.VISIBLE);
 
 				System.out.println("drop picture");
 
@@ -916,144 +866,5 @@ public class TabEditPhotosFragment extends Fragment {
 			return true;
 		}
 	}
-
-	//	public class ImageAdapter extends BaseAdapter {
-	//	    private Context mContext;
-	//	    private List<Picture> mListPhotos;
-	//	    private DownloadImageTask mDownloadImageTask;
-	//	    private Dive mDive;
-	//
-	//	    public ImageAdapter(Context c, List<Picture> items, Dive dive) {
-	//	        mContext = c;
-	//	        mListPhotos = items;
-	//	        mDive = dive;
-	//	    }
-	//
-	//	    public int getCount() {
-	//	        return mListPhotos.size();
-	//	    }
-	//
-	//	    public Object getItem(int position) {
-	//	        return null;
-	//	    }
-	//
-	//	    public long getItemId(int position) {
-	//	        return 0;
-	//	    }
-	//
-	//	    // create a new ImageView for each item referenced by the Adapter
-	//	    public View getView(int position, View convertView, ViewGroup parent) {
-	//	        ImageView imageView;
-	//	        if (convertView == null) {  // if it's not recycled, initialize some attributes
-	//	            imageView = new ImageView(mContext);
-	//	            ApplicationController AC = (ApplicationController)getApplicationContext();
-	//	            //int size = ((GridView)(findViewById(R.id.gridview))).getMeasuredWidth();
-	//	            //System.out.println(size);
-	//	           // imageView.setLayoutParams(new GridView.LayoutParams(size / 3, size / 3));
-	//	            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-	//	            //imageView.setPadding(8, 8, 8, 8);
-	//	        } else {
-	//	            imageView = (ImageView) convertView;
-	//	        }
-	//
-	//			mDownloadImageTask = new DownloadImageTask(imageView, mListPhotos, mContext,  mDive, position);
-	//			mDownloadImageTask.execute();
-	//	        //imageView.setImageResource(mThumbIds[position]);
-	//	        return imageView;
-	//	    }
-	//
-	//	    // references to our images
-	////	    private Integer[] mThumbIds = {
-	////	            R.drawable.sample_2, R.drawable.sample_3,
-	////	            R.drawable.sample_4, R.drawable.sample_5,
-	////	            R.drawable.sample_6, R.drawable.sample_7,
-	////	            R.drawable.sample_0, R.drawable.sample_1,
-	////	            R.drawable.sample_2, R.drawable.sample_3,
-	////	            R.drawable.sample_4, R.drawable.sample_5,
-	////	            R.drawable.sample_6, R.drawable.sample_7,
-	////	            R.drawable.sample_0, R.drawable.sample_1,
-	////	            R.drawable.sample_2, R.drawable.sample_3,
-	////	            R.drawable.sample_4, R.drawable.sample_5,
-	////	            R.drawable.sample_6, R.drawable.sample_7
-	////	    };
-	//	    
-	//	    private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
-	//		{
-	//			private final WeakReference<ImageView> imageViewReference;
-	//			private boolean isPicture = false;
-	//			private Context mContext;
-	//			private Dive mDive;
-	//			private int mPosition;
-	//			private List<Picture> mListPictures;
-	//			private ArrayList<Pair<ImageView, Picture>> mArrayPair;
-	//			
-	//			public DownloadImageTask(ArrayList<Pair<ImageView, Picture>> arrayPair, List<Picture> listPictures, Context context, Dive dive, int position)
-	//			{
-	//				imageViewReference = new WeakReference<ImageView>(arrayPair.get(position).first);
-	//				mContext = context;
-	//				mDive = dive;
-	//				mPosition = position;
-	//				mListPictures = listPictures;
-	//				mArrayPair = arrayPair;
-	//			}
-	//			
-	//			protected Bitmap doInBackground(Void... voids)
-	//			{
-	//				try {
-	//					if (mContext != null)
-	//					{
-	//						return mListPictures.get(mPosition).getPicture(mContext, Size.THUMB);
-	//					}
-	//						
-	//				} catch (IOException e) {
-	//					// TODO Auto-generated catch block
-	//					e.printStackTrace();
-	//				}
-	//				return null;
-	//			}
-	//			
-	//			protected void onPostExecute(Bitmap result)
-	//			{
-	//				if (imageViewReference != null)
-	//				{
-	//					final ImageView imageView = imageViewReference.get();
-	//					if (result != null && imageView != null)
-	//					{	
-	//						imageView.setImageBitmap(result);
-	//						if (mPosition < mArrayPair.size())
-	//						{
-	//							mDownloadImageTask = new DownloadImageTask(mArrayPair, mItems, PhotosActivity.this,  mModel.getDives().get(getIntent().getIntExtra("index", 0)), mPosition + 1);
-	//							mDownloadImageTask.execute();
-	//						}
-	//						
-	//					}
-	//				}
-	//			}
-	//			
-	//			@Override
-	//			protected void onCancelled() {
-	//				mDownloadImageTask = null;
-	//			}
-	//		}
-	//	}
-
-	//	@Override
-	//	protected void onDestroy() {
-	//		if (mDownloadImageTask != null)
-	//			mDownloadImageTask.cancel(true);
-	//		super.onDestroy();
-	//	}
-	//	
-	//	@Override
-	//	public void onStart() {
-	//		super.onStart();
-	//		EasyTracker.getInstance(this).activityStart(this);
-	//	}
-	//
-	//	@Override
-	//	public void onStop() {
-	//		super.onStop();
-	//		EasyTracker.getInstance(this).activityStop(this);
-	//	}
 
 }
