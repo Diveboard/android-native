@@ -631,7 +631,7 @@ public class WalletActivity extends NavDrawer {
 		}
 	}
 	
-	private class UploadPictureTask extends AsyncTask<Void, Integer, Void> implements ProgressListener
+	private class UploadPictureTask extends AsyncTask<Void, Integer, Boolean> implements ProgressListener
 	{
 		private File mFile;
 		private Picture picture = null;
@@ -655,7 +655,7 @@ public class WalletActivity extends NavDrawer {
 		}
 
 		@Override
-		protected Void doInBackground(Void... arg0) {
+		protected Boolean doInBackground(Void... arg0) {
 			mIsUploading = true;
 			System.out.println("Uploading picture to the server ");
 			picture = mModel.uploadPicture(mFile, this);		
@@ -681,12 +681,15 @@ public class WalletActivity extends NavDrawer {
 			}finally{
 				mIsUploading = false;
 			}
-			
-			return null;
+		
+			if(picture != null)
+				return true;
+			else
+				return false;
 		}
 		
 		@Override
-		protected void onPostExecute(Void res) {
+		protected void onPostExecute(Boolean res) {
 				mAddPhotoView.setVisibility(View.VISIBLE);
 				bar.setVisibility(View.GONE);
 				generateTableLayout();
@@ -943,7 +946,7 @@ public class WalletActivity extends NavDrawer {
     		saveDialog.show();
 		}
 		else if (mIsUploading){
-			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
 			toast.setGravity(Gravity.CENTER, 0, 0);
 			toast.show();
 		} else	{

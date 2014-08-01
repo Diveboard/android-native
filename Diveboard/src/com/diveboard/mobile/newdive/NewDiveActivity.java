@@ -33,6 +33,7 @@ import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditOption;
 import com.diveboard.mobile.editdive.OptionAdapter;
+import com.diveboard.mobile.editdive.TabEditPhotosFragment;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.newdive.NewBottomTempDialogFragment.EditBottomTempDialogListener;
 import com.diveboard.mobile.newdive.NewCurrentDialogFragment.EditCurrentDialogListener;
@@ -243,6 +244,12 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 					}
 					
 				}
+				if(TabNewPhotosFragment.mIsUploading){
+					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+					mError = true;
+				}
 				if (mError == false)
 				{
 					if (mNotes != null)
@@ -314,6 +321,11 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();	
 					}
+					if(TabNewPhotosFragment.mIsUploading){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
 				}
 			}
 		});
@@ -371,7 +383,12 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	public void onBackPressed()
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		if (mDive.getEditList()!= null && mDive.getEditList().size() > 0)
+		if(TabNewPhotosFragment.mIsUploading){
+			Toast toast = Toast.makeText(this, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		}
+		else if (mDive.getEditList()!= null && mDive.getEditList().size() > 0)
 		{
 			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
 	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");

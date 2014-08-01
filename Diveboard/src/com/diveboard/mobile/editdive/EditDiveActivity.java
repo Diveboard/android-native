@@ -167,6 +167,12 @@ public class EditDiveActivity extends NavDrawer implements
 					toast.show();	
 					mError = true;
 				}
+				if(TabEditPhotosFragment.mIsUploading){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+						mError = true;
+				}
 				if(!mError){
 			
 //					if (editList != null && editList.size() > 0)
@@ -200,7 +206,12 @@ public class EditDiveActivity extends NavDrawer implements
 	@Override
 	public void onBackPressed()
 	{
-		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		if(TabEditPhotosFragment.mIsUploading){
+				Toast toast = Toast.makeText(this, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+		}
+		else if (mModel.getDives().get(mIndex).getEditList().size() > 0)
 		{
 			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
 			Bundle args = new Bundle();
