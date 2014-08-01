@@ -714,7 +714,6 @@ public class					DataManager
 							//System.out.println(_editList.get(0).first + " " + _editList.get(0).second);
 							elem = _editList.get(0);
 							System.out.println("SEND ITEM : " + elem.second);
-							Log.d("SEND ITEM : ", elem.second);
 							// Process
 							AndroidHttpClient client = AndroidHttpClient.newInstance("Android");
 							String[] info = elem.first.split(":");
