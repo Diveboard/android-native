@@ -1965,7 +1965,7 @@ public class					DiveboardModel
 				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
 				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
 				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
-				mUploadProgress += 30;
+				mUploadProgress += 10;
 				mProgressListener.progress(mUploadProgress);
 				byte[] b = baos.toByteArray();
 				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
@@ -1974,12 +1974,12 @@ public class					DiveboardModel
 				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
 				entity.addPart("flavour", new StringBody("private"));
 				httpPost.setEntity(entity);
-				mUploadProgress += 20;
+				mUploadProgress += 10;
 				mProgressListener.progress(mUploadProgress);
 				HttpResponse response = httpClient.execute(httpPost, localContext);
 				HttpEntity entity_response = response.getEntity();
 				String result = ContentExtractor.getASCII(entity_response);
-				mUploadProgress += 40;
+				mUploadProgress += 70;
 				mProgressListener.progress(mUploadProgress);
 				System.out.println("PICTURE UPLOADED SUCCESSFULLY!\n " + result);
 				JSONObject json = new JSONObject(result);

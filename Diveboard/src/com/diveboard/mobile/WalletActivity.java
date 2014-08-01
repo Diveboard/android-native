@@ -183,20 +183,20 @@ public class WalletActivity extends NavDrawer {
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
 					ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
-					RelativeLayout newObj = new RelativeLayout(mContext);
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 					params.addRule(RelativeLayout.CENTER_IN_PARENT);
 					bar.setVisibility(View.VISIBLE);
 					bar.setLayoutParams(params);
 					bar.setId(1000);
-					newObj.setGravity(Gravity.CENTER);
 					mAddPhotoView.setVisibility(View.GONE);
 					ImageView newPic = new ImageView(mContext);
+					RelativeLayout newObj = new RelativeLayout(mContext);
 					newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
 					newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
 					newPic.setAlpha((float)(0.5));
 					Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
 					newPic.setImageBitmap(b);
+					newObj.setGravity(Gravity.CENTER);
 					newObj.addView(newPic);
 					newObj.addView(bar);
 					parent.addView(newObj);
@@ -644,14 +644,14 @@ public class WalletActivity extends NavDrawer {
 		
 		public UploadPictureTask(File file)
 		{
-			mUploadProgress = 0;
 			mFile = file;
-//			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_circle));
+			mUploadProgress = 0;
+			mIsUploading = false;
 			bar.setIndeterminate(false);
 			bar.setProgress(0);
 			bar.setMax(100);
 			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
-			mIsUploading = false;
+			
 		}
 
 		@Override
@@ -684,15 +684,6 @@ public class WalletActivity extends NavDrawer {
 			
 			return null;
 		}
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-			bar.setIndeterminate(false);
-			bar.setProgress(values[0]);
-//			bar.incrementProgressBy(values[0]);
-			System.out.println("Progress of " + bar.getProgress() + "%");
-		}
 		
 		@Override
 		protected void onPostExecute(Void res) {
@@ -700,11 +691,19 @@ public class WalletActivity extends NavDrawer {
 				bar.setVisibility(View.GONE);
 				generateTableLayout();
 				isAddingPic = false;
-				if(result == null){
+				if(res == null){
 					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+			bar.setIndeterminate(false);
+			bar.setProgress(values[0]);
+			System.out.println("Progress of " + bar.getProgress() + "%");
 		}
 
 		@Override
