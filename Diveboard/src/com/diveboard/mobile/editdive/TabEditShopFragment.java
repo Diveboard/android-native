@@ -122,8 +122,8 @@ public class					TabEditShopFragment extends Fragment
         	mContext = getActivity();
     	//mContext = getActivity().getApplicationContext();
     	mModel = ((ApplicationController)mContext.getApplicationContext()).getModel();
-	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+	    mFaceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_shop));
 		((TextView)mRootView.findViewById(R.id.no_shop)).setTypeface(mFaceR);
@@ -318,33 +318,33 @@ public class					TabEditShopFragment extends Fragment
 		String pos = "";
 		if (mModel.getDives().get(mIndex).getShop().getLat() == null)
 		{
-			pos += "0º ";
+			pos += "0° ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "º ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat()) + "° ";
 			pos += "N";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLat() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "º ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (mModel.getDives().get(mIndex).getShop().getLng() == null)
 		{
-			pos += "0º ";
+			pos += "0° ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "º ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng()) + "° ";
 			pos += "E";
 		}
 		else if (mModel.getDives().get(mIndex).getShop().getLng() < 0)
 		{
-			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "º ";
+			pos += String.valueOf(mModel.getDives().get(mIndex).getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
 		if ((mModel.getDives().get(mIndex).getShop().getLat() == null || mModel.getDives().get(mIndex).getShop().getLat() == 0) && 

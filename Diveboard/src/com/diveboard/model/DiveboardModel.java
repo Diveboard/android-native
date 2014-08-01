@@ -46,9 +46,12 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
+import android.os.RecoverySystem.ProgressListener;
+import android.util.Log;
 import android.util.Pair;
 
 import com.diveboard.config.AppConfig;
@@ -97,6 +100,11 @@ public class					DiveboardModel
 	public static boolean 		_searchtimedout = false;
 	private TokenExpireListener	mTokenExpireListener = null;
 	private boolean 			_force_refresh = false;
+	//Application fonts
+	private Typeface 			_latoR = null;
+	private Typeface 			_latoB = null;
+	private Typeface 			_quickR = null;
+	private Typeface 			_quickB = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -108,6 +116,10 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token, this);
+		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
+		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
+		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
+		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -118,6 +130,10 @@ public class					DiveboardModel
 	{
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
+		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
+		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
+		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -944,17 +960,22 @@ public class					DiveboardModel
 		}
 	}
 	
+	private boolean checkNetwork()
+	{
+		final NetworkInfo wifiNetwork = _connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+		
+		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+			return false;
+		return true;
+	}
+	
 	/*
 	 * Method preloadPictures
 	 * When launched, it will preload all created picture in the model.
 	 */
 	public void					preloadPictures()
 	{
-		ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-		NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-		//NetworkInfo mobileNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_MOBILE);
-		
-		if (getPreference().getNetwork() == 0 && wifiNetwork.isConnected() == false)
+		if (checkNetwork() == false)
 			return ;
 		if (_pictureThread1 == null && _pictureThread2 == null)
 		{
@@ -1037,14 +1058,11 @@ public class					DiveboardModel
 		@Override
 		public void run()
 		{
-			ConnectivityManager connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
-			NetworkInfo wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-			
+			Log.d("Picture", "start");
 			if (_increment > 0)
 			{
 				for (int i = _start, size = pictureList.size(); i < size && _pictureCount > 0 && _run; i += _increment)
 				{
-					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					try
 					{
 						if (_locknb == 1)
@@ -1052,14 +1070,14 @@ public class					DiveboardModel
 							synchronized (_lock1)
 							{
 								if(UserPreference.getPictureQuality().equals("m_qual")){
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
 //								//System.out.println("Loading pictures " + i);
 //								if (!_run || !wifiNetwork.isConnected())
@@ -1077,14 +1095,14 @@ public class					DiveboardModel
 							synchronized (_lock2)
 							{
 								if(UserPreference.getPictureQuality().equals("m_qual")){
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 								}
 								else{
-									if (!_run || !wifiNetwork.isConnected())
+									if (!_run || !checkNetwork())
 									break ;
-								pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+								pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 								}
 //								if (!_run || !wifiNetwork.isConnected())
 //									break ;
@@ -1125,7 +1143,6 @@ public class					DiveboardModel
 			{
 				for (int i = _start; i >= 0 && _pictureCount > 0 && _run; i += _increment)
 				{
-					wifiNetwork = connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
 					//System.out.println("Loading pictures " + i);
 					try
 					{
@@ -1136,14 +1153,14 @@ public class					DiveboardModel
 //							break ;
 //						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
 						if(UserPreference.getPictureQuality().equals("m_qual")){
-							if (!_run || !wifiNetwork.isConnected())
+							if (!_run || !checkNetwork())
 								break ;
-							pictureList.get(i).second.getPicture(_context, Picture.Size.MEDIUM);
+							pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
 						}
 						else{
-							if (!_run || !wifiNetwork.isConnected())
+							if (!_run || !checkNetwork())
 								break ;
-							pictureList.get(i).second.getPicture(_context, Picture.Size.LARGE);
+							pictureList.get(i).second.checkPicture(_context, Picture.Size.LARGE);
 						}
 						
 					}
@@ -1317,7 +1334,7 @@ public class					DiveboardModel
 					if (i != 0)
 						match_str += " ";
 					match_str += strarr[i] + "*";
-				}
+				}	
 				if (condition_str.length() == 0)
 					condition_str += "spots_fts.name MATCH '" + match_str + "'";
 				else
@@ -1928,6 +1945,64 @@ public class					DiveboardModel
 		return null;
 	}
 	
+	public static interface ProgressListener {
+		
+		void progress(int progress);
+	}
+	
+	public Picture							uploadPicture(File picture_file, ProgressListener mProgressListener)
+	{
+		HttpClient							httpClient = new DefaultHttpClient();
+		HttpContext							localContext = new BasicHttpContext();
+		HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
+		int 								mUploadProgress = 0;
+		
+		NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
+		// Test connectivity
+		if (networkInfo != null && networkInfo.isConnected())
+		{
+			try {
+				MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
+				Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
+				ByteArrayOutputStream baos = new ByteArrayOutputStream();  
+				bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
+				mUploadProgress += 10;
+				mProgressListener.progress(mUploadProgress);
+				byte[] b = baos.toByteArray();
+				//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
+				entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
+				entity.addPart("auth_token", new StringBody(_token));
+				entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
+				entity.addPart("flavour", new StringBody("private"));
+				httpPost.setEntity(entity);
+				mUploadProgress += 10;
+				mProgressListener.progress(mUploadProgress);
+				HttpResponse response = httpClient.execute(httpPost, localContext);
+				HttpEntity entity_response = response.getEntity();
+				String result = ContentExtractor.getASCII(entity_response);
+				mUploadProgress += 70;
+				mProgressListener.progress(mUploadProgress);
+				System.out.println("PICTURE UPLOADED SUCCESSFULLY!\n " + result);
+				JSONObject json = new JSONObject(result);
+				if (json.getBoolean("success") == false)
+					return null;
+				Picture p = new Picture(json.getJSONObject("result"));
+				mUploadProgress += 10;
+				mProgressListener.progress(mUploadProgress);
+				return p;
+			} catch (UnsupportedEncodingException e) {
+				e.printStackTrace();
+			} catch (ClientProtocolException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			} catch (JSONException e) {
+				e.printStackTrace();
+			}
+		}
+		return null;
+	}
+	
 	public JSONObject						uploadWalletPicture(File picture_file)
 	{
 		HttpClient							httpClient = new DefaultHttpClient();
@@ -2121,5 +2196,21 @@ public class					DiveboardModel
 			return Long.valueOf(tmp);
 		}
 		return null;
+	}
+	
+	public Typeface getLatoR() {
+		return _latoR;
+	}
+
+	public Typeface getLatoB() {
+		return _latoB;
+	}
+
+	public Typeface getQuickR() {
+		return _quickR;
+	}
+
+	public Typeface getQuickB() {
+		return _quickB;
 	}
 }

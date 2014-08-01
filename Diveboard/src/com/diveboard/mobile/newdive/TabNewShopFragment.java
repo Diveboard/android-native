@@ -114,8 +114,8 @@ public class					TabNewShopFragment extends Fragment
         
     	mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
     	mContext = (ApplicationController)getActivity().getApplicationContext();
-	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		TextView no_spot_view = ((TextView)getActivity().findViewById(R.id.no_shop));
 		((TextView)mRootView.findViewById(R.id.no_shop)).setTypeface(mFaceR);
@@ -310,33 +310,33 @@ public class					TabNewShopFragment extends Fragment
 		String pos = "";
 		if (((ApplicationController)mContext).getTempDive().getShop().getLat() == null)
 		{
-			pos += "0º ";
+			pos += "0° ";
 			pos += "N";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLat() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat()) + "º ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat()) + "° ";
 			pos += "N";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLat() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat() * (-1)) + "º ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLat() * (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController)mContext).getTempDive().getShop().getLng() == null)
 		{
-			pos += "0º ";
+			pos += "0° ";
 			pos += "E";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLng() >= 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng()) + "º ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng()) + "° ";
 			pos += "E";
 		}
 		else if (((ApplicationController)mContext).getTempDive().getShop().getLng() < 0)
 		{
-			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng() * (-1)) + "º ";
+			pos += String.valueOf(((ApplicationController)mContext).getTempDive().getShop().getLng() * (-1)) + "° ";
 			pos += "W";
 		}
 		if ((((ApplicationController)mContext).getTempDive().getShop().getLat() == null || ((ApplicationController)mContext).getTempDive().getShop().getLat() == 0) && 

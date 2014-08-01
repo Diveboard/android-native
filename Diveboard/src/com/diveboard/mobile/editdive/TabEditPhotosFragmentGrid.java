@@ -228,7 +228,7 @@ public class TabEditPhotosFragmentGrid extends Fragment {
 		}
 		else
 		{
-//			Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+//			Typeface face = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
 //			TextView tv = new TextView(getActivity().getApplicationContext());
 //			tv.setText("No Picture in your album!");
 //			tv.setTypeface(face);

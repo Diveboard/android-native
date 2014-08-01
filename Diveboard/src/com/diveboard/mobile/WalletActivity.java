@@ -25,12 +25,11 @@ import org.apache.http.protocol.BasicHttpContext;
 import org.apache.http.protocol.HttpContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+
 import android.app.Activity;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -58,12 +57,12 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.View.DragShadowBuilder;
 import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
@@ -75,7 +74,6 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -83,15 +81,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.model.ContentExtractor;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.DiveboardModel.ProgressListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
 import com.diveboard.model.User;
-import com.diveboard.model.Wallet;
+import com.diveboard.util.ExitDialog;
 
-public class WalletActivity extends Activity {
+public class WalletActivity extends NavDrawer {
 
 	private DiveboardModel 				mModel;
 	private Context						mContext;
@@ -106,27 +104,26 @@ public class WalletActivity extends Activity {
 	private int 						nbPicture;
 	private int 						size;
 	private Size 						mSizePicture;
-	private int							mWalletSize;
 	private ImageView 					mAddPhotoView;
 	private DownloadImageTask			mDownloadImageTask;
 	private UploadPictureTask 			mUploadPictureTask = null;
 	public boolean 						isAddingPic = false;
 	private int 						mImageSelected;
-	public static int					mUploadProgress;
 	ConnectivityManager 				_connMgr;
 	NetworkInfo 						networkInfo;
 	private boolean						mIsUploading = false;
 	
+	
+	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_wallet);
+		super.onCreate(savedInstanceState, R.layout.activity_wallet);
+//		setContentView(R.layout.activity_wallet); DONT CALL SET CONTENT VIEW IF CURRENT ACTIVITY IS INHERITING FROM NAVDRAWER
 		ApplicationController AC = (ApplicationController) getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getApplicationContext();
 		mListPictures = new ArrayList<Picture>();
 		mPicturesIDS = new ArrayList<Integer>();
-		mWalletSize = mListPictures.size();
 		if(mModel.getUser().getWalletPictureIds() != null){
 			for(int i = 0; i < mModel.getUser().getWalletPictureIds().size(); i++){
 				mListPictures.add(mModel.getUser().getWalletPictures().get(i));
@@ -152,6 +149,7 @@ public class WalletActivity extends Activity {
 				if(!mIsUploading){
 					User user = mModel.getUser();
 					mModel.getDataManager().save(user);
+					((ApplicationController)getApplicationContext()).setRefresh(1);
 //					mModel.updateUser();
 					finish();
 				}
@@ -185,20 +183,20 @@ public class WalletActivity extends Activity {
 					//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.VISIBLE);
 					LinearLayout parent = (LinearLayout) mAddPhotoView.getParent();
 					ProgressBar bar = new ProgressBar(mContext, null, android.R.attr.progressBarStyleHorizontal);
-					RelativeLayout newObj = new RelativeLayout(mContext);
 					RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 					params.addRule(RelativeLayout.CENTER_IN_PARENT);
 					bar.setVisibility(View.VISIBLE);
 					bar.setLayoutParams(params);
 					bar.setId(1000);
-					newObj.setGravity(Gravity.CENTER);
 					mAddPhotoView.setVisibility(View.GONE);
 					ImageView newPic = new ImageView(mContext);
+					RelativeLayout newObj = new RelativeLayout(mContext);
 					newPic.setLayoutParams(new RelativeLayout.LayoutParams(size / nbPicture, size / nbPicture));
 					newPic.setScaleType(ImageView.ScaleType.CENTER_CROP);
 					newPic.setAlpha((float)(0.5));
 					Bitmap b = BitmapFactory.decodeFile(file.getAbsolutePath());
 					newPic.setImageBitmap(b);
+					newObj.setGravity(Gravity.CENTER);
 					newObj.addView(newPic);
 					newObj.addView(bar);
 					parent.addView(newObj);
@@ -281,9 +279,10 @@ public class WalletActivity extends Activity {
 	
 	public void generateTableLayout()
 	{
-		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		TextView mTitle = (TextView) findViewById(R.id.title);
-		mTitle.setTypeface(mFaceB);
+		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.title_banner_wallet));
 		Button save = (Button) findViewById(R.id.save_button);
 		save.setTypeface(mFaceB);
@@ -632,7 +631,7 @@ public class WalletActivity extends Activity {
 		}
 	}
 	
-	private class UploadPictureTask extends AsyncTask<Void, Integer, Void>
+	private class UploadPictureTask extends AsyncTask<Void, Integer, Boolean> implements ProgressListener
 	{
 		private File mFile;
 		private Picture picture = null;
@@ -640,105 +639,39 @@ public class WalletActivity extends Activity {
 		LinearLayout rl = (LinearLayout)(mAddPhotoView.getParent());
 		ProgressBar bar = (ProgressBar)findViewById(1000);
 		JSONObject result = new JSONObject();
+		private int mUploadProgress;
 		
 		
 		public UploadPictureTask(File file)
 		{
-			mUploadProgress = 0;
 			mFile = file;
-//			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_circle));
+			mUploadProgress = 0;
+			mIsUploading = false;
 			bar.setIndeterminate(false);
 			bar.setProgress(0);
 			bar.setMax(100);
-			mIsUploading = false;
+			bar.setProgressDrawable(getResources().getDrawable(R.drawable.progress_bar));
+			
 		}
 
 		@Override
-		protected Void doInBackground(Void... arg0) {
-
+		protected Boolean doInBackground(Void... arg0) {
+			mIsUploading = true;
 			System.out.println("Uploading picture to the server ");
-//			JSONObject result = mModel.uploadWalletPicture(mFile);
-			
-			
-			File picture_file = mFile;
-			HttpClient							httpClient = new DefaultHttpClient();
-			HttpContext							localContext = new BasicHttpContext();
-			HttpPost							httpPost = new HttpPost(AppConfig.SERVER_URL + "/api/picture/upload");
-			
-			NetworkInfo networkInfo = _connMgr.getActiveNetworkInfo();
-			// Test connectivity
-			if (networkInfo != null && networkInfo.isConnected())
-			{
-				try {
-					mIsUploading = true;
-					MultipartEntity entity = new MultipartEntity(HttpMultipartMode.BROWSER_COMPATIBLE);
-					Bitmap bm = BitmapFactory.decodeFile(picture_file.getPath());
-					mUploadProgress += 5;
-					publishProgress(mUploadProgress);
-					ByteArrayOutputStream baos = new ByteArrayOutputStream();  
-					mUploadProgress += 5;
-					publishProgress(mUploadProgress);
-					bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object   
-					mUploadProgress += 10;
-					publishProgress(mUploadProgress);
-					byte[] b = baos.toByteArray();
-					//String encodedImage = Base64.encodeToString(b, Base64.DEFAULT);
-					entity.addPart("qqfile", new ByteArrayBody(b, "file.jpg"));
-					entity.addPart("auth_token", new StringBody(mModel.getToken()));
-					entity.addPart("apikey", new StringBody("xJ9GunZaNwLjP4Dz2jy3rdF"));
-					entity.addPart("flavour", new StringBody("private"));
-//					entity.addPart("album", new StringBody("wallet"));
-					httpPost.setEntity(entity);
-					mUploadProgress += 20;
-					publishProgress(mUploadProgress);
-					HttpResponse response = httpClient.execute(httpPost, localContext);
-					mUploadProgress += 20;
-					publishProgress(mUploadProgress);
-					HttpEntity entity_response = response.getEntity();
-					String res = ContentExtractor.getASCII(entity_response);
-					System.out.println("WALLET PICTURE UPLOADED SUCCESSFULLY!\n" + res);
-					mUploadProgress += 10;
-					publishProgress(mUploadProgress);
-					JSONObject json = new JSONObject(res);
-					if (json.getBoolean("success") == false)
-						result = null;
-					result = json;
-//					return (json);
-				} catch (UnsupportedEncodingException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (ClientProtocolException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (IOException e) {
-					e.printStackTrace();
-					result = null;
-				} catch (JSONException e) {
-					e.printStackTrace();
-					result = null;
-				}finally{
-					
-				}
-			}
-			else
-				result = null;
-			
-			
+			picture = mModel.uploadPicture(mFile, this);		
 			
 			try{
-				if(result != null && result.getBoolean("success")){
-//					Wallet tmp = mModel.getUser().getWallet();
-					picture = new Picture(result.getJSONObject("result"));
+				if(picture != null){
 					picture.storePicture(mContext);
 					mUploadProgress += 20;
 					publishProgress(mUploadProgress);
-					pictureId = result.getJSONObject("picture").getInt("id");
+					pictureId = picture.getJson().getInt("id");
 					mListPictures.add(picture);
 					mPicturesIDS.add(pictureId);
 					System.out.println("Picture " + pictureId + " was added to the wallet");
 					mModel.getUser().setWalletPictures(mListPictures);
 					mModel.getUser().setWalletPictureIds(mPicturesIDS);
-					mUploadProgress += 10;
+					mUploadProgress += 5;
 					publishProgress(mUploadProgress);
 				}
 			}catch (JSONException e){
@@ -748,30 +681,43 @@ public class WalletActivity extends Activity {
 			}finally{
 				mIsUploading = false;
 			}
-			
-			return null;
-		}
-		@Override
-		protected void onProgressUpdate(Integer... values) {
-			// TODO Auto-generated method stub
-			super.onProgressUpdate(values);
-			bar.setIndeterminate(false);
-			bar.setProgress(values[0]);
-//			bar.incrementProgressBy(values[0]);
-			System.out.println("Progress of " + bar.getProgress() + "%");
+		
+			if(picture != null)
+				return true;
+			else
+				return false;
 		}
 		
 		@Override
-		protected void onPostExecute(Void res) {
+		protected void onPostExecute(Boolean res) {
 				mAddPhotoView.setVisibility(View.VISIBLE);
 				bar.setVisibility(View.GONE);
 				generateTableLayout();
 				isAddingPic = false;
-				if(result == null){
+				if(res == null){
 					Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_error),Toast.LENGTH_LONG);
 					toast.setGravity(Gravity.CENTER, 0, 0);
 					toast.show();
 				}
+		}
+		
+		@Override
+		protected void onProgressUpdate(Integer... values) {
+			super.onProgressUpdate(values);
+			bar.setIndeterminate(false);
+			bar.setProgress(values[0]);
+			System.out.println("Progress of " + bar.getProgress() + "%");
+		}
+
+		@Override
+		public void progress(int progress) {
+			//the progress received goes from 0 to 100, so we assume
+			//half of the progress is uploading pic to the server and
+			//the other half is regenerating it from the class Picture
+			mUploadProgress = (int) Math.round(progress * 0.75);
+			System.out.println("Current upload progress is " + mUploadProgress);
+			publishProgress(mUploadProgress);
+			
 		}
 
 	}
@@ -854,9 +800,6 @@ public class WalletActivity extends Activity {
 				break;
 			case DragEvent.ACTION_DROP:
 				mChoosenImage = (ImageView) event.getLocalState();
-//				Intent share = new Intent(Intent.ACTION_SEND);
-//				startActivity(Intent.createChooser(share, "Share Image"));
-//				System.out.println(Integer.valueOf(v.getContentDescription().toString()));
 
 				Bitmap icon = null;
 				try {
@@ -926,7 +869,6 @@ public class WalletActivity extends Activity {
 				// Dropped, reassign View to ViewGroup
 				System.out.println("drop picture");
 				System.out.println("index =" + mImageSelected);
-//				Wallet tmp = mModel.getUser().getWallet();
 				mListPictures.remove(mImageSelected);
 				mPicturesIDS.remove(mImageSelected);
 				mModel.getUser().setWalletPictures(mListPictures);
@@ -979,56 +921,38 @@ public class WalletActivity extends Activity {
 	{
 		if (mModel.getUser().getEditList().size() > 0)
 		{
-			SaveChangesDialog dialog = new SaveChangesDialog(this);
-			dialog.show();
+			final ExitDialog saveDialog = new ExitDialog(this);
+    		saveDialog.setTitle(getResources().getString(R.string.exit_title));
+    		saveDialog.setBody(getResources().getString(R.string.edit_confirm_title));
+    		saveDialog.setPositiveListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mModel.getUser().clearEditList();
+					saveDialog.dismiss();
+					finish();
+				}
+
+    		});
+    		saveDialog.setNegativeListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					saveDialog.dismiss();
+				}
+			});
+    		saveDialog.show();
 		}
-		else
-		{
+		else if (mIsUploading){
+			Toast toast = Toast.makeText(mContext, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		} else	{
 			finish();
 		}
 	};
-	
-	public class SaveChangesDialog extends Dialog implements android.view.View.OnClickListener{
-		public SaveChangesDialog(Activity a) {
-			super(a);
-		}
-		protected void onCreate(Bundle savedInstanceState) {
-			super.onCreate(savedInstanceState);
-			Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-//			View view = findViewById(R.layout.dialog_edit_confirm);
-			requestWindowFeature(Window.FEATURE_NO_TITLE);
-			setContentView(R.layout.dialog_edit_confirm);
-			TextView title = (TextView) findViewById(R.id.title);
-			title.setTypeface(faceR);
-			title.setText(getResources().getString(R.string.edit_confirm_title));
-	        
-			Button cancel = (Button) findViewById(R.id.cancel);
-			cancel.setTypeface(faceR);
-			cancel.setText(getResources().getString(R.string.cancel));
-			cancel.setOnClickListener(this);
-			Button save = (Button) findViewById(R.id.save);
-			save.setTypeface(faceR);
-			save.setText(getResources().getString(R.string.save));
-			save.setOnClickListener(this);
-		}
-		@Override
-		public void onClick(View v) {
-			// TODO Auto-generated method stub
-			switch (v.getId()) {
-		    case R.id.cancel:
-		      break;
-		    case R.id.save:
-		    	mModel.getUser().clearEditList();
-//				Intent intent = new Intent(mContext, DivesActivity.class);
-//				startActivity(intent);
-				finish();
-		      break;
-		    default:
-		      break;
-		    }
-		    dismiss();
-		}
-	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -1036,5 +960,6 @@ public class WalletActivity extends Activity {
 		getMenuInflater().inflate(R.menu.wallet, menu);
 		return true;
 	}
+	
 
 }

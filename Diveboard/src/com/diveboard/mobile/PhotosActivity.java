@@ -227,7 +227,7 @@ public class PhotosActivity extends Activity {
 		}
 		else
 		{
-			Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+			Typeface face = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 			TextView tv = new TextView(this);
 			tv.setText(getResources().getString(R.string.no_picture));
 			tv.setTypeface(face);

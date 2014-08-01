@@ -5,6 +5,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -59,10 +60,10 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
-		
+		final Typeface faceR = mModel.getLatoR();
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
@@ -89,7 +90,7 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 //		temp_label.setTypeface(faceR);
 //		temp_label.setText("º" + mTemperature.getSmallName());
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		DiveboardSpinnerAdapter adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mModel.getDives().get(getArguments().getInt("index")).getTempBottomUnit() == null)
 		{
@@ -169,8 +170,6 @@ public class					EditBottomTempDialogFragment extends DialogFragment implements 
 				dismiss();
 			}
 		});
-		
-        faceR = null;
 		return view;
 	}
 

@@ -1,59 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content" >
+    android:layout_height="wrap_content"
+    android:orientation="vertical" 
+    android:background="@color/white">
+
     <TextView
         android:id="@+id/title"
-        android:textColor="@color/dark_grey"
         android:layout_width="300dp"
-		android:layout_height="wrap_content"
-		android:paddingTop="5dp"
-		android:paddingLeft="10dp"
-		android:paddingBottom="5dp"
-        android:textSize="30sp"
-        android:background="@drawable/tab_title_background" />
-    
+        android:layout_height="wrap_content"
+        android:paddingBottom="15dp"
+        android:paddingLeft="15dp"
+        android:paddingTop="15dp"
+        android:textAllCaps="true"
+        android:textColor="@color/dark_grey"
+        android:textSize="30sp" />
+
     <EditText
         android:id="@+id/tripname"
-        android:inputType="text"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="15dp"
+        android:layout_marginLeft="15dp"
         android:gravity="center"
-        android:textSize="20sp"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
         android:hint="@string/tripname_hint"
-        android:background="@drawable/tab_body_background" />
+        android:inputType="text"
+        android:textSize="25sp" />
 
     <ListView
         android:id="@+id/hintsList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:visibility="gone" >
+        android:visibility="gone" 
+        android:paddingLeft="15dp">
     </ListView>
-    
+
     <LinearLayout
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:orientation="horizontal" >
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="15dp" >
+
         <Button
-	        android:id="@+id/cancel"
-	        android:layout_width="0dp"
-	        android:layout_weight="1"
-	        android:layout_height="wrap_content"
-	        android:textColor="@color/white"
-	        android:layout_marginRight="1dp"
-	        android:paddingTop="15dp"
-	        android:paddingBottom="15dp"
-	        android:background="@drawable/edit_save_button_selector" />
-	    <Button
-	        android:id="@+id/save"
-	        android:layout_width="0dp"
-	        android:layout_weight="1"
-	        android:layout_height="match_parent"
-	        android:textColor="@color/white"
-	        android:background="@drawable/edit_save_button_selector" />
+            android:id="@+id/save"
+            android:layout_width="100dp"
+            android:layout_height="match_parent"
+            android:layout_marginRight="10dp"
+            android:background="@drawable/primary_button_selector"
+            android:textColor="@color/black" />
+
+        <Button
+            android:id="@+id/cancel"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/secondary_button_selector"
+            android:textColor="@color/black" />
     </LinearLayout>
-    
+
 </LinearLayout>

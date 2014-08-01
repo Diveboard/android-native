@@ -5,22 +5,19 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.net.SocketException;
 import java.net.URL;
+import java.net.URLConnection;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.json.JSONStringer;
 
-import com.diveboard.mobile.ApplicationController;
-
-import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.support.v4.app.DialogFragment;
+import android.util.Log;
 import android.util.Pair;
 
 public class					Picture
@@ -118,7 +115,15 @@ public class					Picture
 					url = new URL(_urlDefault);
 					break ;
 			}
-			_bitmap = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+			try {
+				final URLConnection u = url.openConnection();
+				_bitmap = BitmapFactory.decodeStream(u.getInputStream());
+				u.getInputStream().close();
+			} catch (SocketException e) {
+				e.printStackTrace();
+				Log.d("Diveboard Socket error", "Diveboard Socket error : " + url.toExternalForm());
+				return false;
+			}
 			return true;
 		}
 		return false;
@@ -150,6 +155,24 @@ public class					Picture
 		Bitmap bitmap = _bitmap;
 		_bitmap = null;
 		return bitmap;
+	}
+	
+	public synchronized void				checkPicture(final Context context, Size size) throws IOException
+	{
+		if (UserPreference.getPictureQuality().equals("m_qual"))
+			size = Size.MEDIUM;
+		else
+			size = Size.LARGE;
+		ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+		NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
+		if (!_checkCachePicture(context, size) || (_uniqId != null && networkInfo != null && networkInfo.isConnected()))
+		{
+			if (!loadPicture(context, size))
+				return;
+			_savePicture(context, size);
+			_bitmap.recycle();
+		}
+		return;
 	}
 	
 	
@@ -300,6 +323,50 @@ public class					Picture
 			_bitmap = BitmapFactory.decodeStream(inputStream);
 			if (_bitmap == null)
 				return false;
+			return true;
+		}
+		return false;
+	}
+	
+	/*
+	 * Private Method _checkCachePicture
+	 * Load picture from cache, returns false if picture not found
+	 * Argument :	pictureName : name of the picture to retrieve
+	 */
+	private synchronized boolean			_checkCachePicture(final Context context, final Size size) throws FileNotFoundException
+	{
+		String[] picture_name;
+		
+		switch (size)
+		{
+			case LARGE:
+				picture_name = _urlLarge.split("/");
+				break ;
+			case MEDIUM:
+				picture_name = _urlMedium.split("/");
+				break ;
+			case SMALL:
+				picture_name = _urlSmall.split("/");
+				break ;
+			case THUMB:
+				picture_name = _urlThumbnail.split("/");
+				break ;
+			default:
+				picture_name = _urlDefault.split("/");
+				break ;
+		}
+		
+		File file;
+		if (_uniqId == null)
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1]);
+		else
+			file = new File(context.getCacheDir(), "picture_" + picture_name[picture_name.length - 1] + _uniqId);
+		if (file.exists())
+		{
+//			FileInputStream inputStream = context.openFileInput(file.getName());
+//			_bitmap = BitmapFactory.decodeStream(inputStream);
+//			if (_bitmap == null)
+//				return false;
 			return true;
 		}
 		return false;

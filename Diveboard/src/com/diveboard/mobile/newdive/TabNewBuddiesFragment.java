@@ -2,6 +2,7 @@ package com.diveboard.mobile.newdive;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.json.JSONArray;
@@ -53,6 +54,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.util.ExpandableHeightGridView;
 import com.diveboard.util.ImageCache.ImageCacheParams;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 import com.diveboard.util.ImageFetcher;
 import com.diveboard.util.Utils;
 import com.facebook.HttpMethod;
@@ -278,8 +280,8 @@ public class					TabNewBuddiesFragment extends Fragment
 						}
 					}
 				});
-		Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
-		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
 		((TextView)mRootView.findViewById(R.id.myBuddies)).setTypeface(faceB);
 		((TextView)mRootView.findViewById(R.id.myOldBuddies)).setTypeface(faceB);
 		((TextView)mRootView.findViewById(R.id.search)).setTypeface(faceB);
@@ -390,9 +392,10 @@ public class					TabNewBuddiesFragment extends Fragment
 				}
 			}
 		});
-		ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(getActivity(),
-				R.array.buddy_short_array, android.R.layout.simple_spinner_item);
-		adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+		String [] list = getResources().getStringArray(R.array.buddy_short_array);
+		List<String> myResArrayList = Arrays.asList(list);
+		DiveboardSpinnerAdapter adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner, myResArrayList );
+		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		Spinner spinner = ((Spinner)mRootView.findViewById(R.id.spinner));
 		spinner.setAdapter(adapter);
 		spinner.setOnItemSelectedListener(new OnItemSelectedListener() {
@@ -508,8 +511,8 @@ public class					TabNewBuddiesFragment extends Fragment
 		public View getView(final int position, final View convertView, final ViewGroup parent)
 		{
 			final RelativeLayout rl;
-			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -635,8 +638,8 @@ public class					TabNewBuddiesFragment extends Fragment
 		{
 			System.out.println("START DISPLAYING");
 			final RelativeLayout rl;
-			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -888,8 +891,8 @@ public class					TabNewBuddiesFragment extends Fragment
 			ImageView imageView;
 			TextView tv;
 			LinearLayout rl;
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -1001,8 +1004,8 @@ public class					TabNewBuddiesFragment extends Fragment
 			ImageView imageView;
 			TextView tv;
 			LinearLayout rl;
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

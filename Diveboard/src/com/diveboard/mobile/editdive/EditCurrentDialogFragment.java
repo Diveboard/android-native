@@ -39,9 +39,10 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
         void					onCurrentEditComplete(DialogFragment dialog);
     }
 	
-	private DiveboardModel		mModel;
-	private ListView				mCurrent;
+	private DiveboardModel				mModel;
+	private ListView					mCurrent;
 	private EditCurrentDialogListener	mListener;
+	private int							mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -63,9 +64,10 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		
 		View view = inflater.inflate(R.layout.dialog_edit_current, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getLatoR();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
@@ -80,7 +82,14 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 		list.add(getResources().getString(R.string.medium_current));
 		list.add(getResources().getString(R.string.strong_current));
 		list.add(getResources().getString(R.string.extreme_current));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(mTextSize);
+				return v;
+			}
+		};
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mCurrent.setAdapter(dataAdapter);
@@ -101,39 +110,6 @@ public class					EditCurrentDialogFragment extends DialogFragment implements OnE
 				
 			}
 		});
-//		Button cancel = (Button) view.findViewById(R.id.cancel);
-//		cancel.setTypeface(faceR);
-//		cancel.setText(getResources().getString(R.string.cancel));
-//		cancel.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				dismiss();
-//			}
-//		});
-//		
-//		Button save = (Button) view.findViewById(R.id.save);
-//		save.setTypeface(faceR);
-//		save.setText(getResources().getString(R.string.save));
-//		save.setOnClickListener(new OnClickListener()
-//        {
-//			@Override
-//			public void onClick(View v)
-//			{
-//				if (mCurrent.getSelectedItemPosition() == 0)
-//					mModel.getDives().get(getArguments().getInt("index")).setCurrent(null);
-//				else
-//				{
-//					String[] current = ((String)mCurrent.getSelectedItem()).split(" ");
-//					mModel.getDives().get(getArguments().getInt("index")).setCurrent(current[0].toLowerCase());
-//				}
-//				mListener.onCurrentEditComplete(EditCurrentDialogFragment.this);
-//				dismiss();
-//			}
-//		});
-		
-        faceR = null;
 		return view;
 	}
 

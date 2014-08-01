@@ -25,6 +25,7 @@ import android.widget.Toast;
 
 import com.astuetz.PagerSlidingTabStrip;
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.NavDrawer;
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.editdive.EditAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.editdive.EditBottomTempDialogFragment.EditBottomTempDialogListener;
@@ -52,7 +53,7 @@ import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.analytics.tracking.android.EasyTracker;
 
-public class EditDiveActivity extends FragmentActivity implements
+public class EditDiveActivity extends NavDrawer implements
 		EditTripNameDialogListener, EditDiveNumberDialogListener,
 		EditDateDialogListener, EditTimeInDialogListener,
 		EditMaxDepthDialogListener, EditDurationDialogListener,
@@ -81,26 +82,15 @@ public class EditDiveActivity extends FragmentActivity implements
 	public static boolean 			isNewSpot = false;
 	private boolean					mError = false;
 	private int						NUM_ITEMS = 6;
-//	public static final int SELECT_PICTURE = 1;
-//	public static final int TAKE_PICTURE = 2;
-//	private Bitmap bitmap;
-//	
-//	public static ArrayList<Picture>		mListPictures = null;//new ArrayList<Picture>();
-//	private Uri fileUri;
-//	private static final int CAPTURE_IMAGE_ACTIVITY_REQUEST_CODE = 100;
-//	public static final int MEDIA_TYPE_IMAGE = 1;
-//	public static final int MEDIA_TYPE_VIDEO = 2;
-//	public static int count=0;
-	//private UploadPictureTask mUploadPictureTask = null;
 	
 	
 	public static ViewPager mViewPager;
 
 	@Override
 	protected void onCreate(Bundle savedInstance) {
-		super.onCreate(savedInstance);
+		super.onCreate(savedInstance, R.layout.activity_edit_dive);
 		mIndex = getIntent().getIntExtra("index", -1);
-		setContentView(R.layout.activity_edit_dive);
+//		setContentView(R.layout.activity_edit_dive);
 		mViewPager = (ViewPager) findViewById(R.id.vpPager);
 		adapterViewPager = new EditPagerAdapter(getSupportFragmentManager());
 		mViewPager.setAdapter(adapterViewPager);
@@ -149,9 +139,10 @@ public class EditDiveActivity extends FragmentActivity implements
 		});
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		mTitle = (TextView) findViewById(R.id.title);
-		mTitle.setTypeface(faceB);
+		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 
 		Button save = (Button) findViewById(R.id.save_button);
@@ -165,9 +156,10 @@ public class EditDiveActivity extends FragmentActivity implements
 				mError = false;
 				mModel = ((ApplicationController)getApplicationContext()).getModel();
 				Dive dive = ((ApplicationController)getApplicationContext()).getModel().getDives().get(mIndex);
-				ArrayList<Dive> dives = ((ApplicationController)getApplicationContext()).getModel().getDives();
-				ArrayList<Pair<String, String>> editList = dive.getEditList();
-				if (mNotes != null)
+//				ArrayList<Pair<String, String>> editList = dive.getEditList();
+				if (mNotes != null && !mNotes.getText().toString().isEmpty() && !mNotes.getText().toString().equals(dive.getNotes()))
+					dive.setNotes(mNotes.getText().toString());
+				if (mNotes != null && mNotes.getText().toString().isEmpty() && dive.getNotes() != null && !dive.getNotes().isEmpty())
 					dive.setNotes(mNotes.getText().toString());
 				if(TabEditSpotsFragment.manualSpotActivated){
 					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.spot_missing), Toast.LENGTH_LONG);
@@ -175,40 +167,35 @@ public class EditDiveActivity extends FragmentActivity implements
 					toast.show();	
 					mError = true;
 				}
+				if(TabEditPhotosFragment.mIsUploading){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+						mError = true;
+				}
 				if(!mError){
 			
-					if (editList != null && editList.size() > 0)
-					{
-						JSONObject edit = new JSONObject(); 
-						for (int i = 0, size = editList.size(); i < size; i++)
-							try {
-//								System.out.println("Value of editList"
-//										+ editList.get(i).first.toString()
-//										+ editList.get(i).second.toString());
-								if (editList.get(i).first.equals("spot")){
-									//System.out.println("Akkii");
-									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-									//System.out.println("The selected manual spot is:: " + editList.get(i).second );
-								}
-									
-								else if (editList.get(i).first.equals("shop"))
-									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
-								else
-									edit.put(editList.get(i).first, editList.get(i).second);
-							} catch (JSONException e) {
-								e.printStackTrace();
-							}
-//						try {
-//							dive.applyEdit(edit);
-//							System.out.println("Value of spot after applyedit" + dive.getSpot().getJson().toString());
-//						} catch (JSONException e) {
-//							e.printStackTrace();
-//						}
-//						dive.clearEditList();
-					}
+//					if (editList != null && editList.size() > 0)
+//					{
+//						JSONObject edit = new JSONObject(); 
+//						for (int i = 0, size = editList.size(); i < size; i++)
+//							try {
+//								if (editList.get(i).first.equals("spot")){
+//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+//								}
+//									
+//								else if (editList.get(i).first.equals("shop"))
+//									edit.put(editList.get(i).first, new JSONObject(editList.get(i).second));
+//								else
+//									edit.put(editList.get(i).first, editList.get(i).second);
+//							} catch (JSONException e) {
+//								e.printStackTrace();
+//							}
+//					}
 					
 					mModel.getDataManager().save(dive);
-					((ApplicationController)getApplicationContext()).setRefresh(2);
+					//Refresh 2 is not as heavy as refresh 1, no loading screen cause it makes the changes on the background
+					((ApplicationController)getApplicationContext()).setRefresh(3);
 					finish();
 				}
 			}
@@ -216,48 +203,15 @@ public class EditDiveActivity extends FragmentActivity implements
 	}
 	
 
-
-//	@Override
-//	protected void onPause() {
-//		if (mUploadPictureTask != null)
-//			mUploadPictureTask.cancel(true);
-//		super.onPause();
-//	}
-//
-//	private class UploadPictureTask extends AsyncTask<Void, Void, Picture>
-//	{
-//		private File mFile;
-//
-//		public UploadPictureTask(File file)
-//		{
-//			mFile = file;
-//		}
-//
-//		@Override
-//		protected Picture doInBackground(Void... arg0) {
-//
-//			Picture picture = mModel.uploadPicture(mFile);
-//			return picture;
-//		}
-//
-//		@Override
-//		protected void onPostExecute(Picture result) {
-//			System.out.println("TRUC de jean " + result.getJson());
-//			//((ProgressBar)findViewById(R.id.progress)).setVisibility(View.GONE);
-//			EditDiveActivity.mPhotoView.setVisibility(View.VISIBLE);
-//			LinearLayout rl = (LinearLayout)(EditDiveActivity.mPhotoView.getParent());
-//			ProgressBar bar = (ProgressBar)rl.getChildAt(1);
-//			bar.setVisibility(View.GONE);
-//			EditDiveActivity.mListPictures.add(result);
-//			mModel.getDives().get(getIntent().getIntExtra("index", -1)).setPictures(EditDiveActivity.mListPictures);
-//		}
-//
-//	}
-
 	@Override
 	public void onBackPressed()
 	{
-		if (mModel.getDives().get(mIndex).getEditList().size() > 0)
+		if(TabEditPhotosFragment.mIsUploading){
+				Toast toast = Toast.makeText(this, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
+				toast.setGravity(Gravity.CENTER, 0, 0);
+				toast.show();
+		}
+		else if (mModel.getDives().get(mIndex).getEditList().size() > 0)
 		{
 			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
 			Bundle args = new Bundle();
@@ -281,8 +235,6 @@ public class EditDiveActivity extends FragmentActivity implements
 		intent.putExtras(bundle);
 		setResult(RESULT_OK, intent);
 		mModel.getDives().get(mIndex).clearEditList();
-//		if (mUploadPictureTask != null)
-//			mUploadPictureTask.cancel(true);
 	}
 
 	public class			EditPagerAdapter extends FragmentPagerAdapter
@@ -325,9 +277,6 @@ public class EditDiveActivity extends FragmentActivity implements
 				System.out.println("0");
 				return 0;
 			}
-				
-//			else if (object.equals(mEditDetailsFragment))
-//				return 1;
 			else if (object.equals(mEditPhotosFragment))
 			{
 				System.out.println("2");
@@ -400,7 +349,7 @@ public class EditDiveActivity extends FragmentActivity implements
 	//			return ;
 	//	    setContentView(R.layout.activity_edit_dive);
 	//	
-	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
 	//	    
 	//	    mIndex = getIntent().getIntExtra("index", -1);
 	//	
@@ -502,7 +451,7 @@ public class EditDiveActivity extends FragmentActivity implements
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		Dive dive = mModel.getDives().get(mIndex);
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min));
+		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(dive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 	}
@@ -638,7 +587,7 @@ public class EditDiveActivity extends FragmentActivity implements
 				safetydetails += ", ";
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
-		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		((EditOption)mOptionAdapter.getItem(4)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 

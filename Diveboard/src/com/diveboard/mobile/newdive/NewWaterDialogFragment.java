@@ -38,10 +38,11 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 	{
         void					onWaterEditComplete(DialogFragment dialog);
     }
-	
-	private Dive				mDive;
+	private DiveboardModel			mModel;
+	private Dive					mDive;
 	private ListView				mWater;
 	private EditWaterDialogListener	mListener;
+	private int						mTextSize = 25;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -63,7 +64,8 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_water, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -78,7 +80,14 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 		list.add(getResources().getString(R.string.null_select));
 		list.add(getResources().getString(R.string.salt_water));
 		list.add(getResources().getString(R.string.fresh_water));
-		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list);
+		ArrayAdapter<String> dataAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, list){
+			public View getView(int position, View convertView, ViewGroup parent) {
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				((TextView) v).setTextSize(mTextSize);
+				return v;
+			}
+		};
 		dataAdapter.setDropDownViewResource(R.layout.spinner_item);
 		
 		mWater.setAdapter(dataAdapter);
@@ -99,7 +108,6 @@ public class					NewWaterDialogFragment extends DialogFragment implements OnEdit
 				
 			}
 		});
-        faceR = null;
 		return view;
 	}
 

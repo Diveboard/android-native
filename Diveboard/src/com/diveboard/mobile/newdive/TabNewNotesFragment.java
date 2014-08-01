@@ -53,7 +53,7 @@ public class TabNewNotesFragment extends Fragment
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_notes, container, false);
 	    
-	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Regular.otf");
+	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
 	    
 	    NewDiveActivity.mNotes = (EditText) rootView.findViewById(R.id.notes);
 	    NewDiveActivity.mNotes.setTypeface(mFaceR);

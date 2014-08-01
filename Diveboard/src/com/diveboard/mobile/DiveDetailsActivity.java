@@ -2,12 +2,20 @@ package com.diveboard.mobile;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+import java.util.Arrays;
 
+import com.diveboard.mobile.newdive.NewDiveActivity;
+import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
+import com.diveboard.util.ExitDialog;
+import com.facebook.Session;
 import com.google.analytics.tracking.android.EasyTracker;
+import com.uservoice.uservoicesdk.UserVoice;
 
 import android.R.id;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -26,6 +34,8 @@ import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -38,9 +48,12 @@ import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
@@ -56,6 +69,12 @@ public class DiveDetailsActivity extends TabActivity {
 	private Typeface mFaceB;
 	private Typeface mFaceR;
 	private int mIndex;
+
+	//controls for navigation drawer
+	private DrawerLayout 					mDrawerLayout;
+	protected ListView 						mDrawerList;
+	private LinearLayout 					mDrawerContainer;
+	protected ArrayList<String> 			mLinksTitles;
 	
 	@Override
 	protected void onResume()
@@ -83,13 +102,196 @@ public class DiveDetailsActivity extends TabActivity {
 		EasyTracker.getInstance(this).activityStop(this);
 	}
 	
-//	@Override
-//	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//		//super.onActivityResult(requestCode, resultCode, data);
-//		
-//		onCreate(null);
-//	}
+	private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            navigateTo(position);
+        }
+    }
+    
+    public void navigateTo(final int position) {
+    	final ApplicationController AC = (ApplicationController)getApplicationContext();
+    	int currDive = AC.getModel().getDives().size() - AC.getPageIndex() - 1;
+    	Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+    	//Check there are not unsaved changes
+    	if (mModel.getDives().size() > 0 &&
+    			(currDive >= 0 && mModel.getDives().get(currDive).getEditList().size() > 0)
+    			|| (mModel.getUser().getEditList().size() > 0)
+    			|| (mDive != null && mDive.getEditList() != null && mDive.getEditList().size() > 0)) 
+    	{			
+    		final ExitDialog saveDialog = new ExitDialog(this);
+    		saveDialog.setTitle(getResources().getString(R.string.exit_title));
+    		saveDialog.setBody(getResources().getString(R.string.edit_confirm_title));
+    		saveDialog.setPositiveListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mModel.getUser().clearEditList();
+			    	Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
+			    	if (mDive != null)
+			    		mDive.clearEditList();
+			    	int currDive = AC.getModel().getDives().size() - AC.getPageIndex() - 1;
+			    	if(currDive >= 0){
+			    		mModel.getDives().get(currDive).clearEditList(); 
+			    	}
+			    	navigateTo(position);
+			    	saveDialog.dismiss();
+				}
+			});
+    		
+    		saveDialog.setNegativeListener(new View.OnClickListener() {
+				
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mDrawerLayout.closeDrawer(mDrawerContainer);
+			    	mDrawerList.setItemChecked(position, false);
+			    	saveDialog.dismiss();
+				}
+			});
+    		
+    		saveDialog.show();
+    	}else{
+    		switch (position) {	
+    		// Logbook
+    		case 0:
+    			if(!((Activity)this instanceof DivesActivity)){
+					((ApplicationController)getApplicationContext()).setRefresh(1);
+    				finish();
+    			}
 
+    			break;
+
+    			// Refresh
+    		case 1:
+    			AC.setDataReady(false);
+    			AC.getModel().stopPreloadPictures();
+    			ApplicationController.mForceRefresh = true;
+    			AC.setModel(null);
+    			finish();
+    			break;
+
+    			// Wallet Activity
+    		case 2:
+    			if(!((Activity)this instanceof WalletActivity)){
+    				Intent walletActivity = new Intent(this, WalletActivity.class);
+    				startActivity(walletActivity);
+    				if(!((Activity)this instanceof DivesActivity))
+    					finish();
+    			}
+    			break;
+
+    			// Closest Shop
+    		case 3:
+    			if(!((Activity)this instanceof ClosestShopActivity)){
+    				Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
+    				startActivity(closestShopActivity);
+    				if(!((Activity)this instanceof DivesActivity))
+    					finish();
+    			}
+    			break;
+
+    			// New Dive
+    		case 4:
+    			if(!((Activity)this instanceof NewDiveActivity)){
+    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
+    				startActivity(newDiveActivity);
+    				if(!((Activity)this instanceof DivesActivity))
+    					finish();
+    			}
+    			break;
+
+    			// Settings
+    		case 5:
+    			Intent settingsActivity = new Intent(this, SettingsActivity.class);
+    			startActivity(settingsActivity);
+    			if(!((Activity)this instanceof DivesActivity))
+    				finish();
+    			break;
+
+    			// bug report
+//    		case 6:
+
+//    			// Use of UserVoice report bug system
+//    			WaitDialogFragment bugDialog = new WaitDialogFragment();
+//    			bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
+//    			Config config = new Config("diveboard.uservoice.com");
+//    			if (mModel.getSessionEmail() != null)
+//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
+//    			UserVoice.init(config, this);
+//    			config.setShowForum(false);
+//    			config.setShowContactUs(true);
+//    			config.setShowPostIdea(false);
+//    			config.setShowKnowledgeBase(false);
+//    			ApplicationController.UserVoiceReady = true;
+//    			UserVoice.launchContactUs(this);
+//    			bugDialog.dismiss();
+//
+//    			break;
+
+    			// Logout
+    		case 6:
+    			final ExitDialog exitDialog = new ExitDialog(this);
+    			exitDialog.setTitle(getResources().getString(R.string.exit_title));
+    			exitDialog.setBody(getResources().getString(R.string.confirm_logout));
+    			exitDialog.setPositiveListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						logout();
+					}
+				});
+
+    			exitDialog.setNegativeListener(new View.OnClickListener() {
+					
+					@Override
+					public void onClick(View v) {
+						// TODO Auto-generated method stub
+						exitDialog.dismiss();
+					}
+				});
+    			
+    			exitDialog.show();
+    			break;
+
+    			// Rate app
+    		case 7:
+    			mModel.setHasRatedApp(true);
+    			try {
+    				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
+    			} catch (android.content.ActivityNotFoundException anfe) {
+    				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
+    			}
+    			break;
+
+    		default:
+    			break;
+
+    		}
+
+    		// update selected item and title, then close the drawer
+    		mDrawerList.setItemChecked(position, false);
+    		mDrawerLayout.closeDrawer(mDrawerContainer);
+    	}
+    }
+
+    public void logout()
+   	{
+   		if (Session.getActiveSession() != null)
+   			Session.getActiveSession().closeAndClearTokenInformation();
+   		Session.setActiveSession(null);
+   		ApplicationController AC = (ApplicationController)getApplicationContext();
+       	AC.setDataReady(false);
+       	AC.setPageIndex(0);
+       	AC.getModel().doLogout();
+       	Intent loginActivity = new Intent(this, DiveboardLoginActivity.class);
+       	loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+       	startActivity(loginActivity);
+       	
+   	}
+    
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -98,6 +300,9 @@ public class DiveDetailsActivity extends TabActivity {
 			return ;
 		// Set the action bar
 		setContentView(R.layout.activity_dive_details);
+		
+		
+		
 		ViewTreeObserver vto = ((ViewGroup)findViewById(R.id.root)).getViewTreeObserver(); 
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
 		    @Override 
@@ -108,8 +313,8 @@ public class DiveDetailsActivity extends TabActivity {
 		    	ApplicationController AC = ((ApplicationController)getApplicationContext());
 				mModel = AC.getModel();
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
-				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
-				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
+				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 				mIndex = getIntent().getIntExtra("index", 0);
 				//We built the tabs
 				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);
@@ -229,6 +434,43 @@ public class DiveDetailsActivity extends TabActivity {
 				task.execute(mIndex);
 		    }
 		});
+		
+		//Set up the navDrawer
+		mLinksTitles = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.menu_links_has_rated_nobug)));
+		if((AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp()))
+			mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
+		//Setting up controls for the navigation drawer 
+		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+		mDrawerContainer = (LinearLayout) findViewById(R.id.left_drawer_cont);
+		mDrawerList = (ListView) findViewById(R.id.menu_links);
+
+		// set a custom shadow that overlays the main content when the drawer opens
+		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+		final Typeface faceR = ((ApplicationController)getApplicationContext()).getModel().getLatoR();
+		// set up the drawer's list view with items and click listener
+		mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
+			@Override
+			public View getView(int position, View convertView, ViewGroup parent) {
+				// TODO Auto-generated method stub
+				View v = super.getView(position, convertView, parent);
+				((TextView) v).setTypeface(faceR);
+				return v;
+
+			}
+		});
+		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+		ImageView mDrawerTitle = (ImageView)findViewById(R.id.drawer_title);
+		mDrawerTitle.setImageDrawable(getResources().getDrawable(R.drawable.logo_250));
+		ImageView mDrawerMenu = (ImageView)findViewById(R.id.ic_drawer);
+		if(mDrawerMenu != null)
+			mDrawerMenu.setOnClickListener(new View.OnClickListener() {
+
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					mDrawerLayout.openDrawer(mDrawerContainer);
+				}
+			});
 	}
 	
 	private Bitmap			scaleBitmap(final int resource)

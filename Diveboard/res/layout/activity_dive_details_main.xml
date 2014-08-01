@@ -83,35 +83,35 @@
                         android:id="@+id/goToEditButton"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-				        android:layout_marginTop="8dp"
-				        android:background="@drawable/login_button_selector"
-				        android:paddingBottom="7dp"
-				        android:paddingLeft="20dp"
-				        android:paddingRight="20dp"
-				        android:paddingTop="7dp"
                         android:layout_alignParentRight="false"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
                         android:layout_weight="0.5"
+                        android:background="@drawable/login_button_selector"
                         android:onClick="goToEditDive"
-                        android:textColor="@drawable/login_button_text_selector"
-                        android:text="EDIT" >
+                        android:paddingBottom="7dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingTop="7dp"
+                        android:text="EDIT"
+                        android:textColor="@drawable/login_button_text_selector" >
                     </Button>
 
                     <Button
                         android:id="@+id/deleteDiveButton"
                         android:layout_width="0dp"
                         android:layout_height="40dp"
-				        android:layout_marginTop="8dp"
-				        android:background="@drawable/login_button_selector"
-				        android:paddingBottom="7dp"
-				        android:paddingLeft="15dp"
-				        android:paddingRight="15dp"
-				        android:paddingTop="7dp"
                         android:layout_alignParentRight="false"
                         android:layout_marginLeft="10dp"
+                        android:layout_marginTop="8dp"
                         android:layout_weight="0.5"
-                        android:textColor="@drawable/login_button_text_selector"
-                        android:text="DELETE" >
+                        android:background="@drawable/login_button_selector"
+                        android:paddingBottom="7dp"
+                        android:paddingLeft="15dp"
+                        android:paddingRight="15dp"
+                        android:paddingTop="7dp"
+                        android:text="DELETE"
+                        android:textColor="@drawable/login_button_text_selector" >
                     </Button>
                 </LinearLayout>
             </RelativeLayout>
@@ -159,6 +159,19 @@
                     android:layout_gravity="center_horizontal"
                     android:gravity="center_horizontal"
                     android:textColor="#000000" />
+
+                <Button
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/shop_review"
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/login_button_selector"
+                    android:gravity="center_horizontal"
+                    android:text="Review"
+                    android:textSize="14sp"
+                    android:textColor="@drawable/login_button_text_selector"
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
 
@@ -353,165 +366,171 @@
         </LinearLayout>
     </LinearLayout>
 
-    
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" 
+        android:orientation="vertical"
+        android:background="#FFDADBDC">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/review_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="1dp"
+            android:gravity="left"
+            android:padding="10dp"
+            android:text="@string/edit_review_title"
+            android:textAllCaps="true"
             android:background="@color/white"
-            android:orientation="vertical" >
+            android:textColor="#000000" />
 
-                <LinearLayout
-                    android:id="@+id/layout_review"
-                    android:layout_width="match_parent"
+        <LinearLayout
+            android:id="@+id/layout_review"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            
+            android:baselineAligned="false"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:layout_marginBottom="1dp" >
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.35"
+                android:background="@color/white"
+                android:gravity="right"
+                android:orientation="vertical" >
+
+                <TextView
+                    android:id="@+id/overallTV"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
                     android:gravity="center"
-                    android:orientation="horizontal" >
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_overall"
+                    android:textColor="#000000" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:gravity="right"
-                        android:layout_weight="0.35"
-                        android:orientation="vertical" >
+                <TextView
+                    android:id="@+id/difficultyTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_difficulty"
+                    android:textColor="#000000" />
 
-                        <TextView
-                            android:id="@+id/overallTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.3"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Overall"
-                            android:textColor="#000000" />
+                <TextView
+                    android:id="@+id/lifeTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_life"
+                    android:textColor="#000000" />
 
-                        <TextView
-                            android:id="@+id/difficultyTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Difficulty"
-                            android:textColor="#000000" />
+                <TextView
+                    android:id="@+id/fishTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_fish"
+                    android:textColor="#000000" />
 
-                        <TextView
-                            android:id="@+id/lifeTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Marine life quality"
-                            android:textColor="#000000" />
+                <TextView
+                    android:id="@+id/wreckTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="0.5"
+                    android:gravity="center"
+                    android:paddingBottom="5dp"
+                    android:text="@string/review_wreck"
+                    android:textColor="#000000" />
+            </LinearLayout>
 
-                        <TextView
-                            android:id="@+id/fishTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Big Fish"
-                            android:textColor="#000000" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="0.65"
+                android:background="@color/white"
+                android:orientation="vertical" >
 
-                        <TextView
-                            android:id="@+id/wreckTV"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:paddingTop="5dp"
-                            android:text="Wreck"
-                            android:textColor="#000000" />
+                <RatingBar
+                    android:id="@+id/overall_review"
+                    style="@style/diveboardRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="0.5"
+                    android:clickable="false"
+                    android:isIndicator="false"
+                    android:numStars="5"
+                    android:paddingBottom="5dp"
+                    android:rating="0.0"
+                    android:stepSize="1.0" />
 
-                    </LinearLayout>
+                <RatingBar
+                    android:id="@+id/difficulty_review"
+                    style="@style/diveboardRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="0.5"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:numStars="5"
+                    android:paddingBottom="5dp"
+                    android:rating="0.0"
+                    android:stepSize="1.0" />
 
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_weight="0.65"
-                        android:orientation="vertical" >
+                <RatingBar
+                    android:id="@+id/life_review"
+                    style="@style/diveboardRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="0.5"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:numStars="5"
+                    android:paddingBottom="5dp"
+                    android:rating="0.0"
+                    android:stepSize="1.0" />
 
-                        <RatingBar
-                            android:id="@+id/overall_review"
-                            style="@style/diveboardRatingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0" 
-                            android:clickable="false"
-                            android:isIndicator="false"
-                            />
+                <RatingBar
+                    android:id="@+id/fish_review"
+                    style="@style/diveboardRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="0.5"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:numStars="5"
+                    android:paddingBottom="5dp"
+                    android:rating="0.0"
+                    android:stepSize="1.0" />
 
-                        <RatingBar
-                            android:id="@+id/difficulty_review"
-                            style="@style/diveboardRatingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0"
-                            android:clickable="false" />
-
-                        <RatingBar
-                            android:id="@+id/life_review"
-                            style="@style/diveboardRatingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0"
-                            android:clickable="false" />
-
-                        <RatingBar
-                            android:id="@+id/fish_review"
-                            style="@style/diveboardRatingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:gravity="center" 
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0" 
-                            android:clickable="false"/>
-
-                        <RatingBar
-                            android:id="@+id/wreck_review"
-                            style="@style/diveboardRatingBar"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="15dp"
-                            android:layout_weight="0.5"
-                            android:gravity="center"
-                            android:numStars="5"
-                            android:paddingTop="5dp"
-                            android:rating="0.0"
-                            android:stepSize="1.0"
-                            android:clickable="false" />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
+                <RatingBar
+                    android:id="@+id/wreck_review"
+                    style="@style/diveboardRatingBar"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="15dp"
+                    android:layout_weight="0.5"
+                    android:clickable="false"
+                    android:gravity="center"
+                    android:numStars="5"
+                    android:paddingBottom="5dp"
+                    android:rating="0.0"
+                    android:stepSize="1.0" />
+            </LinearLayout>
         </LinearLayout>
-
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -522,7 +541,6 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="1dp"
             android:layout_marginBottom="1dp"
             android:background="@color/white"
             android:orientation="vertical"
@@ -545,6 +563,62 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="#FFDADBDC"
+        android:orientation="vertical" >
+
+        <TextView
+            android:id="@+id/tank_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingLeft="10dp"
+            android:paddingTop="10dp"
+            android:text="@string/tanks_label"
+            android:textAllCaps="true"
+            android:textColor="#000000" />
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/white"
+            android:paddingBottom="5dp" >
+
+            <LinearLayout
+                android:id="@+id/tank_list"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="5dp" >
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#FFDADBDC"
+        android:orientation="vertical" >
+
+        <HorizontalScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:background="@color/white"
+            android:padding="10dp" >
+
+            <LinearLayout
+                android:id="@+id/buddy_list_pictures"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingBottom="10dp" >
+            </LinearLayout>
+        </HorizontalScrollView>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         android:orientation="vertical"
         android:padding="10dp" >
@@ -558,6 +632,7 @@
             android:text="View dive in browser"
             android:textColor="@color/blue" />
         <!-- </FrameLayout> -->
+
     </LinearLayout>
 
 </LinearLayout>

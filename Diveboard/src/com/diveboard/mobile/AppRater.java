@@ -60,13 +60,13 @@ public class AppRater {
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(R.layout.dialog_app_rate);
         dialog.findViewById(R.id.title);
-        Typeface faceB = Typeface.createFromAsset(AC.getAssets(), "fonts/Quicksand-Bold.otf");
-        Typeface faceR = Typeface.createFromAsset(AC.getAssets(), "fonts/Quicksand-Regular.otf");
+        Typeface faceB = Typeface.createFromAsset(AC.getAssets(), "fonts/Quicksand-Regular.otf");
+        Typeface faceR = Typeface.createFromAsset(AC.getAssets(), "fonts/Lato-Light.ttf");
         TextView title = (TextView) dialog.findViewById(R.id.title);
 		TextView body = (TextView) dialog.findViewById(R.id.bodyTV);
-		Button b1 = (Button) dialog.findViewById(R.id.cancel);
+		Button b1 = (Button) dialog.findViewById(R.id.rate);
 		Button b2 = (Button) dialog.findViewById(R.id.later);
-		Button b3 = (Button) dialog.findViewById(R.id.rate);
+		Button b3 = (Button) dialog.findViewById(R.id.cancel);
 		title.setTypeface(faceB);
 		title.setText(AC.getResources().getString(R.string.rate_title));
         body.setTypeface(faceR);
@@ -74,15 +74,17 @@ public class AppRater {
         b1.setTypeface(faceR);
         b2.setTypeface(faceR);
         b3.setTypeface(faceR);        
-        b1.setText(AC.getResources().getString(R.string.rate_refuse));
+        b1.setText(AC.getResources().getString(R.string.rate_accept));
         b2.setText(AC.getResources().getString(R.string.rate_later));
-        b3.setText(AC.getResources().getString(R.string.rate_accept));
+        b3.setText(AC.getResources().getString(R.string.rate_refuse));
         
         b1.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View v) {
-            	AC.getModel().setHasRatedApp(true);
-                dialog.dismiss();
-            }
+
+        	public void onClick(View v) {
+        		mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
+        		AC.getModel().setHasRatedApp(true);
+        		dialog.dismiss();
+        	}
         });
         
         b2.setOnClickListener(new View.OnClickListener() {
@@ -93,15 +95,13 @@ public class AppRater {
             }
         });
         
+        
         b3.setOnClickListener(new View.OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				mContext.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + APP_PNAME)));
-				AC.getModel().setHasRatedApp(true);
+            public void onClick(View v) {
+            	AC.getModel().setHasRatedApp(true);
                 dialog.dismiss();
-			}
-		});
+            }
+        });
         
         dialog.show();        
     }

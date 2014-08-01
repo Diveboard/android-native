@@ -6,45 +6,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.astuetz.PagerSlidingTabStrip;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.R;
-import com.diveboard.mobile.WaitDialogFragment;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
-import com.diveboard.mobile.newdive.NewGuideNameDialogFragment.EditGuideNameDialogListener;
-import com.diveboard.mobile.editdive.EditOption;
-import com.diveboard.mobile.editdive.OptionAdapter;
-import com.diveboard.mobile.editdive.TabEditSpotsFragment;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
-import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
-import com.diveboard.mobile.newdive.NewBottomTempDialogFragment.EditBottomTempDialogListener;
-import com.diveboard.mobile.newdive.NewCurrentDialogFragment.EditCurrentDialogListener;
-import com.diveboard.mobile.newdive.NewDateDialogFragment.EditDateDialogListener;
-import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
-import com.diveboard.mobile.newdive.NewDiveTypeDialogFragment.EditDiveTypeDialogListener;
-import com.diveboard.mobile.newdive.NewDurationDialogFragment.EditDurationDialogListener;
-import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment.EditMaxDepthDialogListener;
-import com.diveboard.mobile.newdive.NewReviewDialogFragment.EditReviewDialogListener;
-import com.diveboard.mobile.newdive.NewSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
-import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
-import com.diveboard.mobile.newdive.NewTanksDialogFragment.EditTanksDialogListener;
-import com.diveboard.mobile.newdive.NewTimeInDialogFragment.EditTimeInDialogListener;
-import com.diveboard.mobile.newdive.NewTripNameDialogFragment.EditTripNameDialogListener;
-import com.diveboard.mobile.newdive.NewVisibilityDialogFragment.EditVisibilityDialogListener;
-import com.diveboard.mobile.newdive.NewWaterDialogFragment.EditWaterDialogListener;
-import com.diveboard.mobile.newdive.NewWeightsDialogFragment.EditWeightsDialogListener;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveCreateListener;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.FirstFragment;
-import com.diveboard.model.SafetyStop;
-import com.diveboard.model.Tank;
-import com.diveboard.model.Units;
-import com.google.analytics.tracking.android.EasyTracker;
-
-import android.os.Bundle;
 import android.content.Intent;
 import android.graphics.Typeface;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
@@ -60,7 +24,43 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class					NewDiveActivity extends FragmentActivity implements EditDateDialogListener,
+import com.astuetz.PagerSlidingTabStrip;
+import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.NavDrawer;
+import com.diveboard.mobile.R;
+import com.diveboard.mobile.WaitDialogFragment;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
+import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
+import com.diveboard.mobile.editdive.EditOption;
+import com.diveboard.mobile.editdive.OptionAdapter;
+import com.diveboard.mobile.editdive.TabEditPhotosFragment;
+import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
+import com.diveboard.mobile.newdive.NewBottomTempDialogFragment.EditBottomTempDialogListener;
+import com.diveboard.mobile.newdive.NewCurrentDialogFragment.EditCurrentDialogListener;
+import com.diveboard.mobile.newdive.NewDateDialogFragment.EditDateDialogListener;
+import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment.EditDiveNumberDialogListener;
+import com.diveboard.mobile.newdive.NewDiveTypeDialogFragment.EditDiveTypeDialogListener;
+import com.diveboard.mobile.newdive.NewDurationDialogFragment.EditDurationDialogListener;
+import com.diveboard.mobile.newdive.NewGuideNameDialogFragment.EditGuideNameDialogListener;
+import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment.EditMaxDepthDialogListener;
+import com.diveboard.mobile.newdive.NewReviewDialogFragment.EditReviewDialogListener;
+import com.diveboard.mobile.newdive.NewSafetyStopsDialogFragment.EditSafetyStopsDialogListener;
+import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment.EditSurfaceTempDialogListener;
+import com.diveboard.mobile.newdive.NewTanksDialogFragment.EditTanksDialogListener;
+import com.diveboard.mobile.newdive.NewTimeInDialogFragment.EditTimeInDialogListener;
+import com.diveboard.mobile.newdive.NewTripNameDialogFragment.EditTripNameDialogListener;
+import com.diveboard.mobile.newdive.NewVisibilityDialogFragment.EditVisibilityDialogListener;
+import com.diveboard.mobile.newdive.NewWaterDialogFragment.EditWaterDialogListener;
+import com.diveboard.mobile.newdive.NewWeightsDialogFragment.EditWeightsDialogListener;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveCreateListener;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Tank;
+import com.diveboard.model.Units;
+import com.google.analytics.tracking.android.EasyTracker;
+
+public class					NewDiveActivity extends NavDrawer implements EditDateDialogListener,
 																					EditTimeInDialogListener,
 																					EditMaxDepthDialogListener,
 																					EditDurationDialogListener,
@@ -181,9 +181,9 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-	    super.onCreate(savedInstanceState);
+	    super.onCreate(savedInstanceState, R.layout.activity_edit_dive);
 	    
-	    setContentView(R.layout.activity_edit_dive);
+//	    setContentView(R.layout.activity_edit_dive);
 	    
 	    if (((ApplicationController)getApplicationContext()).getTempDive() == null)
 	    {
@@ -202,10 +202,11 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	    	((ApplicationController)getApplicationContext()).setTempDive(new_dive);
 	    }
 	
-	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    
 	    mTitle = (TextView) findViewById(R.id.title);
-	    mTitle.setTypeface(mFaceB);
+	    mTitle.setTypeface(quicksandR);
 	    mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 	    
 	    Button save = (Button) findViewById(R.id.save_button);
@@ -235,13 +236,19 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				}
 				if (mDive.getDuration() == null)
 				{
-					if (4 - optionList.getFirstVisiblePosition() >= 0)
+					if (3 - optionList.getFirstVisiblePosition() >= 0)
 					{
-						View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
+						View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
 						((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 						((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 					}
 					
+				}
+				if(TabNewPhotosFragment.mIsUploading){
+					Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+					toast.setGravity(Gravity.CENTER, 0, 0);
+					toast.show();
+					mError = true;
 				}
 				if (mError == false)
 				{
@@ -314,6 +321,11 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 						toast.setGravity(Gravity.CENTER, 0, 0);
 						toast.show();	
 					}
+					if(TabNewPhotosFragment.mIsUploading){
+						Toast toast = Toast.makeText(getApplicationContext(), getResources().getString(R.string.upload_not_finished),Toast.LENGTH_LONG);
+						toast.setGravity(Gravity.CENTER, 0, 0);
+						toast.show();
+					}
 				}
 			}
 		});
@@ -371,7 +383,12 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onBackPressed()
 	{
 		Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		if (mDive.getEditList()!= null && mDive.getEditList().size() > 0)
+		if(TabNewPhotosFragment.mIsUploading){
+			Toast toast = Toast.makeText(this, getResources().getString(R.string.upload_not_finished_exit),Toast.LENGTH_LONG);
+			toast.setGravity(Gravity.CENTER, 0, 0);
+			toast.show();
+		}
+		else if (mDive.getEditList()!= null && mDive.getEditList().size() > 0)
 		{
 			EditConfirmDialogFragment dialog = new EditConfirmDialogFragment();
 	    	dialog.show(getSupportFragmentManager(), "EditConfirmDialogFragment");
@@ -447,13 +464,13 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-	        	if (4 - optionList.getFirstVisiblePosition() >= 0)
+	        	if (3 - optionList.getFirstVisiblePosition() >= 0)
 	        	{
-	        		((TextView)optionList.getChildAt(4 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
+	        		((TextView)optionList.getChildAt(3 - optionList.getFirstVisiblePosition()).findViewById(R.id.optTitle)).post(new Runnable() {
 		                public void run() {
 		                	if (mDive.getDuration() == null)
 		                	{
-		                		View view = optionList.getChildAt(4 - optionList.getFirstVisiblePosition());
+		                		View view = optionList.getChildAt(3 - optionList.getFirstVisiblePosition());
 		                		((TextView)view.findViewById(R.id.optTitle)).requestFocus();
 			                	((TextView)view.findViewById(R.id.optTitle)).setError(getResources().getString(R.string.empty_field_error));
 			        			mError = true;
@@ -469,7 +486,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 	public void onDurationEditComplete(DialogFragment dialog)
 	{
 		final Dive mDive = ((ApplicationController)getApplicationContext()).getTempDive();
-		((EditOption)mOptionAdapter.getItem(4)).setValue(Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min));
+		((EditOption)mOptionAdapter.getItem(3)).setValue(Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min));
 		mOptionAdapter.notifyDataSetChanged();
 		//mModel.getDataManager().save(dive);
 		new Thread(new Runnable() {
@@ -639,7 +656,7 @@ public class					NewDiveActivity extends FragmentActivity implements EditDateDia
 				safetydetails += ", ";
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
-		((EditOption)mOptionAdapter.getItem(3)).setValue(safetydetails);
+		((EditOption)mOptionAdapter.getItem(4)).setValue(safetydetails);
 		mOptionAdapter.notifyDataSetChanged();
 	}
 

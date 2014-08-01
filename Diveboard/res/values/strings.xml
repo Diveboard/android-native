@@ -1,10 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <string name="app_name">Diveboard</string>
     <string name="fb_app_id_debug">367340190067848</string>
     <string name="fb_app_id_release">193803977296892</string>
-    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string> <!-- private API GoogleMaps key for Gonzalo debugging- -->
-    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string> <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <string name="maps_app_id_debug">AIzaSyA7f6HGc3rIOwUf1MxKdY4dlX0m5ofHDQY</string>
+ <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
+ <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
@@ -17,10 +20,10 @@
     <string name="tab_buddies_title">BUDDIES</string>
     <string name="tab_photos_title">PHOTOS</string>
     <string name="save_button">SAVE</string>
-    <string name="tab_details_label">DETAILS</string>
+    <string name="tab_details_label">Details</string>
     <string name="tab_notes_label">NOTES</string>
     <string name="tab_gear_label">GEAR</string>
-    <string name="tab_species_label">SPECIES</string>
+    <string name="tab_species_label">Species</string>
     <string name="tab_photos_label">PHOTOS</string>
     <string name="tab_map_label">MAP</string>
     <string name="tab_spots_label">SPOTS</string>
@@ -48,8 +51,9 @@
     <string name="bottom_temp_hint">Bottom Temp.</string>
     <string name="weights_hint">Weights</string>
     <string name="edit_weights_title">Weights</string>
+    <string name="exit_title">Exit</string>
     <string name="edit_confirm_title">Exit without save?</string>
-    <string name="confirm_exit">Are you sure you want to logout?</string>
+    <string name="confirm_logout">Are you sure you want to logout?</string>
     <string name="bad_visibility">Bad (under 5m / 15ft)</string>
     <string name="average_visibility">Average (5-10m / 15-30ft)</string>
     <string name="good_visibility">Good (10-25m / 40-75ft)</string>
@@ -71,6 +75,7 @@
     <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
     <string name="title_activity_fblogin">FBLoginActivity</string>
     <string name="title_activity_intro">IntroActivity</string>
+    <string name="title_banner_closest_shop">CLOSEST SHOPS</string>
     <string name="title_banner_wallet">MY WALLET</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
@@ -107,6 +112,11 @@
     <string name="research_type">Research</string>
     <string name="admin_category">Admin</string>
     <string name="sudo_hint">User Id</string>
+    <string name="review_overall">Overall: </string>
+    <string name="review_difficulty">Dive difficulty: </string>
+    <string name="review_life">Marine life: </string>
+    <string name="review_fish">Big fish: </string>
+    <string name="review_wreck">Wreck sighted: </string>
     <string name="hint_poor">Poor</string>
     <string name="hint_terrible">Terrible</string>
     <string name="hint_average">Average</string>
@@ -148,32 +158,45 @@
     <string name="choose_gallery">Choose from gallery</string>
     <string name="take_picture">Take a picture</string>
     <string name="upload_not_finished">Please wait until the picture has been uploaded to the server to save</string>
+    <string name="upload_not_finished_exit">Please wait until the picture has been uploaded to the server to exit</string>
     <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
     <string name="rate_title">Rate Diveboard</string>
     <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us on the play store?\nThanks!!</string>
-    <string name="rate_later">Remind me later</string>
-    <string name="rate_refuse">No, thanks</string>
+    <string name="rate_later">Later</string>
+    <string name="rate_refuse">Nope</string>
     <string name="rate_accept">Sure!</string>
-    
-    <string-array name="menu_links_has_not_rated">
-        <item>Logbook</item>
-        <item>Refresh</item>
-        <item>See Wallet</item>
-        <item>Closest Shop</item>
-        <item>New Dive</item>
-        <item>Settings</item>
-        <item>Report a bug</item>
-        <item>Logout</item>
-        <item>Rate App</item>
-    </string-array>
+
+    <string name="menu_links_has_not_rated">Rate App</string>
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>
-        <item>Refresh</item>
-        <item>See Wallet</item>
-        <item>Closest Shop</item>
         <item>New Dive</item>
+        <item>Wallet</item>
+        <item>Closest Shop</item>
+        <item>Refresh</item>
         <item>Settings</item>
         <item>Report a bug</item>
         <item>Logout</item>
     </string-array>
+    <string-array name="menu_links_has_rated_nobug">
+        <item>Logbook</item>
+        <item>New Dive</item>
+        <item>Wallet</item>
+        <item>Closest Shop</item>
+        <item>Refresh</item>
+        <item>Settings</item>
+        <item>Logout</item>
+    </string-array>
+
+    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
+    <string name="shop_review_title">REVIEW</string>
+    <string name="shop_review_title_hint">Title</string>
+    <string name="shop_review_comment">Comment</string>
+    <string name="shop_review_organisation">Organisation</string>
+    <string name="shop_review_friend">Friend</string>
+    <string name="shop_review_security">Security</string>
+    <string name="shop_review_boat">Boat</string>
+    <string name="shop_review_rent">Rent</string>
+    <string name="shop_review_anonymous">Anonymous</string>
+    <string name="shop_review_recommend">Recommend</string>
+
 </resources>

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:background="@color/white" >
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -12,24 +13,21 @@
             android:id="@+id/title"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_title_background"
-            android:paddingBottom="5dp"
-            android:paddingLeft="10dp"
-            android:paddingTop="5dp"
+            android:paddingTop="15dp"
+            android:paddingLeft="15dp"
+            android:paddingBottom="15dp"
+            android:textAllCaps="true"
             android:textColor="@color/dark_grey"
             android:textSize="30sp" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/tab_body_background"
-            android:gravity="center"
             android:orientation="vertical" >
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#FFDADBDC" >
+                android:layout_height="wrap_content" >
 
                 <LinearLayout
                     android:id="@+id/layout_overall"
@@ -37,7 +35,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginBottom="1dp"
                     android:background="@color/white"
-                    android:gravity="center"
+                    android:paddingLeft="15dp"
                     android:orientation="vertical" >
 
                     <LinearLayout
@@ -48,28 +46,26 @@
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
-                            android:gravity="center"
-                            android:orientation="vertical"
-                            android:paddingTop="5dp" >
+                            android:orientation="vertical" >
 
                             <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
                                 android:orientation="horizontal" >
 
                                 <TextView
                                     android:id="@+id/OverallTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Overall: "
+                                    android:text="@string/review_overall"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
                                     android:id="@+id/OverallHintTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=" " />
+                                    android:text=" " 
+                                    android:layout_marginLeft="5dp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -110,38 +106,36 @@
                     android:layout_below="@+id/layout_overall"
                     android:layout_marginBottom="1dp"
                     android:background="@color/white"
-                    android:gravity="center"
+                    android:paddingLeft="15dp"
                     android:orientation="vertical" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
-                            android:gravity="center"
                             android:orientation="vertical" >
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center" >
+                                android:layout_height="wrap_content" >
 
                                 <TextView
-                                    android:id="@+id/TextView03"
+                                    android:id="@+id/difficultyTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Dive difficulty: "
+                                    android:text="@string/review_difficulty"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
                                     android:id="@+id/DifficultyHintTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=" " />
+                                    android:text=" " 
+                                    android:layout_marginLeft="5dp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -182,19 +176,17 @@
                     android:layout_below="@+id/layout_difficulty"
                     android:layout_marginBottom="1dp"
                     android:background="@color/white"
-                    android:gravity="center"
+                    android:paddingLeft="15dp"
                     android:orientation="vertical" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent" >
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
-                            android:gravity="center"
                             android:orientation="vertical" >
 
                             <LinearLayout
@@ -202,17 +194,18 @@
                                 android:layout_height="wrap_content" >
 
                                 <TextView
-                                    android:id="@+id/TextView02"
+                                    android:id="@+id/lifeTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Marine life: "
+                                    android:text="@string/review_life"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
                                     android:id="@+id/LifeHintTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=" " />
+                                    android:text=" "
+                                    android:layout_marginLeft="5dp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -229,7 +222,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -254,38 +246,36 @@
                     android:layout_below="@+id/layout_life"
                     android:layout_marginBottom="1dp"
                     android:background="@color/white"
-                    android:gravity="center"
+                    android:paddingLeft="15dp"
                     android:orientation="vertical" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
-                            android:gravity="center"
                             android:orientation="vertical" >
 
                             <LinearLayout
                                 android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:gravity="center" >
+                                android:layout_height="wrap_content" >
 
                                 <TextView
-                                    android:id="@+id/TextView01"
+                                    android:id="@+id/fishTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Big Fish: "
+                                    android:text="@string/review_fish"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
                                     android:id="@+id/FishHintTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=" " />
+                                    android:text=" " 
+                                    android:layout_marginLeft="5dp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -302,7 +292,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -327,39 +316,37 @@
                     android:layout_below="@+id/layout_fish"
                     android:layout_marginBottom="1dp"
                     android:background="@color/white"
-                    android:gravity="center"
+                    android:paddingLeft="15dp"
                     android:orientation="vertical" >
 
                     <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:paddingTop="5dp" >
+                        android:layout_height="match_parent">
 
                         <LinearLayout
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent"
                             android:layout_weight="0.7"
-                            android:gravity="center"
                             android:orientation="vertical" >
 
                             <LinearLayout
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
-                                android:gravity="center"
                                 android:orientation="horizontal" >
 
                                 <TextView
-                                    android:id="@+id/textView2"
+                                    android:id="@+id/wreckTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text="Wreck sighted: "
+                                    android:text="@string/review_wreck"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
                                     android:id="@+id/wreck_hintTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:text=" " />
+                                    android:text=" " 
+                                    android:layout_marginLeft="5dp"/>
                             </LinearLayout>
 
                             <LinearLayout
@@ -377,7 +364,6 @@
                                     android:numStars="5"
                                     android:stepSize="1" />
                             </LinearLayout>
-
                         </LinearLayout>
 
                         <LinearLayout
@@ -399,26 +385,23 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal" >
-
-                <Button
-                    android:id="@+id/cancel"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_save_button_selector"
-                    android:paddingBottom="15dp"
-                    android:paddingTop="15dp"
-                    android:textColor="@color/white" />
+                android:orientation="horizontal"
+                android:padding="15dp" >
 
                 <Button
                     android:id="@+id/save"
-                    android:layout_width="0dp"
+                    android:layout_width="100dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
-                    android:background="@drawable/edit_save_button_selector"
-                    android:textColor="@color/white" />
+                    android:layout_marginRight="10dp"
+                    android:background="@drawable/primary_button_selector"
+                    android:textColor="@color/black" />
+
+                <Button
+                    android:id="@+id/cancel"
+                    android:layout_width="100dp"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/secondary_button_selector"
+                    android:textColor="@color/black" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>

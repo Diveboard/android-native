@@ -6,6 +6,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -34,11 +35,12 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
         void					onBottomTempEditComplete(DialogFragment dialog);
     }
 	
-	private Dive				mDive;
-	private EditText			mBottomTemp;
+	private Dive							mDive;
+	private EditText						mBottomTemp;
 	private EditBottomTempDialogListener	mListener;
-	private Double				mTemperature;
-	private Spinner				temp_label;
+	private Double							mTemperature;
+	private Spinner							temp_label;
+	private DiveboardModel					mModel;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -60,7 +62,8 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		final Typeface faceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_temperature, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -90,7 +93,7 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 //		temp_label.setTypeface(faceR);
 //		temp_label.setText("º" + mTemperature.getSmallName());
 		temp_label = (Spinner) view.findViewById(R.id.temp_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		DiveboardSpinnerAdapter adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		adapter.setDropDownViewResource(R.layout.units_spinner_fields);
 		if (mDive.getTempBottomUnit() == null)
 		{
@@ -170,8 +173,6 @@ public class					NewBottomTempDialogFragment extends DialogFragment implements O
 				dismiss();
 			}
 		});
-		
-        faceR = null;
 		return view;
 	}
 

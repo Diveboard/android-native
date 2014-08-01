@@ -7,6 +7,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.Distance;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
+import com.diveboard.util.DiveboardSpinnerAdapter;
 
 import android.app.Activity;
 import android.graphics.Typeface;
@@ -60,7 +61,7 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_max_depth, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
@@ -81,7 +82,7 @@ public class					EditMaxDepthDialogFragment extends DialogFragment implements On
 		mMaxDepth.setOnEditorActionListener(this);
 		
 		max_depth_label = (Spinner) view.findViewById(R.id.max_depth_label);
-		ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.units_spinner);
+		ArrayAdapter<String> adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
 		String maxdepth_unit = mModel.getDives().get(getArguments().getInt("index")).getMaxdepthUnit();
 		if (maxdepth_unit == null)
 		{

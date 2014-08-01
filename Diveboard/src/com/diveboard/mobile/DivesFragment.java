@@ -76,8 +76,8 @@ public class DivesFragment extends Fragment {
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Bold.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
 		// Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
@@ -187,7 +187,7 @@ public class DivesFragment extends Fragment {
 		{
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setText(getResources().getString(R.string.trip_name_label).toUpperCase() + ":");
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
-			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceR);
+			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name)).setTypeface(faceB);
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setText(mDive.getTripName().toUpperCase());
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 			((TextView) mFragmentBannerHeight.findViewById(R.id.trip_name2)).setTypeface(faceB);
@@ -220,10 +220,10 @@ public class DivesFragment extends Fragment {
 		}
 				
 		((TextView) mFragment.findViewById(R.id.dive_date)).setText(mDive.getDate());
-		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_date)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_date)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setText(String.valueOf(mDive.getDuration()) + getResources().getString(R.string.unit_mins).toUpperCase());
-		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_duration)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_duration)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(String.valueOf(mDive.getMaxdepth().getDistance()) + " " + mDive.getMaxdepth().getFullName().toUpperCase());
 		String maxdepth_unit = "";
@@ -241,7 +241,7 @@ public class DivesFragment extends Fragment {
 //		else
 //			maxdepth_unit = (mDive.getMaxdepthUnit().compareTo("m") == 0) ? "METERS" : "FEET";
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setText(maxdepth_value + " " + maxdepth_unit);
-		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceR);
+		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTypeface(faceB);
 		((TextView) mFragment.findViewById(R.id.dive_maxdepth)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFragmentBannerHeight() * 25 / 100));
 		//Threads for the pictures
 		mDownloadImageTask = new DownloadImageTask(mMainImage);

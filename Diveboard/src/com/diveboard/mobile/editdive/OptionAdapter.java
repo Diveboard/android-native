@@ -60,8 +60,8 @@ public class					OptionAdapter extends BaseAdapter
 		
 		if (option.get(position).getType() == 0)
 		{
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 //			if (convertView == null)
 //			{
 				holder = new ViewHolder();
@@ -85,8 +85,8 @@ public class					OptionAdapter extends BaseAdapter
 		else if (option.get(position).getType() == 1)
 		{
 			// Special Privacy Field
-			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Bold.otf");
+			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
+			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			
 			holder = new ViewHolder();
 			

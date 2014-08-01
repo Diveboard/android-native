@@ -3,45 +3,48 @@ package com.diveboard.mobile;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
-import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
-import com.diveboard.mobile.editdive.EditTripNameDialogFragment;
-import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
-import com.diveboard.mobile.editdive.EditDiveActivity;
-import com.diveboard.model.Converter;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveDeleteListener;
-import com.diveboard.model.Picture;
-import com.diveboard.model.Units;
-import com.diveboard.model.Utils;
-
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Bundle;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.graphics.Bitmap.Config;
+import android.net.Uri;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
-import android.view.Menu;
-import android.view.MotionEvent;
+import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup.LayoutParams;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.RatingBar;
+import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.ImageView.ScaleType;
+
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment;
+import com.diveboard.mobile.editdive.DeleteConfirmDialogFragment.DeleteConfirmDialogListener;
+import com.diveboard.mobile.editdive.EditDiveActivity;
+import com.diveboard.model.Buddy;
+import com.diveboard.model.Converter;
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveDeleteListener;
+import com.diveboard.model.Tank;
+import com.diveboard.model.Units;
+import com.diveboard.model.Utils;
+import com.diveboard.util.EditDialog;
+import com.diveboard.util.ImageCache.ImageCacheParams;
+import com.diveboard.util.ImageFetcher;
 
 public class DiveDetailsMainActivity extends FragmentActivity implements
-		DeleteConfirmDialogListener {
+DeleteConfirmDialogListener {
 	public final static int FONT_SIZE = 13;
 	private Dive mDive;
 	private DownloadImageTask mDownloadImageTask;
@@ -52,6 +55,12 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 	private ImageView mRoundedPic;
 	private ImageView mShopLogo;
 	private RatingBar mOverall, mDifficulty, mFish, mLife, mWreck;
+
+	private int mImageThumbSize;
+	private ImageFetcher mImageFetcher;
+	private static final String IMAGE_CACHE_DIR = "thumbs";
+	private LinearLayout mListBuddyPictures;
+	private LinearLayout mListTanks;
 
 	public int dpToPx(int dp) {
 		DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
@@ -65,6 +74,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		Intent editDiveActivity = new Intent(this, EditDiveActivity.class);
 		editDiveActivity.putExtra("index", getIntent().getIntExtra("index", 0));
 		startActivity(editDiveActivity);
+		finish();
 	}
 
 	public void goToDeleteDive() {
@@ -73,11 +83,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
 		AC.setRefresh(3);
 		AC.getModel().getDataManager().setOnDiveDeleteComplete(new DiveDeleteListener() {
-					@Override
-					public void onDiveDeleteComplete() {
-						finish();
-					}
-				});
+			@Override
+			public void onDiveDeleteComplete() {
+				finish();
+			}
+		});
 		AC.getModel().getDataManager().delete(AC.getModel().getDives().get(getIntent().getIntExtra("index", 0)));
 	}
 
@@ -105,18 +115,15 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 
 		setContentView(R.layout.activity_dive_details_main);
 		// System.out.println(dpToPx(50));
-		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),
-				dpToPx(35));
-		Typeface faceR = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Regular.otf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(),
-				"fonts/Quicksand-Bold.otf");
+		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
+		Typeface faceR = Typeface.createFromAsset(getAssets(),"fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(),"fonts/Lato-Regular.ttf");
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
 		else
 			((TextView) findViewById(R.id.dive_note))
-					.setText(getResources().getString(R.string.no_note));
+			.setText(getResources().getString(R.string.no_note));
 		if (mDive.getFullpermalink() == null || mDive.getFullpermalink() == "")
 			((TextView) findViewById(R.id.dive_url)).setText("");
 		((TextView) findViewById(R.id.dive_url)).setPaintFlags(((TextView) findViewById(R.id.dive_url)).getPaintFlags() | Paint.UNDERLINE_TEXT_FLAG);
@@ -134,14 +141,14 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		((Button) findViewById(R.id.deleteDiveButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button) findViewById(R.id.deleteDiveButton)).setTypeface(faceB);
 		((Button) findViewById(R.id.deleteDiveButton)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
-						Bundle args = new Bundle();
-						dialog.show(getSupportFragmentManager(),
-								"DeleteConfirmDialogFragment");
-					}
-				});
+			@Override
+			public void onClick(View v) {
+				DeleteConfirmDialogFragment dialog = new DeleteConfirmDialogFragment();
+				Bundle args = new Bundle();
+				dialog.show(getSupportFragmentManager(),
+						"DeleteConfirmDialogFragment");
+			}
+		});
 		((Button) findViewById(R.id.goToEditButton)).setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		((Button) findViewById(R.id.goToEditButton)).setTypeface(faceB);
 		((TextView) findViewById(R.id.dive_shop)).setTypeface(faceB);
@@ -152,7 +159,26 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			((TextView) findViewById(R.id.shop_name)).setTypeface(faceB);
 			((TextView) findViewById(R.id.shop_name)).setTextSize(
 					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
-			// ((TextView)findViewById(R.id.shop_reviews)).setText("0 REVIEW");
+			((TextView)findViewById(R.id.shop_review)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					final ReviewDialog d = new ReviewDialog(getParent());
+					d.setPositiveListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							d.dismiss();
+						}
+					});
+					d.setNegativeListener(new OnClickListener() {
+						@Override
+						public void onClick(View v) {
+							d.dismiss();
+						}
+					});
+					d.show();
+				}
+			});
+//			((TextView)findViewById(R.id.shop_review)).setVisibility(View.VISIBLE);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTypeface(faceR);
 			// ((TextView)findViewById(R.id.shop_reviews)).setTextSize(TypedValue.COMPLEX_UNIT_SP,
 			// FONT_SIZE);
@@ -189,13 +215,13 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			if (Units.getDistanceUnit() == Units.Distance.KM)
 				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_m)) == 0) ? mDive
 						.getMaxdepth() : Utils.round(Converter.convert(
-						mDive.getMaxdepth(), Units.Distance.FT,
-						Units.Distance.KM), 2);
-			else
-				maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_ft)) == 0) ? mDive
-						.getMaxdepth() : Utils.round(Converter.convert(
-						mDive.getMaxdepth(), Units.Distance.KM,
-						Units.Distance.FT), 2);
+								mDive.getMaxdepth(), Units.Distance.FT,
+								Units.Distance.KM), 2);
+						else
+							maxdepth_value = (mDive.getMaxdepthUnit().compareTo(getResources().getString(R.string.unit_ft)) == 0) ? mDive
+									.getMaxdepth() : Utils.round(Converter.convert(
+											mDive.getMaxdepth(), Units.Distance.KM,
+											Units.Distance.FT), 2);
 		}
 		((TextView) findViewById(R.id.max_depth)).setText(maxdepth_value + " "
 				+ maxdepth_unit);
@@ -256,11 +282,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
 					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_C)) == 0) 
 					? mDive.getTempSurface() 
-					: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.F, Units.Temperature.C),2);
-				else
-					tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_F)) == 0) 
-					? mDive.getTempSurface() 
-					: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.C, Units.Temperature.F),2);
+							: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.F, Units.Temperature.C),2);
+					else
+						tempsurface_value = (mDive.getTempSurfaceUnit().compareTo(getResources().getString(R.string.unit_F)) == 0) 
+						? mDive.getTempSurface() 
+								: Utils.round(Converter.convert(mDive.getTempSurface(),Units.Temperature.C, Units.Temperature.F),2);
 			}
 			if (tempsurface_unit.equals(getResources().getString(R.string.unit_C)))
 				temp = getResources().getString(R.string.surface_label) + " " + tempsurface_value + getResources().getString(R.string.unit_C_symbol);
@@ -287,11 +313,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 				if (Units.getTemperatureUnit() == Units.Temperature.C)
 					tempbottom_value = (mDive.getTempBottomUnit()
 							.compareTo(getResources().getString(R.string.unit_C)) == 0) ? mDive.getTempBottom()
-							: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.F,Units.Temperature.C), 2);
-				else
-					tempbottom_value = (mDive.getTempBottomUnit()
-							.compareTo(getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempBottom()
-							: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.C,Units.Temperature.F), 2);
+									: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.F,Units.Temperature.C), 2);
+							else
+								tempbottom_value = (mDive.getTempBottomUnit()
+										.compareTo(getResources().getString(R.string.unit_F)) == 0) ? mDive.getTempBottom()
+												: Utils.round(Converter.convert(mDive.getTempBottom(), Units.Temperature.C,Units.Temperature.F), 2);
 			}
 			if (tempbottom_unit.equals(getResources().getString(R.string.unit_C)))
 				temp += getResources().getString(R.string.bottom_label) + " " + tempbottom_value + getResources().getString(R.string.unit_C_symbol);
@@ -326,10 +352,10 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 		if (type.contentEquals("")) {
 			((TextView) findViewById(R.id.dive_type)).setVisibility(View.GONE);
 			((TextView) findViewById(R.id.dive_type_content))
-					.setVisibility(View.GONE);
+			.setVisibility(View.GONE);
 		} else {
 			((TextView) findViewById(R.id.dive_type_content))
-					.setTypeface(faceR);
+			.setTypeface(faceR);
 			((TextView) findViewById(R.id.dive_type_content)).setTextSize(
 					TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 			((TextView) findViewById(R.id.dive_type_content)).setText(type);
@@ -364,7 +390,7 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			if (mDive.getDiveReviews().getBigFish() == null) {
 				((TextView) findViewById(R.id.fishTV)).setVisibility(View.GONE);
 				((RatingBar) findViewById(R.id.fish_review))
-						.setVisibility(View.GONE);
+				.setVisibility(View.GONE);
 			} else {
 
 				mFish.setRating(mDive.getDiveReviews().getBigFish());
@@ -380,9 +406,9 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			}
 			if (mDive.getDiveReviews().getWreck() == null) {
 				((TextView) findViewById(R.id.wreckTV))
-						.setVisibility(View.GONE);
+				.setVisibility(View.GONE);
 				((RatingBar) findViewById(R.id.wreck_review))
-						.setVisibility(View.GONE);
+				.setVisibility(View.GONE);
 			} else {
 
 				mWreck.setRating(mDive.getDiveReviews().getWreck());
@@ -390,11 +416,87 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			}
 		} else {
 			((LinearLayout) findViewById(R.id.layout_review))
-					.setVisibility(View.GONE);
+			.setVisibility(View.GONE);
 		}
 
 		mPic = ((ImageView) findViewById(R.id.profile_image));
 		mRoundedPic = ((ImageView) findViewById(R.id.main_image_cache));
+		mListBuddyPictures = (LinearLayout) findViewById(R.id.buddy_list_pictures);
+		mListTanks = (LinearLayout) findViewById(R.id.tank_list);
+		mImageThumbSize = getResources().getDimensionPixelSize(R.dimen.image_thumbnail_size);
+
+		ImageCacheParams cacheParams = new ImageCacheParams(this, IMAGE_CACHE_DIR);
+		cacheParams.setMemCacheSizePercent(0.25f); // Set memory cache to 25% of app memory
+		// The ImageFetcher takes care of loading images into our ImageView children asynchronously
+		mImageFetcher = new ImageFetcher(this, mImageThumbSize);
+		mImageFetcher.setLoadingImage(R.drawable.empty_photo);
+		mImageFetcher.addImageCache(this.getSupportFragmentManager(), cacheParams);
+		for (Buddy b : mDive.getBuddies())
+		{
+			LinearLayout layout = new LinearLayout(getApplicationContext());
+			layout.setLayoutParams(new LayoutParams(250, 300));
+			layout.setOrientation(LinearLayout.VERTICAL);
+			layout.setGravity(Gravity.CENTER);
+
+			ImageView imageView = new ImageView(this);
+			imageView.setLayoutParams(new LayoutParams(220, 220));
+			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+			imageView.setImageResource(R.drawable.no_picture);
+
+			TextView name = new TextView(this);
+			name.setText(b.getNickname());
+			name.setGravity(Gravity.CENTER);
+			name.setTypeface(faceR);
+			layout.addView(imageView);
+			layout.addView(name);
+			mImageFetcher.loadImage(b.getPicture()._urlDefault, imageView);
+			mListBuddyPictures.addView(layout);
+		}
+		TextView title = (TextView) findViewById(R.id.tank_title);
+		title.setTypeface(faceB);
+		title.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
+		for (Tank tank : mDive.getTanks())
+		{
+			final float scale = getResources().getDisplayMetrics().density;
+			LayoutParams params = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+			LinearLayout tankElem = new LinearLayout(getApplicationContext());
+			tankElem.setLayoutParams(params);
+			tankElem.setOrientation(LinearLayout.HORIZONTAL);
+			tankElem.setGravity(Gravity.CENTER);
+			tankElem.setBackgroundDrawable(getResources().getDrawable(R.drawable.tab_body_background));
+			TextView text = new TextView(getApplicationContext());
+			text.setLayoutParams(new LinearLayout.LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
+			text.setTypeface(faceR);
+			//				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
+			text.setTextSize(15);
+			text.setPadding((int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),(int)(10 * scale + 0.5f),0);
+
+			//Writing the summary string of the tank
+			String tanksSummary = "";
+			if(tank.getMultitank() == 2)
+				tanksSummary = "2x";
+			tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
+			if(tank.getGasType().equals("nitrox"))
+				tanksSummary += "Nx " + tank.getO2();
+			else if (tank.getGasType().equals("trimix"))
+				tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
+			else if (tank.getGasType().equals("air"))
+				tanksSummary += getResources().getString(R.string.air_mix);
+			else
+				tanksSummary += tank.getGasType().toUpperCase();
+			tanksSummary +="\n";
+			tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
+			if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
+				tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
+
+			text.setText(tanksSummary);
+			text.setTextColor(getResources().getColor(R.color.dark_grey));
+			text.setGravity(Gravity.LEFT);
+
+			tankElem.addView(text);
+			tankElem.setBackgroundResource(R.color.white);
+			mListTanks.addView(tankElem);
+		}
 		mDownloadImageTask = new DownloadImageTask(mPic);
 		mDownloadImageTask.execute();
 	}
@@ -497,11 +599,11 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				
+
 			} catch (RuntimeException e){
 				e.printStackTrace();
 			}
-			
+
 			return null;
 		}
 
@@ -526,5 +628,20 @@ public class DiveDetailsMainActivity extends FragmentActivity implements
 	public void onDeleteConfirm(DialogFragment dialog) {
 		goToDeleteDive();
 	}
-
+	
+	private class ReviewDialog extends EditDialog
+	{
+		public ReviewDialog(Activity a) {
+			super(a);
+			View v = LayoutInflater.from(mContext).inflate(R.layout.dialog_review, null);
+			mTitle = getString(R.string.shop_review_title);
+			
+			Spinner spinner = (Spinner) v.findViewById(R.id.shop_review_service);
+			ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext,
+			        R.array.shop_review_service, android.R.layout.simple_spinner_item);
+			adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+			spinner.setAdapter(adapter);
+			mContent = v;
+		}
+	}
 }

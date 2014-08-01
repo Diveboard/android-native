@@ -30,11 +30,13 @@ public class					NewDiveTypeDialogFragment extends DialogFragment
         void					onDiveTypeEditComplete(DialogFragment dialog);
     }
 	
-	private Dive				mDive;
-	private ListView				mDiveType;
+	private Dive						mDive;
+	private ListView					mDiveType;
 	private EditDiveTypeDialogListener	mListener;
-	private Typeface			mFaceR;
-	private List<String>		mList;
+	private Typeface					mFaceR;
+	private List<String>				mList;
+	private DiveboardModel				mModel;
+	private int							mTextSize = 20;
 	
 	@Override
 	 public void onAttach(Activity activity)
@@ -56,7 +58,8 @@ public class					NewDiveTypeDialogFragment extends DialogFragment
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		mFaceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
+		mFaceR = mModel.getLatoR();
 		View view = inflater.inflate(R.layout.dialog_edit_divetype, container);
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 		
@@ -87,7 +90,8 @@ public class					NewDiveTypeDialogFragment extends DialogFragment
 				    public View getView(int position, View convertView, ViewGroup parent)
 					{
 				        TextView textView = (TextView) super.getView(position, convertView, parent);
-						
+						textView.setTypeface(mModel.getLatoR());
+						textView.setTextSize(mTextSize);
 				        textView.setTextColor(getResources().getColor(R.color.dark_grey));
 				        return textView;
 				    }

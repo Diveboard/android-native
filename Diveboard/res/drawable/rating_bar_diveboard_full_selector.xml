@@ -7,16 +7,16 @@ show a filled star -->
  
     <item android:state_pressed="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/diveboard_rating_star_on2" />
+          android:drawable="@drawable/star_on" />
  
     <item android:state_focused="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/diveboard_rating_star_on2" />
+          android:drawable="@drawable/star_on" />
  
     <item android:state_selected="true"
           android:state_window_focused="true"
-          android:drawable="@drawable/diveboard_rating_star_on2" />
+          android:drawable="@drawable/star_on" />
  
-    <item android:drawable="@drawable/diveboard_rating_star_on2" />
+    <item android:drawable="@drawable/star_on" />
  
 </selector>

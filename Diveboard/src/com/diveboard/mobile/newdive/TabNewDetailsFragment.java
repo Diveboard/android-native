@@ -175,7 +175,7 @@ public class					TabNewDetailsFragment extends Fragment
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_details, container, false);
     	
-	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Quicksand-Bold.otf");
+	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 	    
     	NewDiveActivity.optionList = (ListView)rootView.findViewById(R.id.optionList);
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();
@@ -192,6 +192,10 @@ public class					TabNewDetailsFragment extends Fragment
 			elem.add(new EditOption(getResources().getString(R.string.max_depth_label) + " : ", Double.toString(mDive.getMaxdepth()) + " " + maxdepth_unit));
 		else
 			elem.add(new EditOption(getResources().getString(R.string.max_depth_label) + " : ", ""));
+		if (mDive.getDuration() != null)
+			elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min)));
+		else
+			elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", ""));
 		ArrayList<SafetyStop> safetystop = mDive.getSafetyStops();
 		String safetydetails = "";
 		for (int i = 0, length = safetystop.size(); i < length; i++)
@@ -201,10 +205,6 @@ public class					TabNewDetailsFragment extends Fragment
 			safetydetails += safetystop.get(i).getDepth().toString() + safetystop.get(i).getUnit() + "-" + safetystop.get(i).getDuration().toString() + getResources().getString(R.string.unit_min);
 		}
 		elem.add(new EditOption(getResources().getString(R.string.safety_stops_label) + " : ", safetydetails));
-		if (mDive.getDuration() != null)
-			elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", Integer.toString(mDive.getDuration()) + " " + getResources().getString(R.string.unit_min)));
-		else
-			elem.add(new EditOption(getResources().getString(R.string.duration_label) + " : ", ""));
 		if (mDive.getWeights() != null)
 		{
 			String weights_unit = "";
@@ -314,10 +314,10 @@ public class					TabNewDetailsFragment extends Fragment
 						_editMaxDepth();
 						break ;
 					case 3:
-						_editSafetyStops();
+						_editDuration();
 						break ;
 					case 4:
-						_editDuration();
+						_editSafetyStops();
 						break ;
 					case 5:
 						_editWeights();

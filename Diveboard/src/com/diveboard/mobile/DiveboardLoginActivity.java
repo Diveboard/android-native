@@ -121,8 +121,8 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
-		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 		((TextView)findViewById(R.id.sign_up)).setText(getResources().getString(R.string.signup_for_diveboard));
 		((TextView)findViewById(R.id.sign_up)).setTypeface(faceB);
 		((TextView)findViewById(R.id.sign_up)).setTextSize(TEXT_SIZE_BIG);

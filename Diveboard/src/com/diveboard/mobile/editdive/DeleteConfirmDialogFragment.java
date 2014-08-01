@@ -55,14 +55,15 @@ public class					DeleteConfirmDialogFragment extends DialogFragment implements O
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
+		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
 		View view = inflater.inflate(R.layout.dialog_delete_confirm, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 		
 		TextView title = (TextView) view.findViewById(R.id.title);
-		title.setTypeface(faceR);
+		title.setTypeface(faceB);
 		title.setText(getResources().getString(R.string.delete_confirm_title));
         
 		TextView message = (TextView) view.findViewById(R.id.message);

@@ -64,7 +64,7 @@ public class					EditTripNameDialogFragment extends DialogFragment implements On
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Quicksand-Regular.otf");
+		final Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_tripname, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();
 		
@@ -78,7 +78,14 @@ public class					EditTripNameDialogFragment extends DialogFragment implements On
 		mHints.addAll(((ApplicationController) getActivity().getApplicationContext()).getModel().getUser().getTripNames());		
 	    final ListView lv;
 	    lv = (ListView) view.findViewById(R.id.hintsList);
-	    mAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, mHints);
+	    mAdapter = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.spinner_item, mHints){
+	    	public View getView(int position, View convertView, ViewGroup parent) {
+	   		 View v = super.getView(position, convertView, parent);
+	   		 ((TextView) v).setTypeface(faceR);
+	   		 ((TextView) v).setTextSize(25);
+	   		 return v;
+	   	 }
+	    };
 	    lv.setAdapter(mAdapter);
 	    lv.setOnItemClickListener(new OnItemClickListener() {
 
@@ -157,8 +164,6 @@ public class					EditTripNameDialogFragment extends DialogFragment implements On
 				dismiss();
 			}
 		});
-        
-        faceR = null;
 		return view;
 	}
 	

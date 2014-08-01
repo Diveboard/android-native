@@ -119,6 +119,7 @@ public class TabNewSpotsFragment extends Fragment implements
 	private int toastCount = 0;
 	private boolean goOfflineMode;
 	private Context mContext;
+	private ApplicationController AC ;
 	
 
 	private class myLocationListener implements LocationListener {
@@ -171,11 +172,11 @@ public class TabNewSpotsFragment extends Fragment implements
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstance) {
 		mRootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_spots,container, false);
-		ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
+		AC = (ApplicationController) getActivity().getApplicationContext();
 		mModel = AC.getModel();
 		mContext = getActivity().getApplicationContext();
-		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Regular.otf");
-		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Quicksand-Bold.otf");
+		mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Light.ttf");
+		mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Regular.ttf");
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 		
 		((TextView) mRootView.findViewById(R.id.nameSpotTitle)).setTypeface(mFaceB);
@@ -380,37 +381,37 @@ public class TabNewSpotsFragment extends Fragment implements
 		String pos = "";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLat() == null) {
-			pos += "0º ";
+			pos += "0° ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat())
-					+ "º ";
+					+ "° ";
 			pos += "N";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLat() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLat()
-					* (-1)) + "º ";
+					* (-1)) + "° ";
 			pos += "S";
 		}
 		pos += ", ";
 		if (((ApplicationController) getActivity().getApplicationContext())
 				.getTempDive().getSpot().getLng() == null) {
-			pos += "º ";
+			pos += "° ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() >= 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng())
-					+ "º ";
+					+ "° ";
 			pos += "E";
 		} else if (((ApplicationController) getActivity()
 				.getApplicationContext()).getTempDive().getSpot().getLng() < 0) {
 			pos += String.valueOf(((ApplicationController) getActivity()
 					.getApplicationContext()).getTempDive().getSpot().getLng()
-					* (-1)) + "º ";
+					* (-1)) + "° ";
 			pos += "W";
 		}
 		if ((((ApplicationController) getActivity().getApplicationContext())
@@ -430,14 +431,14 @@ public class TabNewSpotsFragment extends Fragment implements
 		
 		String mCoordinates ="";
 		if(position.latitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "ºN, ";
+			mCoordinates += String.valueOf(roundToN(position.latitude, 5)) + "°N, ";
 		else
-			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "ºS, ";
+			mCoordinates += String.valueOf(roundToN((position.latitude * -1), 5)) + "°S, ";
 		
 		if(position.longitude > 0.0)
-			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "ºE";
+			mCoordinates += String.valueOf(roundToN(position.longitude, 5)) + "°E";
 		else
-			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "ºW";
+			mCoordinates += String.valueOf(roundToN((position.longitude * -1), 5)) + "°W";
 		
 		return mCoordinates;
 	}
@@ -818,7 +819,6 @@ public class TabNewSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				
 				if (!goOfflineMode) {
 					System.out.println("Region-location API call" + " " + query[0] + " " + query[1]);
@@ -841,7 +841,6 @@ public class TabNewSpotsFragment extends Fragment implements
 				task.join(DiveboardModel._searchTimeout);
 				if (searchDone == false) {
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchRegionLocationText(query[0], query[1], String.valueOf(2.0));
 				}
 				return result;
@@ -995,7 +994,6 @@ public class TabNewSpotsFragment extends Fragment implements
 
 			@Override
 			public void run() {
-				ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 				if (!goOfflineMode) {
 					result = AC.getModel().searchSpotText(query[0], query[1],query[2], query[3], query[4], query[5], query[6]);
 					searchDone = true;
@@ -1016,7 +1014,6 @@ public class TabNewSpotsFragment extends Fragment implements
 				if (searchDone == false) {
 					goOfflineMode = true;
 					DiveboardModel._searchtimedout = true;
-					ApplicationController AC = (ApplicationController) getActivity().getApplicationContext();
 					return AC.getModel().offlineSearchSpotText(query[1], query[2],query[3], query[4], query[5], query[6], query[7]);
 				}
 				return result;
