@@ -1,4 +1,4 @@
-rm -f Diveboard-debug.apk
+rm -f Diveboard-debug.apk Diveboard-debug-signed.apk
 cd Diveboard/dependencies/FacebookSDK;
 [[ $? -gt 0 ]] && exit 1
 android update project --path . --target android-19;
@@ -24,3 +24,17 @@ ant build_debug;
 cp bin/Diveboard-debug.apk ..;
 [[ $? -gt 0 ]] && exit 1
 ant clean
+[[ $? -gt 0 ]] && exit 1
+cd ..
+[[ $? -gt 0 ]] && exit 1
+aapt remove Diveboard-debug.apk META-INF/MANIFEST.MF
+[[ $? -gt 0 ]] && exit 1
+aapt remove Diveboard-debug.apk META-INF/CERT.SF
+[[ $? -gt 0 ]] && exit 1
+aapt remove Diveboard-debug.apk META-INF/CERT.RSA
+[[ $? -gt 0 ]] && exit 1
+jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore shared_debug.keystore -storepass android Diveboard-debug.apk androiddebugkey
+[[ $? -gt 0 ]] && exit 1
+zipalign -v 4 Diveboard-debug.apk Diveboard-debug-signed.apk
+[[ $? -gt 0 ]] && exit 1
+mv Diveboard-debug-signed.apk Diveboard-debug.apk
