@@ -3,6 +3,7 @@ package com.diveboard.mobile;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.net.Uri;
@@ -10,6 +11,7 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -37,6 +40,7 @@ public abstract class NavDrawer extends FragmentActivity {
 	protected ListView 						mDrawerList;
 	private LinearLayout 					mDrawerContainer;
 	protected ArrayList<String> 			mLinksTitles;
+	private Activity 						mActivity;
 	
 
 	protected void onCreate(Bundle savedInstanceState, int resLayoutID) {
@@ -45,6 +49,7 @@ public abstract class NavDrawer extends FragmentActivity {
 		AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
 		mLinksTitles = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.menu_links_has_rated)));
+		mActivity = this;
 		if((AC.getModel().hasRatedApp() != null && !AC.getModel().hasRatedApp()))
 			mLinksTitles.add(getString(R.string.menu_links_has_not_rated));
 		//Setting up controls for the navigation drawer 
@@ -57,12 +62,45 @@ public abstract class NavDrawer extends FragmentActivity {
         final Typeface faceR = mModel.getLatoR();
         // set up the drawer's list view with items and click listener
         mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
+        	
+        LayoutInflater inflater = LayoutInflater.from(AC.getApplicationContext());
         	@Override
         	public View getView(int position, View convertView, ViewGroup parent) {
         		// TODO Auto-generated method stub
-        		View v = super.getView(position, convertView, parent);
-				((TextView) v).setTypeface(faceR);
-				return v;
+        		
+//        		View ov = super.getView(position, convertView, parent);
+        		ViewHolder mViewHolder;
+        		if (convertView == null) {  
+        			convertView = inflater.inflate(R.layout.drawer_list_item, null);  
+        		} 
+        		LinearLayout ll = (LinearLayout) convertView;
+        		View line = (View)ll.getChildAt(0);
+        		TextView t = (TextView)ll.getChildAt(1);
+				t.setTypeface(faceR);
+				t.setText(mLinksTitles.get(position));
+				line.setVisibility(View.GONE);
+				
+				if((mActivity instanceof DivesActivity || mActivity instanceof EditDiveActivity ) && position == 0)
+					line.setVisibility(View.VISIBLE);
+				else if(mActivity instanceof NewDiveActivity && position == 1)
+		        	line.setVisibility(View.VISIBLE);
+		        else if(mActivity instanceof WalletActivity && position == 2)
+		        	line.setVisibility(View.VISIBLE);
+		        else if(mActivity instanceof ClosestShopActivity && position == 3)
+		        	line.setVisibility(View.VISIBLE);
+		        
+				if(position <= 3)
+		        {
+		        	t.setTextSize(20);
+		        	t.setAllCaps(false);
+		        }else{
+		        	t.setTextSize(12);
+		        	t.setAllCaps(true);
+		        }
+		        
+				
+				
+				return convertView;
         		
         	}
         });
@@ -80,16 +118,12 @@ public abstract class NavDrawer extends FragmentActivity {
         		}
         	});
         
-//        if(this instanceof DivesActivity)
-//        	mDrawerList.setItemChecked(0, true);
-//        else if(this instanceof NewDiveActivity)
-//        	mDrawerList.setItemChecked(1, true);
-//        else if(this instanceof WalletActivity)
-//        	mDrawerList.setItemChecked(2, true);
-//        else if(this instanceof ClosestShopActivity)
-//        	mDrawerList.setItemChecked(3, true);
 	}
 	
+	private class ViewHolder {  
+		TextView tvTitle;  
+		View vLine;  
+	}  
 	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override

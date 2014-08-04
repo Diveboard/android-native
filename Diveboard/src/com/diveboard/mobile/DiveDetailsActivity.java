@@ -157,22 +157,23 @@ public class DiveDetailsActivity extends TabActivity {
     		// Logbook
     		case 0:
     			if(!((Activity)this instanceof DivesActivity)){
-					((ApplicationController)getApplicationContext()).setRefresh(1);
+    				((ApplicationController)getApplicationContext()).setRefresh(1);
     				finish();
     			}
 
     			break;
 
-    			// Refresh
+    		// New Dive
     		case 1:
-    			AC.setDataReady(false);
-    			AC.getModel().stopPreloadPictures();
-    			ApplicationController.mForceRefresh = true;
-    			AC.setModel(null);
-    			finish();
+    			if(!((Activity)this instanceof NewDiveActivity)){
+    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
+    				startActivity(newDiveActivity);
+    				if(!((Activity)this instanceof DivesActivity))
+    					finish();
+    			}
     			break;
 
-    			// Wallet Activity
+    		// Wallet Activity
     		case 2:
     			if(!((Activity)this instanceof WalletActivity)){
     				Intent walletActivity = new Intent(this, WalletActivity.class);
@@ -182,7 +183,7 @@ public class DiveDetailsActivity extends TabActivity {
     			}
     			break;
 
-    			// Closest Shop
+    		// Closest Shop
     		case 3:
     			if(!((Activity)this instanceof ClosestShopActivity)){
     				Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
@@ -192,17 +193,18 @@ public class DiveDetailsActivity extends TabActivity {
     			}
     			break;
 
-    			// New Dive
+
+
+    		// Refresh
     		case 4:
-    			if(!((Activity)this instanceof NewDiveActivity)){
-    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
-    				startActivity(newDiveActivity);
-    				if(!((Activity)this instanceof DivesActivity))
-    					finish();
-    			}
+    			AC.setDataReady(false);
+    			AC.getModel().stopPreloadPictures();
+    			ApplicationController.mForceRefresh = true;
+    			AC.setModel(null);
+    			finish();
     			break;
 
-    			// Settings
+    		// Settings
     		case 5:
     			Intent settingsActivity = new Intent(this, SettingsActivity.class);
     			startActivity(settingsActivity);
@@ -210,53 +212,33 @@ public class DiveDetailsActivity extends TabActivity {
     				finish();
     			break;
 
-    			// bug report
-//    		case 6:
-
-//    			// Use of UserVoice report bug system
-//    			WaitDialogFragment bugDialog = new WaitDialogFragment();
-//    			bugDialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//    			Config config = new Config("diveboard.uservoice.com");
-//    			if (mModel.getSessionEmail() != null)
-//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//    			UserVoice.init(config, this);
-//    			config.setShowForum(false);
-//    			config.setShowContactUs(true);
-//    			config.setShowPostIdea(false);
-//    			config.setShowKnowledgeBase(false);
-//    			ApplicationController.UserVoiceReady = true;
-//    			UserVoice.launchContactUs(this);
-//    			bugDialog.dismiss();
-//
-//    			break;
-
-    			// Logout
+    		// Logout
     		case 6:
     			final ExitDialog exitDialog = new ExitDialog(this);
     			exitDialog.setTitle(getResources().getString(R.string.exit_title));
     			exitDialog.setBody(getResources().getString(R.string.confirm_logout));
     			exitDialog.setPositiveListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						logout();
-					}
-				});
+
+    				@Override
+    				public void onClick(View v) {
+    					// TODO Auto-generated method stub
+    					logout();
+    				}
+    			});
 
     			exitDialog.setNegativeListener(new View.OnClickListener() {
-					
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						exitDialog.dismiss();
-					}
-				});
-    			
+
+    				@Override
+    				public void onClick(View v) {
+    					// TODO Auto-generated method stub
+    					exitDialog.dismiss();
+    				}
+    			});
+
     			exitDialog.show();
     			break;
 
-    			// Rate app
+    		// Rate app
     		case 7:
     			mModel.setHasRatedApp(true);
     			try {
@@ -447,15 +429,27 @@ public class DiveDetailsActivity extends TabActivity {
 		// set a custom shadow that overlays the main content when the drawer opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		final Typeface faceR = ((ApplicationController)getApplicationContext()).getModel().getLatoR();
+		
 		// set up the drawer's list view with items and click listener
 		mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
+			LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 				// TODO Auto-generated method stub
-				View v = super.getView(position, convertView, parent);
-				((TextView) v).setTypeface(faceR);
-				return v;
+        		if (convertView == null) {  
+        			convertView = inflater.inflate(R.layout.drawer_list_item, null);  
+        		} 
+        		LinearLayout ll = (LinearLayout) convertView;
+        		View line = (View)ll.getChildAt(0);
+        		TextView t = (TextView)ll.getChildAt(1);
+				t.setTypeface(faceR);
+				t.setText(mLinksTitles.get(position));
+				line.setVisibility(View.GONE);
+				
+				if(position == 0)
+					line.setVisibility(View.VISIBLE);
 
+				return convertView;
 			}
 		});
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
