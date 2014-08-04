@@ -500,7 +500,9 @@ DeleteConfirmDialogListener {
 				if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
 					tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
 
-			}
+			}else
+				continue;
+				
 			
 			text.setText(tanksSummary);
 			text.setTextColor(getResources().getColor(R.color.dark_grey));
