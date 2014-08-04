@@ -429,15 +429,27 @@ public class DiveDetailsActivity extends TabActivity {
 		// set a custom shadow that overlays the main content when the drawer opens
 		mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
 		final Typeface faceR = ((ApplicationController)getApplicationContext()).getModel().getLatoR();
+		
 		// set up the drawer's list view with items and click listener
 		mDrawerList.setAdapter(new ArrayAdapter<String>(AC, R.layout.drawer_list_item, mLinksTitles){
+			LayoutInflater inflater = LayoutInflater.from(getApplicationContext());
 			@Override
 			public View getView(int position, View convertView, ViewGroup parent) {
 				// TODO Auto-generated method stub
-				View v = super.getView(position, convertView, parent);
-				((TextView) v).setTypeface(faceR);
-				return v;
+        		if (convertView == null) {  
+        			convertView = inflater.inflate(R.layout.drawer_list_item, null);  
+        		} 
+        		LinearLayout ll = (LinearLayout) convertView;
+        		View line = (View)ll.getChildAt(0);
+        		TextView t = (TextView)ll.getChildAt(1);
+				t.setTypeface(faceR);
+				t.setText(mLinksTitles.get(position));
+				line.setVisibility(View.GONE);
+				
+				if(position == 0)
+					line.setVisibility(View.VISIBLE);
 
+				return convertView;
 			}
 		});
 		mDrawerList.setOnItemClickListener(new DrawerItemClickListener());

@@ -11,6 +11,7 @@
         android:id="@+id/drawer_title"
         android:layout_width="match_parent"
         android:layout_height="33dp"
+        android:layout_marginBottom="2dp"
         android:background="@color/yellow"
         android:gravity="center"
         android:paddingBottom="3dp"
