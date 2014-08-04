@@ -483,22 +483,25 @@ DeleteConfirmDialogListener {
 
 			//Writing the summary string of the tank
 			String tanksSummary = "";
-			if(tank.getMultitank() == 2)
-				tanksSummary = "2x";
-			tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
-			if(tank.getGasType().equals("nitrox"))
-				tanksSummary += "Nx " + tank.getO2();
-			else if (tank.getGasType().equals("trimix"))
-				tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
-			else if (tank.getGasType().equals("air"))
-				tanksSummary += getResources().getString(R.string.air_mix);
-			else
-				tanksSummary += tank.getGasType().toUpperCase();
-			tanksSummary +="\n";
-			tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
-			if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
-				tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
+			if(tank != null){
+				if(tank.getMultitank() == 2)
+					tanksSummary = "2x";
+				tanksSummary += tank.getVolumeValue() + tank.getVolumeUnit().toUpperCase() + "          ";
+				if(tank.getGasType().equals("nitrox"))
+					tanksSummary += "Nx " + tank.getO2();
+				else if (tank.getGasType().equals("trimix"))
+					tanksSummary += "Tx " + tank.getO2() + "/" + tank.getHe();
+				else if (tank.getGasType().equals("air"))
+					tanksSummary += getResources().getString(R.string.air_mix);
+				else
+					tanksSummary += tank.getGasType().toUpperCase();
+				tanksSummary +="\n";
+				tanksSummary += tank.getPStartValue() + tank.getPUnit() + " \u2192 " + tank.getPEndValue() + tank.getPUnit() + "\n";
+				if(tank.getTimeStart() != null && tank.getTimeStart() != 0)
+					tanksSummary += "Switched at: " + tank.getTimeStart() / 60 + "min";
 
+			}
+			
 			text.setText(tanksSummary);
 			text.setTextColor(getResources().getColor(R.color.dark_grey));
 			text.setGravity(Gravity.LEFT);
