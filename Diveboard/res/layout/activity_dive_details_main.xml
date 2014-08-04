@@ -560,11 +560,11 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/tanks"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/white"
-        android:orientation="vertical" 
-        android:id="@+id/tanks">
+        android:orientation="vertical" >
 
         <TextView
             android:id="@+id/tank_title"
@@ -596,13 +596,13 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical" 
-     	android:background="#FFDADBDC"
-     	android:layout_marginTop="1dp">
+        android:background="#FFDADBDC"
+        android:orientation="vertical" >
 
         <HorizontalScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
             android:background="@color/white"
             android:padding="10dp" >
 
