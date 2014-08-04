@@ -82,15 +82,19 @@ public abstract class NavDrawer extends FragmentActivity {
 				
 				if((mActivity instanceof DivesActivity || mActivity instanceof EditDiveActivity ) && position == 0)
 					line.setVisibility(View.VISIBLE);
-				else if(mActivity instanceof NewDiveActivity&& position == 1)
+				else if(mActivity instanceof NewDiveActivity && position == 1)
 		        	line.setVisibility(View.VISIBLE);
 		        else if(mActivity instanceof WalletActivity && position == 2)
 		        	line.setVisibility(View.VISIBLE);
 		        else if(mActivity instanceof ClosestShopActivity && position == 3)
 		        	line.setVisibility(View.VISIBLE);
-		        else
+		        
+				if(position <= 3)
 		        {
-		        	t.setTextSize(10);
+		        	t.setTextSize(20);
+		        	t.setAllCaps(false);
+		        }else{
+		        	t.setTextSize(12);
 		        	t.setAllCaps(true);
 		        }
 		        
