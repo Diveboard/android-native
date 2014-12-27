@@ -1,3 +1,4 @@
+#!/bin/bash
 rm -f Diveboard-debug.apk Diveboard-debug-signed.apk
 cd Diveboard/dependencies/FacebookSDK;
 [[ $? -gt 0 ]] && exit 1
