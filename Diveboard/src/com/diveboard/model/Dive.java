@@ -184,7 +184,8 @@ public class					Dive implements IModel
 		// legacy_buddies_hash
 		_lng = (json.isNull("lng")) ? 0.0 : json.getDouble("lng");
 		//_maxdepth = new Distance(json.getDouble("maxdepth"), Units.Distance.KM);
-		_maxdepth = json.getDouble("maxdepth_value");
+		if (!json.isNull("maxdepth_value"))
+			_maxdepth = json.getDouble("maxdepth_value");
 		_maxdepthUnit = (json.isNull("maxdepth_unit")) ? null : json.getString("maxdepth_unit");
 		// notes
 		_permalink = (json.isNull("permalink")) ? null : json.getString("permalink");
