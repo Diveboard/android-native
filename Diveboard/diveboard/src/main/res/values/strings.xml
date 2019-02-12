@@ -171,6 +171,7 @@
     <string-array name="menu_links_has_rated">
         <item>Logbook</item>
         <item>New Dive</item>
+        <item>Statistics</item>
         <item>Wallet</item>
         <item>Closest Shop</item>
         <item>Refresh</item>
@@ -181,6 +182,7 @@
     <string-array name="menu_links_has_rated_nobug">
         <item>Logbook</item>
         <item>New Dive</item>
+        <item>Statistics</item>
         <item>Wallet</item>
         <item>Closest Shop</item>
         <item>Refresh</item>

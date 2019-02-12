@@ -5,6 +5,7 @@ import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.databinding.DataBindingUtil;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
@@ -41,11 +42,13 @@ public abstract class NavDrawer extends FragmentActivity {
 	private LinearLayout 					mDrawerContainer;
 	protected ArrayList<String> 			mLinksTitles;
 	private Activity 						mActivity;
+	protected Object mBinding;
 	
 
 	protected void onCreate(Bundle savedInstanceState, int resLayoutID) {
 		super.onCreate(savedInstanceState);
-	    setContentView(resLayoutID);
+		mBinding=DataBindingUtil.setContentView(this, resLayoutID);
+//	    setContentView(resLayoutID);
 		AC = (ApplicationController)getApplicationContext();
 		mModel = AC.getModel();
 		mLinksTitles = new ArrayList<String>(Arrays.asList(getResources().getStringArray(R.array.menu_links_has_rated)));
@@ -89,7 +92,7 @@ public abstract class NavDrawer extends FragmentActivity {
 		        else if(mActivity instanceof ClosestShopActivity && position == 3)
 		        	line.setVisibility(View.VISIBLE);
 		        
-				if(position <= 3)
+				if(position <= 4)
 		        {
 		        	t.setTextSize(20);
 		        	t.setAllCaps(false);
@@ -196,8 +199,18 @@ public abstract class NavDrawer extends FragmentActivity {
     			}
     			break;
     			
-    		// Wallet Activity
+    		// Statistics
     		case 2:
+                if(!(this instanceof StatisticActivity)){
+                    Intent intent = new Intent(this, StatisticActivity.class);
+                    startActivity(intent);
+                    if(!(this instanceof DivesActivity))
+                        finish();
+                }
+                break;
+
+    		// Wallet Activity
+    		case 3:
     			if(!(this instanceof WalletActivity)){
     				Intent walletActivity = new Intent(this, WalletActivity.class);
     				startActivity(walletActivity);
@@ -207,7 +220,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
 
     		// Closest Shop
-    		case 3:
+    		case 4:
     			if(!(this instanceof ClosestShopActivity)){
     				Intent closestShopActivity = new Intent(this, ClosestShopActivity.class);
     				startActivity(closestShopActivity);
@@ -217,7 +230,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
     			
     		// Refresh
-    		case 4:
+    		case 5:
     			AC.setDataReady(false);
     			AC.getModel().stopPreloadPictures();
     			ApplicationController.mForceRefresh = true;
@@ -226,7 +239,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
     			
     		// Settings
-    		case 5:
+    		case 6:
     			Intent settingsActivity = new Intent(this, SettingsActivity.class);
     			startActivity(settingsActivity);
     			if(!(this instanceof DivesActivity))
@@ -234,7 +247,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
 
     			// bug report
-    		case 6:
+    		case 7:
 
     			// Use of UserVoice report bug system
     			WaitDialogFragment bugDialog = new WaitDialogFragment();
@@ -254,7 +267,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
 
     			// Logout
-    		case 7:
+    		case 8:
     			final ExitDialog exitDialog = new ExitDialog(this);
     			exitDialog.setTitle(getResources().getString(R.string.exit_title));
     			exitDialog.setBody(getResources().getString(R.string.confirm_logout));
@@ -280,7 +293,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			break;
 
     			// Rate app
-    		case 8:
+    		case 9:
     			mModel.setHasRatedApp(true);
     			try {
     				startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));

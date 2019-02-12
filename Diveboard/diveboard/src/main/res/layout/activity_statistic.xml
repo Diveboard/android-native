@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:bind="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="vheader"
+            type="com.diveboard.model.Header" />
+
+        <variable
+            name="statistic"
+            type="com.diveboard.model.Statistic" />
+    </data>
+
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/header"
+                layout="@layout/header"
+                bind:vheader="@{vheader}" />
+
+            <RelativeLayout
+                android:id="@+id/root"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@id/title_banner_wallet"
+                android:background="@color/dark_grey">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical">
+
+                    <com.diveboard.views.StatisticItemView
+                        android:id="@+id/statisticItemView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:stringValue="@{Integer.toString(statistic.divesCount)}"
+                        app:title="Dives Count" />
+
+                    <com.diveboard.views.StatisticItemView
+                        android:id="@+id/statisticItemView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginLeft="24dp"
+                        android:layout_marginTop="24dp"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/statisticItemView"
+                        app:stringValue="@{Double.toString(statistic.maxDepth)}"
+                        app:title="Max Depth"></com.diveboard.views.StatisticItemView>
+
+                    <com.diveboard.views.StatisticItemView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:layout_marginRight="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/statisticItemView"
+                        app:stringValue="@{Double.toString(statistic.maxDepth)}"
+                        bind:title="Coldest Water" />
+                </android.support.constraint.ConstraintLayout>
+            </RelativeLayout>
+        </LinearLayout>
+
+        <include layout="@layout/nav_drawer_layout" />
+    </android.support.v4.widget.DrawerLayout>
+</layout>

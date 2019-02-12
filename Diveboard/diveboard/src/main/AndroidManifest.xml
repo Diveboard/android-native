@@ -3,8 +3,9 @@
     package="com.diveboard.mobile"
     android:installLocation="preferExternal"
     android:versionCode="111"
-    android:versionName="3.4.6" >
+    android:versionName="3.4.6">
 
+    <!-- To access Google+ APIs: -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -32,10 +33,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme" >
-        <meta-data
-            android:name="com.google.android.gms.version"
-            android:value="@string/google_play_services_version" />
+        android:theme="@style/AppTheme">
+        <!--<meta-data-->
+            <!--android:name="com.google.android.gms.version"-->
+            <!--android:value="@string/google_play_services_version" />-->
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
             android:value="@string/maps_app_id_debug" />
@@ -47,7 +48,7 @@
             android:name=".DiveboardLoginActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden" >
+            android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -60,74 +61,57 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
             android:name=".DivesActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".GalleryCarouselActivity"
-            android:label="@string/app_name" >
-        </activity>
+            android:label="@string/app_name"></activity>
         <activity
             android:name=".editdive.EditDiveActivity"
             android:label="@string/title_activity_edit_dive"
-            android:windowSoftInputMode="adjustResize|stateHidden" >
-        </activity>
+            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
         <activity
             android:name=".editdive.TabEditDetailsActivity"
-            android:label="@string/title_activity_edit_dive" >
-        </activity>
+            android:label="@string/title_activity_edit_dive"></activity>
         <activity
             android:name=".editdive.TabEditNotesActivity"
-            android:label="@string/title_activity_edit_dive" >
-        </activity>
+            android:label="@string/title_activity_edit_dive"></activity>
         <activity
             android:name=".editdive.TabEditSpotsActivity"
-            android:label="@string/title_activity_edit_dive" >
-        </activity>
+            android:label="@string/title_activity_edit_dive"></activity>
         <activity
             android:name=".editdive.TabEditPhotosActivity"
-            android:label="@string/title_activity_edit_dive" >
-        </activity>
+            android:label="@string/title_activity_edit_dive"></activity>
         <activity
             android:name=".DiveDetailsActivity"
-            android:label="@string/title_activity_dive_details_main" >
-        </activity>
+            android:label="@string/title_activity_dive_details_main"></activity>
         <activity
             android:name=".MapActivity"
-            android:label="@string/title_map_activity" >
-        </activity>
+            android:label="@string/title_map_activity"></activity>
         <activity
             android:name=".ClosestShopActivity"
-            android:label="@string/title_shop_activity" >
-        </activity>
+            android:label="@string/title_shop_activity"></activity>
         <activity
             android:name=".DiveDetailsMainActivity"
-            android:label="@string/title_activity_dive_details_main" >
-        </activity>
+            android:label="@string/title_activity_dive_details_main"></activity>
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
-            android:screenOrientation="portrait" >
-        </activity>
+            android:screenOrientation="portrait"></activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/title_activity_settings" >
-        </activity>
+            android:label="@string/title_activity_settings"></activity>
         <activity
             android:name=".FBLoginActivity"
-            android:label="@string/title_activity_fblogin" >
-        </activity>
+            android:label="@string/title_activity_fblogin"></activity>
         <activity
             android:name=".newdive.NewDiveActivity"
-            android:label="@string/title_activity_new_dive" >
-        </activity>
+            android:label="@string/title_activity_new_dive"></activity>
         <activity
             android:name=".newdive.TabNewDetailsActivity"
-            android:label="@string/title_activity_new_dive" >
-        </activity>
+            android:label="@string/title_activity_new_dive"></activity>
         <activity
             android:name=".PhotosActivity"
-            android:label="@string/title_activity_photos" >
-        </activity>
+            android:label="@string/title_activity_photos"></activity>
         <activity android:name="com.uservoice.uservoicesdk.activity.PortalActivity" />
         <activity android:name="com.uservoice.uservoicesdk.activity.ForumActivity" />
         <activity
@@ -142,29 +126,26 @@
             android:hardwareAccelerated="true" />
         <activity
             android:name=".newdive.TabNewNotesActivity"
-            android:label="@string/title_activity_new_dive" >
-        </activity>
+            android:label="@string/title_activity_new_dive"></activity>
         <activity
             android:name=".newdive.TabNewSpotsActivity"
-            android:label="@string/title_activity_new_dive" >
-        </activity>
+            android:label="@string/title_activity_new_dive"></activity>
         <activity
             android:name=".GraphImageActivity"
             android:label="@string/title_activity_graph_image"
-            android:screenOrientation="landscape" >
-        </activity>
+            android:screenOrientation="landscape"></activity>
         <activity
             android:name=".TestActivity"
-            android:label="@string/title_activity_graph_image" >
-        </activity>
+            android:label="@string/title_activity_graph_image"></activity>
         <activity
             android:name=".WalletActivity"
-            android:label="@string/title_activity_wallet" >
-        </activity>
+            android:label="@string/title_activity_wallet"></activity>
         <activity
             android:name=".NavDrawer"
-            android:label="@string/title_activity_navigation_drawer" >
-        </activity>
+            android:label="@string/title_activity_navigation_drawer"></activity>
+        <activity
+            android:name=".StatisticActivity"
+            android:label="StatisticActivity"></activity>
     </application>
 
 </manifest>

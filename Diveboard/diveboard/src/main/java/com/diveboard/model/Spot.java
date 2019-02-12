@@ -183,7 +183,7 @@ public class					Spot implements IModel
 		this._regionName = _regionName;
 	}
 
-	public int getCountryId() {
+	public Integer getCountryId() {
 		return _countryId;
 	}
 
