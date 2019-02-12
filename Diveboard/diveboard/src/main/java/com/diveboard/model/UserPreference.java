@@ -173,6 +173,15 @@ public class					UserPreference
 		}
 		return null;
 	}
+
+	public Units getUnitsTyped() {
+		try {
+			return new Units(_userPreferences.getJSONObject("units"));
+		} catch (JSONException e) {
+			e.printStackTrace();
+		}
+		return null;
+	}
 	
 	public void				setUnits(int unit)
 	{

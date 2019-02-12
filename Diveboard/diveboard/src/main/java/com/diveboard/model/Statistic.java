@@ -2,6 +2,7 @@ package com.diveboard.model;
 
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -15,10 +16,10 @@ public class Statistic {
     public final int maxTimeMinutes;
     public final int diveSitesNumber;
     public final int countriesNumber;
-    public final double coldest;
-    public final double warmest;
+    public final Double coldest;
+    public final Double warmest;
 
-    public Statistic(int publishedDivesCount, int divesCount, int divesThisYear, int totalTime, double maxDepth, int maxTimeMinutes, int diveSitesNumber, int countriesNumber, double coldest, double warmest) {
+    public Statistic(int publishedDivesCount, int divesCount, int divesThisYear, int totalTime, double maxDepth, int maxTimeMinutes, int diveSitesNumber, int countriesNumber, Double coldest, Double warmest) {
         this.publishedDivesCount = publishedDivesCount;
         this.divesCount = divesCount;
         this.divesThisYear = divesThisYear;
@@ -38,10 +39,10 @@ public class Statistic {
         int totalUnderwaterTimeMinutes = 0;
         double maxDepth = 0;
         int maxTime = 0;
-        ArrayList<Integer> diveSitesIds = new ArrayList<Integer>();
-        ArrayList<Integer> countries = new ArrayList<Integer>();
-        double coldest = 0;
-        double warmest = 0;
+        ArrayList<String> diveSitesIds = new ArrayList<>();
+        ArrayList<String> countries = new ArrayList<>();
+        Double coldest = null;
+        Double warmest = null;
 
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(new Date());
@@ -54,7 +55,8 @@ public class Statistic {
 
             try {
                 Calendar diveCalendar = Calendar.getInstance();
-                diveCalendar.setTime((DateFormat.getDateInstance()).parse(dive.getDate()));
+                DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
+                diveCalendar.setTime(format.parse(dive.getDate()));
                 if (diveCalendar.get(Calendar.YEAR) == currentYear) {
                     divesThisYear++;
                 }
@@ -71,18 +73,20 @@ public class Statistic {
                 maxTime = dive.getDuration();
             }
             if (dive.getSpot() != null) {
-                if (dive.getSpot().getId() != null && diveSitesIds.contains(dive.getSpot().getId())) {
-                    diveSitesIds.add(dive.getSpot().getId());
+                String name = dive.getSpot().getName();
+                if (name != null && !diveSitesIds.contains(name)) {
+                    diveSitesIds.add(name);
                 }
-                if (dive.getSpot().getCountryId() != null && countries.contains(dive.getSpot().getCountryId())) {
-                    countries.add(dive.getSpot().getCountryId());
+                String countryId = dive.getSpot().getCountryCode();
+                if (countryId != null && !countries.contains(countryId)) {
+                    countries.add(countryId);
                 }
             }
             if (dive.getTempBottomCelcius() != null) {
-                if (coldest > dive.getTempBottomCelcius()) {
+                if (coldest == null || coldest > dive.getTempBottomCelcius()) {
                     coldest = dive.getTempBottomCelcius();
                 }
-                if (warmest < dive.getTempBottomCelcius()) {
+                if (warmest == null || warmest < dive.getTempBottomCelcius()) {
                     warmest = dive.getTempBottomCelcius();
                 }
             }
