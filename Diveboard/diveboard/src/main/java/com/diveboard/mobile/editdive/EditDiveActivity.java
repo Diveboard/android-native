@@ -51,7 +51,6 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.google.analytics.tracking.android.EasyTracker;
 
 public class EditDiveActivity extends NavDrawer implements
 		EditTripNameDialogListener, EditDiveNumberDialogListener,
@@ -336,7 +335,7 @@ public class EditDiveActivity extends NavDrawer implements
 	public void onStop() {
 
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 	//	
 	//	/** Called when the activity is first created. */

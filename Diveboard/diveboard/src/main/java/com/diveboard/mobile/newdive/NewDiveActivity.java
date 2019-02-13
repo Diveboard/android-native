@@ -58,7 +58,6 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.google.analytics.tracking.android.EasyTracker;
 
 public class					NewDiveActivity extends NavDrawer implements EditDateDialogListener,
 																					EditTimeInDialogListener,
@@ -168,13 +167,13 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 	
 	/** Called when the activity is first created. */

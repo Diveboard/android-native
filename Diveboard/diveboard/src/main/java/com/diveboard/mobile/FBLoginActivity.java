@@ -24,7 +24,6 @@ import com.diveboard.mobile.FBLoginFragment.UserLoginTask;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.*;
 import com.facebook.model.*;
-import com.google.analytics.tracking.android.EasyTracker;
 
 public class FBLoginActivity extends Activity {
 	private String mId;
@@ -45,13 +44,13 @@ public class FBLoginActivity extends Activity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 
 	private static Session openActiveSession(Activity activity, boolean allowLoginUI, Session.StatusCallback callback, List<String> permissions) {

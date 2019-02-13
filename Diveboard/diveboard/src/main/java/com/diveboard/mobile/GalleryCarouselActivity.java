@@ -8,7 +8,6 @@ import com.diveboard.GalleryWidget.GalleryViewPager;
 
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
-import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -32,13 +31,13 @@ public class GalleryCarouselActivity extends FragmentActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 	
 	@Override

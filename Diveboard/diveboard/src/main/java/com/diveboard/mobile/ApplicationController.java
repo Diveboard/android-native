@@ -2,7 +2,11 @@ package com.diveboard.mobile;
 
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 
+import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
 import android.content.Intent;
@@ -23,6 +27,8 @@ public class ApplicationController extends Application {
 	public static boolean mForceRefresh = false;
 	public static int SudoId = 0;
 	public static boolean tokenExpired = false;
+	private static GoogleAnalytics sAnalytics;
+	private static Tracker sTracker;
 	
 	public Boolean handleLowMemory()
 	{
@@ -64,7 +70,21 @@ public class ApplicationController extends Application {
 	@Override
 	public void onCreate() {
 		super.onCreate();
+		sAnalytics = GoogleAnalytics.getInstance(this);
 		singleton = this;
+	}
+
+	/**
+	 * Gets the default {@link Tracker} for this {@link Application}.
+	 * @return tracker
+	 */
+	synchronized public Tracker getDefaultTracker() {
+		// To enable debug logging use: adb shell setprop log.tag.GAv4 DEBUG
+		if (sTracker == null) {
+			sTracker = sAnalytics.newTracker(R.xml.global_tracker);
+		}
+
+		return sTracker;
 	}
  
 	@Override
@@ -123,5 +143,15 @@ public class ApplicationController extends Application {
 
 	public void setCurrentTab(int mCurrentTab) {
 		this.mCurrentTab = mCurrentTab;
+	}
+
+	public void activityStart(Activity activity) {
+		Tracker tracker = getDefaultTracker();
+		tracker.setScreenName("Screen~" + activity.getLocalClassName());
+		tracker.send(new HitBuilders.ScreenViewBuilder().build());
+	}
+
+	public void activityStop(Activity activity) {
+		//do nothing for now
 	}
 }

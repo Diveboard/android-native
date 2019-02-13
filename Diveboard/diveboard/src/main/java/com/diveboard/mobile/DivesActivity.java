@@ -56,7 +56,6 @@ import com.diveboard.model.DiveboardModel.TokenExpireListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
 import com.facebook.Session;
-import com.google.analytics.tracking.android.EasyTracker;
 
 
 public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbacks
@@ -139,15 +138,14 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	public void onStart() {
 		super.onStart();
 		active = true;
-		EasyTracker.getInstance(this).activityStart(this);
-
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
 		active = false;
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	} 
 
 	@Override

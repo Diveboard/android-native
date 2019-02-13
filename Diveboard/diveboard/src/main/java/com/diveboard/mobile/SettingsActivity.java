@@ -27,7 +27,6 @@ import com.diveboard.config.AppConfig;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
 import com.diveboard.model.UserPreference;
-import com.google.analytics.tracking.android.EasyTracker;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -66,13 +65,13 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 	
 	@Override

@@ -11,7 +11,6 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.model.Picture.Size;
-import com.google.analytics.tracking.android.EasyTracker;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -492,13 +491,13 @@ public class PhotosActivity extends Activity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 
 }

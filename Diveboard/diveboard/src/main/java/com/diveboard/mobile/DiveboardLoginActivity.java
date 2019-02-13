@@ -16,10 +16,6 @@ import com.diveboard.config.AppConfig;
 import com.diveboard.model.DatabaseUpdater;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.uservoice.uservoicesdk.Config;
-import com.uservoice.uservoicesdk.UserVoice;
-import com.uservoice.uservoicesdk.activity.BaseActivity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -192,7 +188,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			Toast.makeText(DiveboardLoginActivity.this, getResources().getString(R.string.token_expired), Toast.LENGTH_SHORT).show();
 			ApplicationController.tokenExpired = false;
 		}
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 		DatabaseUpdater dbUpdater = new DatabaseUpdater(DiveboardLoginActivity.this);
 		dbUpdater.launchUpdate();
 		System.out.println("Attempting to download DB");
@@ -201,7 +197,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 
 	public void goToFBLogin(View view)

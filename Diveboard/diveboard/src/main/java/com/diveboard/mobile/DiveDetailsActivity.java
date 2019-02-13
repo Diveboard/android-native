@@ -11,8 +11,6 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.util.ExitDialog;
 import com.facebook.Session;
-import com.google.analytics.tracking.android.EasyTracker;
-import com.uservoice.uservoicesdk.UserVoice;
 
 import android.R.id;
 import android.net.Uri;
@@ -93,13 +91,13 @@ public class DiveDetailsActivity extends TabActivity {
 	@Override
 	public void onStart() {
 		super.onStart();
-		EasyTracker.getInstance(this).activityStart(this);
+		((ApplicationController) getApplication()).activityStart(this);
 	}
 
 	@Override
 	public void onStop() {
 		super.onStop();
-		EasyTracker.getInstance(this).activityStop(this);
+		((ApplicationController) getApplication()).activityStop(this);
 	}
 	
 	private class DrawerItemClickListener implements ListView.OnItemClickListener {
