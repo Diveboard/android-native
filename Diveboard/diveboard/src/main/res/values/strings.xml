@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Diveboard</string>
+    <string name="app_name">Diveboard: diving log</string>
     <string name="google_play_services_version">4030500</string>
     <string name="fb_app_id_debug">193803977296892</string>
     <string name="fb_app_id_release">193803977296892</string>
  <!-- private API GoogleMaps key for Gonzalo debugging- -->
     <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
  <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
-    <string name="maps_app_id_debug">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
-    <string name="maps_app_id_release">AIzaSyBg4mlJaPvap7hRBqDh9SNkbnEHsm1uvwI</string>
+    <string name="maps_app_id_debug">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
+    <string name="maps_app_id_release">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
