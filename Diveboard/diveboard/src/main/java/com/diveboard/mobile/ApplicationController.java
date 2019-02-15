@@ -6,11 +6,13 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
+import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
-import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
+import android.os.Build;
 
 public class ApplicationController extends Application {
 
@@ -57,6 +59,14 @@ public class ApplicationController extends Application {
 	public DiveboardModel getModel() {
 		return mModel;
 	}
+
+    public boolean canAccessLocation() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return PackageManager.PERMISSION_GRANTED == checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+        } else {
+            return true;
+        }
+    }
 
 	public void setModel(DiveboardModel mModel) {
 		this.mModel = mModel;

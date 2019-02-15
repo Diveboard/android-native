@@ -55,6 +55,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -63,8 +64,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
-public class					TabNewShopFragment extends Fragment
-{
+public class					TabNewShopFragment extends Fragment implements OnMapReadyCallback {
 
 	private Typeface					mFaceR;
 	private Typeface					mFaceB;
@@ -85,7 +85,7 @@ public class					TabNewShopFragment extends Fragment
 	private ViewGroup					mRootView;
 	private DiveboardModel				mModel;
 	private Context						mContext;
-	
+
 	private class myLocationListener implements LocationListener
 	{
 		public void onLocationChanged(Location location)
@@ -153,66 +153,71 @@ public class					TabNewShopFragment extends Fragment
 			}
 	    });
 		if (mMap == null) {
-			FragmentManager fm = getActivity().getSupportFragmentManager();
+			FragmentManager fm = this.getChildFragmentManager();
 	        Fragment fragment = fm.findFragmentById(R.id.mapfragmentshop);
 	        SupportMapFragment support = (SupportMapFragment)fragment;
-	        mMap = support.getMap();
-	        //mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-	        // Check if we were successful in obtaining the map.
-	        if (mMap == null) {
-	        	System.out.println("Map non safe");
-	            
-	        }
-	        else
-	        {
-	        	// The Map is verified. It is now safe to manipulate the map
-	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-		        mMap.getUiSettings().setAllGesturesEnabled(true);
-				mMap.getUiSettings().setMyLocationButtonEnabled(true);
-				mMap.getUiSettings().setZoomControlsEnabled(true);
-				mMap.getUiSettings().setZoomGesturesEnabled(true);
-				
-				mMap.getUiSettings().setRotateGesturesEnabled(true);
-				mMap.getUiSettings().setScrollGesturesEnabled(true);
-				mMap.getUiSettings().setCompassEnabled(true);
-				if (((ApplicationController)mContext).getTempDive().getShop() != null)
-				{
-					System.out.println("shop != null");
-					((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
-					((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
-					((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
-					((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
-					((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
-					((TextView)mRootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)mContext).getTempDive().getShop().getName());
-					((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
-					((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
-					
-					if (((ApplicationController)mContext).getTempDive().getShop().getLat() != null && ((ApplicationController)mContext).getTempDive().getShop().getLng() != null)
-					{
-						mMyMarker = mMap.addMarker(new MarkerOptions()
-						.position(new LatLng(((ApplicationController)mContext).getTempDive().getShop().getLat(), ((ApplicationController)mContext).getTempDive().getShop().getLng()))
-						.title(((ApplicationController)mContext).getTempDive().getShop().getName())
-						.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
-						//System.out.println(((ApplicationController)mContext).getTempDive().getShop().getId());
-						Integer zoom = mZoom;// = ((ApplicationController)mContext).getTempDive().getShop().getZoom();
-//						if (zoom == null || zoom > mZoom)
-//							zoom = mZoom;
-						if (((ApplicationController)mContext).getTempDive().getShop().getLat() != null && ((ApplicationController)mContext).getTempDive().getShop().getLng() != null)
-							mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)mContext).getTempDive().getShop().getLat(), ((ApplicationController)mContext).getTempDive().getShop().getLng()), zoom));
-					}
-				}
-				else
-				{
-					System.out.println("shop == null");
-					((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
-					activeGPS(null);
-				}
-	        }
+	        support.getMapAsync(this);
 		}
 		return mRootView;
     }
-    
-    @Override
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		mMap=googleMap;
+		//mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+		// Check if we were successful in obtaining the map.
+		if (mMap == null) {
+			System.out.println("Map non safe");
+
+		}
+		else
+		{
+			// The Map is verified. It is now safe to manipulate the map
+			mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+			mMap.getUiSettings().setAllGesturesEnabled(true);
+			mMap.getUiSettings().setMyLocationButtonEnabled(true);
+			mMap.getUiSettings().setZoomControlsEnabled(true);
+			mMap.getUiSettings().setZoomGesturesEnabled(true);
+
+			mMap.getUiSettings().setRotateGesturesEnabled(true);
+			mMap.getUiSettings().setScrollGesturesEnabled(true);
+			mMap.getUiSettings().setCompassEnabled(true);
+			if (((ApplicationController)mContext).getTempDive().getShop() != null)
+			{
+				System.out.println("shop != null");
+				((LinearLayout)mRootView.findViewById(R.id.view_details)).setVisibility(View.VISIBLE);
+				((TextView)mRootView.findViewById(R.id.details_name)).setTypeface(mFaceB);
+				((TextView)mRootView.findViewById(R.id.details_name_content)).setTypeface(mFaceR);
+				((TextView)mRootView.findViewById(R.id.details_gps)).setTypeface(mFaceB);
+				((TextView)mRootView.findViewById(R.id.details_gps_content)).setTypeface(mFaceR);
+				((TextView)mRootView.findViewById(R.id.details_name_content)).setText(((ApplicationController)mContext).getTempDive().getShop().getName());
+				((TextView)mRootView.findViewById(R.id.details_gps_content)).setText(getPosition());
+				((Button)mRootView.findViewById(R.id.goToSearch)).setTypeface(mFaceB);
+
+				if (((ApplicationController)mContext).getTempDive().getShop().getLat() != null && ((ApplicationController)mContext).getTempDive().getShop().getLng() != null)
+				{
+					mMyMarker = mMap.addMarker(new MarkerOptions()
+							.position(new LatLng(((ApplicationController)mContext).getTempDive().getShop().getLat(), ((ApplicationController)mContext).getTempDive().getShop().getLng()))
+							.title(((ApplicationController)mContext).getTempDive().getShop().getName())
+							.icon(BitmapDescriptorFactory.fromResource(R.drawable.marker)));
+					//System.out.println(((ApplicationController)mContext).getTempDive().getShop().getId());
+					Integer zoom = mZoom;// = ((ApplicationController)mContext).getTempDive().getShop().getZoom();
+//						if (zoom == null || zoom > mZoom)
+//							zoom = mZoom;
+					if (((ApplicationController)mContext).getTempDive().getShop().getLat() != null && ((ApplicationController)mContext).getTempDive().getShop().getLng() != null)
+						mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(((ApplicationController)mContext).getTempDive().getShop().getLat(), ((ApplicationController)mContext).getTempDive().getShop().getLng()), zoom));
+				}
+			}
+			else
+			{
+				System.out.println("shop == null");
+				((LinearLayout)mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
+				activeGPS(null);
+			}
+		}
+	}
+
+	@Override
 	public void onPause() {
     	if (mLocationManager != null && mLocationListener != null)
     	{
@@ -246,6 +251,9 @@ public class					TabNewShopFragment extends Fragment
     
     public void activeGPS(View view)
     {
+		if (!((ApplicationController) getActivity().getApplication()).canAccessLocation()) {
+			return;
+		}
     	InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(((EditText) mRootView.findViewById(R.id.search_bar)).getWindowToken(), 0);
 		((EditText) mRootView.findViewById(R.id.search_bar)).setText("");

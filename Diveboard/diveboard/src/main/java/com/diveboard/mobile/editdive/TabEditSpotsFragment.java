@@ -60,6 +60,7 @@ import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
@@ -69,7 +70,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 public class TabEditSpotsFragment extends Fragment implements
-		OnMapLongClickListener, OnMarkerDragListener {
+		OnMapLongClickListener, OnMarkerDragListener, OnMapReadyCallback {
 	private Typeface mFaceR;
 	private Typeface mFaceB;
 	private int mIndex;
@@ -294,7 +295,7 @@ public class TabEditSpotsFragment extends Fragment implements
 		mLocationSpinner.setAdapter(countriesAdapter);
 
 		if (mMap == null) {
-			FragmentManager fm = getActivity().getSupportFragmentManager();
+			FragmentManager fm = this.getChildFragmentManager();
 			Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
 			LinearLayout mapLayout = (LinearLayout) mRootView
 					.findViewById(R.id.mapLayout);
@@ -316,55 +317,63 @@ public class TabEditSpotsFragment extends Fragment implements
 
 			SupportMapFragment support = (SupportMapFragment) fragment;
 
-			mMap = support.getMap();
-			// Check if we were successful in obtaining the map.
-			if (mMap == null) {
-				System.out.println("Map non safe");
+			support.getMapAsync(this);
+		}
 
-				// The Map is verified. It is now safe to manipulate the map
-			} else {
-				System.out.println("Map safe");
-				mMap.getUiSettings().setAllGesturesEnabled(true);
-				mMap.getUiSettings().setMyLocationButtonEnabled(true);
-				mMap.getUiSettings().setZoomControlsEnabled(true);
-				mMap.getUiSettings().setZoomGesturesEnabled(true);
+		return mRootView;
+	}
 
-				mMap.getUiSettings().setRotateGesturesEnabled(false);
-				mMap.getUiSettings().setScrollGesturesEnabled(true);
-				mMap.getUiSettings().setCompassEnabled(true);
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		mMap = googleMap;
+		// Check if we were successful in obtaining the map.
+		if (mMap == null) {
+			System.out.println("Map non safe");
 
-				mMap.setOnMapLongClickListener(this);
-				mMap.setOnMarkerDragListener(this);
-				
-				((ImageView) mRootView.findViewById(R.id.ic_map_change)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						if(!earthViewActive){
-							((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_map_view);
-							earthViewActive = true;
-							System.out.println(String.valueOf(earthViewActive));
-							mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-						}
-						else{
-							((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_earth_view);
-							earthViewActive = false;
-							System.out.println(String.valueOf(earthViewActive));
-							mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-						}				
+			// The Map is verified. It is now safe to manipulate the map
+		} else {
+			System.out.println("Map safe");
+			mMap.getUiSettings().setAllGesturesEnabled(true);
+			mMap.getUiSettings().setMyLocationButtonEnabled(true);
+			mMap.getUiSettings().setZoomControlsEnabled(true);
+			mMap.getUiSettings().setZoomGesturesEnabled(true);
+
+			mMap.getUiSettings().setRotateGesturesEnabled(false);
+			mMap.getUiSettings().setScrollGesturesEnabled(true);
+			mMap.getUiSettings().setCompassEnabled(true);
+
+			mMap.setOnMapLongClickListener(this);
+			mMap.setOnMarkerDragListener(this);
+
+			((ImageView) mRootView.findViewById(R.id.ic_map_change)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(!earthViewActive){
+						((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_map_view);
+						earthViewActive = true;
+						System.out.println(String.valueOf(earthViewActive));
+						mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
 					}
-				});
-				
-				// //Load the previously selected spot if so, and if it is a new spot whose spotID is null we load it too
-				if (mModel.getDives().get(mIndex).getSpot().getId() == null || mModel.getDives().get(mIndex).getSpot().getId() != 1) {
-					
-					goToSpotSelected(mRootView, mModel.getDives().get(mIndex).getSpot().getJson());
-
-				} else {
-					goToSearch(mRootView);
-					activeGPS(mRootView);
+					else{
+						((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_earth_view);
+						earthViewActive = false;
+						System.out.println(String.valueOf(earthViewActive));
+						mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+					}
 				}
-					//if (!manualSpotActivated) {
+			});
+
+			// //Load the previously selected spot if so, and if it is a new spot whose spotID is null we load it too
+			if (mModel.getDives().get(mIndex).getSpot().getId() == null || mModel.getDives().get(mIndex).getSpot().getId() != 1) {
+
+				goToSpotSelected(mRootView, mModel.getDives().get(mIndex).getSpot().getJson());
+
+			} else {
+				goToSearch(mRootView);
+				activeGPS(mRootView);
+			}
+			//if (!manualSpotActivated) {
 //					System.out.println("activeGPS");
 //					((LinearLayout) mRootView.findViewById(R.id.view_search)).setVisibility(View.VISIBLE);
 //					activeGPS(null);
@@ -374,11 +383,7 @@ public class TabEditSpotsFragment extends Fragment implements
 //
 //					System.out.println("Manual Spot mode on");
 //				}
-			}
-
 		}
-
-		return mRootView;
 	}
 
 	public String getPosition() {
@@ -676,6 +681,9 @@ public class TabEditSpotsFragment extends Fragment implements
 	}
 
 	public void activeGPS(View view) {
+        if (!((ApplicationController) getActivity().getApplication()).canAccessLocation()) {
+            return;
+        }
 		InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(((EditText) mRootView

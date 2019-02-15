@@ -4,11 +4,13 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -17,6 +19,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -146,12 +149,14 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		super.onStop();
 		active = false;
 		((ApplicationController) getApplication()).activityStop(this);
-	} 
+	}
 
 	@Override
 	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState, R.layout.activity_dives);	
+		super.onCreate(savedInstanceState, R.layout.activity_dives);
+		requestLocationPermission();
+
 		// Set the action bar
 		ApplicationController AC = (ApplicationController)getApplicationContext();
 		if (AC.getModel() == null)
@@ -182,6 +187,15 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			createPages();
 		}
 
+	}
+
+	private void requestLocationPermission() {
+        if (((ApplicationController) getApplication()).canAccessLocation()) {
+            return;
+        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+        }
 	}
 
 	public void logout()

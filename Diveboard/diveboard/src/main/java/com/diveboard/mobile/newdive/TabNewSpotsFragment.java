@@ -23,6 +23,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMapLongClickListener;
 import com.google.android.gms.maps.GoogleMap.OnMarkerDragListener;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
 import com.google.android.gms.maps.GoogleMap.OnCameraChangeListener;
@@ -82,7 +83,7 @@ import android.widget.Toast;
 import android.widget.TextView.OnEditorActionListener;
 
 public class TabNewSpotsFragment extends Fragment implements
-		OnMapLongClickListener, OnMarkerDragListener {
+		OnMapLongClickListener, OnMarkerDragListener, OnMapReadyCallback {
 	private Typeface mFaceR;
 	private Typeface mFaceB;
 	private int mIndex;
@@ -120,7 +121,6 @@ public class TabNewSpotsFragment extends Fragment implements
 	private boolean goOfflineMode;
 	private Context mContext;
 	private ApplicationController AC ;
-	
 
 	private class myLocationListener implements LocationListener {
 		public void onLocationChanged(Location location) {
@@ -300,7 +300,7 @@ public class TabNewSpotsFragment extends Fragment implements
 		mLocationSpinner.setAdapter(countriesAdapter);
 		
 		if (mMap == null) {
-			FragmentManager fm = getActivity().getSupportFragmentManager();
+            FragmentManager fm = this.getChildFragmentManager();
 			Fragment fragment = fm.findFragmentById(R.id.mapfragmentspot);
 			LinearLayout mapLayout = (LinearLayout) mRootView.findViewById(R.id.mapLayout); 
 			LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) mapLayout.getLayoutParams(); 
@@ -320,62 +320,64 @@ public class TabNewSpotsFragment extends Fragment implements
 			
 			SupportMapFragment support = (SupportMapFragment) fragment;
 
-			mMap = support.getMap();
-			// Check if we were successful in obtaining the map.
-			if (mMap == null) {
-				System.out.println("Map non safe");
-				
-			// The Map is verified. It is now safe to manipulate the map
-			} else {
-				System.out.println("Map safe");
-				mMap.getUiSettings().setAllGesturesEnabled(true);
-				mMap.getUiSettings().setMyLocationButtonEnabled(true);
-				mMap.getUiSettings().setZoomControlsEnabled(true);
-				mMap.getUiSettings().setZoomGesturesEnabled(true);
-
-				mMap.getUiSettings().setRotateGesturesEnabled(false);
-				mMap.getUiSettings().setScrollGesturesEnabled(true);
-				mMap.getUiSettings().setCompassEnabled(true);
-				
-				mMap.setOnMapLongClickListener(this);
-				mMap.setOnMarkerDragListener(this);
-				
-				((ImageView) mRootView.findViewById(R.id.ic_map_change)).setOnClickListener(new OnClickListener() {
-					@Override
-					public void onClick(View v) {
-						// TODO Auto-generated method stub
-						if(!earthViewActive){
-							((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_map_view);
-							earthViewActive = true;
-							System.out.println(String.valueOf(earthViewActive));
-							mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-						}
-						else{
-							((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_earth_view);
-							earthViewActive = false;
-							System.out.println(String.valueOf(earthViewActive));
-							mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-						}				
-					}
-				});
-				
-				//Load the previously selected spot if so
-				if (((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1) {
-					
-					goToSpotSelected(mRootView, AC.getTempDive().getSpot().getJson());
-				} else {
-					goToSearch(mRootView);
-					activeGPS(mRootView);
-				}
-						
-			}
-			
+			support.getMapAsync(this);
 		}
 
 		return mRootView;
 	}
-	
-	
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		mMap=googleMap;
+		// Check if we were successful in obtaining the map.
+		if (mMap == null) {
+			System.out.println("Map non safe");
+
+			// The Map is verified. It is now safe to manipulate the map
+		} else {
+			System.out.println("Map safe");
+			mMap.getUiSettings().setAllGesturesEnabled(true);
+			mMap.getUiSettings().setMyLocationButtonEnabled(true);
+			mMap.getUiSettings().setZoomControlsEnabled(true);
+			mMap.getUiSettings().setZoomGesturesEnabled(true);
+
+			mMap.getUiSettings().setRotateGesturesEnabled(false);
+			mMap.getUiSettings().setScrollGesturesEnabled(true);
+			mMap.getUiSettings().setCompassEnabled(true);
+
+			mMap.setOnMapLongClickListener(this);
+			mMap.setOnMarkerDragListener(this);
+
+			((ImageView) mRootView.findViewById(R.id.ic_map_change)).setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					// TODO Auto-generated method stub
+					if(!earthViewActive){
+						((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_map_view);
+						earthViewActive = true;
+						System.out.println(String.valueOf(earthViewActive));
+						mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+					}
+					else{
+						((ImageView) mRootView.findViewById(R.id.ic_map_change)).setImageResource(R.drawable.ic_earth_view);
+						earthViewActive = false;
+						System.out.println(String.valueOf(earthViewActive));
+						mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+					}
+				}
+			});
+
+			//Load the previously selected spot if so
+			if (((ApplicationController) getActivity().getApplicationContext()).getTempDive().getSpot().getId() != 1) {
+
+				goToSpotSelected(mRootView, AC.getTempDive().getSpot().getJson());
+			} else {
+				goToSearch(mRootView);
+				activeGPS(mRootView);
+			}
+
+		}
+	}
 
 	public String getPosition() {
 		String pos = "";
@@ -694,6 +696,9 @@ public class TabNewSpotsFragment extends Fragment implements
 	}
 
 	public void activeGPS(View view) {
+		if (!((ApplicationController) getActivity().getApplication()).canAccessLocation()) {
+			return;
+		}
 		InputMethodManager imm = (InputMethodManager) getActivity()
 				.getSystemService(Context.INPUT_METHOD_SERVICE);
 		imm.hideSoftInputFromWindow(((EditText) mRootView

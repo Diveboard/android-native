@@ -10,10 +10,12 @@ import org.json.JSONObject;
 import com.diveboard.config.AppConfig;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Shop;
-import com.google.analytics.tracking.android.EasyTracker;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
 import com.google.android.gms.maps.MapFragment;
@@ -53,7 +55,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
-public class ClosestShopActivity extends NavDrawer {
+public class ClosestShopActivity extends NavDrawer implements OnMapReadyCallback {
 	private 										GoogleMap mMap;
 	private boolean 								earthViewActive = false;
 	LocationManager 								mLocationManager;
@@ -134,56 +136,62 @@ public class ClosestShopActivity extends NavDrawer {
 			
 		if (mMap == null) {
 			SupportMapFragment suppMap = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
-			mMap = suppMap.getMap();
-			mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-			// Check if we were successful in obtaining the map.
-			if (mMap != null) {
-				mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-				// The Map is verified. It is now safe to manipulate the map
+			suppMap.getMapAsync(this);
+		}
+	}
+
+	@Override
+	public void onMapReady(GoogleMap googleMap) {
+		mMap=googleMap;
+		mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+		// Check if we were successful in obtaining the map.
+		if (mMap != null) {
+			mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+			// The Map is verified. It is now safe to manipulate the map
+		}
+		else
+			System.out.println("Map non safe");
+
+		((ImageView) findViewById(R.id.ic_change_view)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				if(!earthViewActive){
+					((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_map_view);
+					earthViewActive = true;
+					System.out.println(String.valueOf(earthViewActive));
+					mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+				}
+				else{
+					((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_earth_view);
+					earthViewActive = false;
+					System.out.println(String.valueOf(earthViewActive));
+					mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+				}
 			}
-			else
-				System.out.println("Map non safe");
+		});
 
-			((ImageView) findViewById(R.id.ic_change_view)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					// TODO Auto-generated method stub
-					if(!earthViewActive){
-						((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_map_view);
-						earthViewActive = true;
-						System.out.println(String.valueOf(earthViewActive));
-						mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
-					}
-					else{
-						((ImageView) findViewById(R.id.ic_change_view)).setImageResource(R.drawable.ic_earth_view);
-						earthViewActive = false;
-						System.out.println(String.valueOf(earthViewActive));
-						mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-					}				
-				}
-			});
+		((ImageView) findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (myMarker != null)
+					myMarker.remove();
+				activeGPS(true);
+			}
+		});
+		mMap.getUiSettings().setAllGesturesEnabled(true);
+		mMap.getUiSettings().setMyLocationButtonEnabled(true);
+		mMap.getUiSettings().setZoomControlsEnabled(true);
+		mMap.getUiSettings().setZoomGesturesEnabled(true);
 
-			((ImageView) findViewById(R.id.GPSImage)).setOnClickListener(new OnClickListener() {
-				@Override
-				public void onClick(View v) {
-					if (myMarker != null)
-						myMarker.remove();
-					activeGPS(true);
-				}
-			});
-			mMap.getUiSettings().setAllGesturesEnabled(true);
-			mMap.getUiSettings().setMyLocationButtonEnabled(true);
-			mMap.getUiSettings().setZoomControlsEnabled(true);
-			mMap.getUiSettings().setZoomGesturesEnabled(true);
+		mMap.getUiSettings().setRotateGesturesEnabled(true);
+		mMap.getUiSettings().setScrollGesturesEnabled(true);
+		mMap.getUiSettings().setCompassEnabled(true);
+		mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
 
-			mMap.getUiSettings().setRotateGesturesEnabled(true);
-			mMap.getUiSettings().setScrollGesturesEnabled(true);
-			mMap.getUiSettings().setCompassEnabled(true);
-			mMap.setOnInfoWindowClickListener(new OnInfoWindowClickListener() {
-				
-				@Override
-				public void onInfoWindowClick(Marker marker) {
-					// Calls Google Maps					
+			@Override
+			public void onInfoWindowClick(Marker marker) {
+				// Calls Google Maps
 //					if(myMarker != null){
 //						if(!myMarker.equals(marker)){
 //							String gmapsquery = "http://maps.google.com/maps?saddr=" + String.valueOf(myMarker.getPosition().latitude) + "," + String.valueOf(myMarker.getPosition().longitude) + "&daddr=" + String.valueOf(marker.getPosition().latitude) + "," + String.valueOf(marker.getPosition().longitude);
@@ -203,51 +211,52 @@ public class ClosestShopActivity extends NavDrawer {
 //						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, uri);
 //						startActivity(intent);
 //					}
-					if(myMarker != null && !myMarker.equals(marker)){
-						String mShopUrl = ""; 
-						for(int i = 0; i < mListShops.size(); i++){
-							if( mListShops.get(i).first.equals(marker) && mListShops.get(i).second != null){
-								mShopUrl = "http://scu.bz/" + mListShops.get(i).second.getShakenId();
-								break;
-								}
+				if(myMarker != null && !myMarker.equals(marker)){
+					String mShopUrl = "";
+					for(int i = 0; i < mListShops.size(); i++){
+						if( mListShops.get(i).first.equals(marker) && mListShops.get(i).second != null){
+							mShopUrl = "http://scu.bz/" + mListShops.get(i).second.getShakenId();
+							break;
 						}
-						if(!mShopUrl.isEmpty()){
-							Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mShopUrl));
-							startActivity(intent);
-						}
-							
 					}
+					if(!mShopUrl.isEmpty()){
+						Intent intent = new Intent(android.content.Intent.ACTION_VIEW, Uri.parse(mShopUrl));
+						startActivity(intent);
+					}
+
 				}
-			});
-			mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
-				
-				@Override
-				public void onCameraChange(CameraPosition arg0) {
-					// TODO Auto-generated method stub
-					ShopsTask shops_task = new ShopsTask();
-					LatLngBounds b = mMap.getProjection().getVisibleRegion().latLngBounds;
-					mLatitude = mMap.getCameraPosition().target.latitude;
-					mLongitude = mMap.getCameraPosition().target.longitude;
-					if (b != null)
-						shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(b.southwest.latitude), Double.toString(b.northeast.latitude), Double.toString(b.southwest.longitude), Double.toString(b.northeast.longitude));
-					else
-						shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
-				}
-			});
-			
-			
-			activeGPS(false);
+			}
+		});
+		mMap.setOnCameraChangeListener(new GoogleMap.OnCameraChangeListener() {
+
+			@Override
+			public void onCameraChange(CameraPosition arg0) {
+				// TODO Auto-generated method stub
+				ShopsTask shops_task = new ShopsTask();
+				LatLngBounds b = mMap.getProjection().getVisibleRegion().latLngBounds;
+				mLatitude = mMap.getCameraPosition().target.latitude;
+				mLongitude = mMap.getCameraPosition().target.longitude;
+				if (b != null)
+					shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(b.southwest.latitude), Double.toString(b.northeast.latitude), Double.toString(b.southwest.longitude), Double.toString(b.northeast.longitude));
+				else
+					shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
+			}
+		});
+
+
+		activeGPS(false);
 //			LatLngBounds bounds = mMap.getProjection().getVisibleRegion().latLngBounds;
 //			if (bounds != null)
 //				shops_task.execute(mLatitude.toString(), mLongitude.toString(), Double.toString(bounds.southwest.latitude), Double.toString(bounds.northeast.latitude), Double.toString(bounds.southwest.longitude), Double.toString(bounds.northeast.longitude));
 //			else
 //				shops_task.execute(mLatitude.toString(), mLongitude.toString(), null, null, null, null);
-			
-		}
+
 	}
-	
+
 	public void activeGPS(final boolean showMarker) {
-		
+		if (!((ApplicationController)getApplication()).canAccessLocation()) {
+			return;
+		}
 		if (mLocationManager != null && mLocationListener != null) {
 			mLocationManager.removeUpdates(mLocationListener);
 			mLocationManager = null;

@@ -11,12 +11,6 @@ import com.diveboard.model.Units;
 import com.diveboard.viewModel.StatisticItem;
 import com.diveboard.viewModel.StatisticViewModel;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 public class StatisticActivity extends NavDrawer {
     @Override
