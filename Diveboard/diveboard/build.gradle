@@ -42,18 +42,9 @@ android {
 dependencies {
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
     implementation 'com.facebook.android:facebook-android-sdk:3.23.1'
-    implementation('com.uservoice:uservoice-android-sdk:1.1.2') {
-        exclude module: 'commons-logging'
-        exclude module: 'httpcore'
-        exclude module: 'httpclient'
-    }
+    implementation('com.uservoice:uservoice-android-sdk:1.1.2')
     implementation 'com.google.android.gms:play-services-maps:16.0.0'
     implementation files('libs/bugsense-3.6.jar')
-    implementation files('libs/commons-logging-1.1.3.jar')
-    implementation files('libs/fluent-hc-4.3.2.jar')
-    implementation files('libs/httpclient-4.3.2.jar')
-    implementation files('libs/httpclient-cache-4.3.2.jar')
-    implementation files('libs/httpcore-4.3.1.jar')
     implementation files('libs/httpmime-4.3.2.jar')
     implementation 'com.google.android.gms:play-services-analytics:16.0.7'
     implementation 'com.android.support:support-v4:28.0.0'
