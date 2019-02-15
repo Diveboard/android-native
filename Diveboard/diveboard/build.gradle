@@ -31,7 +31,8 @@ android {
 
     lintOptions {
         checkReleaseBuilds true
-        abortOnError false
+        abortOnError true
+        disable 'DuplicatePlatformClasses'
     }
 
     dataBinding {
