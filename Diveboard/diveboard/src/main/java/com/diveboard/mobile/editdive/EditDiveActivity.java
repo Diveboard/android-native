@@ -135,10 +135,10 @@ public class EditDiveActivity extends NavDrawer implements
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 
 		Typeface faceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
-		mTitle = (TextView) findViewById(R.id.title);
+		mTitle = findViewById(R.id.title);
 		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 
-		Button save = (Button) findViewById(R.id.save_button);
+		Button save = findViewById(R.id.save_button);
 		save.setTypeface(faceB);
 		save.setText(getResources().getString(R.string.save_button));
 		save.setOnClickListener(new OnClickListener()

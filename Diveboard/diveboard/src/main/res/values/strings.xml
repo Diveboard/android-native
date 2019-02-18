@@ -5,9 +5,9 @@
     <string name="google_play_services_version">4030500</string>
     <string name="fb_app_id_debug">193803977296892</string>
     <string name="fb_app_id_release">193803977296892</string>
- <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <!-- private API GoogleMaps key for Gonzalo debugging- -->
     <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
- <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
     <string name="maps_app_id_debug">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
     <string name="maps_app_id_release">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
     <string name="title_activity_dives">List of dives</string>

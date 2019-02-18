@@ -71,7 +71,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	private ViewPager 						mPager;
 	private PagerAdapter 					mPagerAdapter;
 	private ViewGroup 						mLayout;
-	private SeekBar 						mSeekBar;
 
 	private RelativeLayout 					mScreen;
 	private ImageView 						mBackground1;
@@ -83,10 +82,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	private Double 							nb_dives_per_stroke;
 	private Integer 						nb_strokes = 0;
 	private Integer 						position_stroke;
-	private static final String 			DEBUG_TAG = "Gestures";
 	private GestureDetectorCompat			mDetector;
 	private OnTouchListener 				mGestureListener;
-	private boolean 						mIsScrolling = false;
 	private ArrayList<TrackingBarPosition> 	mTrackingBarPosition = new ArrayList<TrackingBarPosition>();
 
 	// Thread for the data loading & the views associated
@@ -95,14 +92,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	private View 							mLoadDataStatusView;
 	private TextView 						mLoadDataStatusMessageView;
 	private boolean							mDataLoaded = false;
-	private PopupMenu 						popup;
 
-	// Model to display
-	private Bitmap 							strokeThumbnail = null;
 	private DiveboardModel 					mModel;
 	private DownloadImageTask 				mBackgroundImageTask = null;
-	static ArrayList<Picture> 				mWalletPictures = null;
-	private Context 						mContext;
 
 	// To know if DivesActivity is running or not
 	static boolean 							active = false;
@@ -174,7 +166,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		mDataLoaded = false;
 
 		//Instantiate the current context so that we dont have to access everytime is needed
-		mContext = getApplicationContext();
 
 		if (AC.isDataReady() == false){
 			System.out.println("Data is not ready, loading data");
@@ -185,7 +176,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			System.out.println("Data is ready, creating pages");
 			createPages();
 		}
-
 	}
 
 	private void requestLocationPermission() {
@@ -263,183 +253,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	public void onConfigurationChanged(Configuration newConfig) {    
 
 	}
-
-//	public void goToMenuV3(View view)
-//	{
-//		popup = new PopupMenu(this, view);
-//		MenuInflater inflater = popup.getMenuInflater();
-//		inflater.inflate(R.menu.settings, popup.getMenu());
-//		if(mModel.hasRatedApp()!= null && !mModel.hasRatedApp()){
-//			popup.getMenu().findItem(R.id.rate_app).setVisible(true);
-//		}
-//		popup.show();
-//		popup.setOnMenuItemClickListener(new OnMenuItemClickListener()
-//		{
-//
-//			@Override
-//			public boolean onMenuItemClick(MenuItem item) {
-//				switch (item.getItemId()) {
-//				case R.id.refresh:
-//					ApplicationController AC = (ApplicationController)getApplicationContext();
-//					AC.setDataReady(false);
-//					AC.getModel().stopPreloadPictures();
-//					ApplicationController.mForceRefresh = true;
-//					AC.setModel(null);
-//					finish();
-//					return true;
-//				case R.id.rate_app:
-//					mModel.setHasRatedApp(true);
-//					try {
-//						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
-//					} catch (android.content.ActivityNotFoundException anfe) {
-//						startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
-//					}
-//					return true;
-//				case R.id.see_wallet:
-//					Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
-//					startActivity(walletActivity);
-//					return true;
-//				case R.id.closest_shop:
-//					Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
-//					startActivity(closestShopActivity);
-//					return true;
-//				case R.id.add_dive:
-//					Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//					startActivity(newDiveActivity);
-//					return true;
-//				case R.id.menu_settings:
-//					mModel.getDataManager().getMemoryUsed();
-//					Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//					startActivity(settingsActivity);
-//					return true;
-//				case R.id.report_bug:
-//					if (true)
-//					{
-//						//Use of UserVoice report bug system
-//						WaitDialogFragment dialog = new WaitDialogFragment();
-//						dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//						Config config = new Config("diveboard.uservoice.com");
-//						if(mModel.getSessionEmail() != null)
-//							config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//						UserVoice.init(config, DivesActivity.this);
-//						config.setShowForum(false);
-//						config.setShowContactUs(true);
-//						config.setShowPostIdea(false);
-//						config.setShowKnowledgeBase(false);
-//						ApplicationController.UserVoiceReady = true;
-//						UserVoice.launchContactUs(DivesActivity.this);
-//						dialog.dismiss();
-//					}
-//					return true;
-//				case R.id.menu_logout:
-//					final Dialog dialog = new Dialog(DivesActivity.this);
-//					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-//					dialog.setContentView(R.layout.dialog_edit_confirm);
-//					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/lato_regular.ttf");
-//					Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-//					TextView title = (TextView) dialog.findViewById(R.id.title);
-//					TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-//					title.setTypeface(faceB);
-//					title.setText(getResources().getString(R.string.exit_title));
-//					exitTV.setTypeface(faceR);
-//					exitTV.setText(getResources().getString(R.string.confirm_logout));
-//					Button cancel = (Button) dialog.findViewById(R.id.cancel);
-//					cancel.setTypeface(faceR);
-//					cancel.setText(getResources().getString(R.string.cancel));
-//					cancel.setOnClickListener(new View.OnClickListener() {
-//
-//						@Override
-//						public void onClick(View v) {
-//							// TODO Auto-generated method stub
-//							dialog.dismiss();
-//						}
-//					});
-//					Button save = (Button) dialog.findViewById(R.id.save);
-//					save.setTypeface(faceR);
-//					save.setText(getResources().getString(R.string.menu_logout));
-//					save.setOnClickListener(new View.OnClickListener() {
-//
-//						@Override
-//						public void onClick(View v) {
-//							// TODO Auto-generated method stub
-//							logout();
-//						}
-//					});
-//					dialog.show();
-//					return true;
-//				default:
-//					return false;
-//				}
-//			}
-//
-//		});
-//
-//	}
-//
-//	public void goToMenuV2(View view)
-//	{
-//		// Settings floating menu
-//		registerForContextMenu(view);
-//		openContextMenu(view);
-//		unregisterForContextMenu(view);
-//	}
-//
-//	//	@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
-//	public void openMenu(View view)
-//	{
-//		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB)
-//		{
-//			goToMenuV3(view);
-//		}
-//		else
-//			goToMenuV2(view);
-//	}
-//
-//	@Override
-//	public boolean onContextItemSelected(MenuItem item) {
-//		AdapterContextMenuInfo info = (AdapterContextMenuInfo) item.getMenuInfo();
-//		switch (item.getItemId()) {
-//		case R.id.refresh:
-//			ApplicationController AC = (ApplicationController)getApplicationContext();
-//			AC.setDataReady(false);
-//			AC.getModel().stopPreloadPictures();
-//			AC.setModel(null);
-//			finish();
-//			return true;
-//		case R.id.add_dive:
-//			Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-//			startActivity(newDiveActivity);
-//			return true;
-//		case R.id.menu_settings:
-//			Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-//			startActivity(settingsActivity);
-//			return true;
-//		case R.id.report_bug:
-//			if (true)
-//			{
-//				WaitDialogFragment dialog = new WaitDialogFragment();
-//				dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-//				Config config = new Config("diveboard.uservoice.com");
-//				if(mModel.getSessionEmail() != null)
-//					config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-//				UserVoice.init(config, DivesActivity.this);
-//				config.setShowForum(false);
-//				config.setShowContactUs(true);
-//				config.setShowPostIdea(false);
-//				config.setShowKnowledgeBase(false);
-//				ApplicationController.UserVoiceReady = true;
-//				UserVoice.launchContactUs(DivesActivity.this);
-//				dialog.dismiss();
-//			}
-//			return true;
-//		case R.id.menu_logout:
-//			logout();
-//			return true;
-//
-//		default:
-//			return super.onContextItemSelected(item);
-//		}
-//	}
 
 	public void goToDiveDetails(View view)
 	{
@@ -537,7 +350,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
-		ApplicationController AC = ((ApplicationController)getApplicationContext());
+		super.onSaveInstanceState(outState);
+		ApplicationController AC = ((ApplicationController) getApplicationContext());
 		if (mPager != null)
 			AC.setPageIndex(mPager.getCurrentItem());
 		else
@@ -797,7 +611,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 										}
 										else
 											mPager.setCurrentItem((int) (position_stroke * nb_dives_per_stroke - 1), true);
-										mIsScrolling  = false;
 									};
 								}
 
@@ -950,6 +763,11 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			((RelativeLayout)((RelativeLayout)findViewById(R.id.center_bar)).findViewById(index)).removeViewAt(1);
 		if (((RelativeLayout)findViewById(R.id.screen)).getChildCount() > 4)
 			((RelativeLayout)findViewById(R.id.screen)).removeViewAt(((RelativeLayout)findViewById(R.id.screen)).getChildCount() - 1);
+	}
+
+	public void onSwitchToList(View view) {
+		Intent intent = new Intent(this, DivesListActivity.class);
+		startActivity(intent);
 	}
 
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
@@ -1125,7 +943,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					y >= mTrackingBarPosition.get(i).gety() && y <= mTrackingBarPosition.get(i).getY())
 				return i + 1;
 		}
-		mIsScrolling = false;
 		return 0;
 	}
 
@@ -1142,11 +959,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
 			if (stroke_selected == 0)
 			{
-				mIsScrolling = false;
 			}
 			else
 			{
-				mIsScrolling = true;
 				lowerStroke(position_stroke);
 				position_stroke = stroke_selected;
 				upperStroke(position_stroke);
@@ -1324,152 +1139,4 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		}
 
 	}
-
-
-//	@Override
-//	public boolean onKeyDown(int keycode, KeyEvent e) {
-//		switch(keycode) {
-//		case KeyEvent.KEYCODE_MENU:
-//			openMenu(findViewById(R.id.load_data_form));
-//			return true;
-//		}
-//
-//		return super.onKeyDown(keycode, e);
-//	}
-
-	//    private class DrawerItemClickListener implements ListView.OnItemClickListener {
-	//        @Override
-	//        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-	//            selectItem(position);
-	//        }
-	//    }
-	//    
-	//    private void selectItem(int position) {
-	//
-	//    	switch (position) {
-	//
-	//    	//Logbook
-	//    	case 0:
-	////    		mDrawerList.setItemChecked(position, true);
-	//    		finish();
-	//    		Intent logbookActivity = new Intent(this, DivesActivity.class);
-	//    		startActivity(logbookActivity);
-	//    		break;
-	//    	
-	//    	//Refresh
-	//    	case 1:
-	//    		
-	//    		ApplicationController AC = (ApplicationController)getApplicationContext();
-	//    		AC.setDataReady(false);
-	//    		AC.getModel().stopPreloadPictures();
-	//    		ApplicationController.mForceRefresh = true;
-	//    		AC.setModel(null);
-	//    		finish();
-	//    		break;
-	//
-	//    	//Wallet Activity
-	//    	case 2:
-	//    		finish();
-	//    		Intent walletActivity = new Intent(DivesActivity.this, WalletActivity.class);
-	//    		startActivity(walletActivity);
-	//    		
-	//    		break;
-	//    		
-	//    	//Closest Shop    			
-	//    	case 3:
-	//    		Intent closestShopActivity = new Intent(DivesActivity.this, ClosestShopActivity.class);
-	//    		startActivity(closestShopActivity);
-	//    		break;
-	//
-	//    	//New Dive	
-	//    	case 4:
-	//    		Intent newDiveActivity = new Intent(DivesActivity.this, NewDiveActivity.class);
-	//    		startActivity(newDiveActivity);
-	//    		break;
-	//    	
-	//    	//Settings	
-	//    	case 5:    		
-	//    		mModel.getDataManager().getMemoryUsed();
-	//    		Intent settingsActivity = new Intent(DivesActivity.this, SettingsActivity.class);
-	//    		startActivity(settingsActivity);
-	//    		break;
-	//
-	//    	//bug report
-	//    	case 6:
-	//    		if (true)
-	//    		{
-	//    			//Use of UserVoice report bug system
-	//    			WaitDialogFragment dialog = new WaitDialogFragment();
-	//    			dialog.show(getSupportFragmentManager(), "WaitDialogFragment");
-	//    			Config config = new Config("diveboard.uservoice.com");
-	//    			if(mModel.getSessionEmail() != null)
-	//    				config.identifyUser(null, mModel.getUser().getNickname(), mModel.getSessionEmail());
-	//    			UserVoice.init(config, DivesActivity.this);
-	//    			config.setShowForum(false);
-	//    			config.setShowContactUs(true);
-	//    			config.setShowPostIdea(false);
-	//    			config.setShowKnowledgeBase(false);
-	//    			ApplicationController.UserVoiceReady = true;
-	//    			UserVoice.launchContactUs(DivesActivity.this);
-	//    			dialog.dismiss();
-	//    		}
-	//    		break;
-	//    		
-	//    	//Logout	
-	//    	case 7:
-	//    		final Dialog dialog = new Dialog(DivesActivity.this);
-	//    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-	//    		dialog.setContentView(R.layout.dialog_edit_confirm);
-	//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/lato_regular.ttf");
-	//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-	//    		TextView title = (TextView) dialog.findViewById(R.id.title);
-	//    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
-	//    		title.setTypeface(faceB);
-	//    		title.setText(getResources().getString(R.string.exit_title));
-	//    		exitTV.setTypeface(faceR);
-	//    		exitTV.setText(getResources().getString(R.string.confirm_exit));
-	//    		Button cancel = (Button) dialog.findViewById(R.id.cancel);
-	//    		cancel.setTypeface(faceR);
-	//    		cancel.setText(getResources().getString(R.string.cancel));
-	//    		cancel.setOnClickListener(new View.OnClickListener() {
-	//
-	//    			@Override
-	//    			public void onClick(View v) {
-	//    				// TODO Auto-generated method stub
-	//    				dialog.dismiss();
-	//    			}
-	//    		});
-	//    		Button save = (Button) dialog.findViewById(R.id.save);
-	//    		save.setTypeface(faceR);
-	//    		save.setText(getResources().getString(R.string.menu_logout));
-	//    		save.setOnClickListener(new View.OnClickListener() {
-	//
-	//    			@Override
-	//    			public void onClick(View v) {
-	//    				// TODO Auto-generated method stub
-	//    				logout();
-	//    			}
-	//    		});
-	//    		dialog.show();
-	//    		break;
-	//    		
-	//    		//Rate app
-	//    	case 8:
-	//    		mModel.setHasRatedApp(true);
-	//			try {
-	//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + AppRater.APP_PNAME)));
-	//			} catch (android.content.ActivityNotFoundException anfe) {
-	//			    startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://play.google.com/store/apps/details?id=" + AppRater.APP_PNAME)));
-	//			}
-	//    		break;	
-	//    		
-	//    	default:
-	//    		break ;
-	//    	}
-	//
-	//        // update selected item and title, then close the drawer
-	//        mDrawerList.setItemChecked(position, false);
-	//        mDrawerLayout.closeDrawer(mDrawerContainer);
-	//    }
-
 }
