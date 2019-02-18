@@ -2,26 +2,20 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.R;
 import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.editdive.EditWeightsDialogFragment.EditWeightsDialogListener;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.Units;
-import com.diveboard.model.Weight;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
-import android.view.WindowManager;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
@@ -55,7 +49,7 @@ public class					EditConfirmDialogFragment extends DialogFragment implements OnE
 	@Override
 	public View					onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
 	{
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceB = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.lato_regular);
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 		View view = inflater.inflate(R.layout.dialog_edit_confirm, container);
 		mModel = ((ApplicationController) getActivity().getApplicationContext()).getModel();

@@ -1,7 +1,6 @@
 package com.diveboard.mobile;
 
 import java.io.IOException;
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -24,36 +23,24 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Paint;
 import android.graphics.Typeface;
-import android.graphics.Bitmap.Config;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.util.TypedValue;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.animation.AlphaAnimation;
-import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.ScrollView;
 import android.widget.TabHost;
 import android.widget.TabHost.OnTabChangeListener;
@@ -294,7 +281,7 @@ public class DiveDetailsActivity extends TabActivity {
 				mModel = AC.getModel();
 				mTabHost = (TabHost)findViewById(android.R.id.tabhost);
 				mFaceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-				mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+				mFaceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 				mIndex = getIntent().getIntExtra("index", 0);
 				//We built the tabs
 				Intent intent = new Intent(DiveDetailsActivity.this, DiveDetailsMainActivity.class);

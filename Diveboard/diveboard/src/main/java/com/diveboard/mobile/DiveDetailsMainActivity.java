@@ -13,6 +13,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
 import android.view.Gravity;
@@ -119,7 +120,7 @@ DeleteConfirmDialogListener {
 		// System.out.println(dpToPx(50));
 		mRoundedLayerSmall = ImageHelper.getRoundedLayerSmallFix(dpToPx(35),dpToPx(35));
 		Typeface faceR = Typeface.createFromAsset(getAssets(),"fonts/Lato-Light.ttf");
-		Typeface faceB = Typeface.createFromAsset(getAssets(),"fonts/Lato-Regular.ttf");
+		Typeface faceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 		mDive = AC.getModel().getDives().get(getIntent().getIntExtra("index", 0));
 		if (mDive.getNotes() != null)
 			((TextView) findViewById(R.id.dive_note)).setText(mDive.getNotes());
@@ -458,11 +459,10 @@ DeleteConfirmDialogListener {
 			mImageFetcher.loadImage(b.getPicture()._urlDefault, imageView);
 			mListBuddyPictures.addView(layout);
 		}
-		TextView title = (TextView) findViewById(R.id.tank_title);
-		title.setTypeface(mModel.getLatoB());
+		TextView title = findViewById(R.id.tank_title);
 		title.setTextSize(TypedValue.COMPLEX_UNIT_SP, FONT_SIZE);
 		if(mDive.getTanks() == null || mDive.getTanks().isEmpty()){
-			((LinearLayout)findViewById(R.id.tanks)).setVisibility(View.GONE);
+			findViewById(R.id.tanks).setVisibility(View.GONE);
 		}
 			
 		for (Tank tank : mDive.getTanks())

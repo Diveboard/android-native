@@ -17,6 +17,7 @@ import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -277,7 +278,7 @@ public class					TabEditBuddiesFragment extends Fragment
 						}
 					}
 				});
-		Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceB = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.lato_regular);
 		Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
 		((TextView)mRootView.findViewById(R.id.myBuddies)).setTypeface(faceB);
 		((TextView)mRootView.findViewById(R.id.myOldBuddies)).setTypeface(faceB);
@@ -511,7 +512,6 @@ public class					TabEditBuddiesFragment extends Fragment
 		{
 			final RelativeLayout rl;
 			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -638,7 +638,6 @@ public class					TabEditBuddiesFragment extends Fragment
 			System.out.println("START DISPLAYING");
 			final RelativeLayout rl;
 			Typeface faceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 			if (convertView != null)
 			{
 				rl = (RelativeLayout) convertView;
@@ -891,7 +890,6 @@ public class					TabEditBuddiesFragment extends Fragment
 			TextView tv;
 			LinearLayout rl;
 			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
@@ -1004,7 +1002,6 @@ public class					TabEditBuddiesFragment extends Fragment
 			TextView tv;
 			LinearLayout rl;
 			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
 			//if (convertView == null) { // if it's not recycled, instantiate and initialize
 			imageView = new RecyclingImageView(mContext);
 			imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);

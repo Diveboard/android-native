@@ -2,16 +2,13 @@ package com.diveboard.mobile.editdive;
 
 import java.util.List;
 
-import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditTimeInDialogFragment.EditTimeInDialogListener;
 import com.diveboard.model.Dive;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Typeface;
 import android.os.Build;
-import android.support.v4.app.DialogFragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -61,7 +58,7 @@ public class					OptionAdapter extends BaseAdapter
 		if (option.get(position).getType() == 0)
 		{
 			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
+			Typeface faceB = ResourcesCompat.getFont(mContext, R.font.lato_regular);
 //			if (convertView == null)
 //			{
 				holder = new ViewHolder();
@@ -86,7 +83,7 @@ public class					OptionAdapter extends BaseAdapter
 		{
 			// Special Privacy Field
 			Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
-			Typeface faceB = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Regular.ttf");
+			Typeface faceB = ResourcesCompat.getFont(mContext, R.font.lato_regular);
 			
 			holder = new ViewHolder();
 			

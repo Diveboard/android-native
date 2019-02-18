@@ -20,6 +20,7 @@ import android.os.Bundle;
 import android.os.Vibrator;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.Display;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -163,7 +164,7 @@ public class TabEditSpotsFragment extends Fragment implements
 
 		try{
 			mFaceR = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Light.ttf");
-			mFaceB = Typeface.createFromAsset(getActivity().getAssets(),"fonts/Lato-Regular.ttf");
+			mFaceB = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.lato_regular);
 		}catch (NullPointerException e){
 			e.printStackTrace();
 			mFaceB = Typeface.DEFAULT_BOLD;

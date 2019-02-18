@@ -2,21 +2,7 @@ package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.newdive.NewAltitudeDialogFragment;
-import com.diveboard.mobile.newdive.NewBottomTempDialogFragment;
-import com.diveboard.mobile.newdive.NewCurrentDialogFragment;
-import com.diveboard.mobile.newdive.NewDateDialogFragment;
-import com.diveboard.mobile.newdive.NewDiveNumberDialogFragment;
-import com.diveboard.mobile.newdive.NewDurationDialogFragment;
-import com.diveboard.mobile.newdive.NewMaxDepthDialogFragment;
-import com.diveboard.mobile.editdive.EditGuideNameDialogFragment;
 import com.diveboard.mobile.editdive.EditOption;
-import com.diveboard.mobile.newdive.NewSurfaceTempDialogFragment;
-import com.diveboard.mobile.newdive.NewTimeInDialogFragment;
-import com.diveboard.mobile.newdive.NewTripNameDialogFragment;
-import com.diveboard.mobile.newdive.NewVisibilityDialogFragment;
-import com.diveboard.mobile.newdive.NewWaterDialogFragment;
-import com.diveboard.mobile.newdive.NewWeightsDialogFragment;
 import com.diveboard.mobile.editdive.OptionAdapter;
 
 import java.util.ArrayList;
@@ -28,7 +14,6 @@ import com.diveboard.model.Units;
 import android.support.v4.app.Fragment;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -174,8 +159,6 @@ public class					TabNewDetailsFragment extends Fragment
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstance)
     {
     	ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.tab_edit_details, container, false);
-    	
-	    Typeface faceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
 	    
     	NewDiveActivity.optionList = (ListView)rootView.findViewById(R.id.optionList);
 		ArrayList<EditOption> elem = new ArrayList<EditOption>();

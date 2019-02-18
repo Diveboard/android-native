@@ -53,11 +53,12 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal" >
 
-                                <TextView
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/OverallTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/review_overall"
+                                    android:fontFamily="@font/lato_regular"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
@@ -123,11 +124,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" >
 
-                                <TextView
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/difficultyTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/review_difficulty"
+                                    android:fontFamily="@font/lato_regular"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
@@ -193,11 +195,12 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" >
 
-                                <TextView
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/lifeTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/review_life"
+                                    android:fontFamily="@font/lato_regular"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
@@ -263,11 +266,12 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" >
 
-                                <TextView
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/fishTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/review_fish"
+                                    android:fontFamily="@font/lato_regular"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView
@@ -334,11 +338,12 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal" >
 
-                                <TextView
+                                <android.support.v7.widget.AppCompatTextView
                                     android:id="@+id/wreckTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
                                     android:text="@string/review_wreck"
+                                    android:fontFamily="@font/lato_regular"
                                     android:textAppearance="?android:attr/textAppearanceMedium" />
 
                                 <TextView

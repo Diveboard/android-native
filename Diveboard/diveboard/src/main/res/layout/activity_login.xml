@@ -232,10 +232,13 @@
         	    android:layout_height="60dp"
         	    android:onClick="goToSignUp" >
 
-		        <TextView
+		        <android.support.v7.widget.AppCompatTextView
 		            android:id="@+id/sign_up"
 		            android:layout_width="wrap_content"
 		            android:layout_height="wrap_content"
+					android:text="@string/signup_for_diveboard"
+					android:fontFamily="@font/lato_regular"
+					android:textSize="@dimen/text_size_big"
 		            android:layout_gravity="center"/>
         	</FrameLayout>
 		</LinearLayout>

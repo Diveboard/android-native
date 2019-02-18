@@ -1,11 +1,9 @@
 package com.diveboard.mobile;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -29,7 +27,6 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.support.v4.app.FragmentActivity;
 import android.text.TextUtils;
-import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
@@ -117,11 +114,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		super.onCreate(savedInstanceState);
 
 		setContentView(R.layout.activity_login);
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-		((TextView)findViewById(R.id.sign_up)).setText(getResources().getString(R.string.signup_for_diveboard));
-		((TextView)findViewById(R.id.sign_up)).setTypeface(faceB);
-		((TextView)findViewById(R.id.sign_up)).setTextSize(TEXT_SIZE_BIG);
 		((TextView)findViewById(R.id.email)).setTypeface(faceR);
 		((TextView)findViewById(R.id.email)).setTextSize(TEXT_SIZE);
 		((TextView)findViewById(R.id.password)).setTypeface(faceR);

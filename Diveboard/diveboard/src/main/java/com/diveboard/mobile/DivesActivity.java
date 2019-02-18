@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.GestureDetectorCompat;
 import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.PagerAdapter;
@@ -334,7 +335,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 //					final Dialog dialog = new Dialog(DivesActivity.this);
 //					dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 //					dialog.setContentView(R.layout.dialog_edit_confirm);
-//					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+//					Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/lato_regular.ttf");
 //					Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 //					TextView title = (TextView) dialog.findViewById(R.id.title);
 //					TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);
@@ -651,8 +652,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 				LinearLayout.LayoutParams diveFooterParams = new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, mScreenSetup.getDiveListFooterHeight());
 				diveFooter.setLayoutParams(diveFooterParams);
 				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
-				Typeface quickB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
+				Typeface faceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 				// Footer static text
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setText(getResources().getString(R.string.title_footer));
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setTypeface(faceB);
@@ -873,7 +873,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 								else
 									((TextView)findViewById(R.id.left_data)).setText(getResources().getString(R.string.not_available));
 								RelativeLayout diveFooter = (RelativeLayout) findViewById(R.id.dive_footer);
-								Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+								Typeface faceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setText(DivesActivity.getPosition(AC.getModel().getDives().size() - AC.getPageIndex() - 1, mModel));
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTypeface(faceB);
 								((TextView)diveFooter.findViewById(R.id.content_footer)).setTextSize(TypedValue.COMPLEX_UNIT_PX, (mScreenSetup.getDiveListFooterHeight() * 45 / 100));
@@ -1420,7 +1420,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	//    		final Dialog dialog = new Dialog(DivesActivity.this);
 	//    		dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
 	//    		dialog.setContentView(R.layout.dialog_edit_confirm);
-	//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+	//    		Typeface faceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/lato_regular.ttf");
 	//    		Typeface faceR = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 	//    		TextView title = (TextView) dialog.findViewById(R.id.title);
 	//    		TextView exitTV = (TextView) dialog.findViewById(R.id.exitTV);

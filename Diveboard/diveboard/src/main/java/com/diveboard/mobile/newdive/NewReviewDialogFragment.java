@@ -80,7 +80,6 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		mDive = ((ApplicationController) getActivity().getApplicationContext()).getTempDive();
 
 		Typeface faceR = mModel.getLatoR();
-		Typeface faceB = mModel.getLatoB();
 
 		getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
 
@@ -99,15 +98,10 @@ public class NewReviewDialogFragment extends DialogFragment implements
 		TextView lifeTV = (TextView) view.findViewById(R.id.lifeTV);
 		TextView fishTV = (TextView) view.findViewById(R.id.fishTV);
 		TextView wreckTV = (TextView) view.findViewById(R.id.wreckTV);
-		overallTV.setTypeface(faceB);
 		overallTV.setTextSize(mTextSize);
-		difficultyTV.setTypeface(faceB);
 		difficultyTV.setTextSize(mTextSize);
-		lifeTV.setTypeface(faceB);
 		lifeTV.setTextSize(mTextSize);
-		fishTV.setTypeface(faceB);
 		fishTV.setTextSize(mTextSize);
-		wreckTV.setTypeface(faceB);
 		wreckTV.setTextSize(mTextSize);
 		
 		hintOverall = (TextView) view.findViewById(R.id.OverallHintTV);

@@ -1,43 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-	   	android:background="@color/white" >
+    android:background="@color/white"
+    android:orientation="vertical">
 
-    <TextView
+    <android.support.v7.widget.AppCompatTextView
         android:id="@+id/title"
         android:layout_width="300dp"
         android:layout_height="wrap_content"
+        android:fontFamily="@font/lato_regular"
         android:padding="15dp"
         android:text="text"
         android:textAllCaps="true"
         android:textColor="@color/dark_grey"
         android:textSize="30sp" />
 
-	<TextView
-	    android:id="@+id/exitTV"
-	    android:layout_width="match_parent"
-	    android:layout_height="wrap_content"
-	    android:paddingBottom="15dp"
-	    android:paddingLeft="15dp"
-	    android:text="text"
-	    android:textColor="@color/dark_grey"
-	    android:textSize="25sp" />
-	<LinearLayout 
-	    android:id="@+id/edit_dialog_content"
-	    android:layout_width="wrap_content"
-	    android:layout_height="wrap_content"
-	    android:orientation="vertical">
-	    
-	</LinearLayout>
-    
+    <android.support.v7.widget.AppCompatTextView
+        android:id="@+id/exitTV"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingLeft="15dp"
+        android:paddingBottom="15dp"
+        android:text="text"
+        android:textColor="@color/dark_grey"
+        android:textSize="25sp" />
+
+    <LinearLayout
+        android:id="@+id/edit_dialog_content"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    </LinearLayout>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingBottom="15dp" >
-        
+        android:paddingBottom="15dp">
+
         <Button
             android:id="@+id/save"
             android:layout_width="100dp"
@@ -57,6 +59,6 @@
             android:textAllCaps="true"
             android:textColor="@color/black"
             android:textSize="20dp" />
-	    
-    </LinearLayout>    
+
+    </LinearLayout>
 </LinearLayout>

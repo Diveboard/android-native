@@ -33,16 +33,19 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingLeft="15dp"
+                    android:text="@string/tab_details_edit_title"
                     android:fontFamily="@font/quicksand_regular"
                     android:textSize="20sp" />
 
-                <Button
+                <android.support.v7.widget.AppCompatButton
                     android:id="@+id/save_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/primary_button_selector"
                     android:padding="15dp"
                     android:textColor="@color/black"
+                    android:text="@string/add_button"
+                    android:fontFamily="@font/lato_regular"
                     android:textSize="15sp" />
             </LinearLayout>
 

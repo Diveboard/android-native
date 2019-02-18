@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.res.ResourcesCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
@@ -133,7 +134,7 @@ public class EditDiveActivity extends NavDrawer implements
 		});
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 
-		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 		mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 
@@ -341,7 +342,7 @@ public class EditDiveActivity extends NavDrawer implements
 	//			return ;
 	//	    setContentView(R.layout.activity_edit_dive);
 	//	
-	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+	//	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/lato_regular.ttf");
 	//	    
 	//	    mIndex = getIntent().getIntExtra("index", -1);
 	//	

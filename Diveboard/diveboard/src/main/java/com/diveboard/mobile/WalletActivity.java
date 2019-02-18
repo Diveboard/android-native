@@ -36,6 +36,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.Gravity;
@@ -262,7 +263,7 @@ public class WalletActivity extends NavDrawer {
 	
 	public void generateTableLayout()
 	{
-		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface mFaceB = ResourcesCompat.getFont(getApplicationContext(), R.font.lato_regular);
 		TextView mTitle = (TextView) findViewById(R.id.title);
 		mTitle.setText(getResources().getString(R.string.title_banner_wallet));
 		Button save = (Button) findViewById(R.id.save_button);

@@ -2,28 +2,16 @@ package com.diveboard.mobile.editdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
-import com.diveboard.mobile.editdive.EditTripNameDialogFragment.EditTripNameDialogListener;
 import com.diveboard.model.DiveboardModel;
 
-import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Typeface;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
-import android.view.Gravity;
+import android.support.v4.content.res.ResourcesCompat;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.View.OnClickListener;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 
 public class TabEditNotesFragment extends Fragment
 {
@@ -54,7 +42,7 @@ public class TabEditNotesFragment extends Fragment
     	
         
 	    mFaceR = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Light.ttf");
-	    mFaceB = Typeface.createFromAsset(getActivity().getAssets(), "fonts/Lato-Regular.ttf");
+	    mFaceB = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.lato_regular);
 	    mModel = ((ApplicationController)getActivity().getApplicationContext()).getModel();
 		mIndex = getActivity().getIntent().getIntExtra("index", 0);
 	    

@@ -101,8 +101,6 @@ public class					DiveboardModel
 	private boolean 			_force_refresh = false;
 	//Application fonts
 	private Typeface 			_latoR = null;
-	private Typeface 			_latoB = null;
-	private Typeface 			_quickB = null;
 	
 	/*
 	 * Method DiveboardModel
@@ -115,8 +113,6 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_cache = new DataManager(context, _userId, _token, this);
 		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
-		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
-		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -128,8 +124,6 @@ public class					DiveboardModel
 		_context = context;
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
-		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
-		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
 		DiveboardModel.savedPictureLock = new Semaphore(1);
@@ -2196,13 +2190,5 @@ public class					DiveboardModel
 	
 	public Typeface getLatoR() {
 		return _latoR;
-	}
-
-	public Typeface getLatoB() {
-		return _latoB;
-	}
-
-	public Typeface getQuickB() {
-		return _quickB;
 	}
 }

@@ -198,15 +198,8 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	    	new_dive.setId(id);
 	    	((ApplicationController)getApplicationContext()).setTempDive(new_dive);
 	    }
-	
-	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-	    
-	    mTitle = (TextView) findViewById(R.id.title);
-	    mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
-	    
-	    Button save = (Button) findViewById(R.id.save_button);
-	    save.setTypeface(mFaceB);
-	    save.setText(getResources().getString(R.string.add_button));
+
+	    Button save = findViewById(R.id.save_button);
 	    save.setOnClickListener(new OnClickListener()
         {
 			@Override

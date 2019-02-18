@@ -4,12 +4,10 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
-import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Converter;
 import com.diveboard.model.Dive;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
-import com.diveboard.model.Spot;
 import com.diveboard.model.Units;
 import com.diveboard.model.Utils;
 
@@ -25,6 +23,7 @@ import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Typeface;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.res.ResourcesCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -77,7 +76,7 @@ public class DivesFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		Typeface faceR = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
-		Typeface faceB = Typeface.createFromAsset(getActivity().getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
+		Typeface faceB = ResourcesCompat.getFont(getActivity().getApplicationContext(), R.font.lato_regular);
 		// Inflate the layout for this fragment
 		ViewGroup rootView = (ViewGroup) inflater.inflate(R.layout.fragment_dives, container, false);
 		mFragment = (LinearLayout)rootView.findViewById(R.id.fragment);
