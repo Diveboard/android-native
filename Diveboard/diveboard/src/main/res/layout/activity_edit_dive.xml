@@ -27,12 +27,13 @@
                     android:padding="10dp"
                     android:src="@drawable/ic_drawer" />
 
-                <TextView
+                <android.support.v7.widget.AppCompatTextView
                     android:id="@+id/title"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:paddingLeft="15dp"
+                    android:fontFamily="@font/quicksand_regular"
                     android:textSize="20sp" />
 
                 <Button

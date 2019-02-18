@@ -2,19 +2,14 @@ package com.diveboard.mobile.editdive;
 
 import java.util.ArrayList;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
-import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -138,10 +133,8 @@ public class EditDiveActivity extends NavDrawer implements
 		});
 		mModel = ((ApplicationController)getApplicationContext()).getModel();
 
-		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
 		mTitle = (TextView) findViewById(R.id.title);
-		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 
 		Button save = (Button) findViewById(R.id.save_button);

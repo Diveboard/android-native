@@ -5,10 +5,8 @@ import com.diveboard.mobile.R;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.text.Layout;
 import android.view.View;
 import android.view.Window;
 import android.widget.Button;
@@ -95,8 +93,7 @@ public class EditDialog extends Dialog implements android.view.View.OnClickListe
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.dialog_edit_confirm);
-		
-		Typeface quickR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Quicksand-Regular.otf");
+
 		Typeface faceR = Typeface.createFromAsset(mContext.getAssets(), "fonts/Lato-Light.ttf");
 		TextView title = (TextView) findViewById(R.id.title);
 		TextView exitTV = (TextView) findViewById(R.id.exitTV);

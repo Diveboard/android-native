@@ -10,7 +10,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -19,7 +18,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -654,7 +652,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 				diveFooter.setLayoutParams(diveFooterParams);
 				Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 				Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
-				Typeface quickR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 				Typeface quickB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 				// Footer static text
 				((TextView)diveFooter.findViewById(R.id.title_footer)).setText(getResources().getString(R.string.title_footer));
@@ -1214,7 +1211,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					bubble.setLayoutParams(bubble_params);
 					bubble.setGravity(Gravity.CENTER_HORIZONTAL);
 
-					Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
 					Typeface faceB = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Bold.otf");
 					TextView tv = new TextView(DivesActivity.this);
 					TextView country = new TextView(DivesActivity.this);

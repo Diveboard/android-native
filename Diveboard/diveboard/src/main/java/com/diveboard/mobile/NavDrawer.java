@@ -87,9 +87,11 @@ public abstract class NavDrawer extends FragmentActivity {
 					line.setVisibility(View.VISIBLE);
 				else if(mActivity instanceof NewDiveActivity && position == 1)
 		        	line.setVisibility(View.VISIBLE);
-		        else if(mActivity instanceof WalletActivity && position == 2)
+				else if(mActivity instanceof StatisticActivity && position == 2)
+					line.setVisibility(View.VISIBLE);
+		        else if(mActivity instanceof WalletActivity && position == 3)
 		        	line.setVisibility(View.VISIBLE);
-		        else if(mActivity instanceof ClosestShopActivity && position == 3)
+		        else if(mActivity instanceof ClosestShopActivity && position == 4)
 		        	line.setVisibility(View.VISIBLE);
 		        
 				if(position <= 4)

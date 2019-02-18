@@ -50,7 +50,6 @@ import android.graphics.Typeface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.net.http.AndroidHttpClient;
-import android.os.RecoverySystem.ProgressListener;
 import android.util.Log;
 import android.util.Pair;
 
@@ -103,7 +102,6 @@ public class					DiveboardModel
 	//Application fonts
 	private Typeface 			_latoR = null;
 	private Typeface 			_latoB = null;
-	private Typeface 			_quickR = null;
 	private Typeface 			_quickB = null;
 	
 	/*
@@ -118,7 +116,6 @@ public class					DiveboardModel
 		_cache = new DataManager(context, _userId, _token, this);
 		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
 		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
-		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
 		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
@@ -132,7 +129,6 @@ public class					DiveboardModel
 		_connMgr = (ConnectivityManager) _context.getSystemService(Context.CONNECTIVITY_SERVICE);
 		_latoR = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Light.ttf");
 		_latoB = Typeface.createFromAsset(_context.getAssets(), "fonts/Lato-Regular.ttf");
-		_quickR = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Regular.otf");
 		_quickB = Typeface.createFromAsset(_context.getAssets(), "fonts/Quicksand-Bold.otf");
 		DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 		DiveboardModel.savedPictureList = new ArrayList<String>();
@@ -2204,10 +2200,6 @@ public class					DiveboardModel
 
 	public Typeface getLatoB() {
 		return _latoB;
-	}
-
-	public Typeface getQuickR() {
-		return _quickR;
 	}
 
 	public Typeface getQuickB() {

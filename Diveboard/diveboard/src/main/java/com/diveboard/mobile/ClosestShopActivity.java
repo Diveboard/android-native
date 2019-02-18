@@ -1,7 +1,6 @@
 package com.diveboard.mobile;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -10,17 +9,13 @@ import org.json.JSONObject;
 import com.diveboard.config.AppConfig;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Shop;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.GoogleMap.OnInfoWindowClickListener;
-import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.GoogleMap.CancelableCallback;
-import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.CameraPosition;
 import com.google.android.gms.maps.model.LatLng;
@@ -34,26 +29,16 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.util.Pair;
 import android.view.Gravity;
-import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class ClosestShopActivity extends NavDrawer implements OnMapReadyCallback {
 	private 										GoogleMap mMap;
@@ -127,11 +112,7 @@ public class ClosestShopActivity extends NavDrawer implements OnMapReadyCallback
 		super.onCreate(savedInstanceState, R.layout.activity_closest_shop);
 //		setContentView(R.layout.activity_closest_shop);
 		AC = (ApplicationController)getApplicationContext();
-		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
-		Typeface mFaceB = Typeface.createFromAsset(getAssets(), "fonts/Lato-Regular.ttf");
-		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 		TextView mTitle = (TextView) findViewById(R.id.title);
-		mTitle.setTypeface(quicksandR);
 		mTitle.setText(getResources().getString(R.string.title_banner_closest_shop));
 			
 		if (mMap == null) {

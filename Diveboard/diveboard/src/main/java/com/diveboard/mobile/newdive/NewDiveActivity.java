@@ -10,7 +10,6 @@ import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v4.view.ViewPager.OnPageChangeListener;
@@ -33,7 +32,6 @@ import com.diveboard.mobile.editdive.EditConfirmDialogFragment;
 import com.diveboard.mobile.editdive.EditConfirmDialogFragment.EditConfirmDialogListener;
 import com.diveboard.mobile.editdive.EditOption;
 import com.diveboard.mobile.editdive.OptionAdapter;
-import com.diveboard.mobile.editdive.TabEditPhotosFragment;
 import com.diveboard.mobile.newdive.NewAltitudeDialogFragment.EditAltitudeDialogListener;
 import com.diveboard.mobile.newdive.NewBottomTempDialogFragment.EditBottomTempDialogListener;
 import com.diveboard.mobile.newdive.NewCurrentDialogFragment.EditCurrentDialogListener;
@@ -202,10 +200,8 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	    }
 	
 	    mFaceB = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Regular.ttf");
-		Typeface quicksandR = Typeface.createFromAsset(getAssets(), "fonts/Quicksand-Regular.otf");
 	    
 	    mTitle = (TextView) findViewById(R.id.title);
-	    mTitle.setTypeface(quicksandR);
 	    mTitle.setText(getResources().getString(R.string.tab_details_edit_title));
 	    
 	    Button save = (Button) findViewById(R.id.save_button);

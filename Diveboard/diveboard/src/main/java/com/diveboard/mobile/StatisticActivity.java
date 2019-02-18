@@ -27,6 +27,6 @@ public class StatisticActivity extends NavDrawer {
         listView.setAdapter(adapter);
 
         ActivityStatisticBinding binding = (ActivityStatisticBinding) mBinding;
-        binding.setVheader(new Header("Statistic"));
+        binding.setVheader(new Header("STATISTICS"));
     }
 }
