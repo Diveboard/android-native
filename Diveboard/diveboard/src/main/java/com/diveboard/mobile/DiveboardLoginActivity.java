@@ -15,6 +15,7 @@ import com.diveboard.model.DatabaseUpdater;
 import com.diveboard.model.DiveboardModel;
 import com.facebook.Session;
 
+import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -90,7 +91,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 		if (model.isLogged() == true)
 		{
 			
-			Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+			Intent editDiveActivity = ApplicationController.getDivesActivity(DiveboardLoginActivity.this);
 		    startActivity(editDiveActivity);
 		    return ;
 		}
@@ -112,6 +113,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		requestLocationPermission();
 
 		setContentView(R.layout.activity_login);
 		Typeface faceR = Typeface.createFromAsset(getAssets(), "fonts/Lato-Light.ttf");
@@ -171,7 +173,16 @@ public class DiveboardLoginActivity extends FragmentActivity {
 
 		Thread.setDefaultUncaughtExceptionHandler(mUEHandler);
 	}
-	
+
+	private void requestLocationPermission() {
+		if (((ApplicationController) getApplication()).canAccessLocation()) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
+		}
+	}
+
 	@Override
 	public void onStart() {
 		super.onStart();
@@ -330,7 +341,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 						showProgress(false);
 						mEmailView.setText("");
 						mPasswordView.setText("");
-						Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+						Intent editDiveActivity = ApplicationController.getDivesActivity(DiveboardLoginActivity.this);
 					    startActivity(editDiveActivity);
 					}
 					else
@@ -382,7 +393,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 			showProgress(false);
 
 			if (success != -1) {
-				Intent editDiveActivity = new Intent(DiveboardLoginActivity.this, DivesActivity.class);
+				Intent editDiveActivity = ApplicationController.getDivesActivity((DiveboardLoginActivity.this));
 			    startActivity(editDiveActivity);
 			}
 			else

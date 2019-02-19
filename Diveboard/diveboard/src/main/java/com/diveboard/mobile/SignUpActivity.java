@@ -441,7 +441,7 @@ public class SignUpActivity extends FragmentActivity {
 			showProgress(false);
 			if (success != null)
 			{
-				Intent editDiveActivity = new Intent(SignUpActivity.this, DivesActivity.class);
+				Intent editDiveActivity = ApplicationController.getDivesActivity(SignUpActivity.this);
 			    startActivity(editDiveActivity);
 			}
 		}

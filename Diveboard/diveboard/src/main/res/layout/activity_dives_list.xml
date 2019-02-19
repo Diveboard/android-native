@@ -9,6 +9,10 @@
         <variable
             name="vheader"
             type="com.diveboard.model.Header" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.DivesListViewModel" />
     </data>
 
     <android.support.v4.widget.DrawerLayout
@@ -26,10 +30,27 @@
                 layout="@layout/header"
                 bind:vheader="@{vheader}" />
 
-            <ListView
-                android:id="@+id/listView"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:layout_height="match_parent">
+
+                <ListView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+                <ProgressBar
+                    android:id="@+id/progressBar"
+                    android:layout_width="70dp"
+                    android:layout_height="70dp"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
+                    android:shadowColor="@color/black"
+                    android:indeterminateDrawable="@drawable/spinner_ring"
+                    android:indeterminateOnly="true"
+                    android:visibility="@{model.dataLoadInProgress}" />
+
+            </RelativeLayout>
         </LinearLayout>
 
         <include layout="@layout/nav_drawer_layout" />

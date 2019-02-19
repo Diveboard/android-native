@@ -9,7 +9,9 @@ import com.google.android.gms.analytics.Tracker;
 import android.Manifest;
 import android.app.Activity;
 import android.app.Application;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
@@ -17,6 +19,9 @@ import android.os.Build;
 public class ApplicationController extends Application {
 
 	private static ApplicationController singleton;
+	public static final String prefName = "appsettings";
+	public static final String logBookModeKey = "logBookModeKey";
+	public static final String logBookListMode = "list";
 	private DiveboardModel mModel = null;
 	private boolean mDataReady = false;
 	public static boolean mDataRefreshed = false;
@@ -163,5 +168,15 @@ public class ApplicationController extends Application {
 
 	public void activityStop(Activity activity) {
 		//do nothing for now
+	}
+
+	public static Intent getDivesActivity(Activity activity) {
+		//save setting
+		SharedPreferences sharedPref = activity.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+		if (logBookListMode.equals(sharedPref.getString(logBookModeKey, null))) {
+			return new Intent(activity, DivesListActivity.class);
+		} else {
+			return new Intent(activity, DivesActivity.class);
+		}
 	}
 }

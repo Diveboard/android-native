@@ -41,6 +41,8 @@
             android:layout_height="wrap_content"
             android:background="@drawable/tab_body_background"
             android:padding="15dp"
+            android:text="@{vheader.buttonTitle}"
+            android:onClick="@{vheader::onClick}"
             android:textColor="@color/black"
             android:textSize="15sp" />
     </LinearLayout>

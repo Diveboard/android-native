@@ -4,10 +4,8 @@ import android.os.Bundle;
 import android.widget.ListView;
 
 import com.diveboard.mobile.databinding.ActivityStatisticBinding;
-import com.diveboard.model.Dive;
 import com.diveboard.model.Header;
 import com.diveboard.model.Statistic;
-import com.diveboard.model.Units;
 import com.diveboard.viewModel.StatisticItem;
 import com.diveboard.viewModel.StatisticViewModel;
 
@@ -27,6 +25,6 @@ public class StatisticActivity extends NavDrawer {
         listView.setAdapter(adapter);
 
         ActivityStatisticBinding binding = (ActivityStatisticBinding) mBinding;
-        binding.setVheader(new Header("STATISTICS"));
+        binding.setVheader(new Header("STATISTICS", "", null));
     }
 }

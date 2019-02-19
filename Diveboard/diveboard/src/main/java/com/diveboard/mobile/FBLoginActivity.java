@@ -194,7 +194,7 @@ public class FBLoginActivity extends Activity {
 			mAuthTask = null;
 
 			if (success != -1) {
-				Intent editDiveActivity = new Intent(FBLoginActivity.this, DivesActivity.class);
+				Intent editDiveActivity = ApplicationController.getDivesActivity(FBLoginActivity.this);
 			    startActivity(editDiveActivity);
 			}
 //			else if (success == 0 ){

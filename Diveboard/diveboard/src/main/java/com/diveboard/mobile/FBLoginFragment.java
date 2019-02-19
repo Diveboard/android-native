@@ -136,7 +136,7 @@ public class FBLoginFragment extends Fragment{
 			mAuthTask = null;
 
 			if (success != -1) {
-				Intent editDiveActivity = new Intent(getActivity(), DivesActivity.class);
+				Intent editDiveActivity = ApplicationController.getDivesActivity(getActivity());
 			    startActivity(editDiveActivity);
 			}
 //			else if (success == 0 ){

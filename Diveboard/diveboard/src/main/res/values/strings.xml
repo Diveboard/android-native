@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Diveboard: diving log</string>
+    <string name="app_name">Diveboard</string>
     <string name="google_play_services_version">4030500</string>
     <string name="fb_app_id_debug">193803977296892</string>
     <string name="fb_app_id_release">193803977296892</string>

@@ -8,8 +8,10 @@ import android.Manifest;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Color;
@@ -18,6 +20,8 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.preference.Preference;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -146,7 +150,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	//@TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState, R.layout.activity_dives);
-		requestLocationPermission();
 
 		// Set the action bar
 		ApplicationController AC = (ApplicationController)getApplicationContext();
@@ -176,15 +179,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			System.out.println("Data is ready, creating pages");
 			createPages();
 		}
-	}
-
-	private void requestLocationPermission() {
-        if (((ApplicationController) getApplication()).canAccessLocation()) {
-            return;
-        }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            requestPermissions(new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, 1);
-        }
 	}
 
 	public void logout()
@@ -224,7 +218,6 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	{
 		mTaskFragment = null;
 		showProgress(false);
-		final Typeface test = Typeface.createFromAsset(getApplicationContext().getAssets(), "fonts/Lato-Light.ttf");
 
 		if (success == true) {
 			//all the data has been loaded properly
@@ -247,16 +240,14 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		}
 	}
 
-
-
 	@Override
 	public void onConfigurationChanged(Configuration newConfig) {    
 
 	}
 
-	public void goToDiveDetails(View view)
-	{
-		ApplicationController AC = (ApplicationController)getApplicationContext();
+	public void goToDiveDetails(View view) {
+		//navigate
+		ApplicationController AC = (ApplicationController) getApplicationContext();
 		Intent diveDetailsActivity = new Intent(DivesActivity.this, DiveDetailsActivity.class);
 		//System.out.println(AC.getPageIndex());
 		diveDetailsActivity.putExtra("index", AC.getModel().getDives().size() - AC.getPageIndex() - 1);
@@ -766,8 +757,18 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	}
 
 	public void onSwitchToList(View view) {
-		Intent intent = new Intent(this, DivesListActivity.class);
-		startActivity(intent);
+		switchView(this, true);
+	}
+
+	public static void switchView(Activity activity, boolean isListView) {
+		//save setting
+		SharedPreferences sharedPref = activity.getSharedPreferences(ApplicationController.prefName, Context.MODE_PRIVATE);
+		SharedPreferences.Editor editor = sharedPref.edit();
+		editor.putString(ApplicationController.logBookModeKey, isListView ? ApplicationController.logBookListMode : "");
+		editor.apply();
+		//navigate
+		Intent intent = ApplicationController.getDivesActivity(activity);
+		activity.startActivity(intent);
 	}
 
 	private class DownloadImageTask extends AsyncTask<Integer, Void, Bitmap>
