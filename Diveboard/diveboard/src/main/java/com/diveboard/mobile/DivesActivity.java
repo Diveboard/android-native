@@ -116,7 +116,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			AC.setPageIndex(0);
 			AC.setDataReady(false);
 			AC.getModel().stopPreloadPictures();
-			AC.setModel(null);
+//			AC.setModel(null);
 			finish();
 			return ;
 		}
@@ -125,7 +125,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			AC.setRefresh(0);
 			AC.setDataReady(false);
 			AC.getModel().stopPreloadPictures();
-			AC.setModel(null);
+//			AC.setModel(null);
 			finish();
 			return ;
 		}

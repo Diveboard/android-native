@@ -19,11 +19,6 @@ class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
         if (model == null) {
             return false;
         }
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
         model.loadData();
         return true;
     }
