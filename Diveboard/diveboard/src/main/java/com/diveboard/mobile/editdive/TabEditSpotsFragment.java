@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Point;
@@ -682,7 +683,7 @@ public class TabEditSpotsFragment extends Fragment implements
 	}
 
 	public void activeGPS(View view) {
-        if (!((ApplicationController) getActivity().getApplication()).canAccessLocation()) {
+        if (!((ApplicationController) getActivity().getApplication()).hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             return;
         }
 		InputMethodManager imm = (InputMethodManager) getActivity()

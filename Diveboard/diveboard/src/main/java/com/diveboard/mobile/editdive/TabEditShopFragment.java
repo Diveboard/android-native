@@ -7,6 +7,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.location.Location;
@@ -253,7 +254,7 @@ public class					TabEditShopFragment extends Fragment implements OnMapReadyCallb
     
     public void activeGPS(View view)
     {
-        if (!((ApplicationController) getActivity().getApplication()).canAccessLocation()) {
+        if (!((ApplicationController) getActivity().getApplication()).hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
             return;
         }
     	InputMethodManager imm = (InputMethodManager)mContext.getSystemService(Context.INPUT_METHOD_SERVICE);

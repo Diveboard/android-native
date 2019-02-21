@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
@@ -35,6 +36,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.support.v4.content.res.ResourcesCompat;
 import android.view.Display;
@@ -502,12 +504,12 @@ public class WalletActivity extends NavDrawer {
 					Uri outputFileUri = Uri.fromFile(newfile);
 					Intent cameraIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE); 
 					cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, outputFileUri);
-					startActivityForResult(cameraIntent, TAKE_PICTURE);
-					//					intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-					//			    	fileUri = getOutputMediaFileUri(MEDIA_TYPE_IMAGE);
-					//			        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
-					//			        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
-					//			        startActivityForResult(intent, TAKE_PICTURE);
+					requestCameraPermission();
+					if (((ApplicationController) getApplication()).hasPermission(Manifest.permission.CAMERA)) {
+                        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+                        StrictMode.setVmPolicy(builder.build());
+                        startActivityForResult(cameraIntent, TAKE_PICTURE);
+                    }
 					return true;
 				case R.id.gallery:
 					intent = new Intent();
@@ -524,7 +526,16 @@ public class WalletActivity extends NavDrawer {
 		});
 
 	}
-	
+
+	private void requestCameraPermission() {
+		if (((ApplicationController) getApplication()).hasPermission(Manifest.permission.CAMERA)) {
+			return;
+		}
+		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+			requestPermissions(new String[]{Manifest.permission.CAMERA}, 1);
+		}
+	}
+
 	private class DownloadImageTask extends AsyncTask<Void, Void, Bitmap>
 	{
 		private final WeakReference<ImageView> imageViewReference;

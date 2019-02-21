@@ -175,7 +175,7 @@ public class DiveboardLoginActivity extends FragmentActivity {
 	}
 
 	private void requestLocationPermission() {
-		if (((ApplicationController) getApplication()).canAccessLocation()) {
+		if (((ApplicationController) getApplication()).hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
 			return;
 		}
 		if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {

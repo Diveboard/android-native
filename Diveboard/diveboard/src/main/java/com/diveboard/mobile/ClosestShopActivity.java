@@ -23,6 +23,7 @@ import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
+import android.Manifest;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
@@ -235,7 +236,7 @@ public class ClosestShopActivity extends NavDrawer implements OnMapReadyCallback
 	}
 
 	public void activeGPS(final boolean showMarker) {
-		if (!((ApplicationController)getApplication()).canAccessLocation()) {
+		if (!((ApplicationController)getApplication()).hasPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
 			return;
 		}
 		if (mLocationManager != null && mLocationListener != null) {

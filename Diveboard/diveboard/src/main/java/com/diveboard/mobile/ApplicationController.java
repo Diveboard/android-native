@@ -65,9 +65,9 @@ public class ApplicationController extends Application {
 		return mModel;
 	}
 
-    public boolean canAccessLocation() {
+    public boolean hasPermission(String permission) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return PackageManager.PERMISSION_GRANTED == checkSelfPermission(Manifest.permission.ACCESS_FINE_LOCATION);
+            return PackageManager.PERMISSION_GRANTED == checkSelfPermission(permission);
         } else {
             return true;
         }
