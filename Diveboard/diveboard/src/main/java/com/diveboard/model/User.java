@@ -38,7 +38,6 @@ public class					User implements IModel, Cloneable
 	private ArrayList<Dive>								_dives = new ArrayList<Dive>();
 	private ArrayList<Pair<String, String>>				_editList = new ArrayList<Pair<String, String>>();
 	private String										_countryName;
-	private Units										_unitPreferences;
 	private Integer										_admin_rights;
 
 	public						User(final JSONObject json) throws JSONException
@@ -123,7 +122,6 @@ public class					User implements IModel, Cloneable
 			
 		_totalExtDives = (json.isNull("total_ext_dives")) ? null : json.getInt("total_ext_dives");
 		_countryName = (json.isNull("country_name")) ? null : json.getString("country_name");
-		_unitPreferences = new Units(UserPreference.getUnits());
 		_admin_rights = (json.isNull("admin_rights")) ? null : json.getInt("admin_rights");
 	}
 
@@ -292,14 +290,6 @@ public class					User implements IModel, Cloneable
 
 	public void setCountryName(String _countryName) {
 		this._countryName = _countryName;
-	}
-
-	public Units getUnitPreferences() {
-		return _unitPreferences;
-	}
-
-	public void setUnitPreferences(Units _unitPreferences) {
-		this._unitPreferences = _unitPreferences;
 	}
 
 	public Integer getAdminRights() {

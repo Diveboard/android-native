@@ -242,7 +242,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			
     		// Settings
     		case 6:
-    			Intent settingsActivity = new Intent(this, SettingsActivity.class);
+    			Intent settingsActivity = new Intent(this, SettingsActivity2.class);
     			startActivity(settingsActivity);
     			if(!(this instanceof DivesActivity))
     				finish();

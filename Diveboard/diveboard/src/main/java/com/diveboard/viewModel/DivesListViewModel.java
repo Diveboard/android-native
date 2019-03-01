@@ -12,7 +12,7 @@ import com.diveboard.model.DiveboardModel;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class DivesListViewModel extends ViewModel implements LoadDataTaskCallbacks {
+public class DivesListViewModel extends ViewModel implements AsyncTaskCallback {
 
     public final ObservableList<DiveItemViewModel> items = new ObservableArrayList<>();
     public final ObservableBoolean dataLoadInProgress = new ObservableBoolean(false);

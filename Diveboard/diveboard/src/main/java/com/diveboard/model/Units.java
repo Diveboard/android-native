@@ -4,6 +4,21 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Units {
+    public enum UnitsType {
+        Metric("Metric"),
+        Imperial("Imperial");
+        private final String text;
+
+        UnitsType(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
     public enum Distance {
         KM,
         FT
@@ -54,6 +69,17 @@ public class Units {
         Units._weightUnit = (json.getString("weight").compareTo("Kg") == 0) ? Weight.KG : Weight.LBS;
         Units._temperatureUnit = (json.getString("temperature").compareTo("C") == 0) ? Temperature.C : Temperature.F;
         Units._pressureUnit = (json.getString("pressure").compareTo("bar") == 0) ? Pressure.BAR : Pressure.PSI;
+        mDistanceUnit = Units._distanceUnit;
+        mWeightUnit = Units._weightUnit;
+        mTemperatureUnit = Units._temperatureUnit;
+        mPressureUnit = Units._pressureUnit;
+    }
+
+    public Units(UnitsType units) {
+        Units._distanceUnit = units == UnitsType.Metric ? Distance.KM : Distance.FT;
+        Units._weightUnit = units == UnitsType.Metric ? Weight.KG : Weight.LBS;
+        Units._temperatureUnit = units == UnitsType.Metric ? Temperature.C : Temperature.F;
+        Units._pressureUnit = units == UnitsType.Metric ? Pressure.BAR : Pressure.PSI;
         mDistanceUnit = Units._distanceUnit;
         mWeightUnit = Units._weightUnit;
         mTemperatureUnit = Units._temperatureUnit;

@@ -20,6 +20,8 @@ import android.net.NetworkInfo;
 import android.util.Log;
 import android.util.Pair;
 
+import com.diveboard.mobile.ApplicationController;
+
 public class Picture {
     private JSONObject _json = null;
     public String _urlDefault;
@@ -95,7 +97,7 @@ public class Picture {
     public synchronized boolean loadPicture(final Context context, final Size size) throws IOException {
         ConnectivityManager connMgr = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         //ApplicationController AC = (ApplicationController)context;
-        //NetworkInfo networkInfo = (AC.getModel().getPreference().getNetwork() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
+        //NetworkInfo networkInfo = (AC.getModel().getPreference().getRestricDataUsage() == 0) ? connMgr.getNetworkInfo(ConnectivityManager.TYPE_WIFI) : connMgr.getActiveNetworkInfo();
         NetworkInfo networkInfo = connMgr.getActiveNetworkInfo();
         if (networkInfo != null && networkInfo.isConnected()) {
             URL url;
@@ -131,15 +133,14 @@ public class Picture {
     }
 
     public synchronized Bitmap getPicture(final Context context) throws IOException {
-        //return (getPicture(context, Size.DEFAULT));
-        if (UserPreference.getPictureQuality().equals("m_qual"))
+        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
             return (getPicture(context, Size.MEDIUM));
         else
             return (getPicture(context, Size.LARGE));
     }
 
     public synchronized Bitmap getPicture(final Context context, Size size) throws IOException {
-        if (UserPreference.getPictureQuality().equals("m_qual"))
+        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
             size = Size.MEDIUM;
         else
             size = Size.LARGE;
@@ -156,7 +157,7 @@ public class Picture {
     }
 
     public synchronized void checkPicture(final Context context, Size size) throws IOException {
-        if (UserPreference.getPictureQuality().equals("m_qual"))
+        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
             size = Size.MEDIUM;
         else
             size = Size.LARGE;
@@ -177,7 +178,7 @@ public class Picture {
     public Bitmap storePicture(final Context context) throws IOException {
         final Size size;
         if (loadPicture(context)) {
-            if (UserPreference.getPictureQuality().equals("m_qual"))
+            if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
                 size = Size.MEDIUM;
             else
                 size = Size.LARGE;

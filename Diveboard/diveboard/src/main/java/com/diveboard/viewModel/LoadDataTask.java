@@ -7,9 +7,9 @@ import com.diveboard.model.DiveboardModel;
 class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
 
     private final DiveboardModel model;
-    private LoadDataTaskCallbacks callbacks;
+    private AsyncTaskCallback callbacks;
 
-    public LoadDataTask(DiveboardModel model, LoadDataTaskCallbacks callbacks) {
+    public LoadDataTask(DiveboardModel model, AsyncTaskCallback callbacks) {
         this.model = model;
         this.callbacks = callbacks;
     }

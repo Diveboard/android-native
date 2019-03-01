@@ -1,5 +1,5 @@
 package com.diveboard.viewModel;
 
-interface LoadDataTaskCallbacks {
+public interface AsyncTaskCallback {
     void onPostExecute(final Boolean success);
 }
