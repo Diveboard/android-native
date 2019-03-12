@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.diveboard.mobile"
     android:installLocation="preferExternal"
     android:versionCode="111"
@@ -93,6 +94,10 @@
         <activity
             android:name=".SettingsActivity2"
             android:label="@string/title_activity_settings" />
+        <activity
+            android:name=".DiveDetailsActivity2"
+            android:label="@string/title_activity_dive_details_main"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".FBLoginActivity"
             android:label="@string/title_activity_fblogin" />

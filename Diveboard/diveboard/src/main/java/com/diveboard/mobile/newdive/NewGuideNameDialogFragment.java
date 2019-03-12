@@ -3,9 +3,8 @@ package com.diveboard.mobile.newdive;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
 
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;

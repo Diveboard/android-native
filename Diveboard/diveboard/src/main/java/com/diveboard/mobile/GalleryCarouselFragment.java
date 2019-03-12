@@ -4,17 +4,14 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import com.diveboard.model.Dive;
-import com.diveboard.model.Picture;
 
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.View.OnClickListener;
 import android.widget.ImageView;
 
 public class GalleryCarouselFragment extends Fragment{

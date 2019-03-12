@@ -6,9 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.GalleryCarouselActivity;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
@@ -16,46 +14,27 @@ import com.diveboard.model.Picture.Size;
 
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.app.Activity;
 import android.content.ClipData;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Pair;
 import android.view.DragEvent;
-import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.DragShadowBuilder;
-import android.view.View.OnClickListener;
 import android.view.View.OnDragListener;
 import android.view.View.OnLongClickListener;
-import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AbsListView.OnScrollListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ProgressBar;
-import android.widget.RelativeLayout.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.TableLayout;
-import android.widget.TableRow;
-import android.widget.TextView;
-import android.widget.Toast;
 
 public class TabEditPhotosFragmentGrid extends Fragment {
 
@@ -174,7 +153,7 @@ public class TabEditPhotosFragmentGrid extends Fragment {
 //									//								int shortAnimTime = getResources().getInteger(
 //									//										android.R.integer.config_shortAnimTime);
 //									//								imageView.setVisibility(View.VISIBLE);
-//									//								imageView.animate().setDuration(shortAnimTime).alpha(1);
+//									//								imageView.animate().setDurationMinutes(shortAnimTime).alpha(1);
 //									ApplicationController AC = (ApplicationController)getActivity().getApplicationContext();
 //									if (AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures() != null
 //											&& AC.getModel().getDives().get(getActivity().getIntent().getIntExtra("index", -1)).getPictures().size() != 0)

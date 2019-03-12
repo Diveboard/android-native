@@ -1,45 +1,34 @@
 package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
-import java.util.List;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.mobile.editdive.EditTanksDialogFragment;
 import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.util.DiveboardSpinnerAdapter;
 
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.text.InputType;
 import android.app.Activity;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.Spinner;
@@ -47,7 +36,6 @@ import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 public class					NewTanksDialogFragment extends DialogFragment
 {

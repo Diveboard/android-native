@@ -33,7 +33,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 import android.util.Pair;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -715,7 +715,7 @@ public class TabEditPhotosFragment extends Fragment {
 					//((View)view.getParent()).setVisibility(View.INVISIBLE);
 					mChangeItem.setVisibility(View.VISIBLE);
 					Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.slide_out_down);
-					//use this to make it longer:  animation.setDuration(1000);
+					//use this to make it longer:  animation.setDurationMinutes(1000);
 					animation.setAnimationListener(new AnimationListener() {
 						@Override
 						public void onAnimationStart(Animation animation) {}

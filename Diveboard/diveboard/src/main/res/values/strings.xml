@@ -45,7 +45,7 @@
     <string name="maxdepth_hint">Max Depth</string>
     <string name="edit_duration_title">Duration</string>
     <string name="duration_hint">Duration</string>
-    <string name="duration_label">min</string>
+    <string name="duration_label">Duration, min</string>
     <string name="surface_temp_hint">Surface Temp.</string>
     <string name="edit_surface_temp_title">Surface Temp.</string>
     <string name="edit_bottom_temp_title">Bottom Temp.</string>
@@ -80,7 +80,7 @@
     <string name="title_banner_wallet">MY WALLET</string>
     <string name="tab_details_edit_title">DIVE DETAILS</string>
     <string name="title_activity_new_dive">NewDiveActivity</string>
-    <string name="add_button">SAVE</string>
+    <string name="add_button">Add</string>
     <string name="confirm_button">Confirm</string>
     <string name="search_hint">Search spot</string>
     <string name="search_hint_shop">Search shop</string>
@@ -166,6 +166,10 @@
     <string name="rate_later">Later</string>
     <string name="rate_refuse">Nope</string>
     <string name="rate_accept">Sure!</string>
+    <string name="menu_links_logbook">Logbook</string>
+    <string name="menu_links_statistics">Statistics</string>
+    <string name="menu_links_wallet">Wallet</string>
+    <string name="menu_links_setting">Settings</string>
 
     <string name="menu_links_has_not_rated">Rate App</string>
     <string-array name="menu_links_has_rated">
@@ -201,5 +205,20 @@
     <string name="shop_review_rent">Rent</string>
     <string name="shop_review_anonymous">Anonymous</string>
     <string name="shop_review_recommend">Recommend</string>
+    <string name="tab_people_label">PEOPLE</string>
+    <string name="dive_details_general_title">GENERAL</string>
+    <string name="dive_number">Dive #</string>
+    <string name="time_label">Time</string>
+    <string name="spot_name">Spot</string>
+    <string name="dive_profile">DIVE PROFILE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="depth">Depth</string>
+    <string name="duration">Duration, min</string>
+    <string name="add_safetystop">Safety stop</string>
+    <string name="safetyStopItemFormat">%d %s - %d min;</string>
+    <string name="meter">m</string>
+    <string name="foot">ft</string>
 
 </resources>

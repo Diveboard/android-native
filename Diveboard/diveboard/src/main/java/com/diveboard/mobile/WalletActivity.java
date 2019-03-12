@@ -38,7 +38,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.os.StrictMode;
 import android.provider.MediaStore;
-import android.support.v4.content.res.ResourcesCompat;
+import androidx.core.content.res.ResourcesCompat;
 import android.view.Display;
 import android.view.DragEvent;
 import android.view.Gravity;
@@ -738,7 +738,7 @@ public class WalletActivity extends NavDrawer {
 					//((View)view.getParent()).setVisibility(View.INVISIBLE);
 					mChangeItem.setVisibility(View.VISIBLE);
 					Animation animation = AnimationUtils.loadAnimation(mContext, R.anim.slide_out_down);
-					//use this to make it longer:  animation.setDuration(1000);
+					//use this to make it longer:  animation.setDurationMinutes(1000);
 					animation.setAnimationListener(new AnimationListener() {
 						@Override
 						public void onAnimationStart(Animation animation) {}

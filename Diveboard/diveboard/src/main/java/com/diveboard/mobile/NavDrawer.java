@@ -5,13 +5,13 @@ import java.util.Arrays;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.databinding.DataBindingUtil;
+import androidx.databinding.DataBindingUtil;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
+import androidx.fragment.app.FragmentActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -194,7 +194,7 @@ public abstract class NavDrawer extends FragmentActivity {
     		//New Dive
     		case 1:
     			if(!(this instanceof NewDiveActivity)){
-    				Intent newDiveActivity = new Intent(this, NewDiveActivity.class);
+    				Intent newDiveActivity = new Intent(this, DiveDetailsActivity2.class);
     				startActivity(newDiveActivity);
     				if(!(this instanceof DivesActivity))
     					finish();

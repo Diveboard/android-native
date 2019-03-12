@@ -9,9 +9,8 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 
 import android.os.Bundle;
-import android.app.Activity;
-import android.support.v4.app.FragmentActivity;
-import android.view.Menu;
+
+import androidx.fragment.app.FragmentActivity;
 
 public class GraphImageActivity extends FragmentActivity {
 	private GalleryViewPager mPager;

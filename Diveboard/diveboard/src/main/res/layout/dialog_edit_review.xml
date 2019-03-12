@@ -53,7 +53,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal" >
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/OverallTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -124,7 +124,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" >
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/difficultyTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -195,7 +195,7 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content" >
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/lifeTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -266,7 +266,7 @@
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content" >
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/fishTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
@@ -338,7 +338,7 @@
                                 android:layout_height="wrap_content"
                                 android:orientation="horizontal" >
 
-                                <android.support.v7.widget.AppCompatTextView
+                                <androidx.appcompat.widget.AppCompatTextView
                                     android:id="@+id/wreckTV"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"

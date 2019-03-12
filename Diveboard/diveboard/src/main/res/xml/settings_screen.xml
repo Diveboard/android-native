@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
+<androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v7.preference.PreferenceCategory app:title="@string/general_settings_title" />
+    <androidx.preference.PreferenceCategory app:title="@string/general_settings_title" />
 
-    <android.support.v7.preference.ListPreference
+    <androidx.preference.ListPreference
         app:dialogTitle="@string/unit_setting_title"
         app:entries="@array/unit_entries"
         app:entryValues="@array/unit_entry_values"
@@ -12,7 +12,7 @@
         app:title="@string/unit_setting_title"
         app:defaultValue="Metric" />
 
-    <android.support.v7.preference.ListPreference
+    <androidx.preference.ListPreference
         app:dialogTitle="@string/picture_quality_setting_title"
         app:entries="@array/picture_quality_entries"
         app:entryValues="@array/picture_quality_entry_values"
@@ -26,28 +26,28 @@
         app:summary="@string/phone_network_download_summary"
         app:title="@string/phone_network_download_title" />
 
-    <android.support.v7.preference.PreferenceCategory app:title="@string/tools_category_title" />
+    <androidx.preference.PreferenceCategory app:title="@string/tools_category_title" />
 
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         app:key="clear_cache"
         app:title="@string/clear_cache_title" />
 
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         app:key="db_version"
         app:title="@string/db_version_title" />
 
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         app:key="report_bug"
         app:title="@string/menu_report_bug" />
 
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         app:key="logout"
         app:title="@string/menu_logout" />
 
-    <android.support.v7.preference.PreferenceCategory app:title="@string/app_info_category_title" />
+    <androidx.preference.PreferenceCategory app:title="@string/app_info_category_title" />
 
-    <android.support.v7.preference.Preference
+    <androidx.preference.Preference
         app:key="app_version"
         app:title="@string/version_title" />
 
-</android.support.v7.preference.PreferenceScreen>
+</androidx.preference.PreferenceScreen>

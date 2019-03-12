@@ -2,16 +2,13 @@ package com.diveboard.mobile.newdive;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.model.Distance;
 import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Units;
-import com.diveboard.util.EditDialog;
 
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;

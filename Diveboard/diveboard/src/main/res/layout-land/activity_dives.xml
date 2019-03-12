@@ -72,7 +72,7 @@
         </LinearLayout>
     </FrameLayout>
 
-    <android.support.v4.widget.DrawerLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent" >
@@ -104,7 +104,7 @@
                     android:layout_height="match_parent"
                     android:alpha="0" />
 
-                <android.support.v4.view.ViewPager
+                <androidx.viewpager.widget.ViewPager
                     xmlns:android="http://schemas.android.com/apk/res/android"
                     android:id="@+id/pager"
                     android:layout_width="match_parent"
@@ -267,6 +267,6 @@
         </LinearLayout>
 
         <include layout="@layout/nav_drawer_layout"/>
-    </android.support.v4.widget.DrawerLayout>
+    </androidx.drawerlayout.widget.DrawerLayout>
 
 </merge>

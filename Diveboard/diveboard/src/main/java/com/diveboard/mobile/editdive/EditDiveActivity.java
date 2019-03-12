@@ -5,12 +5,13 @@ import java.util.ArrayList;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.content.res.ResourcesCompat;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.core.content.res.ResourcesCompat;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.view.Gravity;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -234,13 +235,13 @@ public class EditDiveActivity extends NavDrawer implements
 	{
 		final ArrayList<String> titles = new ArrayList<String>();
 		
-		public EditPagerAdapter(android.support.v4.app.FragmentManager fm)
+		public EditPagerAdapter(FragmentManager fm)
 		{
 			super(fm);
 		}
 
 		@Override
-		public android.support.v4.app.Fragment getItem(int position)
+		public Fragment getItem(int position)
 		{
 			switch (position)
 			{

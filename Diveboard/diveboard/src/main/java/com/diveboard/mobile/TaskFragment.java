@@ -3,7 +3,7 @@ package com.diveboard.mobile;
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import androidx.fragment.app.Fragment;
 
 /**
  * This Fragment manages a single background task and retains 

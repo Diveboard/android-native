@@ -1,16 +1,13 @@
 package com.diveboard.model;
 
-import java.util.ArrayList;
-import java.util.Calendar;
+import android.util.Pair;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.R;
-
-import android.util.Pair;
+import java.util.ArrayList;
+import java.util.Calendar;
 
 /*
  * Class Dive
@@ -380,7 +377,7 @@ public class Dive implements IModel {
             JSONArray list = new JSONArray(safetystring);
             for (int i = 0, length = list.length(); i < length; i++) {
                 JSONArray stop = list.getJSONArray(i);
-                SafetyStop elem = new SafetyStop(stop.getInt(0), stop.getInt(1), stop.getString(2));
+                SafetyStop elem = new SafetyStop(stop.getInt(0), stop.getInt(1), Units.Depth.getEnum(stop.getString(2)));
                 //Pair<Integer, Integer> elem = new Pair<Integer, Integer>(stop.getInt(0), stop.getInt(1));
                 result.add(elem);
             }

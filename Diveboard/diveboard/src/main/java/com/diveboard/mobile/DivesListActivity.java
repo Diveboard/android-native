@@ -1,6 +1,6 @@
 package com.diveboard.mobile;
 
-import android.arch.lifecycle.ViewModelProviders;
+import androidx.lifecycle.ViewModelProviders;
 import android.os.Bundle;
 import android.widget.ListView;
 

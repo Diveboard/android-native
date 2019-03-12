@@ -16,13 +16,14 @@
     </style>
 
     <!-- Application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
         <!-- <item name="android:windowNoTitle">true</item> -->
-        <item name="colorPrimary">#FDC90C</item>
-        <item name="colorPrimaryDark">#FDC90C</item>
-        <item name="colorSecondary">#FDC90C</item>
-        <item name="colorAccent">#FDC90C</item>
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
     </style>
 
     <style name="LoginFormContainer">
@@ -44,6 +45,15 @@
         <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item>
         <item name="android:minHeight">35dip</item>
         <item name="android:maxHeight">35dip</item>
+    </style>
+
+    <style name="SectionHeader">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_half_margin</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
 </resources>

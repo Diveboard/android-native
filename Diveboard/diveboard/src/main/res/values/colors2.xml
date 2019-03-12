@@ -1,0 +1,11 @@
+<resources>
+    <color name="colorPrimary">#FDC90C</color>
+    <color name="colorPrimaryDark">#FDC90C</color>
+    <color name="colorAccent">#FDC90C</color>
+    <color name="colorPrimaryLight">#FDC90C</color>
+    <color name="colorSecondary">#FDC90C</color>
+
+    <color name="textColorPrimary">#000000</color>
+    <color name="textColorPrimaryInverse">#FFFFFF</color>
+    <color name="colorUnderline">#444444</color>
+</resources>

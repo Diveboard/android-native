@@ -1,10 +1,10 @@
 package com.diveboard.mobile;
 
 import android.app.Activity;
-import android.databinding.DataBindingUtil;
-import android.databinding.ObservableList;
-import android.databinding.ViewDataBinding;
-import android.support.annotation.LayoutRes;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ObservableList;
+import androidx.databinding.ViewDataBinding;
+import androidx.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +12,6 @@ import android.widget.BaseAdapter;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Observable;
 
 public class ObjectListAdapter<T> extends BaseAdapter {
 

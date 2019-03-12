@@ -9,10 +9,12 @@ import org.json.JSONObject;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.view.ViewPager;
-import android.support.v4.view.ViewPager.OnPageChangeListener;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.util.Pair;
 import android.view.Gravity;
 import android.view.View;
@@ -97,13 +99,13 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	public class			NewPagerAdapter extends FragmentPagerAdapter
 	{
 		
-		public NewPagerAdapter(android.support.v4.app.FragmentManager fm)
+		public NewPagerAdapter(FragmentManager fm)
 		{
 			super(fm);
 		}
 
 		@Override
-		public android.support.v4.app.Fragment getItem(int position)
+		public Fragment getItem(int position)
 		{
 			// return FirstFragment.newInstance(1, "Page # 2");
 			switch (position)

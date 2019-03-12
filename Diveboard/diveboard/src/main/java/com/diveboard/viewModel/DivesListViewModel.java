@@ -1,9 +1,9 @@
 package com.diveboard.viewModel;
 
-import android.arch.lifecycle.ViewModel;
-import android.databinding.ObservableArrayList;
-import android.databinding.ObservableBoolean;
-import android.databinding.ObservableList;
+import androidx.lifecycle.ViewModel;
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableList;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.Dive;

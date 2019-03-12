@@ -2,44 +2,34 @@ package com.diveboard.mobile.newdive;
 
 import java.util.ArrayList;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 import com.diveboard.util.DiveboardSpinnerAdapter;
 
-import android.support.v4.app.DialogFragment;
+import androidx.fragment.app.DialogFragment;
 import android.text.InputType;
 import android.app.Activity;
 import android.graphics.Typeface;
 import android.os.Bundle;
-import android.util.Pair;
 import android.view.Gravity;
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
-import android.view.WindowManager;
-import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.ImageView.ScaleType;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.TextView.OnEditorActionListener;
 
 public class					NewSafetyStopsDialogFragment extends DialogFragment
 {
@@ -129,7 +119,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 		
 		mDepthLabel = new Spinner(getActivity().getApplicationContext());
 		ArrayAdapter<String> adapter = new DiveboardSpinnerAdapter(getActivity().getApplicationContext(), R.layout.units_spinner);
-		String safetystop_unit = mSafetyStops.get(mIndex).getUnit();
+		String safetystop_unit = mSafetyStops.get(mIndex).getUnit().toString();
 		if (safetystop_unit == null)
 		{
 			if (Units.getDistanceUnit() == Units.Distance.KM)
@@ -228,7 +218,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 					mDepthField.setText("0");
 				if (mDurationField.getText().toString().isEmpty())
 					mDurationField.setText("0");
-				mSafetyStops.set(mIndex, new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
+//				mSafetyStops.set(mIndex, new SafetyStop(Integer.parseInt(mDepthField.getText().toString()), Integer.parseInt(mDurationField.getText().toString()), (String)mDepthLabel.getSelectedItem()));
 				mIndex = null;
 				InputMethodManager imm = (InputMethodManager)getActivity().getSystemService(getActivity().getApplicationContext().INPUT_METHOD_SERVICE);
 				imm.hideSoftInputFromWindow(mDepthField.getWindowToken(), 0);
@@ -276,7 +266,7 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 				text.setTypeface(mFaceR);
 				text.setPadding(0, (int)(10 * scale + 0.5f), 0, (int)(10 * scale + 0.5f));
 				text.setTextSize(mTextSize);
-				text.setText(mSafetyStops.get(i).getDepth() + mSafetyStops.get(i).getUnit() + " - " + mSafetyStops.get(i).getDuration() + getResources().getString(R.string.unit_min));
+//				text.setText(mSafetyStops.get(i).getDepth() + mSafetyStops.get(i).getUnit() + " - " + mSafetyStops.get(i).getDurationMinutes() + getResources().getString(R.string.unit_min));
 				text.setTextColor(getResources().getColor(R.color.dark_grey));
 				text.setGravity(Gravity.CENTER);
 				
@@ -315,10 +305,10 @@ public class					NewSafetyStopsDialogFragment extends DialogFragment
 //				openSafetyStopsNew();
 				SafetyStop newStop;
 				if (Units.getDistanceUnit() == Units.Distance.KM){
-					newStop = new SafetyStop(3, 3, "m");
+//					newStop = new SafetyStop(3, 3, "m");
 				}else
-					newStop = new SafetyStop(3, 3, "ft");
-				mSafetyStops.add(newStop);
+//					newStop = new SafetyStop(3, 3, "ft");
+//				mSafetyStops.add(newStop);
 				openSafetyStopsEdit(-1);
 			}
 		});

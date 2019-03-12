@@ -4,41 +4,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Units {
-    public enum UnitsType {
-        Metric("Metric"),
-        Imperial("Imperial");
-        private final String text;
-
-        UnitsType(final String text) {
-            this.text = text;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
-    }
-
-    public enum Distance {
-        KM,
-        FT
-    }
-
-    public enum Weight {
-        KG,
-        LBS
-    }
-
-    public enum Temperature {
-        C,
-        F
-    }
-
-    public enum Pressure {
-        BAR,
-        PSI
-    }
-
     private static Distance _distanceUnit = Distance.KM;
     private static Weight _weightUnit = Weight.KG;
     private static Temperature _temperatureUnit = Temperature.C;
@@ -47,23 +12,6 @@ public class Units {
     private final Weight mWeightUnit;
     private final Temperature mTemperatureUnit;
     private final Pressure mPressureUnit;
-
-    public Distance getmDistanceUnit() {
-        return mDistanceUnit;
-    }
-
-    public Weight getmWeightUnit() {
-        return mWeightUnit;
-    }
-
-    public Temperature getmTemperatureUnit() {
-        return mTemperatureUnit;
-    }
-
-    public Pressure getmPressureUnit() {
-        return mPressureUnit;
-    }
-
     public Units(final JSONObject json) throws JSONException {
         Units._distanceUnit = (json.getString("distance").compareTo("Km") == 0) ? Distance.KM : Distance.FT;
         Units._weightUnit = (json.getString("weight").compareTo("Kg") == 0) ? Weight.KG : Weight.LBS;
@@ -74,7 +22,6 @@ public class Units {
         mTemperatureUnit = Units._temperatureUnit;
         mPressureUnit = Units._pressureUnit;
     }
-
     public Units(UnitsType units) {
         Units._distanceUnit = units == UnitsType.Metric ? Distance.KM : Distance.FT;
         Units._weightUnit = units == UnitsType.Metric ? Weight.KG : Weight.LBS;
@@ -116,5 +63,78 @@ public class Units {
 
     public void setPressureUnit(Pressure _pressureUnit) {
         Units._pressureUnit = _pressureUnit;
+    }
+
+    public Distance getmDistanceUnit() {
+        return mDistanceUnit;
+    }
+
+    public Weight getmWeightUnit() {
+        return mWeightUnit;
+    }
+
+    public Temperature getmTemperatureUnit() {
+        return mTemperatureUnit;
+    }
+
+    public Pressure getmPressureUnit() {
+        return mPressureUnit;
+    }
+
+    public enum UnitsType {
+        Metric("Metric"),
+        Imperial("Imperial");
+        private final String text;
+
+        UnitsType(final String text) {
+            this.text = text;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    //TODO: mergeDepth with Distance
+    public enum Depth {
+        Meters("m"),
+        Foots("ft");
+        private final String text;
+
+        Depth(final String text) {
+            this.text = text;
+        }
+
+        public static Depth getEnum(String strValue) {
+            if ("ft".equals(strValue)) {
+                return Foots;
+            } else return Meters;
+        }
+
+        @Override
+        public String toString() {
+            return text;
+        }
+    }
+
+    public enum Distance {
+        KM,
+        FT
+    }
+
+    public enum Weight {
+        KG,
+        LBS
+    }
+
+    public enum Temperature {
+        C,
+        F
+    }
+
+    public enum Pressure {
+        BAR,
+        PSI
     }
 }
