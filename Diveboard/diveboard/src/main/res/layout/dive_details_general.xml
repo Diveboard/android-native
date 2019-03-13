@@ -38,10 +38,10 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView"
+                style="@style/SectionHeader"
                 android:text="@string/dive_details_general_title"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                style="@style/SectionHeader" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout"
@@ -132,9 +132,10 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout7"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/spot_name"
+                app:layout_constraintEnd_toStartOf="@+id/spotButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
 
@@ -142,17 +143,29 @@
                     android:id="@+id/spot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:enabled="false"
                     android:inputType="textAutoComplete" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <androidx.appcompat.widget.AppCompatImageButton
+                android:id="@+id/spotButton"
+                style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->view.showSpotDialog()}"
+                android:src="@drawable/ic_baseline_search_24px"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout7"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout7" />
+
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView3"
+                style="@style/SectionHeader"
                 android:layout_marginTop="@dimen/view_margin"
                 android:text="@string/dive_profile"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout7"
-                style="@style/SectionHeader" />
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout7" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout8"

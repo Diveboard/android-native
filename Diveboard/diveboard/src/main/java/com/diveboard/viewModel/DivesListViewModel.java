@@ -8,11 +8,12 @@ import androidx.databinding.ObservableList;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class DivesListViewModel extends ViewModel implements AsyncTaskCallback {
+public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
 
     public final ObservableList<DiveItemViewModel> items = new ObservableArrayList<>();
     public final ObservableBoolean dataLoadInProgress = new ObservableBoolean(false);
@@ -37,12 +38,12 @@ public class DivesListViewModel extends ViewModel implements AsyncTaskCallback {
             dataLoadInProgress.set(true);
             task.execute();
         } else {
-            onPostExecute(true);
+            execute(true);
         }
     }
 
     @Override
-    public void onPostExecute(Boolean success) {
+    public void execute(Boolean success) {
         ac.setDataReady(true);
         dataLoadInProgress.set(false);
         ArrayList<Dive> dives = model.getDives();

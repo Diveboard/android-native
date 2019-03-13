@@ -3,13 +3,14 @@ package com.diveboard.viewModel;
 import android.os.AsyncTask;
 
 import com.diveboard.model.DiveboardModel;
+import com.diveboard.util.Callback;
 
 class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
 
     private final DiveboardModel model;
-    private AsyncTaskCallback callbacks;
+    private Callback<Boolean> callbacks;
 
-    public LoadDataTask(DiveboardModel model, AsyncTaskCallback callbacks) {
+    public LoadDataTask(DiveboardModel model, Callback<Boolean> callbacks) {
         this.model = model;
         this.callbacks = callbacks;
     }
@@ -26,7 +27,7 @@ class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPostExecute(final Boolean success) {
         if (callbacks != null) {
-            callbacks.onPostExecute(success);
+            callbacks.execute(success);
         }
     }
 }

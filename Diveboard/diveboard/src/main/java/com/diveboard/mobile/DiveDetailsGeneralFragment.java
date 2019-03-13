@@ -77,6 +77,10 @@ public class DiveDetailsGeneralFragment extends Fragment {
         dialog.show(getFragmentManager(), "add_safety_stop");
     }
 
+    public void showSpotDialog(){
+
+    }
+
     public ItemBinder<SafetyStop> safetyStopsItemViewBinder() {
         return new ItemBinderBase<>(BR.model, R.layout.safety_stop_item);
     }

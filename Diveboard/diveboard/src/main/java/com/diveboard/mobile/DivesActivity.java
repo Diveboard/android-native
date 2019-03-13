@@ -1,9 +1,5 @@
 package com.diveboard.mobile;
 
-import java.io.IOException;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
@@ -19,16 +15,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
-
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentStatePagerAdapter;
-import androidx.core.content.res.ResourcesCompat;
-import androidx.core.view.GestureDetectorCompat;
-import androidx.core.view.MotionEventCompat;
-import androidx.viewpager.widget.PagerAdapter;
-import androidx.viewpager.widget.ViewPager;
-import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 import android.util.TypedValue;
 import android.view.ContextMenu;
 import android.view.ContextMenu.ContextMenuInfo;
@@ -57,7 +43,22 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.DiveboardModel.TokenExpireListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
+import com.diveboard.model.SpotService;
 import com.facebook.Session;
+
+import java.io.IOException;
+import java.lang.ref.WeakReference;
+import java.util.ArrayList;
+
+import androidx.core.content.res.ResourcesCompat;
+import androidx.core.view.GestureDetectorCompat;
+import androidx.core.view.MotionEventCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentStatePagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
+import androidx.viewpager.widget.ViewPager;
+import androidx.viewpager.widget.ViewPager.OnPageChangeListener;
 
 
 public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbacks
@@ -191,11 +192,11 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 	@Override
 	public void onBackPressed()
-	{		
+	{
 	};
 
 	// The three methods below are called by the TaskFragment when new
-	// progress updates or results are available. The MainActivity 
+	// progress updates or results are available. The MainActivity
 	// should respond by updating its UI to indicate the change.
 	@Override
 	public void onPreExecute()
@@ -218,6 +219,8 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
+			SpotService service = new SpotService(getApplicationContext());
+            service.searchSpot("ceno", null, null, null, AC.getModel().getToken(), AC.getModel().getUser().getId(), null, null);
 			if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
 			{
 				if (!mLinksTitles.contains(getString(R.string.menu_links_has_not_rated)))
@@ -237,7 +240,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 	}
 
 	@Override
-	public void onConfigurationChanged(Configuration newConfig) {    
+	public void onConfigurationChanged(Configuration newConfig) {
 
 	}
 
@@ -396,7 +399,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			pos += String.valueOf(roundToN(model.getDives().get(i).getLng() * (-1), 4)) + "° ";
 			pos += "W";
 		}
-		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) && 
+		if ((model.getDives().get(i).getLat() == null || model.getDives().get(i).getLat() == 0) &&
 				(model.getDives().get(i).getLng() == null || model.getDives().get(i).getLng() == 0))
 			pos = "No spot assigned";
 		return (pos);
@@ -431,10 +434,10 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		//ViewTreeObserver allows to load all the layouts of the page before applying calculation
 		((LinearLayout)findViewById(R.id.load_data_form)).setVisibility(View.VISIBLE);
 		mLayout = (ViewGroup)findViewById(R.id.pager);
-		ViewTreeObserver vto = mLayout.getViewTreeObserver(); 
+		ViewTreeObserver vto = mLayout.getViewTreeObserver();
 		vto.addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
-			@Override 
-			public void onGlobalLayout() { 
+			@Override
+			public void onGlobalLayout() {
 
 				ApplicationController AC = ((ApplicationController)getApplicationContext());
 				AC.setPageIndex(mModel.getDives().size() - 1);
@@ -538,7 +541,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					((RelativeLayout)findViewById(R.id.left_number)).setLayoutParams(left_number_params);
 					RelativeLayout.LayoutParams right_number_params = new RelativeLayout.LayoutParams(mScreenSetup.getScreenWidth() * 10 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
 					right_number_params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-					right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM); 
+					right_number_params.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
 					((RelativeLayout)findViewById(R.id.right_number)).setLayoutParams(right_number_params);
 					((TextView)findViewById(R.id.left_data)).setTypeface(faceR);
 					//((TextView)findViewById(R.id.left_data)).setText(Integer.toString(AC.getPageIndex() + 1));
@@ -609,7 +612,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 						child.setId(i);
 						if (i > 1)
 							child_params.addRule(RelativeLayout.RIGHT_OF, i - 1);
-						child.setLayoutParams(child_params);				        
+						child.setLayoutParams(child_params);
 						RelativeLayout child_2 = new RelativeLayout(DivesActivity.this);
 						RelativeLayout.LayoutParams child_2_params = new RelativeLayout.LayoutParams(mScreenSetup.getDiveListSeekBarHeight() * 14 / 100, mScreenSetup.getDiveListSeekBarHeight() / 3 * 2);
 						child_2_params.addRule(RelativeLayout.CENTER_HORIZONTAL);
@@ -645,7 +648,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 							}
 							for (int index = 0; index < ((RelativeLayout)findViewById(R.id.center_bar)).getChildCount(); index++)
 							{
-								TrackingBarPosition childPos = new TrackingBarPosition( 
+								TrackingBarPosition childPos = new TrackingBarPosition(
 										(int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100,
 										((int)((RelativeLayout)findViewById(R.id.center_bar)).getChildAt(index).getLeft() + mScreenSetup.getScreenWidth() * 10 / 100 + mScreenSetup.getScreenWidth() * 6 / 100) + (mScreenSetup.getDiveListSeekBarHeight() * 33 / 100),
 										mScreenSetup.getScreenHeight() - mScreenSetup.getDiveListFooterHeight() - mScreenSetup.getDiveListSeekBarHeight(),
@@ -686,7 +689,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 						}
 
 						@Override
-						public void onPageScrolled(int arg0, float arg1, int arg2) {	
+						public void onPageScrolled(int arg0, float arg1, int arg2) {
 						}
 
 						@Override
@@ -921,14 +924,14 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		}
 	}
 
-	@Override 
-	public boolean onTouchEvent(MotionEvent event){ 
+	@Override
+	public boolean onTouchEvent(MotionEvent event){
 		//    	if(mDataLoaded){
 		this.mDetector.onTouchEvent(event);
 		// Be sure to call the superclass implementation
 		return super.onTouchEvent(event);
 		//    	}
-		//    	else 
+		//    	else
 		//    		return false;
 	}
 
@@ -949,10 +952,10 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 			return super.onSingleTapUp(e);
 		}
 
-		private static final String DEBUG_TAG = "Gestures"; 
+		private static final String DEBUG_TAG = "Gestures";
 
 		@Override
-		public boolean onDown(MotionEvent event) { 
+		public boolean onDown(MotionEvent event) {
 			int stroke_selected = stroke_selected((int)event.getX(), (int)event.getY());
 			if (stroke_selected == 0)
 			{
@@ -968,7 +971,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 		@Override
 		public boolean onScroll(MotionEvent event1, MotionEvent event2,float distanceX, float distanceY) {
-			if(mDataLoaded){	
+			if(mDataLoaded){
 				System.out.println("Value of mDAtaloaded is true");
 				int bubbleHeight = (int) (mScreenSetup.getDiveListFooterHeight() * 1.5);
 				int bubbleWidth;
@@ -1006,7 +1009,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 					RelativeLayout.LayoutParams countryLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 					RelativeLayout.LayoutParams placeLP = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 					RelativeLayout.LayoutParams bubble_params = new RelativeLayout.LayoutParams(bubbleWidth, bubbleHeight);
-					//	            	dateLP.topMargin = ((int) (bubbleHeight / 15)); 
+					//	            	dateLP.topMargin = ((int) (bubbleHeight / 15));
 
 					dateLP.topMargin = (int) (bubbleHeight * 15/100);
 					dateLP.addRule(RelativeLayout.CENTER_HORIZONTAL);

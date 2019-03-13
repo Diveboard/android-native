@@ -2,20 +2,15 @@ package com.diveboard.model;
 
 import java.io.BufferedInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
-import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.net.URLConnection;
 import java.util.zip.GZIPInputStream;
 
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.R;
-import com.diveboard.viewModel.AsyncTaskCallback;
+import com.diveboard.util.Callback;
 
 
 import android.content.Context;
@@ -24,18 +19,19 @@ import android.widget.Toast;
 
 import static com.diveboard.util.Utils.copyInputStreamToFile;
 
-public class SpotsDbUpdater implements AsyncTaskCallback {
+public class SpotsDbUpdater implements Callback<Boolean> {
     private Context context;
     private final String DB_PATH;
     private final String DB_NAME = "spots.db";
-    private AsyncTaskCallback callback;
+    private Callback<Boolean> callback;
 
     public SpotsDbUpdater(Context context) {
         this.context = context;
+        //TODO: use getDatabasePath instead
         DB_PATH = this.context.getApplicationInfo().dataDir + "/databases/";
     }
 
-    public void launchUpdate(AsyncTaskCallback callback) {
+    public void launchUpdate(Callback<Boolean> callback) {
         DownloadSpotsAsyncTask task = new DownloadSpotsAsyncTask(this);
         task.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         this.callback = callback;
@@ -50,9 +46,9 @@ public class SpotsDbUpdater implements AsyncTaskCallback {
     }
 
     @Override
-    public void onPostExecute(Boolean success) {
+    public void execute(Boolean success) {
         if (callback != null) {
-            callback.onPostExecute(success);
+            callback.execute(success);
         }
         if (success) {
             Toast toast = Toast.makeText(context, R.string.spots_db_updated, Toast.LENGTH_SHORT);
@@ -64,9 +60,9 @@ public class SpotsDbUpdater implements AsyncTaskCallback {
     }
 
     private class DownloadSpotsAsyncTask extends AsyncTask<Void, Void, Boolean> {
-        private AsyncTaskCallback callback;
+        private Callback<Boolean> callback;
 
-        public DownloadSpotsAsyncTask(AsyncTaskCallback callback) {
+        public DownloadSpotsAsyncTask(Callback<Boolean> callback) {
             this.callback = callback;
         }
 
@@ -74,7 +70,7 @@ public class SpotsDbUpdater implements AsyncTaskCallback {
         protected void onPostExecute(Boolean success) {
             super.onPostExecute(success);
             if (callback != null) {
-                callback.onPostExecute(success);
+                callback.execute(success);
             }
         }
 

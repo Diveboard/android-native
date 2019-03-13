@@ -11,7 +11,7 @@ import android.widget.Toast;
 import com.diveboard.config.AppConfig;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SpotsDbUpdater;
-import com.diveboard.viewModel.AsyncTaskCallback;
+import com.diveboard.util.Callback;
 import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
@@ -103,7 +103,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
     }
 
-    private class SpotsPreferenceClickCallback implements AsyncTaskCallback {
+    private class SpotsPreferenceClickCallback implements Callback<Boolean> {
         private ApplicationController applicationController;
 
         SpotsPreferenceClickCallback(ApplicationController applicationController) {
@@ -111,7 +111,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         @Override
-        public void onPostExecute(Boolean success) {
+        public void execute(Boolean success) {
             if (success) {
                 setSpotsInfo(applicationController);
             }

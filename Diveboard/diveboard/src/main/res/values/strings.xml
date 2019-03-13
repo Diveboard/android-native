@@ -147,6 +147,7 @@
     <string name="no_internet_co_new_spot">Sorry but creating a manual spot requires internet connection</string>
     <string name="no_internet_co_wallet">Wallet pictures could not be downloaded due to problems with the connection</string>
     <string name="no_db">Spots DB does not exist or it was never downloaded previously</string>
+    <string name="db_generic_error">Cannot request spots DB</string>
     <string name="share_msg">Share it!</string>
     <string name="menu_refresh">Refresh</string>
     <string name="menu_new_dive">New dive</string>
@@ -220,5 +221,6 @@
     <string name="safetyStopItemFormat">%d %s - %d min;</string>
     <string name="meter">m</string>
     <string name="foot">ft</string>
+    <string name="title_activity_select_spot">Select spot</string>
 
 </resources>
