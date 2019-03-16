@@ -532,7 +532,7 @@ public class Dive implements IModel {
             //prefer metric
             return Units.Distance.KM;
         }
-        return (rawUnits.compareTo("Km") == 0) ? Units.Distance.KM : Units.Distance.FT;
+        return (rawUnits.compareTo("m") == 0) ? Units.Distance.KM : Units.Distance.FT;
     }
 
     public void setMaxdepthUnit(String _maxdepth_unit) {
