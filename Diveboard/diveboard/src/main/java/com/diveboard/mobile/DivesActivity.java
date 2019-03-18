@@ -219,8 +219,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		if (success == true) {
 			//all the data has been loaded properly
 			ApplicationController AC = (ApplicationController)getApplicationContext();
-			SpotService service = new SpotService(getApplicationContext());
-            service.searchSpot("ceno", null, null, null, AC.getModel().getToken(), AC.getModel().getUser().getId(), null, null);
+
 			if(!(AC.getModel().hasRatedApp() != null && AC.getModel().hasRatedApp()))
 			{
 				if (!mLinksTitles.contains(getString(R.string.menu_links_has_not_rated)))

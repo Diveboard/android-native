@@ -4,29 +4,30 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
+import com.diveboard.mobile.ApplicationController;
 import com.diveboard.util.Callback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.util.List;
 
 public class SpotService {
     private ConnectivityManager connectivityManager;
-    private Context context;
+    private ApplicationController context;
 
-    public SpotService(Context context) {
+    public SpotService(ApplicationController context) {
         this.connectivityManager = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         this.context = context;
     }
 
-    public List<Spot> searchSpot(String term, LatLng position, LatLng positionSW, LatLng positionNE, String token, int userId, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
+    public void searchSpot(String term, LatLng position, LatLngBounds bounds, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         SpotRepository repository;
-        if (networkInfo != null && networkInfo.isConnected()) {
-            repository = new SpotOnlineRepository(context);
-        } else {
+//        if (networkInfo != null && networkInfo.isConnected()) {
+//            repository = new SpotOnlineRepository(context);
+//        } else {
             repository = new SpotOfflineRepository(context);
-        }
-        repository.search(term, position, positionSW, positionNE, token, userId, callback, errorCallback);
-        return null;
+//        }
+        repository.search(term, position, bounds, callback, errorCallback);
     }
 }

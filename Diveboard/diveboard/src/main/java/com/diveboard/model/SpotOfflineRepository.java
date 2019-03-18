@@ -1,27 +1,30 @@
 package com.diveboard.model;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.util.Callback;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
 public class SpotOfflineRepository implements SpotRepository {
-    private Context context;
+    private final int userId;
+    private ApplicationController context;
 
-    public SpotOfflineRepository(Context context) {
+    public SpotOfflineRepository(ApplicationController context) {
         this.context = context;
+        userId = context.getModel().getUser().getId();
     }
 
     @Override
-    public void search(String term, LatLng position, LatLng positionSW, LatLng positionNE, String token, int userId, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
+    public void search(String term, LatLng position, LatLngBounds bounds, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
         ArrayList<Spot2> result = new ArrayList<>();
         if (errorCallback == null) {
             errorCallback = new Callback.Empty<>();
@@ -59,12 +62,12 @@ public class SpotOfflineRepository implements SpotRepository {
             }
             whereClause += " AND spots_fts.name MATCH '" + matchString + "'";
         }
-        if (positionNE != null && positionSW != null) {
-            if (positionSW.longitude >= 0 && positionNE.longitude < 0) {
+        if (bounds != null) {
+            if (bounds.southwest.longitude >= 0 && bounds.northeast.longitude < 0) {
                 //TODO: надо вкурить
-                whereClause += " AND (spots.lng BETWEEN " + positionSW.longitude + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + positionNE.longitude + " AND spots.lat BETWEEN " + positionSW.latitude + " AND " + positionNE.latitude + ")";
+                whereClause += " AND (spots.lng BETWEEN " + bounds.southwest.longitude + " AND 180 AND SPOTS.lng BETWEEN 0 AND " + bounds.northeast.longitude + " AND spots.lat BETWEEN " + bounds.southwest.latitude + " AND " + bounds.northeast.latitude + ")";
             }
-            whereClause += " AND (spots.lng BETWEEN " + positionSW.longitude + " AND " + positionNE.longitude + " AND spots.lat BETWEEN " + positionSW.latitude + " AND " + positionNE.latitude + ")";
+            whereClause += " AND (spots.lng BETWEEN " + bounds.southwest.longitude + " AND " + bounds.northeast.longitude + " AND spots.lat BETWEEN " + bounds.southwest.latitude + " AND " + bounds.northeast.latitude + ")";
         }
         if (position != null) {
             Double latitudeSqr = Math.pow(position.latitude, 2.0);
