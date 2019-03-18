@@ -23,11 +23,11 @@ public class SpotService {
     public void searchSpot(String term, LatLng position, LatLngBounds bounds, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         SpotRepository repository;
-//        if (networkInfo != null && networkInfo.isConnected()) {
-//            repository = new SpotOnlineRepository(context);
-//        } else {
+        if (networkInfo != null && networkInfo.isConnected()) {
+            repository = new SpotOnlineRepository(context);
+        } else {
             repository = new SpotOfflineRepository(context);
-//        }
+        }
         repository.search(term, position, bounds, callback, errorCallback);
     }
 }
