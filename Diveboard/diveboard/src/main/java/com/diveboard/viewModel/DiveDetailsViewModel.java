@@ -2,6 +2,7 @@ package com.diveboard.viewModel;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Spot2;
 import com.diveboard.model.Units;
 
 import java.util.Calendar;
@@ -19,6 +20,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private String tripName;
     private Double maxDepth;
     private Integer durationMin;
+    private Spot2 spot;
 
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units) {
         DiveDetailsViewModel result = new DiveDetailsViewModel();
@@ -106,5 +108,13 @@ public class DiveDetailsViewModel extends BaseObservable {
 
     public void setDiveDateTime(Calendar diveDateTime) {
         this.diveDateTime = diveDateTime;
+    }
+
+    public void setSpot(Spot2 spot) {
+        this.spot = spot;
+    }
+
+    public Spot2 getSpot() {
+        return spot;
     }
 }

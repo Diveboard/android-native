@@ -194,7 +194,7 @@ public abstract class NavDrawer extends FragmentActivity {
     		//New Dive
     		case 1:
     			if(!(this instanceof NewDiveActivity)){
-    				Intent newDiveActivity = new Intent(this, DiveDetailsActivity2.class);
+    				Intent newDiveActivity = new Intent(this, DiveDetailsFragment2.class);
     				startActivity(newDiveActivity);
     				if(!(this instanceof DivesActivity))
     					finish();
@@ -214,7 +214,7 @@ public abstract class NavDrawer extends FragmentActivity {
     		// Wallet Activity
     		case 3:
     			if(!(this instanceof WalletActivity)){
-    				Intent walletActivity = new Intent(this, WalletActivity.class);
+    				Intent walletActivity = new Intent(this, SelectSpotFragment.class);
     				startActivity(walletActivity);
     				if(!(this instanceof DivesActivity))
     					finish();

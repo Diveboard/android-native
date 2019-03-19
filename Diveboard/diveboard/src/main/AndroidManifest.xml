@@ -50,10 +50,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".SelectSpotActivity"
-            android:label="@string/title_activity_select_spot"></activity>
-        <activity android:name="com.diveboard.SelectSpotActivity" />
         <activity android:name=".DivesListActivity" />
 
         <meta-data
@@ -61,13 +57,12 @@
             android:value="@string/fb_app_id_debug" />
 
         <activity
-            android:name=".DiveboardLoginActivity"
+            android:name=".MainActivity"
             android:label="@string/title_activity_login"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -116,10 +111,10 @@
         <activity
             android:name=".SettingsActivity2"
             android:label="@string/title_activity_settings" />
-        <activity
+    <!--    <activity
             android:name=".DiveDetailsActivity2"
             android:label="@string/title_activity_dive_details_main"
-            android:windowSoftInputMode="stateHidden" />
+            android:windowSoftInputMode="stateHidden" />-->
         <activity
             android:name=".FBLoginActivity"
             android:label="@string/title_activity_fblogin" />

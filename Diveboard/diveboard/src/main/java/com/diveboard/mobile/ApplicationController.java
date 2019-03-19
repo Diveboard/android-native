@@ -4,6 +4,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.model.UserPreference;
+import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -117,6 +118,8 @@ public class ApplicationController extends Application {
 
         return sTracker;
     }
+
+    public DiveDetailsViewModel currentDive;
 
     @Override
     public void onLowMemory() {

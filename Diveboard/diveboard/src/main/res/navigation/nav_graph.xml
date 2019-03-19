@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/diveDetails">
+
+    <fragment
+        android:id="@+id/diveDetails"
+        android:name="com.diveboard.mobile.DiveDetailsFragment2"
+        android:label="dive_details2"
+        tools:layout="@layout/activity_dive_details2">
+        <action
+            android:id="@+id/action_diveDetailsActivity_to_selectSpot"
+            app:destination="@id/selectSpot" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectSpot"
+        android:name="com.diveboard.mobile.SelectSpotFragment"
+        android:label="select_spot"
+        tools:layout="@layout/select_spot" />
+</navigation>

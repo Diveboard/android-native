@@ -25,11 +25,12 @@ import java.text.SimpleDateFormat;
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import br.com.ilhasoft.support.validation.Validator;
 
 public class DiveDetailsGeneralFragment extends Fragment {
 
-    DiveDetailsViewModel viewModel;
+    private DiveDetailsViewModel viewModel;
     private Validator validator;
 
     @Override
@@ -38,6 +39,8 @@ public class DiveDetailsGeneralFragment extends Fragment {
 
         //TODO: get model from singleton tempDive so it is restored after app switch
         viewModel = DiveDetailsViewModel.createNewDive(55, "Mexico", Units.UnitsType.Metric);
+        ApplicationController ac = (ApplicationController) getActivity().getApplicationContext();
+        ac.currentDive = viewModel;
         setupSafetyStops(view);
         setupTripName(view);
         return view;
@@ -77,8 +80,8 @@ public class DiveDetailsGeneralFragment extends Fragment {
         dialog.show(getFragmentManager(), "add_safety_stop");
     }
 
-    public void showSpotDialog(){
-
+    public void showSpotDialog() {
+        Navigation.findNavController(this.getView()).navigate(R.id.selectSpot);
     }
 
     public ItemBinder<SafetyStop> safetyStopsItemViewBinder() {

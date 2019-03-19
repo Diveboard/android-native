@@ -5,7 +5,7 @@ import android.os.AsyncTask;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.util.Callback;
 
-class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
+public class LoadDataTask extends AsyncTask<Void, Void, Boolean> {
 
     private final DiveboardModel model;
     private Callback<Boolean> callbacks;

@@ -135,7 +135,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/spot_name"
-                app:layout_constraintEnd_toStartOf="@+id/spotButton"
+                app:layout_constraintEnd_toStartOf="@+id/backButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
 
@@ -144,12 +144,14 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
+                    android:clickable="true"
+                    android:onClick="@{()->view.showSpotDialog()}"
                     android:inputType="textAutoComplete" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
             <androidx.appcompat.widget.AppCompatImageButton
-                android:id="@+id/spotButton"
+                android:id="@+id/backButton"
                 style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
