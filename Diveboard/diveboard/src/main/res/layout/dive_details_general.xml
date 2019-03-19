@@ -189,7 +189,7 @@
                     android:inputType="numberDecimal"
                     android:nextFocusForward="@+id/duration"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.maxDepth)}"
+                    android:text="@={converter.doubleToStringConverter(model.maxDepth.value)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}"
                     tools:text="12" />
@@ -220,6 +220,7 @@
 
 
             <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
@@ -277,6 +278,176 @@
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView4"
+                style="@style/SectionHeader"
+                android:text="@string/environment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout5"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:onClick="@{()->view.showDiveTypesDialog()}"
+                android:layout_marginTop="@dimen/view_double_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/appCompatTextView4">
+
+                <TextView
+                    android:id="@+id/textView11"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/dive_type"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/dive_type_list"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginStart="@dimen/view_half_margin"
+                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:layout_marginTop="@dimen/view_margin"
+                    android:layout_marginEnd="@dimen/view_margin"
+                    android:layout_marginRight="@dimen/view_margin"
+                    android:onClick="@{()->view.showDiveTypesDialog()}"
+                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    app:itemViewBinder="@{view.diveTypeItemViewBinder}"
+                    app:items="@{model.diveTypes}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+
+                <View
+                    android:id="@+id/divider2"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorUnderline"
+                    app:layout_constraintEnd_toEndOf="@+id/dive_type_list"
+                    app:layout_constraintStart_toStartOf="@+id/dive_type_list"
+                    app:layout_constraintTop_toBottomOf="@+id/dive_type_list" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout10"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:hint="@string/air_temperature"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    android:text="@={converter.doubleToStringConverter(model.airTemp.value)}"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout11"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/water_temp"
+                app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    android:text="@={converter.doubleToStringConverter(model.airTemp.value)}"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout12"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/current_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout13">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout13"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/visibility_label"
+                app:layout_constraintStart_toStartOf="@+id/textInputLayout11"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout14"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                android:hint="@string/altitude_label"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout12">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:selectAllOnFocus="true"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="12" />
+
+            </com.google.android.material.textfield.TextInputLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>

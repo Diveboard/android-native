@@ -76,7 +76,7 @@ public class DiveDetailsGeneralFragment extends Fragment {
         dialog.setPositiveCallback(new Callback<AddSafetyStopViewModel>() {
             @Override
             public void execute(AddSafetyStopViewModel data) {
-                viewModel.addSafetyStop(data.toModel());
+                viewModel.safetyStops.add(data.toModel());
             }
         });
         dialog.show(getFragmentManager(), "add_safety_stop");
@@ -90,12 +90,21 @@ public class DiveDetailsGeneralFragment extends Fragment {
         return new ItemBinderBase<>(BR.model, R.layout.safety_stop_item);
     }
 
+    public ItemBinder<String> diveTypeItemViewBinder() {
+        return new ItemBinderBase<>(BR.model, R.layout.dive_type_item);
+    }
+
     public ClickHandler<SafetyStop> removeStopHandler() {
         return new ClickHandler<SafetyStop>() {
             @Override
             public void onClick(SafetyStop safetyStop) {
-                viewModel.removeSafetyStop(safetyStop);
+                viewModel.safetyStops.remove(safetyStop);
             }
         };
+    }
+
+    public void showDiveTypesDialog() {
+        SetDiveTypeDialog dialog = new SetDiveTypeDialog();
+        dialog.show(getFragmentManager(), "set_dive_type");
     }
 }

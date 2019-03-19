@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.SetDiveTypeDialog" />
+
+        <variable
+            name="model"
+            type="com.diveboard.mobile.SetDiveTypeViewModel" />
+    </data>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/dive_type_list"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingStart="?dialogPreferredPadding"
+        android:paddingLeft="?dialogPreferredPadding"
+        android:paddingTop="?dialogPreferredPadding"
+        app:itemViewBinder="@{view.diveTypeItemViewBinder}"
+        app:items="@{view.allDiveTypes}"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+</layout>

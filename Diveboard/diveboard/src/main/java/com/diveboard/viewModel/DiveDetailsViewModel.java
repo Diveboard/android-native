@@ -2,8 +2,11 @@ package com.diveboard.viewModel;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.BR;
+import com.diveboard.mobile.DiveType;
+import com.diveboard.model.Distance2;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Spot2;
+import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
 
 import java.util.Calendar;
@@ -16,11 +19,19 @@ import androidx.databinding.ObservableArrayList;
 public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
     public ObservableArrayList<SafetyStop> safetyStops = new ObservableArrayList<>();
-    private Integer diveNumber = 0;
-    private Calendar diveDateTime;
-    private String tripName;
-    private Double maxDepth;
-    private Integer durationMin;
+    public Integer diveNumber = 0;
+    public Temperature airTemp;
+    public Temperature waterTemp;
+    @Bindable
+    public ObservableArrayList<DiveType> diveTypes = new ObservableArrayList<>();
+    public Boolean isFreshWater;
+    public String visibility;
+    public String current;
+    public Distance2 altitude;
+    public Calendar diveDateTime;
+    public String tripName;
+    public Distance2 maxDepth;
+    public Integer durationMin;
     private Spot2 spot;
 
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units) {
@@ -30,20 +41,10 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
         result.diveDateTime.set(Calendar.MINUTE, 0);
         result.tripName = lastTripName;
-        result.addSafetyStop(SafetyStop.getDefault(units == Units.UnitsType.Metric ? Units.Depth.Meters : Units.Depth.Foots));
+        result.safetyStops.add(SafetyStop.getDefault(units == Units.UnitsType.Metric ? Units.Depth.Meters : Units.Depth.Foots));
         return result;
     }
 
-    @Bindable
-    public Integer getDiveNumber() {
-        return diveNumber;
-    }
-
-    public void setDiveNumber(Integer diveNumber) {
-        this.diveNumber = diveNumber;
-    }
-
-    @Bindable
     public Calendar getUiDate() {
         return diveDateTime;
     }
@@ -54,7 +55,6 @@ public class DiveDetailsViewModel extends BaseObservable {
         diveDateTime.set(Calendar.DAY_OF_MONTH, uiDate.get(Calendar.DAY_OF_MONTH));
     }
 
-    @Bindable
     public Calendar getUiTime() {
         return diveDateTime;
     }
@@ -64,51 +64,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         diveDateTime.set(Calendar.MINUTE, uiTime.get(Calendar.MINUTE));
     }
 
-    @Bindable
-    public String getTripName() {
-        return tripName;
-    }
-
-    public void setTripName(String tripName) {
-        this.tripName = tripName;
-    }
-
-    @Bindable
-    public Double getMaxDepth() {
-        return maxDepth;
-    }
-
-    public void setMaxDepth(Double maxDepth) {
-        this.maxDepth = maxDepth;
-    }
-
-    @Bindable
-    public Integer getDurationMin() {
-        return durationMin;
-    }
-
-    public void setDurationMin(Integer durationMin) {
-        this.durationMin = durationMin;
-    }
-
     public List<String> getTripNames() {
         return ApplicationController.getInstance().getModel().getUser().getTripNames();
-    }
-
-    public void addSafetyStop(SafetyStop safetyStop) {
-        safetyStops.add(safetyStop);
-    }
-
-    public void removeSafetyStop(SafetyStop safetyStop) {
-        safetyStops.remove(safetyStop);
-    }
-
-    public Calendar getDiveDateTime() {
-        return diveDateTime;
-    }
-
-    public void setDiveDateTime(Calendar diveDateTime) {
-        this.diveDateTime = diveDateTime;
     }
 
     @Bindable
