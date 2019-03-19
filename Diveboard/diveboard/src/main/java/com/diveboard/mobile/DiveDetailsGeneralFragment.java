@@ -38,9 +38,11 @@ public class DiveDetailsGeneralFragment extends Fragment {
         View view = inflater.inflate(R.layout.dive_details_general, container, false);
 
         //TODO: get model from singleton tempDive so it is restored after app switch
-        viewModel = DiveDetailsViewModel.createNewDive(55, "Mexico", Units.UnitsType.Metric);
         ApplicationController ac = (ApplicationController) getActivity().getApplicationContext();
-        ac.currentDive = viewModel;
+        if (ac.currentDive == null) {
+            viewModel = DiveDetailsViewModel.createNewDive(55, "Mexico", Units.UnitsType.Metric);
+            ac.currentDive = viewModel;
+        }
         setupSafetyStops(view);
         setupTripName(view);
         return view;

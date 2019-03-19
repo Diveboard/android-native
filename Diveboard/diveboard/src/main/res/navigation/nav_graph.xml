@@ -19,5 +19,6 @@
         android:id="@+id/selectSpot"
         android:name="com.diveboard.mobile.SelectSpotFragment"
         android:label="select_spot"
-        tools:layout="@layout/select_spot" />
+        tools:layout="@layout/select_spot">
+    </fragment>
 </navigation>

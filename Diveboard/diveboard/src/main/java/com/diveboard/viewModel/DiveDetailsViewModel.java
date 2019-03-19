@@ -1,6 +1,7 @@
 package com.diveboard.viewModel;
 
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.mobile.BR;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Spot2;
 import com.diveboard.model.Units;
@@ -110,11 +111,13 @@ public class DiveDetailsViewModel extends BaseObservable {
         this.diveDateTime = diveDateTime;
     }
 
-    public void setSpot(Spot2 spot) {
-        this.spot = spot;
-    }
-
+    @Bindable
     public Spot2 getSpot() {
         return spot;
+    }
+
+    public void setSpot(Spot2 spot) {
+        this.spot = spot;
+        notifyPropertyChanged(BR.spot);
     }
 }

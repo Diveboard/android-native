@@ -56,15 +56,16 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     private SpotService service;
     private View progress;
     private AutoSuggestAdapter<Spot2> adapter;
-    private ApplicationController AC;
     private MapMoveHandler mapMoveHandler;
     private AppCompatAutoCompleteTextView suggest;
     private View submitButton;
     private Marker selectedMarker;
+    private ApplicationController ac;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        ac = (ApplicationController) getActivity().getApplicationContext();
         View view = inflater.inflate(R.layout.select_spot, container, false);
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -72,6 +73,14 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
         setupBack(view);
         setupAutocompleteList(view);
         return view;
+    }
+
+    private void fillInSpot() {
+        if (ac.currentDive == null || ac.currentDive.getSpot() == null) {
+            toggleSubmitButton(false);
+            return;
+        }
+        setMapPosition(ac.currentDive.getSpot());
     }
 
     private void setupBack(View view) {
@@ -92,26 +101,23 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
                 if (selectedMarker == null) {
                     return;
                 }
-                ApplicationController ac = (ApplicationController) getActivity().getApplicationContext();
                 ac.currentDive.setSpot((Spot2) selectedMarker.getTag());
                 Navigation.findNavController(view).popBackStack();
             }
         });
-        toggleSubmitButton(false);
     }
 
     private void setupAutocompleteList(View view) {
-        AC = (ApplicationController) getActivity().getApplicationContext();
-        service = new SpotService(AC);
+        service = new SpotService(ac);
         suggest = view.findViewById(R.id.appCompatAutoCompleteTextView);
         progress = view.findViewById(R.id.progress_bar);
-        adapter = new AutoSuggestAdapter<>(AC, android.R.layout.simple_dropdown_item_1line);
+        adapter = new AutoSuggestAdapter<>(ac, android.R.layout.simple_dropdown_item_1line);
         suggest.setAdapter(adapter);
         suggest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
                 //hide keyboard
-                InputMethodManager imm = (InputMethodManager) AC.getSystemService(Context.INPUT_METHOD_SERVICE);
+                InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 //navigate to position
                 Spot2 spot = (Spot2) adapterView.getItemAtPosition(position);
@@ -165,6 +171,8 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     private void selectSpot(Marker marker) {
         selectedMarker = marker;
         toggleSubmitButton(true);
+        suggest.setText(((Spot2) marker.getTag()).name);
+        suggest.dismissDropDown();
     }
 
     private void resetSelectedSpot() {
@@ -192,14 +200,15 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
         map = googleMap;
         map.setOnCameraMoveListener(this);
 
-        if (ActivityCompat.checkSelfPermission(AC, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-                ActivityCompat.checkSelfPermission(AC, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(ac, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
+                ActivityCompat.checkSelfPermission(ac, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             map.setMyLocationEnabled(true);
         } else {
             ActivityCompat.requestPermissions(this.getActivity(), new String[]{Manifest.permission.ACCESS_FINE_LOCATION}, REQUEST_PERMISSION_CODE);
         }
         map.getUiSettings().setMapToolbarEnabled(false);
         map.setOnMarkerClickListener(this);
+        fillInSpot();
     }
 
     @Override
@@ -226,7 +235,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(spot.getLatLng())
                     .title(spot.name)
-                    .icon(ImageUtils.bitmapDescriptorFromVector(AC, R.drawable.ic_noun_scuba_diving_flag_713532));
+                    .icon(ImageUtils.bitmapDescriptorFromVector(ac, R.drawable.ic_noun_scuba_diving_flag_713532));
             Marker marker = map.addMarker(markerOptions);
             if (primary) {
                 marker.showInfoWindow();
@@ -252,10 +261,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Spot2 spot = (Spot2) marker.getTag();
         selectSpot(marker);
-        suggest.setText(spot.name);
-        suggest.dismissDropDown();
         return false;
     }
 
@@ -265,7 +271,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private void showError(String text) {
-        Toast toast = Toast.makeText(AC, text, Toast.LENGTH_SHORT);
+        Toast toast = Toast.makeText(ac, text, Toast.LENGTH_SHORT);
         toast.show();
     }
 

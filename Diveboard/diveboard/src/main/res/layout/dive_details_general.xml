@@ -143,10 +143,13 @@
                     android:id="@+id/spot"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
                     android:clickable="true"
+                    android:cursorVisible="false"
+                    android:focusable="false"
+                    android:focusableInTouchMode="false"
+                    android:inputType="textAutoComplete"
                     android:onClick="@{()->view.showSpotDialog()}"
-                    android:inputType="textAutoComplete" />
+                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.name, model.spot.cname)}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
