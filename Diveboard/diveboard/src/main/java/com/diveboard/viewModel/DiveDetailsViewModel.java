@@ -37,6 +37,8 @@ public class DiveDetailsViewModel extends BaseObservable {
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units) {
         DiveDetailsViewModel result = new DiveDetailsViewModel();
         result.diveNumber = diveNumber;
+        result.airTemp = new Temperature(null, units);
+        result.waterTemp = new Temperature(null, units);
         result.diveDateTime = Calendar.getInstance();
         result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
         result.diveDateTime.set(Calendar.MINUTE, 0);

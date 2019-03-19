@@ -228,8 +228,10 @@
     <string name="environment">ENVIRONMENT</string>
     <string name="dive_type">Dive Type</string>
     <string name="air_temperature">Air Temp</string>
-    <string name="water_temp">Water Temp</string>
+    <string name="water_temperature_metric">Water Temp, &#176;C</string>
+    <string name="water_temperature_imperial">Water Temp, &#176;F</string>
     <string name="set_button">Set</string>
     <string name="save_button2">Save</string>
-
+    <string name="air_temperature_metric">Air Temp, &#176;C</string>
+    <string name="air_temperature_imperial">Air Temp, &#176;F</string>
 </resources>

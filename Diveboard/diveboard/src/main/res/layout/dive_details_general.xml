@@ -289,8 +289,8 @@
                 android:id="@+id/constraintLayout5"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:onClick="@{()->view.showDiveTypesDialog()}"
                 android:layout_marginTop="@dimen/view_double_margin"
+                android:onClick="@{()->view.showDiveTypesDialog()}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/appCompatTextView4">
 
@@ -339,7 +339,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@string/air_temperature"
+                android:hint="@{converter.getTitleByUnits(model.airTemp.unit, @string/air_temperature_metric, @string/air_temperature_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
@@ -350,9 +350,7 @@
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.airTemp.value)}"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    tools:text="12" />
+                    tools:text="24" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -363,7 +361,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:hint="@string/water_temp"
+                android:hint="@{converter.getTitleByUnits(model.waterTemp.unit, @string/water_temperature_metric, @string/water_temperature_imperial)}"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
 
@@ -373,10 +371,8 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.airTemp.value)}"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    tools:text="12" />
+                    android:text="@={converter.doubleToStringConverter(model.waterTemp.value)}"
+                    tools:text="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

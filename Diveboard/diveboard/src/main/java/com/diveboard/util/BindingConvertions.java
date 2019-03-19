@@ -2,14 +2,11 @@ package com.diveboard.util;
 
 import android.content.Context;
 import android.view.View;
-import android.widget.EditText;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
-
-import java.util.Calendar;
 
 import androidx.databinding.BindingConversion;
 import androidx.databinding.InverseMethod;
@@ -60,5 +57,9 @@ public final class BindingConvertions {
         } catch (NumberFormatException e) {
         }
         return null;
+    }
+
+    public String getTitleByUnits(Units.UnitsType units, String metric, String imperial) {
+        return units == Units.UnitsType.Imperial ? imperial : metric;
     }
 }
