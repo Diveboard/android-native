@@ -222,5 +222,8 @@
     <string name="meter">m</string>
     <string name="foot">ft</string>
     <string name="title_activity_select_spot">Select spot</string>
+    <string name="dive_details_title">Dive Details</string>
+    <string name="clone_dive_title">Clone</string>
+    <string name="save_dive_title">Save</string>
 
 </resources>

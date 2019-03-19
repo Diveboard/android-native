@@ -98,10 +98,4 @@ public class DiveDetailsGeneralFragment extends Fragment {
             }
         };
     }
-
-    public void save() {
-        if (validator.validate()) {
-
-        }
-    }
 }

@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DiveDetailsGeneralFragment">
 
     <data>
 
@@ -274,14 +275,6 @@
                     app:layout_constraintStart_toStartOf="@+id/safety_stop_list"
                     app:layout_constraintTop_toBottomOf="@+id/safety_stop_list" />
 
-                <androidx.appcompat.widget.AppCompatButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:onClick="@{()->view.save()}"
-                    android:text="Save"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/divider" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
