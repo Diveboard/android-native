@@ -36,7 +36,7 @@
     <string name="surface_temperature_label">Surface temperature</string>
     <string name="bottom_temperature_label">Bottom temperature</string>
     <string name="altitude_label">Altitude</string>
-    <string name="water_type_label">Water type</string>
+    <string name="water_type_label">Water Type</string>
     <string name="dive_privacy_label">Dive privacy</string>
     <string name="tanks_label">Tanks used</string>
     <string name="review_label">Review</string>

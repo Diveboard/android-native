@@ -8,6 +8,7 @@ import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Spot2;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
+import com.diveboard.model.WaterType;
 
 import java.util.Arrays;
 import java.util.Calendar;
@@ -37,6 +38,8 @@ public class DiveDetailsViewModel extends BaseObservable {
     public int visibilityPosition = 0;
     @Bindable
     public int currentPosition = 0;
+    private boolean freshWaterChecked = false;
+    private boolean saltWaterChecked;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
     private Spot2 spot;
@@ -54,6 +57,44 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.tripName = lastTripName;
         result.safetyStops.add(SafetyStop.getDefault(units == Units.UnitsType.Metric ? Units.Depth.Meters : Units.Depth.Foots));
         return result;
+    }
+
+    @Bindable
+    public boolean getSaltWaterChecked() {
+        return saltWaterChecked;
+    }
+
+    @Bindable
+    public void setSaltWaterChecked(boolean value) {
+        saltWaterChecked = value;
+        if (value==true){
+            freshWaterChecked = !value;
+            notifyPropertyChanged(BR.freshWaterChecked);
+        }
+    }
+
+    @Bindable
+    public boolean getFreshWaterChecked() {
+        return freshWaterChecked;
+    }
+
+    @Bindable
+    public void setFreshWaterChecked(boolean value) {
+        freshWaterChecked = value;
+        if (value==true) {
+            saltWaterChecked = !value;
+            notifyPropertyChanged(BR.saltWaterChecked);
+        }
+    }
+
+    public WaterType getWaterType() {
+        if (freshWaterChecked) {
+            return WaterType.Fresh;
+        }
+        if (saltWaterChecked) {
+            return WaterType.Salt;
+        }
+        return null;
     }
 
     public Calendar getUiDate() {

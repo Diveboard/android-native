@@ -376,6 +376,48 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/textInputLayout18"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout10">
+
+                <TextView
+                    android:id="@+id/textView15"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/water_type_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ToggleButton
+                    android:id="@+id/toggleButton1"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/toggle_water_salt"
+                    android:textOff=""
+                    android:textOn=""
+                    android:checked="@={model.saltWaterChecked}"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView15" />
+
+                <ToggleButton
+                    android:id="@+id/toggleButton2"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:background="@drawable/toggle_water_fresh"
+                    android:textOff=""
+                    android:textOn=""
+                    android:checked="@={model.freshWaterChecked}"
+                    app:layout_constraintStart_toEndOf="@+id/toggleButton1"
+                    app:layout_constraintTop_toBottomOf="@+id/textView15" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/textInputLayout13"
                 android:layout_width="wrap_content"
@@ -404,8 +446,8 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:entries="@{converter.getArrayByUnits(model.waterTemp.unit, @stringArray/visibility_titles_metric, @stringArray/visibility_titles_imperial)}"
-                    android:selectedItemPosition="@={model.visibilityPosition}"
                     android:hint="@string/visibility_label"
+                    android:selectedItemPosition="@={model.visibilityPosition}"
                     app:layout_constraintStart_toStartOf="@+id/textView10"
                     app:layout_constraintTop_toBottomOf="@+id/textView10" />
 
@@ -449,8 +491,8 @@
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
                     android:entries="@array/current_titles"
-                    android:selectedItemPosition="@={model.currentPosition}"
                     android:hint="@string/current_label"
+                    android:selectedItemPosition="@={model.currentPosition}"
                     app:layout_constraintStart_toStartOf="@+id/textView12"
                     app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
