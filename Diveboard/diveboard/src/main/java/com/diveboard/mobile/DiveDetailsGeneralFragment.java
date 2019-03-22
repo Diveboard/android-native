@@ -14,6 +14,7 @@ import com.diveboard.model.Units;
 import com.diveboard.util.BindingConvertions;
 import com.diveboard.util.Callback;
 import com.diveboard.util.DateConverter;
+import com.diveboard.util.ResourceHolder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
@@ -40,7 +41,8 @@ public class DiveDetailsGeneralFragment extends Fragment {
         //TODO: get model from singleton tempDive so it is restored after app switch
         ApplicationController ac = (ApplicationController) getActivity().getApplicationContext();
         if (ac.currentDive == null) {
-            viewModel = DiveDetailsViewModel.createNewDive(55, "Mexico", Units.UnitsType.Metric);
+            ResourceHolder resourceHolder = new ResourceHolder(ac);
+            viewModel = DiveDetailsViewModel.createNewDive(55, "Mexico", Units.UnitsType.Metric, resourceHolder.getVisibilityValues(), resourceHolder.getCurrentValues());
             ac.currentDive = viewModel;
         }
         setupSafetyStops(view);

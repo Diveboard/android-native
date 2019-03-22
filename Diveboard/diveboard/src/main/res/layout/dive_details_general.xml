@@ -376,54 +376,98 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout12"
-                android:layout_width="150dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:hint="@string/current_label"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout13">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="numberDecimal"
-                    android:selectAllOnFocus="true"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    tools:text="12" />
-
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/textInputLayout13"
-                android:layout_width="150dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:hint="@string/visibility_label"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout11"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
 
-                <com.google.android.material.textfield.TextInputEditText
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/visibility_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner1"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:entries="@{converter.getArrayByUnits(model.waterTemp.unit, @stringArray/visibility_titles_metric, @stringArray/visibility_titles_imperial)}"
+                    android:selectedItemPosition="@={model.visibilityPosition}"
+                    android:hint="@string/visibility_label"
+                    app:layout_constraintStart_toStartOf="@+id/textView10"
+                    app:layout_constraintTop_toBottomOf="@+id/textView10" />
+
+                <View
+                    android:id="@+id/divider3"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorUnderline"
+                    app:layout_constraintEnd_toEndOf="@+id/spinner1"
+                    app:layout_constraintStart_toStartOf="@+id/spinner1"
+                    app:layout_constraintTop_toBottomOf="@+id/spinner1" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/textInputLayout14"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
+                android:layout_marginTop="8dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout13">
+
+                <TextView
+                    android:id="@+id/textView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@string/current_label"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <androidx.appcompat.widget.AppCompatSpinner
+                    android:id="@+id/spinner2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
-                    android:inputType="numberDecimal"
-                    android:selectAllOnFocus="true"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
-                    tools:text="12" />
+                    android:layout_marginStart="8dp"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginTop="8dp"
+                    android:entries="@array/current_titles"
+                    android:selectedItemPosition="@={model.currentPosition}"
+                    android:hint="@string/current_label"
+                    app:layout_constraintStart_toStartOf="@+id/textView12"
+                    app:layout_constraintTop_toBottomOf="@+id/textView12" />
 
-            </com.google.android.material.textfield.TextInputLayout>
+                <View
+                    android:id="@+id/divider4"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorUnderline"
+                    app:layout_constraintEnd_toEndOf="@+id/spinner2"
+                    app:layout_constraintStart_toStartOf="@+id/spinner2"
+                    app:layout_constraintTop_toBottomOf="@+id/spinner2" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout14"
+                android:id="@+id/textInputLayout15"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -431,7 +475,7 @@
                 android:layout_marginTop="8dp"
                 android:hint="@string/altitude_label"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout12">
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout14">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"

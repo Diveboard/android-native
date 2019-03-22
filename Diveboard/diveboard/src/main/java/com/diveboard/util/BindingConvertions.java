@@ -8,6 +8,8 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Units;
 
+import java.util.List;
+
 import androidx.databinding.BindingConversion;
 import androidx.databinding.InverseMethod;
 
@@ -61,5 +63,9 @@ public final class BindingConvertions {
 
     public String getTitleByUnits(Units.UnitsType units, String metric, String imperial) {
         return units == Units.UnitsType.Imperial ? imperial : metric;
+    }
+
+    public String[] getArrayByUnits(Units.UnitsType units, String[] metricArray, String[] imperialArray) {
+        return units == Units.UnitsType.Imperial ? imperialArray : metricArray;
     }
 }

@@ -9,6 +9,7 @@ import com.diveboard.model.Spot2;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
 
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -32,10 +33,18 @@ public class DiveDetailsViewModel extends BaseObservable {
     public String tripName;
     public Distance2 maxDepth;
     public Integer durationMin;
+    @Bindable
+    public int visibilityPosition = 0;
+    @Bindable
+    public int currentPosition = 0;
+    private List<String> currentDictionary;
+    private List<String> visibilityDictionary;
     private Spot2 spot;
 
-    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units) {
+    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
         DiveDetailsViewModel result = new DiveDetailsViewModel();
+        result.visibilityDictionary = Arrays.asList(visibilityDictionary);
+        result.currentDictionary = Arrays.asList(currentDictionary);
         result.diveNumber = diveNumber;
         result.airTemp = new Temperature(null, units);
         result.waterTemp = new Temperature(null, units);
@@ -78,5 +87,23 @@ public class DiveDetailsViewModel extends BaseObservable {
     public void setSpot(Spot2 spot) {
         this.spot = spot;
         notifyPropertyChanged(BR.spot);
+    }
+
+    public String getVisibility() {
+        return visibilityDictionary.get(visibilityPosition);
+    }
+
+    public void setVisibility(String value) {
+        visibilityPosition = visibilityDictionary.indexOf(value);
+        notifyPropertyChanged(BR.visibilityPosition);
+    }
+
+    public String getCurrent() {
+        return currentDictionary.get(currentPosition);
+    }
+
+    public void setCurrent(String value) {
+        currentPosition = currentDictionary.indexOf(value);
+        notifyPropertyChanged(BR.currentPosition);
     }
 }
