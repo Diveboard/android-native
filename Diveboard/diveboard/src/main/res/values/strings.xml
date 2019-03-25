@@ -234,4 +234,21 @@
     <string name="save_button2">Save</string>
     <string name="air_temperature_metric">Air Temp, &#176;C</string>
     <string name="air_temperature_imperial">Air Temp, &#176;F</string>
+    <string name="equipment">EQUIPMENT</string>
+    <string name="weights_label_metric">Weights, kg</string>
+    <string name="weights_label_imperial">Weights, lb</string>
+    <string name="tanks_metric">Tanks, bar</string>
+    <string name="tanks_imperial">Tanks, psi</string>
+    <string name="altitude_metric">Altitude, m</string>
+    <string name="altitude_imperial">Altitude, ft</string>
+    <string name="tank_dialog_title">Tank</string>
+    <string name="gas_mix">Gas Mix</string>
+    <string name="volume_imperial">Volume, cuft</string>
+    <string name="volume_metric">Volume, l</string>
+    <string name="air_mix_short">Air</string>
+    <string name="nitrox_short">Nx</string>
+    <string name="trimix_short">Tx</string>
+    <string name="pressure_metric">l</string>
+    <string name="pressure_imperial">psi</string>
+    <string name="dialog_delete">Delete</string>
 </resources>

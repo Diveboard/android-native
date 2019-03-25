@@ -3,7 +3,7 @@
     <string name="celcius">celcius</string>
     <string name="farenheit">farenheit</string>
     <!-- /!\ WARNING
-    	unit & unit symbol letter must correspond
+    	units & units symbol letter must correspond
     	i.e. unit_C = "C" => unit_C_symbol = "°C"
     		 unit_F = "F" => unit_F_symbol = "°F"
     	THIS RULES MUST BE APPLIED FOR OTHER UNITS

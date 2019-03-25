@@ -5,10 +5,12 @@ import android.view.View;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.model.SafetyStop;
+import com.diveboard.model.GasMixes;
+import com.diveboard.model.SafetyStop2;
+import com.diveboard.model.Tank2;
 import com.diveboard.model.Units;
 
-import java.util.List;
+import java.text.DecimalFormat;
 
 import androidx.databinding.BindingConversion;
 import androidx.databinding.InverseMethod;
@@ -20,10 +22,27 @@ public final class BindingConvertions {
     }
 
     @BindingConversion
-    public static String convertSafetyStopToString(SafetyStop safetyStop) {
+    public static String convertSafetyStopToString(SafetyStop2 safetyStop) {
         Context context = ApplicationController.getInstance().getApplicationContext();
         String safetyStopItemFormat = context.getString(R.string.safetyStopItemFormat);
-        return String.format(safetyStopItemFormat, safetyStop.getDepth(), context.getString(safetyStop.getUnit() == Units.Depth.Meters ? R.string.meter : R.string.foot), safetyStop.getDuration());
+        return String.format(safetyStopItemFormat, safetyStop.depth, context.getString(safetyStop.unit == Units.UnitsType.Metric ? R.string.meter : R.string.foot), safetyStop.duration);
+    }
+
+    public static String convertTankToString(Tank2 tank, Context view) {
+        DecimalFormat format = new DecimalFormat("#");
+        String result = format.format(tank.startPressure) + " - " + format.format(tank.endPressure) + " (";
+        switch (tank.gasType) {
+            case GasMixes.NITROX:
+                result += view.getResources().getString(R.string.nitrox_short) + " " + tank.o2;
+                break;
+            case GasMixes.TRIMIX:
+                result += view.getResources().getString(R.string.trimix_short) + " " + tank.o2 + "/" + tank.he;
+                break;
+            default:
+                result += view.getResources().getString(R.string.air_mix_short);
+        }
+        result += ");";
+        return result;
     }
 
     @InverseMethod("stringToIntegerConverter")

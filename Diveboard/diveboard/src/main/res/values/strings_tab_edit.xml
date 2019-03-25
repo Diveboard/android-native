@@ -17,7 +17,7 @@
     <string name="cylinder_label">Cylinder</string>
     <string name="mix_label">Gas mix</string>
     <string name="volume_label">Volume</string>
-    <string name="start_pressure_label">Start pressure</string>
+    <string name="start_pressure_label">Start Pressure</string>
     <string name="end_pressure_label">End pressure</string>
     <string name="start_time_label">Start uiTime</string>
     <string name="dive_public_label">Public</string>
@@ -25,6 +25,8 @@
     <string name="date_label">Date</string>
     <string name="time_in_label">Time in</string>
     <string name="max_depth_label">Max depth</string>
+    <string name="max_depth_metric">Max depth, m</string>
+    <string name="max_depth_imperial">Max depth, ft</string>
     <string name="safety_stops_label">Safety stops</string>
     <string name="weights_label">Weights</string>
     <string name="dive_number_label">Dive number</string>
@@ -41,4 +43,10 @@
     <string name="tanks_label">Tanks used</string>
     <string name="review_label">Review</string>
     <string name="check_connectivity">An internet connection is required for picture upload. Please check your connectivity and try again.</string>
+
+    <string name="start_pressure_metric">Start, bar</string>
+    <string name="end_pressure_metric">End, bar</string>
+
+    <string name="start_pressure_imperial">Start, psi</string>
+    <string name="end_pressure_imperial">End, psi</string>
 </resources>

@@ -2,6 +2,7 @@ package com.diveboard.model;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+
 import androidx.preference.PreferenceManager;
 
 public class UserPreference {
@@ -26,9 +27,8 @@ public class UserPreference {
         }
     }
 
-    public Units getUnitsTyped() {
+    public Units.UnitsType getUnitsTyped() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
-        Units.UnitsType units = Units.UnitsType.valueOf(sharedPreferences.getString("unit", Units.UnitsType.Metric.toString()));
-        return new Units(units);
+        return Units.UnitsType.valueOf(sharedPreferences.getString("units", Units.UnitsType.Metric.toString()));
     }
 }

@@ -6,15 +6,13 @@
 
     <data>
 
-        <import type="com.diveboard.util.BindingConvertions" />
-
         <variable
             name="view"
             type="com.diveboard.mobile.DiveDetailsGeneralFragment" />
 
         <variable
             name="converter"
-            type="BindingConvertions" />
+            type="com.diveboard.util.BindingConvertions" />
 
         <variable
             name="dateConverter"
@@ -178,9 +176,10 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/view_margin"
-                android:hint="@string/max_depth_label"
+                android:hint="@{converter.getTitleByUnits(model.units, @string/max_depth_metric, @string/max_depth_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3"
+                tools:hint="@string/max_depth_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -279,11 +278,104 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/appCompatTextView2"
+                style="@style/SectionHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/equipment"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout80"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:hint="@{converter.getTitleByUnits(model.units, @string/weights_label_metric, @string/weights_label_imperial)}"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
+                tools:hint="@string/weights_label_metric">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionNext"
+                    android:inputType="numberDecimal"
+                    android:nextFocusForward="@+id/duration"
+                    android:selectAllOnFocus="true"
+                    android:text="@={converter.doubleToStringConverter(model.weights)}"
+                    app:validateEmpty="@{true}"
+                    app:validateEmptyAutoDismiss="@{true}"
+                    tools:text="6" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/constraintLayout22"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout80">
+
+                <TextView
+                    android:id="@+id/textView91"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="4dp"
+                    android:text="@{converter.getTitleByUnits(model.units, @string/tanks_metric, @string/tanks_imperial)}"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/tanks_metric" />
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/tanks_list"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_marginStart="@dimen/view_half_margin"
+                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:layout_marginTop="@dimen/view_margin"
+                    android:layout_marginEnd="@dimen/view_margin"
+                    android:layout_marginRight="@dimen/view_margin"
+                    android:orientation="horizontal"
+                    android:scrollbars="none"
+                    app:clickHandler="@{view.editTanksDialogHandler}"
+                    app:itemViewBinder="@{view.tanksItemViewBinder}"
+                    app:items="@{model.tanks}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:layout_constraintEnd_toStartOf="@+id/appCompatImageButton2"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView91" />
+
+                <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/appCompatImageButton2"
+                    style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:onClick="@{()->view.newTankDialog()}"
+                    android:src="@drawable/ic_baseline_add_24px"
+                    app:layout_constraintBottom_toBottomOf="@+id/tanks_list"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/tanks_list" />
+
+                <View
+                    android:id="@+id/divider5"
+                    android:layout_width="0dp"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="4dp"
+                    android:background="@color/colorUnderline"
+                    app:layout_constraintEnd_toEndOf="@+id/tanks_list"
+                    app:layout_constraintStart_toStartOf="@+id/tanks_list"
+                    app:layout_constraintTop_toBottomOf="@+id/tanks_list" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+            <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView4"
                 style="@style/SectionHeader"
                 android:text="@string/environment"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout22" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout5"
@@ -341,7 +433,8 @@
                 android:layout_marginTop="8dp"
                 android:hint="@{converter.getTitleByUnits(model.airTemp.unit, @string/air_temperature_metric, @string/air_temperature_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
+                tools:hint="@string/air_temperature_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -363,7 +456,8 @@
                 android:layout_marginTop="8dp"
                 android:hint="@{converter.getTitleByUnits(model.waterTemp.unit, @string/water_temperature_metric, @string/water_temperature_imperial)}"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
-                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5">
+                app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
+                tools:hint="@string/water_temperature_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -399,9 +493,9 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/toggle_water_salt"
+                    android:checked="@={model.saltWaterChecked}"
                     android:textOff=""
                     android:textOn=""
-                    android:checked="@={model.saltWaterChecked}"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/textView15" />
 
@@ -410,9 +504,9 @@
                     android:layout_width="50dp"
                     android:layout_height="50dp"
                     android:background="@drawable/toggle_water_fresh"
+                    android:checked="@={model.freshWaterChecked}"
                     android:textOff=""
                     android:textOn=""
-                    android:checked="@={model.freshWaterChecked}"
                     app:layout_constraintStart_toEndOf="@+id/toggleButton1"
                     app:layout_constraintTop_toBottomOf="@+id/textView15" />
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -515,9 +609,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:hint="@string/altitude_label"
+                android:hint="@{converter.getTitleByUnits(model.units, @string/altitude_metric, @string/altitude_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout14">
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout14"
+                tools:hint="@string/altitude_label">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -525,6 +620,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
+                    android:text="@={converter.doubleToStringConverter(model.altitude.value)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}"
                     tools:text="12" />

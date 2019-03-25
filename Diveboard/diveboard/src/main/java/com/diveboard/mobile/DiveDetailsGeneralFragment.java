@@ -10,6 +10,7 @@ import android.widget.AutoCompleteTextView;
 
 import com.diveboard.mobile.databinding.DiveDetailsGeneralBinding;
 import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Tank2;
 import com.diveboard.model.Units;
 import com.diveboard.util.BindingConvertions;
 import com.diveboard.util.Callback;
@@ -20,6 +21,7 @@ import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
 import com.diveboard.viewModel.AddSafetyStopViewModel;
 import com.diveboard.viewModel.DiveDetailsViewModel;
+import com.diveboard.viewModel.TankViewModel;
 
 import java.text.SimpleDateFormat;
 
@@ -73,6 +75,10 @@ public class DiveDetailsGeneralFragment extends Fragment {
         return ((SimpleDateFormat) DateFormat.getTimeFormat(getContext())).toPattern();
     }
 
+    public void showSpotDialog() {
+        Navigation.findNavController(this.getView()).navigate(R.id.selectSpot);
+    }
+
     public void showSafetyStopDialog() {
         AddSafetyStopDialog dialog = new AddSafetyStopDialog();
         dialog.setPositiveCallback(new Callback<AddSafetyStopViewModel>() {
@@ -84,16 +90,8 @@ public class DiveDetailsGeneralFragment extends Fragment {
         dialog.show(getFragmentManager(), "add_safety_stop");
     }
 
-    public void showSpotDialog() {
-        Navigation.findNavController(this.getView()).navigate(R.id.selectSpot);
-    }
-
     public ItemBinder<SafetyStop> safetyStopsItemViewBinder() {
         return new ItemBinderBase<>(BR.model, R.layout.safety_stop_item);
-    }
-
-    public ItemBinder<String> diveTypeItemViewBinder() {
-        return new ItemBinderBase<>(BR.model, R.layout.dive_type_item);
     }
 
     public ClickHandler<SafetyStop> removeStopHandler() {
@@ -105,8 +103,52 @@ public class DiveDetailsGeneralFragment extends Fragment {
         };
     }
 
+    public ClickHandler<Tank2> editTanksDialogHandler() {
+
+        return new ClickHandler<Tank2>() {
+            @Override
+            public void onClick(Tank2 tank) {
+                showTanksDialog(tank);
+            }
+        };
+    }
+
+    public ItemBinder<String> diveTypeItemViewBinder() {
+        return new ItemBinderBase<>(BR.model, R.layout.dive_type_item);
+    }
+
     public void showDiveTypesDialog() {
         SetDiveTypeDialog dialog = new SetDiveTypeDialog();
         dialog.show(getFragmentManager(), "set_dive_type");
+    }
+
+    public void newTankDialog() {
+        showTanksDialog(null);
+    }
+
+    private void showTanksDialog(final Tank2 tank) {
+        Callback<TankViewModel> callback = new Callback<TankViewModel>() {
+            @Override
+            public void execute(TankViewModel data) {
+                if (tank == null) {
+                    viewModel.tanks.add(data.toModel());
+                } else {
+                    int index = viewModel.tanks.indexOf(tank);
+                    viewModel.tanks.set(index, data.toModel());
+                }
+            }
+        };
+        Runnable deleteCallback = new Runnable() {
+            @Override
+            public void run() {
+                viewModel.tanks.remove(viewModel.tanks.indexOf(tank));
+            }
+        };
+        TankDialog dialog = new TankDialog(tank, callback, deleteCallback);
+        dialog.show(getFragmentManager(), "tank");
+    }
+
+    public ItemBinder<Tank2> tanksItemViewBinder() {
+        return new ItemBinderBase<>(BR.model, R.layout.tank_item);
     }
 }

@@ -18,4 +18,16 @@ public class ResourceHolder {
     public String[] getCurrentValues() {
         return context.getResources().getStringArray(R.array.current_values);
     }
+
+    public String[] getCylindersCountValues() {
+        return context.getResources().getStringArray(R.array.cylinders);
+    }
+
+    public String[] getMaterialsValues() {
+        return context.getResources().getStringArray(R.array.tank_materials_values);
+    }
+
+    public String[] getGasMixValues() {
+        return context.getResources().getStringArray(R.array.gas_mixes_values);
+    }
 }

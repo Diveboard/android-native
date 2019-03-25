@@ -67,4 +67,33 @@
         <item>Strong (up to 3 knots)</item>
         <item>Extreme (over 3 knots)</item>
     </string-array>
+
+    <string-array name="cylinders">
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="tank_materials">
+        <item>Steel</item>
+        <item>Aluminium</item>
+        <item>Carbon</item>
+    </string-array>
+
+    <string-array name="tank_materials_values">
+        <item>steel</item>
+        <item>aluminium</item>
+        <item>carbon</item>
+    </string-array>
+
+    <string-array name="gas_mixes">
+        <item>Air</item>
+        <item>Nitrox</item>
+        <item>Trimix</item>
+    </string-array>
+
+    <string-array name="gas_mixes_values">
+        <item>air</item>
+        <item>nitrox</item>
+        <item>trimix</item>
+    </string-array>
 </resources>

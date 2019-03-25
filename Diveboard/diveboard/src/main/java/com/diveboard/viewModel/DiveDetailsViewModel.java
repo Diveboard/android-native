@@ -4,8 +4,9 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.BR;
 import com.diveboard.mobile.DiveType;
 import com.diveboard.model.Distance2;
-import com.diveboard.model.SafetyStop;
+import com.diveboard.model.SafetyStop2;
 import com.diveboard.model.Spot2;
+import com.diveboard.model.Tank2;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
 import com.diveboard.model.WaterType;
@@ -20,7 +21,8 @@ import androidx.databinding.ObservableArrayList;
 
 public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
-    public ObservableArrayList<SafetyStop> safetyStops = new ObservableArrayList<>();
+    public ObservableArrayList<SafetyStop2> safetyStops = new ObservableArrayList<>();
+    public ObservableArrayList<Tank2> tanks = new ObservableArrayList<>();
     public Integer diveNumber = 0;
     public Temperature airTemp;
     public Temperature waterTemp;
@@ -29,6 +31,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     public Boolean isFreshWater;
     public String visibility;
     public String current;
+    public Double weights;
     public Distance2 altitude;
     public Calendar diveDateTime;
     public String tripName;
@@ -38,6 +41,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     public int visibilityPosition = 0;
     @Bindable
     public int currentPosition = 0;
+    public Units.UnitsType units;
     private boolean freshWaterChecked = false;
     private boolean saltWaterChecked;
     private List<String> currentDictionary;
@@ -49,13 +53,14 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.visibilityDictionary = Arrays.asList(visibilityDictionary);
         result.currentDictionary = Arrays.asList(currentDictionary);
         result.diveNumber = diveNumber;
+        result.units = units;
         result.airTemp = new Temperature(null, units);
         result.waterTemp = new Temperature(null, units);
         result.diveDateTime = Calendar.getInstance();
         result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
         result.diveDateTime.set(Calendar.MINUTE, 0);
         result.tripName = lastTripName;
-        result.safetyStops.add(SafetyStop.getDefault(units == Units.UnitsType.Metric ? Units.Depth.Meters : Units.Depth.Foots));
+        result.safetyStops.add(SafetyStop2.getDefault(units));
         return result;
     }
 
@@ -67,7 +72,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
     public void setSaltWaterChecked(boolean value) {
         saltWaterChecked = value;
-        if (value==true){
+        if (value == true) {
             freshWaterChecked = !value;
             notifyPropertyChanged(BR.freshWaterChecked);
         }
@@ -81,7 +86,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
     public void setFreshWaterChecked(boolean value) {
         freshWaterChecked = value;
-        if (value==true) {
+        if (value == true) {
             saltWaterChecked = !value;
             notifyPropertyChanged(BR.saltWaterChecked);
         }

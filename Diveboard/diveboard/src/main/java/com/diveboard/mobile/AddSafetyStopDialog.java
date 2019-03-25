@@ -33,8 +33,9 @@ public class AddSafetyStopDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.fragment_add_safety_stop_dialog, null);
         ViewDataBinding binding = DataBindingUtil.bind(view);
-        //TODO: implement
-        final AddSafetyStopViewModel viewModel = new AddSafetyStopViewModel(Units.Depth.Meters);
+        ApplicationController context = (ApplicationController) getActivity().getApplicationContext();
+
+        final AddSafetyStopViewModel viewModel = new AddSafetyStopViewModel(context.getUserPreference().getUnitsTyped());
         binding.setVariable(BR.model, viewModel);
 
         builder.setView(view)
