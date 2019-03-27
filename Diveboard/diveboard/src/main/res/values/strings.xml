@@ -3,8 +3,9 @@
 
     <string name="app_name">Diveboard</string>
     <string name="google_play_services_version">4030500</string>
-    <string name="fb_app_id_debug">193803977296892</string>
-    <string name="fb_app_id_release">193803977296892</string>
+
+    <string name="facebook_app_id">193803977296892</string>
+    <string name="fb_login_protocol_scheme">fb193803977296892</string>
     <!-- private API GoogleMaps key for Gonzalo debugging- -->
     <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
     <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
@@ -251,4 +252,8 @@
     <string name="pressure_metric">l</string>
     <string name="pressure_imperial">psi</string>
     <string name="dialog_delete">Delete</string>
+    <string name="cannot_login_message">Cannot login</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="cannot_sign_up_message">Error occured while signing you up</string>
+    <string name="login_with_facebook">LOGIN WITH FACEBOOK</string>
 </resources>

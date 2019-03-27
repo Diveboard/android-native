@@ -1,10 +1,5 @@
 package com.diveboard.viewModel;
 
-import androidx.lifecycle.ViewModel;
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableList;
-
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
@@ -13,9 +8,14 @@ import com.diveboard.util.Callback;
 import java.util.ArrayList;
 import java.util.Collections;
 
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableList;
+import androidx.lifecycle.ViewModel;
+
 public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
 
-    public final ObservableList<DiveItemViewModel> items = new ObservableArrayList<>();
+    public final ObservableList<DiveItemViewModel> dives = new ObservableArrayList<>();
     public final ObservableBoolean dataLoadInProgress = new ObservableBoolean(false);
 
     private DiveboardModel model;
@@ -30,7 +30,8 @@ public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
 
     private void init(DiveboardModel model, boolean shouldLoadData) {
         this.model = model;
-        if (model == null) {
+        return;
+        /*if (model == null) {
             throw new IllegalArgumentException("model cannot be null");
         }
         if (shouldLoadData) {
@@ -39,7 +40,7 @@ public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
             task.execute();
         } else {
             execute(true);
-        }
+        }*/
     }
 
     @Override
@@ -58,7 +59,7 @@ public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
                     dive.getMaxdepth(),
                     dive.getMaxdepthUnit()));
         }
-        items.addAll(result);
+        this.dives.addAll(result);
     }
 
     static class SortedArrayList<T> extends ArrayList<T> {

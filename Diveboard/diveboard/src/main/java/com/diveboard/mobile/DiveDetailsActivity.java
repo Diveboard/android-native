@@ -9,7 +9,6 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.Picture;
 import com.diveboard.util.ExitDialog;
-import com.facebook.Session;
 
 import android.R.id;
 import android.net.Uri;
@@ -206,8 +205,6 @@ public class DiveDetailsActivity extends TabActivity {
 
     				@Override
     				public void onClick(View v) {
-    					// TODO Auto-generated method stub
-    					logout();
     				}
     			});
 
@@ -244,20 +241,6 @@ public class DiveDetailsActivity extends TabActivity {
     	}
     }
 
-    public void logout()
-   	{
-   		if (Session.getActiveSession() != null)
-   			Session.getActiveSession().closeAndClearTokenInformation();
-   		Session.setActiveSession(null);
-   		ApplicationController AC = (ApplicationController)getApplicationContext();
-       	AC.setDataReady(false);
-       	AC.setPageIndex(0);
-       	AC.getModel().doLogout();
-       	Intent loginActivity = new Intent(this, DiveboardLoginActivity.class);
-       	loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-       	startActivity(loginActivity);
-       	
-   	}
     
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {

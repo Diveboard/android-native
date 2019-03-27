@@ -12,7 +12,6 @@ import com.diveboard.config.AppConfig;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.util.Callback;
-import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
@@ -132,12 +131,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         void logout() {
-            if (Session.getActiveSession() != null)
-                Session.getActiveSession().closeAndClearTokenInformation();
-            Session.setActiveSession(null);
-            ac.setDataReady(false);
-            ac.setPageIndex(0);
-            ac.getModel().doLogout();
+            ac.getAuthenticationService().logout();
             Intent loginActivity = new Intent(ac, DiveboardLoginActivity.class);
             loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(loginActivity);

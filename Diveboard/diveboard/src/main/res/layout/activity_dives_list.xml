@@ -1,58 +1,51 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:bind="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
 
         <variable
-            name="vheader"
-            type="com.diveboard.model.Header" />
+            name="view"
+            type="com.diveboard.mobile.DivesListFragment" />
 
         <variable
             name="model"
             type="com.diveboard.viewModel.DivesListViewModel" />
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="dives list" />
+
+        <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
+            android:layout_height="match_parent">
 
-            <include
-                android:id="@+id/header"
-                layout="@layout/header"
-                bind:vheader="@{vheader}" />
-
-            <RelativeLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/listView"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent"
+                app:clickHandler="@{view.showDiveHandler}"
+                app:itemViewBinder="@{view.diveItemViewBinder}"
+                app:items="@{model.dives}"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <ListView
-                    android:id="@+id/listView"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-
-                <ProgressBar
-                    android:id="@+id/progressBar"
-                    android:layout_width="70dp"
-                    android:layout_height="70dp"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:shadowColor="@color/black"
-                    android:indeterminateDrawable="@drawable/spinner_ring"
-                    android:indeterminateOnly="true"
-                    android:visibility="@{model.dataLoadInProgress}" />
-
-            </RelativeLayout>
-        </LinearLayout>
-
-        <include layout="@layout/nav_drawer_layout" />
-    </androidx.drawerlayout.widget.DrawerLayout>
+            <ProgressBar
+                android:id="@+id/progressBar"
+                android:layout_width="70dp"
+                android:layout_height="70dp"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:indeterminateDrawable="@drawable/spinner_ring"
+                android:indeterminateOnly="true"
+                android:shadowColor="@color/black"
+                android:visibility="@{model.dataLoadInProgress}" />
+        </RelativeLayout>
+    </LinearLayout>
 </layout>

@@ -1,6 +1,4 @@
-package com.diveboard.model;
-
-import android.content.Context;
+package com.diveboard.dataaccess;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -9,6 +7,8 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
+import com.diveboard.model.Spot2;
+import com.diveboard.model.SpotsSearchResponse;
 import com.diveboard.util.Callback;
 import com.diveboard.util.GsonRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -20,10 +20,10 @@ import org.json.JSONObject;
 import java.io.UnsupportedEncodingException;
 import java.util.List;
 
-public class SpotOnlineRepository implements SpotRepository {
+public class SearchSpotOnlineRepository implements SearchSpotRepository {
     private ApplicationController context;
 
-    public SpotOnlineRepository(ApplicationController context) {
+    public SearchSpotOnlineRepository(ApplicationController context) {
         this.context = context;
     }
 

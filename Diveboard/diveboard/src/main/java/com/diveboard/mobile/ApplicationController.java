@@ -1,14 +1,5 @@
 package com.diveboard.mobile;
 
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SpotsDbUpdater;
-import com.diveboard.model.UserPreference;
-import com.diveboard.viewModel.DiveDetailsViewModel;
-import com.google.android.gms.analytics.GoogleAnalytics;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
-
 import android.app.Activity;
 import android.app.Application;
 import android.content.Context;
@@ -18,28 +9,53 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 
+import com.diveboard.model.Dive;
+import com.diveboard.model.DiveboardModel;
+import com.diveboard.model.AuthenticationService;
+import com.diveboard.model.SpotsDbUpdater;
+import com.diveboard.model.UserPreference;
+import com.diveboard.viewModel.DiveDetailsViewModel;
+import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.android.gms.analytics.HitBuilders;
+import com.google.android.gms.analytics.Tracker;
+
 public class ApplicationController extends Application {
 
-    private static ApplicationController singleton;
     public static final String prefName = "appsettings";
     public static final String logBookModeKey = "logBookModeKey";
     public static final String logBookListMode = "list";
-    private DiveboardModel mModel = null;
-    private boolean mDataReady = false;
     public static boolean mDataRefreshed = false;
     public static boolean UserVoiceReady = false;
+    public static boolean mForceRefresh = false;
+    public static int SudoId = 0;
+    private static ApplicationController singleton;
+    private static GoogleAnalytics sAnalytics;
+    private static Tracker sTracker;
+    public DiveDetailsViewModel currentDive;
+    private DiveboardModel mModel = null;
+    private boolean mDataReady = false;
     private int mPageIndex;
     private int mCarouselIndex = 0;
     private Dive mtempDive = null;
     private int mRefresh = 0;
     private int mCurrentTab = 0;
-    public static boolean mForceRefresh = false;
-    public static int SudoId = 0;
-    public static boolean tokenExpired = false;
-    private static GoogleAnalytics sAnalytics;
-    private static Tracker sTracker;
     private SpotsDbUpdater spotsDbUpdater;
     private UserPreference userPreference;
+    private AuthenticationService authenticationService = new AuthenticationService(this);
+
+    public static ApplicationController getInstance() {
+        return singleton;
+    }
+
+    public static Intent getDivesActivity(Activity activity) {
+        //save setting
+        SharedPreferences sharedPref = activity.getSharedPreferences(prefName, Context.MODE_PRIVATE);
+        if (logBookListMode.equals(sharedPref.getString(logBookModeKey, null))) {
+            return new Intent(activity, DivesListFragment.class);
+        } else {
+            return new Intent(activity, DivesActivity.class);
+        }
+    }
 
     public Boolean handleLowMemory() {
         if (getModel() == null) {
@@ -51,16 +67,16 @@ public class ApplicationController extends Application {
         return false;
     }
 
+    public AuthenticationService getAuthenticationService() {
+        return authenticationService;
+    }
+
     public boolean isDataRefreshed() {
         return mDataRefreshed;
     }
 
     public void setDataRefreshed(boolean mDataRefreshed) {
         this.mDataRefreshed = mDataRefreshed;
-    }
-
-    public static ApplicationController getInstance() {
-        return singleton;
     }
 
     public UserPreference getUserPreference() {
@@ -72,6 +88,10 @@ public class ApplicationController extends Application {
 
     public DiveboardModel getModel() {
         return mModel;
+    }
+
+    public void setModel(DiveboardModel mModel) {
+        this.mModel = mModel;
     }
 
     public SpotsDbUpdater getSpotsDbUpdater() {
@@ -87,10 +107,6 @@ public class ApplicationController extends Application {
         } else {
             return true;
         }
-    }
-
-    public void setModel(DiveboardModel mModel) {
-        this.mModel = mModel;
     }
 
     @Override
@@ -118,8 +134,6 @@ public class ApplicationController extends Application {
 
         return sTracker;
     }
-
-    public DiveDetailsViewModel currentDive;
 
     @Override
     public void onLowMemory() {
@@ -187,15 +201,5 @@ public class ApplicationController extends Application {
 
     public void activityStop(Activity activity) {
         //do nothing for now
-    }
-
-    public static Intent getDivesActivity(Activity activity) {
-        //save setting
-        SharedPreferences sharedPref = activity.getSharedPreferences(prefName, Context.MODE_PRIVATE);
-        if (logBookListMode.equals(sharedPref.getString(logBookModeKey, null))) {
-            return new Intent(activity, DivesListActivity.class);
-        } else {
-            return new Intent(activity, DivesActivity.class);
-        }
     }
 }

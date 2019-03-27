@@ -27,7 +27,6 @@ import com.diveboard.mobile.newdive.NewDiveActivity;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.util.ExitDialog;
-import com.facebook.Session;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
 
@@ -317,17 +316,5 @@ public abstract class NavDrawer extends FragmentActivity {
     
     public void logout()
 	{
-		if (Session.getActiveSession() != null)
-			Session.getActiveSession().closeAndClearTokenInformation();
-		Session.setActiveSession(null);
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-    	AC.setDataReady(false);
-    	AC.setPageIndex(0);
-    	AC.getModel().doLogout();
-    	Intent loginActivity = new Intent(this, DiveboardLoginActivity.class);
-    	loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-    	startActivity(loginActivity);
-    	
 	}
-
 }

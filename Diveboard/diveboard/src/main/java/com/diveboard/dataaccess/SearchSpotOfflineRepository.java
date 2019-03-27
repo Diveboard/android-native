@@ -1,4 +1,4 @@
-package com.diveboard.model;
+package com.diveboard.dataaccess;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -6,6 +6,8 @@ import android.database.sqlite.SQLiteException;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
+import com.diveboard.model.Spot2;
+import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.util.Callback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -14,11 +16,11 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SpotOfflineRepository implements SpotRepository {
+public class SearchSpotOfflineRepository implements SearchSpotRepository {
     private final int userId;
     private ApplicationController context;
 
-    public SpotOfflineRepository(ApplicationController context) {
+    public SearchSpotOfflineRepository(ApplicationController context) {
         this.context = context;
         userId = context.getModel().getUser().getId();
     }

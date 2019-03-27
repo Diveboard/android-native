@@ -61,7 +61,8 @@ dependencies {
     implementation files('libs/bugsense-3.6.jar')
     implementation files('libs/httpmime-4.3.2.jar')
     implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
-    implementation 'com.facebook.android:facebook-android-sdk:3.23.1'
+//    implementation 'com.facebook.android:facebook-android-sdk:4.41.0'
+    implementation 'com.facebook.android:facebook-login:4.41.0'
     implementation 'com.uservoice:uservoice-android-sdk:1.1.2'
     implementation 'com.github.Ilhasoft:data-binding-validator:2.0.0'
     implementation 'com.android.volley:volley:1.1.1'

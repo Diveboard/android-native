@@ -74,7 +74,7 @@ public class EditDiveActivity extends NavDrawer implements
 	public static EditText			mNotes = null;
 	private TabEditSpotsFragment	mEditSpotsFragment = new TabEditSpotsFragment();
 	private TabEditShopFragment		mEditShopFragment = new TabEditShopFragment(this);
-	private TabEditBuddiesFragment	mEditBuddiesFragment = new TabEditBuddiesFragment();
+
 	public static boolean 			isNewSpot = false;
 	private boolean					mError = false;
 	private int						NUM_ITEMS = 6;
@@ -252,7 +252,7 @@ public class EditDiveActivity extends NavDrawer implements
 			case 2:
 				return mEditShopFragment;
 			case 3:
-				return mEditBuddiesFragment;
+//				return mEditBuddiesFragment;
 			case 4:
 				return mEditPhotosFragment;
 			case 5:

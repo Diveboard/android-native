@@ -6,7 +6,7 @@
     <data>
 
         <variable
-            name="listItem"
+            name="model"
             type="com.diveboard.viewModel.DiveItemViewModel" />
     </data>
 
@@ -15,7 +15,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:clickable="true"
-        android:onClick="@{listItem::onClick}">
+        android:onClick="@{model::onClick}">
 
         <TextView
             android:id="@+id/textView3"
@@ -27,7 +27,7 @@
             android:layout_marginBottom="8dp"
             android:background="@drawable/circle_shape"
             android:gravity="center"
-            android:text="@{Integer.toString(listItem.number)}"
+            android:text="@{Integer.toString(model.number)}"
             android:textSize="@dimen/text_size_big"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -41,7 +41,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginTop="8dp"
-            android:text="@{listItem.location}"
+            android:text="@{model.location}"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/textView3"
             app:layout_constraintTop_toTopOf="parent"
@@ -54,7 +54,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="8dp"
-            android:text="@{listItem.siteName}"
+            android:text="@{model.siteName}"
             android:textSize="18sp"
             app:layout_constraintStart_toEndOf="@+id/textView4"
             app:layout_constraintTop_toTopOf="parent"
@@ -67,7 +67,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginLeft="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{listItem.date}"
+            android:text="@{model.date}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/textView3"
@@ -81,7 +81,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginRight="8dp"
             android:layout_marginBottom="8dp"
-            android:text="@{listItem.maxDepthStr}"
+            android:text="@{model.maxDepthStr}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/textView8"
@@ -94,7 +94,7 @@
             android:layout_marginEnd="16dp"
             android:layout_marginRight="16dp"
             android:layout_marginBottom="8dp"
-            android:text="@{listItem.durationStr}"
+            android:text="@{model.durationStr}"
             android:textSize="14sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

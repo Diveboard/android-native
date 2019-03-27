@@ -221,22 +221,22 @@ public class					DiveboardModel
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
 				client.close();
-				
+
 				File file = new File(_context.getFilesDir() + "_logged_id");
 				file.createNewFile();
 				FileOutputStream outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(Integer.toString(_userId).getBytes());
-				
+
 				file = new File(_context.getFilesDir() + "_logged_token");
 				file.createNewFile();
 				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 				outputStream.write(_token.getBytes());
-				
+
 //				file = new File(_context.getFilesDir() + "_unit_preferences");
 //				file.createNewFile();
 //				outputStream = _context.openFileOutput(file.getName(), Context.MODE_PRIVATE);
 //				outputStream.write(_unitPreferences.getBytes());
-				
+
 				DiveboardModel.pictureList = null;
 				DiveboardModel.pictureList = new ArrayList<Pair<String, Picture>>();
 				DiveboardModel.savedPictureList = new ArrayList<String>();

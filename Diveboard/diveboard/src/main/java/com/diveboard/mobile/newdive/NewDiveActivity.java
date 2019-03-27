@@ -94,8 +94,7 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 	private TabNewSpotsFragment	mNewSpotsFragment = new TabNewSpotsFragment();
 	private TabNewPhotosFragment	mNewPhotosFragment = new TabNewPhotosFragment();
 	private TabNewShopFragment mNewShopFragment = new TabNewShopFragment();
-	private TabNewBuddiesFragment mNewBuddiesFragment = new TabNewBuddiesFragment();
-	
+
 	public class			NewPagerAdapter extends FragmentPagerAdapter
 	{
 		
@@ -117,7 +116,7 @@ public class					NewDiveActivity extends NavDrawer implements EditDateDialogList
 				case 2:
 					return mNewShopFragment;
 				case 3:
-					return mNewBuddiesFragment;
+//					return mNewBuddiesFragment;
 				case 4:
 					return mNewPhotosFragment;
 				case 5:

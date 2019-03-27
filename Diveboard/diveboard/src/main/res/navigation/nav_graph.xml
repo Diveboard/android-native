@@ -3,7 +3,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/diveDetails">
+    app:startDestination="@id/logbook">
+
+    <fragment
+        android:id="@+id/logbook"
+        android:name="com.diveboard.mobile.DivesListFragment"
+        android:label="logbook"
+        tools:layout="@layout/activity_dives_list">
+        <action
+            android:id="@+id/action_logbook_to_diveDetails"
+            app:destination="@id/diveDetails" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.diveboard.mobile.DiveboardLoginActivity"
+        android:label="login"
+        tools:layout="@layout/activity_login">
+        <action
+            android:id="@+id/action_login_to_logbook"
+            app:destination="@id/logbook" />
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signup" />
+        <action
+            android:id="@+id/action_login_to_fb_login"
+            app:destination="@id/fb_login" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signup"
+        android:name="com.diveboard.mobile.SignUpActivity"
+        android:label="signup"
+        tools:layout="@layout/activity_sign_up" />
+
+    <fragment
+        android:id="@+id/fb_login"
+        android:name="com.diveboard.mobile.FBLoginActivity"
+        android:label="fb_login"
+        tools:layout="@layout/activity_fblogin" />
 
     <fragment
         android:id="@+id/diveDetails"
@@ -11,7 +49,7 @@
         android:label="dive_details2"
         tools:layout="@layout/activity_dive_details2">
         <action
-            android:id="@+id/action_diveDetailsActivity_to_selectSpot"
+            android:id="@+id/action_diveDetails_to_selectSpot"
             app:destination="@id/selectSpot" />
     </fragment>
 
@@ -19,6 +57,5 @@
         android:id="@+id/selectSpot"
         android:name="com.diveboard.mobile.SelectSpotFragment"
         android:label="select_spot"
-        tools:layout="@layout/select_spot">
-    </fragment>
+        tools:layout="@layout/select_spot" />
 </navigation>

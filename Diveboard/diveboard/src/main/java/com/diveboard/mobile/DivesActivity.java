@@ -43,8 +43,6 @@ import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.DiveboardModel.TokenExpireListener;
 import com.diveboard.model.Picture;
 import com.diveboard.model.ScreenSetup;
-import com.diveboard.model.SpotService;
-import com.facebook.Session;
 
 import java.io.IOException;
 import java.lang.ref.WeakReference;
@@ -178,17 +176,17 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 		}
 	}
 
-	public void logout()
-	{
-		if (Session.getActiveSession() != null)
-			Session.getActiveSession().closeAndClearTokenInformation();
-		Session.setActiveSession(null);
-		ApplicationController AC = (ApplicationController)getApplicationContext();
-		AC.setDataReady(false);
-		AC.setPageIndex(0);
-		AC.getModel().doLogout();
-		finish();
-	}
+//	public void logout()
+//	{
+//		if (Session.getActiveSession() != null)
+//			Session.getActiveSession().closeAndClearTokenInformation();
+//		Session.setActiveSession(null);
+//		ApplicationController AC = (ApplicationController)getApplicationContext();
+//		AC.setDataReady(false);
+//		AC.setPageIndex(0);
+//		AC.getModel().doLogout();
+//		finish();
+//	}
 
 	@Override
 	public void onBackPressed()
@@ -716,7 +714,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 						mTokenExpireListener = new TokenExpireListener() {
 							@Override
 							public void onTokenExpire() {
-								ApplicationController.tokenExpired = true;
+								ApplicationController.getInstance().getAuthenticationService().setTokenExpired(true);
 								logout();
 							}
 						};
