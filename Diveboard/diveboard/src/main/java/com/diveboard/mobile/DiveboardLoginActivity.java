@@ -78,7 +78,7 @@ public class DiveboardLoginActivity extends Fragment {
             public void onSuccess(LoginResult loginResult) {
                 showProgress(true);
                 AccessToken accessToken = loginResult.getAccessToken();
-                ac.getAuthenticationService().facebookLoginAsync(accessToken.getUserId(), accessToken.getToken(), new Callback<LoginResponse>() {
+                ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(), new Callback<LoginResponse>() {
                     @Override
                     public void execute(LoginResponse data) {
                         Navigation.findNavController(mLoginStatusView).navigate(R.id.logbook);
@@ -184,6 +184,7 @@ public class DiveboardLoginActivity extends Fragment {
             ac.getAuthenticationService().loginAsync(mEmail, mPassword, new Callback<LoginResponse>() {
                         @Override
                         public void execute(LoginResponse data) {
+
                             showProgress(false);
                             mEmailView.setText("");
                             mPasswordView.setText("");

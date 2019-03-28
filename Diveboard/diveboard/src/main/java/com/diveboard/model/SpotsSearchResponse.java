@@ -4,5 +4,5 @@ import java.util.List;
 
 public class SpotsSearchResponse {
     public Boolean success;
-    public List<Spot2> spots;
+    public List<SearchSpot> spots;
 }

@@ -7,7 +7,7 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
-import com.diveboard.model.Spot2;
+import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotsSearchResponse;
 import com.diveboard.util.Callback;
 import com.diveboard.util.GsonRequest;
@@ -29,7 +29,7 @@ public class SearchSpotOnlineRepository implements SearchSpotRepository {
 
     @Override
     //TODO: add cancellation token
-    public void search(final String term, final LatLng position, final LatLngBounds bounds, final Callback<List<Spot2>> callback, final Callback<String> errorCallback) {
+    public void search(final String term, final LatLng position, final LatLngBounds bounds, final Callback<List<SearchSpot>> callback, final Callback<String> errorCallback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         String url = AppConfig.SERVER_URL + "/api/search_spot_text";

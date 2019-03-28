@@ -1,9 +1,13 @@
 package com.diveboard.viewModel;
 
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.model.Dive;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.util.Callback;
+import android.content.Context;
+import android.widget.Toast;
+
+import com.diveboard.dataaccess.datamodel.Dive2;
+import com.diveboard.dataaccess.datamodel.DivesResponse;
+import com.diveboard.mobile.R;
+import com.diveboard.model.DivesService;
+import com.diveboard.util.ResponseCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -11,56 +15,49 @@ import java.util.Collections;
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableList;
-import androidx.lifecycle.ViewModel;
 
-public class DivesListViewModel extends ViewModel implements Callback<Boolean> {
+public class DivesListViewModel {
 
     public final ObservableList<DiveItemViewModel> dives = new ObservableArrayList<>();
     public final ObservableBoolean dataLoadInProgress = new ObservableBoolean(false);
 
-    private DiveboardModel model;
-    private ApplicationController ac;
+    private Context context;
+    private DivesService divesService;
 
-    public void init(ApplicationController ac) {
-        // it is not good to put such a generic dependency here but it is the easiest way for now to access ApplicationController.setDataReady()
-        // setDataReady() should be part of DiveboardModel, not AC
-        this.ac = ac;
-        init(ac.getModel(), !ac.isDataReady());
+    public DivesListViewModel(Context context, DivesService divesService) {
+        this.context = context;
+        this.divesService = divesService;
     }
 
-    private void init(DiveboardModel model, boolean shouldLoadData) {
-        this.model = model;
-        return;
-        /*if (model == null) {
-            throw new IllegalArgumentException("model cannot be null");
-        }
-        if (shouldLoadData) {
-            LoadDataTask task = new LoadDataTask(model, this);
-            dataLoadInProgress.set(true);
-            task.execute();
-        } else {
-            execute(true);
-        }*/
+    public void init() {
+        dataLoadInProgress.set(true);
+        divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+            @Override
+            public void success(DivesResponse data) {
+                dataLoadInProgress.set(false);
+                SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
+                for (int i = 0; i < data.dives.size(); i++) {
+                    Dive2 dive = data.dives.get(i);
+                    result.insertSorted(new DiveItemViewModel(i,
+                            dive.number,
+                            dive.date,
+                            dive.spot,
+                            dive.duration,
+                            dive.maxDepth,
+                            //TODO: initialize with the proper value
+                            "m"));
+                }
+                dives.clear();
+                dives.addAll(result);
+            }
+
+            @Override
+            public void error(String s) {
+                Toast.makeText(context, context.getString(R.string.error_get_dives_message) + " " + s, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
-    @Override
-    public void execute(Boolean success) {
-        ac.setDataReady(true);
-        dataLoadInProgress.set(false);
-        ArrayList<Dive> dives = model.getDives();
-        SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
-        for (int i = 0; i < dives.size(); i++) {
-            Dive dive = dives.get(i);
-            result.insertSorted(new DiveItemViewModel(i,
-                    dive.getNumber(),
-                    dive.getDate(),
-                    dive.getSpot(),
-                    dive.getDuration(),
-                    dive.getMaxdepth(),
-                    dive.getMaxdepthUnit()));
-        }
-        this.dives.addAll(result);
-    }
 
     static class SortedArrayList<T> extends ArrayList<T> {
         @SuppressWarnings("unchecked")

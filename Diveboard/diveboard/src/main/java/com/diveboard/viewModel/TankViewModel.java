@@ -25,7 +25,7 @@ public class TankViewModel extends BaseObservable {
     private Integer o2;
     private Integer he;
     private Double endPressure;
-    private Integer volume;
+    private Double volume;
     private List<String> cylindersCountDictionary;
 
     public TankViewModel(Units.UnitsType units, ResourceHolder resourceHolder) {
@@ -42,7 +42,7 @@ public class TankViewModel extends BaseObservable {
         result.setMaterial("steel");
         result.setStartPressure(units == Units.UnitsType.Metric ? 220.0 : 3200);
         result.setEndPressure(units == Units.UnitsType.Metric ? 50.0 : 750);
-        result.setVolume(units == Units.UnitsType.Metric ? 12 : 80);
+        result.setVolume(units == Units.UnitsType.Metric ? 12.0 : 80);
         result.setO2(21);
         result.setHe(0);
         return result;
@@ -93,11 +93,11 @@ public class TankViewModel extends BaseObservable {
         this.endPressure = endPressure;
     }
 
-    public Integer getVolume() {
+    public Double getVolume() {
         return volume;
     }
 
-    public void setVolume(Integer volume) {
+    public void setVolume(Double volume) {
         this.volume = volume;
     }
 

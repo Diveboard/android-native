@@ -23,7 +23,7 @@ public class SpotService {
         this.context = context;
     }
 
-    public void searchSpot(String term, LatLng position, LatLngBounds bounds, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
+    public void searchSpot(String term, LatLng position, LatLngBounds bounds, Callback<List<SearchSpot>> callback, Callback<String> errorCallback) {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         SearchSpotRepository repository;
         if (networkInfo != null && networkInfo.isConnected()) {

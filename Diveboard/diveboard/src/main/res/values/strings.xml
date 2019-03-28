@@ -256,4 +256,5 @@
     <string name="no_internet">No internet connection</string>
     <string name="cannot_sign_up_message">Error occured while signing you up</string>
     <string name="login_with_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="error_get_dives_message">Error retrieving dives:</string>
 </resources>

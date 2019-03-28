@@ -1,14 +1,47 @@
 package com.diveboard.model;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Tank2 {
-    public Integer id;
-    public String material;
-    public Integer cylindersCount;
+    @SerializedName("dive_id")
+    public Integer diveId;
+    @SerializedName("gas")
+    //TODO: it will fail at runtime because EAN values are not supported: string in 'air','EANx32','EANx36','EANx40','custom'
+    public String gas;
+    @SerializedName("gas_type")
     public String gasType;
-    public Double startPressure;
-    public Double endPressure;
-    public Units.UnitsType units;
-    public Integer volume;
-    public Integer o2;
+    @SerializedName("he")
     public Integer he;
+    @SerializedName("id")
+    public Integer id;
+    @SerializedName("material")
+    public String material;
+    @SerializedName("multitank")
+    public Integer cylindersCount;
+    @SerializedName("n2")
+    public Integer n2;
+    @SerializedName("o2")
+    public Integer o2;
+    @SerializedName("order")
+    public Integer order;
+    @SerializedName("p_end")
+    public Double endPressure;
+//    @SerializedName("p_end_value")
+//    public Double pEndValue;
+//    @SerializedName("p_end_unit")
+//    public String pEndUnit;
+    @SerializedName("p_start")
+    public Double startPressure;
+//    @SerializedName("p_start_value")
+//    public Double startPressure;
+//    @SerializedName("p_start_unit")
+//    public String startPressureUnit;
+    @SerializedName("time_start")
+    public Integer timeStart;
+    @SerializedName("volume")
+    public Double volume;
+//    @SerializedName("volume_unit")
+//    public String volumeUnit;
+//    @SerializedName("volume_value")
+//    public Double volumeValue;
 }

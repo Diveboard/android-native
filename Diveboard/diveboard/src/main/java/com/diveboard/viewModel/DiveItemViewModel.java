@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.diveboard.dataaccess.datamodel.Spot2;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.DiveDetailsActivity;
 import com.diveboard.mobile.DivesActivity;
@@ -19,7 +20,7 @@ public class DiveItemViewModel implements Comparable {
     public final String durationStr;
     public final String maxDepthStr;
 
-    public DiveItemViewModel(int index, int number, String date, Spot spot, Integer minutes, Double maxDepth, String depthUnit) {
+    public DiveItemViewModel(int index, int number, String date, Spot2 spot, Integer minutes, Double maxDepth, String depthUnit) {
         this.index = index;
         this.number = number;
         this.date = date;
@@ -27,8 +28,8 @@ public class DiveItemViewModel implements Comparable {
             location = "N/A";
             siteName = "N/A";
         } else {
-            location = getString(spot.getCountryName());
-            siteName = getString(spot.getName());
+            location = getString(spot.countryName);
+            siteName = getString(spot.name);
         }
         this.durationStr = minutes == null ? "" : Integer.toString(minutes) + " min";
         this.maxDepthStr = maxDepth == null ? "" : Double.toString(maxDepth) + " " + depthUnit;

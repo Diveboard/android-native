@@ -8,11 +8,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.R;
 import com.diveboard.dataaccess.datamodel.LoginResponse;
+import com.diveboard.mobile.R;
 import com.diveboard.util.Callback;
 import com.diveboard.util.GsonRequest;
-import com.diveboard.util.NetworkUtils;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -28,12 +27,6 @@ public class LoginWithFacebookRepository {
     }
 
     public void login(final String facebookUserId, final String facebookToken, final Callback<LoginResponse> callback, final Callback<String> errorCallback) {
-        if (!NetworkUtils.isConnected(context)) {
-            if (errorCallback != null) {
-                errorCallback.execute(context.getString(R.string.no_internet));
-            }
-            return;
-        }
         RequestQueue queue = Volley.newRequestQueue(context);
         GsonRequest<LoginResponse> stringRequest = getLoginRequest(facebookUserId, facebookToken, callback, errorCallback);
         queue.add(stringRequest);

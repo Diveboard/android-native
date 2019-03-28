@@ -27,12 +27,6 @@ public class LoginRepository {
     }
 
     public void login(final String login, final String password, final Callback<LoginResponse> callback, final Callback<String> errorCallback) {
-        if (!NetworkUtils.isConnected(context)) {
-            if (errorCallback != null) {
-                errorCallback.execute(context.getString(R.string.no_internet));
-            }
-            return;
-        }
         RequestQueue queue = Volley.newRequestQueue(context);
         GsonRequest<LoginResponse> stringRequest = getLoginRequest(login, password, callback, errorCallback);
         queue.add(stringRequest);

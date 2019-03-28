@@ -68,7 +68,7 @@
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
                 android:selectAllOnFocus="true"
-                android:text="@={converter.integerToStringConverter(model.volume)}"
+                android:text="@={converter.doubleToStringConverter(model.volume)}"
                 tools:text="12" />
 
         </com.google.android.material.textfield.TextInputLayout>

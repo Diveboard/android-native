@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 
 import androidx.annotation.NonNull;
 
-public class Spot2 {
+public class SearchSpot {
     public Integer id;
     public String name;
     public Double lat;

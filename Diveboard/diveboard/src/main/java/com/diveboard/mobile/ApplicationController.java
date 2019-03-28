@@ -9,9 +9,14 @@ import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.os.Build;
 
+import com.diveboard.dataaccess.DivesOfflineRepository;
+import com.diveboard.dataaccess.DivesOnlineRepository;
+import com.diveboard.dataaccess.SessionRepository;
+import com.diveboard.dataaccess.UserOfflineRepository;
+import com.diveboard.model.AuthenticationService;
 import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.AuthenticationService;
+import com.diveboard.model.DivesService;
 import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.model.UserPreference;
 import com.diveboard.viewModel.DiveDetailsViewModel;
@@ -41,7 +46,10 @@ public class ApplicationController extends Application {
     private int mCurrentTab = 0;
     private SpotsDbUpdater spotsDbUpdater;
     private UserPreference userPreference;
-    private AuthenticationService authenticationService = new AuthenticationService(this);
+    private AuthenticationService authenticationService;
+    private SessionRepository sessionRepository;
+    private UserOfflineRepository userOfflineRepository;
+    private DivesService divesService;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -68,15 +76,10 @@ public class ApplicationController extends Application {
     }
 
     public AuthenticationService getAuthenticationService() {
+        if (authenticationService == null) {
+            authenticationService = new AuthenticationService(this);
+        }
         return authenticationService;
-    }
-
-    public boolean isDataRefreshed() {
-        return mDataRefreshed;
-    }
-
-    public void setDataRefreshed(boolean mDataRefreshed) {
-        this.mDataRefreshed = mDataRefreshed;
     }
 
     public UserPreference getUserPreference() {
@@ -201,5 +204,29 @@ public class ApplicationController extends Application {
 
     public void activityStop(Activity activity) {
         //do nothing for now
+    }
+
+    public SessionRepository getSessionRepository() {
+        if (sessionRepository == null) {
+            sessionRepository = new SessionRepository(this);
+        }
+        return sessionRepository;
+    }
+
+    public UserOfflineRepository getUserOfflineRepository() {
+        if (userOfflineRepository == null) {
+            userOfflineRepository = new UserOfflineRepository(this);
+        }
+        return userOfflineRepository;
+    }
+
+    public DivesService getDivesService() {
+        if (divesService == null) {
+            divesService = new DivesService(
+                    this,
+                    new DivesOfflineRepository(this),
+                    new DivesOnlineRepository(this, getAuthenticationService(), getUserOfflineRepository()));
+        }
+        return divesService;
     }
 }

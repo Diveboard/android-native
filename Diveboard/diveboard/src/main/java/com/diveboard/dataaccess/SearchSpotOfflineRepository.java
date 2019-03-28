@@ -6,7 +6,7 @@ import android.database.sqlite.SQLiteException;
 
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.model.Spot2;
+import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.util.Callback;
 import com.google.android.gms.maps.model.LatLng;
@@ -26,8 +26,8 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
     }
 
     @Override
-    public void search(String term, LatLng position, LatLngBounds bounds, Callback<List<Spot2>> callback, Callback<String> errorCallback) {
-        ArrayList<Spot2> result = new ArrayList<>();
+    public void search(String term, LatLng position, LatLngBounds bounds, Callback<List<SearchSpot>> callback, Callback<String> errorCallback) {
+        ArrayList<SearchSpot> result = new ArrayList<>();
         if (errorCallback == null) {
             errorCallback = new Callback.Empty<>();
         }
@@ -83,10 +83,10 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
                 cursor = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + whereClause + " LIMIT 30", null);
             }
             if (cursor.getCount() == 0) {
-                result = new ArrayList<Spot2>();
+                result = new ArrayList<SearchSpot>();
             } else {
                 while (cursor.moveToNext()) {
-                    Spot2 spot = new Spot2();
+                    SearchSpot spot = new SearchSpot();
                     spot.id = cursor.getInt(0);
                     spot.name = cursor.getString(1);
                     spot.location = cursor.getString(2);

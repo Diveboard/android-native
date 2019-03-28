@@ -5,7 +5,7 @@ import com.diveboard.mobile.BR;
 import com.diveboard.mobile.DiveType;
 import com.diveboard.model.Distance2;
 import com.diveboard.model.SafetyStop2;
-import com.diveboard.model.Spot2;
+import com.diveboard.model.SearchSpot;
 import com.diveboard.model.Tank2;
 import com.diveboard.model.Temperature;
 import com.diveboard.model.Units;
@@ -46,7 +46,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private boolean saltWaterChecked;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
-    private Spot2 spot;
+    private SearchSpot spot;
 
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
         DiveDetailsViewModel result = new DiveDetailsViewModel();
@@ -126,11 +126,11 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     @Bindable
-    public Spot2 getSpot() {
+    public SearchSpot getSpot() {
         return spot;
     }
 
-    public void setSpot(Spot2 spot) {
+    public void setSpot(SearchSpot spot) {
         this.spot = spot;
         notifyPropertyChanged(BR.spot);
     }

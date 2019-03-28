@@ -714,7 +714,7 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 						mTokenExpireListener = new TokenExpireListener() {
 							@Override
 							public void onTokenExpire() {
-								ApplicationController.getInstance().getAuthenticationService().setTokenExpired(true);
+								ApplicationController.getInstance().getAuthenticationService().setTokenExpired();
 								logout();
 							}
 						};

@@ -17,7 +17,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.Toast;
 
-import com.diveboard.model.Spot2;
+import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotService;
 import com.diveboard.util.ImageUtils;
 import com.diveboard.util.binding.AutoSuggestAdapter;
@@ -55,7 +55,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     private GoogleMap map;
     private SpotService service;
     private View progress;
-    private AutoSuggestAdapter<Spot2> adapter;
+    private AutoSuggestAdapter<SearchSpot> adapter;
     private MapMoveHandler mapMoveHandler;
     private AppCompatAutoCompleteTextView suggest;
     private View submitButton;
@@ -101,7 +101,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
                 if (selectedMarker == null) {
                     return;
                 }
-                ac.currentDive.setSpot((Spot2) selectedMarker.getTag());
+                ac.currentDive.setSpot((SearchSpot) selectedMarker.getTag());
                 Navigation.findNavController(view).popBackStack();
             }
         });
@@ -120,7 +120,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
                 InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
                 //navigate to position
-                Spot2 spot = (Spot2) adapterView.getItemAtPosition(position);
+                SearchSpot spot = (SearchSpot) adapterView.getItemAtPosition(position);
                 setMapPosition(spot);
             }
         });
@@ -132,7 +132,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedMarker != null && ((Spot2) selectedMarker.getTag()).name != null && ((Spot2) selectedMarker.getTag()).name.equals(s.toString())) {
+                if (selectedMarker != null && ((SearchSpot) selectedMarker.getTag()).name != null && ((SearchSpot) selectedMarker.getTag()).name.equals(s.toString())) {
                     return;
                 } else {
                     resetSelectedSpot();
@@ -154,7 +154,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
         mapMoveHandler = new MapMoveHandler(this);
     }
 
-    private void setMapPosition(Spot2 spot) {
+    private void setMapPosition(SearchSpot spot) {
         if (map == null || spot.getLatLng() == null) {
             return;
         }
@@ -171,7 +171,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     private void selectSpot(Marker marker) {
         selectedMarker = marker;
         toggleSubmitButton(true);
-        suggest.setText(((Spot2) marker.getTag()).name);
+        suggest.setText(((SearchSpot) marker.getTag()).name);
         suggest.dismissDropDown();
     }
 
@@ -230,7 +230,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
         mapMoveHandler.sendEmptyMessageDelayed(MESSAGE_MAP_MOVED, MAP_MOVE_DELAY_MS);
     }
 
-    private Marker addMarker(Spot2 spot, boolean primary) {
+    private Marker addMarker(SearchSpot spot, boolean primary) {
         synchronized (markers) {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(spot.getLatLng())
@@ -296,9 +296,9 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
             CameraPosition position = activity.map.getCameraPosition();
             final LatLngBounds latLngBounds = activity.map.getProjection().getVisibleRegion().latLngBounds;
             activity.removeMarkersOutOfBounds(latLngBounds);
-            activity.service.searchSpot(null, position.target, latLngBounds, new com.diveboard.util.Callback<List<Spot2>>() {
+            activity.service.searchSpot(null, position.target, latLngBounds, new com.diveboard.util.Callback<List<SearchSpot>>() {
                 @Override
-                public void execute(List<Spot2> data) {
+                public void execute(List<SearchSpot> data) {
                     if (data == null) {
                         return;
                     }
@@ -321,12 +321,12 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
             });
         }
 
-        private synchronized void addMarkers(List<Spot2> data) {
+        private synchronized void addMarkers(List<SearchSpot> data) {
             final SelectSpotFragment activity = outerRef.get();
             if (activity == null) {
                 return;
             }
-            for (Spot2 spot : data) {
+            for (SearchSpot spot : data) {
                 activity.addMarker(spot, false);
             }
         }
@@ -347,9 +347,9 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
                 return;
             }
             outer.progress.setVisibility(View.VISIBLE);
-            outer.service.searchSpot(msg.obj.toString(), null, null, new com.diveboard.util.Callback<List<Spot2>>() {
+            outer.service.searchSpot(msg.obj.toString(), null, null, new com.diveboard.util.Callback<List<SearchSpot>>() {
                 @Override
-                public void execute(List<Spot2> data) {
+                public void execute(List<SearchSpot> data) {
                     //TODO: there is an issue. if user types next letter and results from prev term arrived then autosuggest will shown inconsistent results
                     SelectSpotFragment outer = outerRef.get();
                     if (outer == null) {

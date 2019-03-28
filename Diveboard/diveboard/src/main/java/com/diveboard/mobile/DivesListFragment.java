@@ -16,7 +16,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 
 public class DivesListFragment extends Fragment {
 
@@ -26,8 +25,10 @@ public class DivesListFragment extends Fragment {
         ActivityDivesListBinding binding = DataBindingUtil.inflate(inflater, R.layout.activity_dives_list, container, false);
         View view = binding.getRoot();
 
-        DivesListViewModel viewModel = ViewModelProviders.of(this).get(DivesListViewModel.class);
-        viewModel.init((ApplicationController) getActivity().getApplicationContext());
+        ApplicationController applicationContext = (ApplicationController) getActivity().getApplicationContext();
+        //TODO: make a singlton?
+        DivesListViewModel viewModel = new DivesListViewModel(applicationContext, applicationContext.getDivesService());
+        viewModel.init();
 
         binding.setModel(viewModel);
         binding.setView(this);
