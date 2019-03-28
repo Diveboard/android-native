@@ -59,7 +59,7 @@ public class ApplicationController extends Application {
         //save setting
         SharedPreferences sharedPref = activity.getSharedPreferences(prefName, Context.MODE_PRIVATE);
         if (logBookListMode.equals(sharedPref.getString(logBookModeKey, null))) {
-            return new Intent(activity, DivesListFragment.class);
+            return new Intent(activity, LogbookPage.class);
         } else {
             return new Intent(activity, DivesActivity.class);
         }

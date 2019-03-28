@@ -14,18 +14,24 @@ import com.diveboard.viewModel.DivesListViewModel;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 
-public class DivesListFragment extends Fragment {
+public class LogbookPage extends Fragment {
+
+    private DrawerLayout drawerLayout;
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ActivityDivesListBinding binding = DataBindingUtil.inflate(inflater, R.layout.activity_dives_list, container, false);
         View view = binding.getRoot();
-
+        setupToolbar(view);
         ApplicationController applicationContext = (ApplicationController) getActivity().getApplicationContext();
+        drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         //TODO: make a singlton?
         DivesListViewModel viewModel = new DivesListViewModel(applicationContext, applicationContext.getDivesService());
         viewModel.init();
@@ -35,12 +41,16 @@ public class DivesListFragment extends Fragment {
         return view;
     }
 
-    public ClickHandler<DiveItemViewModel> showDiveHandler() {
-        return new ClickHandler<DiveItemViewModel>() {
-            @Override
-            public void onClick(DiveItemViewModel viewModel) {
+    private void setupToolbar(View view) {
+        Toolbar actionBar = view.findViewById(R.id.toolbar);
+        actionBar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu));
+        actionBar.setTitle(getString(R.string.logbook));
+        actionBar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+    }
 
-            }
+    public ClickHandler<DiveItemViewModel> showDiveHandler() {
+        return viewModel -> {
+
         };
     }
 

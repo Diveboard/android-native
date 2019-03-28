@@ -1,6 +1,7 @@
 package com.diveboard.mobile;
 
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.diveboard.model.SpotsDbUpdater;
@@ -9,6 +10,8 @@ import com.diveboard.util.NetworkUtils;
 import java.util.Date;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.navigation.Navigation;
 
 public class MainActivity extends AppCompatActivity {

@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/logbook"
-        android:name="com.diveboard.mobile.DivesListFragment"
+        android:name="com.diveboard.mobile.LogbookPage"
         android:label="logbook"
         tools:layout="@layout/activity_dives_list">
         <action
