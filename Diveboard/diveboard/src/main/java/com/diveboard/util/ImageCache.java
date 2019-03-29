@@ -47,6 +47,7 @@ import java.util.Iterator;
 import java.util.Set;
 
 import com.diveboard.mobile.BuildConfig;
+import com.jakewharton.disklrucache.DiskLruCache;
 
 /**
  * This class handles disk and memory caching of bitmaps in conjunction with the

@@ -1,11 +1,14 @@
 package com.diveboard.model;
 
+import com.diveboard.dataaccess.datamodel.Dive2;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 public class Statistic {
     public final int publishedDivesCount;
@@ -32,7 +35,7 @@ public class Statistic {
         this.warmest = warmest;
     }
 
-    public static Statistic create(ArrayList<Dive> dives) {
+    public static Statistic create(List<Dive2> dives) {
         int publishedDivesCount = dives.size();
         int divesCount = 0;
         int divesThisYear = 0;
@@ -48,46 +51,46 @@ public class Statistic {
         calendar.setTime(new Date());
         int currentYear = calendar.get(Calendar.YEAR);
 
-        for (Dive dive : dives) {
-            if (dive.getNumber() > divesCount) {
-                divesCount = dive.getNumber();
+        for (Dive2 dive : dives) {
+            if (dive.number > divesCount) {
+                divesCount = dive.number;
             }
 
             try {
                 Calendar diveCalendar = Calendar.getInstance();
                 DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-                diveCalendar.setTime(format.parse(dive.getDate()));
+                diveCalendar.setTime(format.parse(dive.date));
                 if (diveCalendar.get(Calendar.YEAR) == currentYear) {
                     divesThisYear++;
                 }
             } catch (ParseException e) {
 
             }
-            totalUnderwaterTimeMinutes += (dive.getDuration() == null ? 0 : dive.getDuration());
+            totalUnderwaterTimeMinutes += (dive.duration == null ? 0 : dive.duration);
 
-            if (maxDepth < dive.getMaxDepthInMeters()) {
-                maxDepth = dive.getMaxDepthInMeters();
+            if (maxDepth < dive.maxDepth) {
+                maxDepth = dive.maxDepth;
             }
 
-            if (maxTime < dive.getDuration()) {
-                maxTime = dive.getDuration();
+            if (maxTime < dive.duration) {
+                maxTime = dive.duration;
             }
-            if (dive.getSpot() != null) {
-                String name = dive.getSpot().getName();
+            if (dive.spot != null) {
+                String name = dive.spot.name;
                 if (name != null && !diveSitesIds.contains(name)) {
                     diveSitesIds.add(name);
                 }
-                String countryId = dive.getSpot().getCountryCode();
+                String countryId = dive.spot.countryCode;
                 if (countryId != null && !countries.contains(countryId)) {
                     countries.add(countryId);
                 }
             }
-            if (dive.getTempBottomCelcius() != null) {
-                if (coldest == null || coldest > dive.getTempBottomCelcius()) {
-                    coldest = dive.getTempBottomCelcius();
+            if (dive.tempBottom != null) {
+                if (coldest == null || coldest > dive.tempBottom) {
+                    coldest = dive.tempBottom;
                 }
-                if (warmest == null || warmest < dive.getTempBottomCelcius()) {
-                    warmest = dive.getTempBottomCelcius();
+                if (warmest == null || warmest < dive.tempBottom) {
+                    warmest = dive.tempBottom;
                 }
             }
         }

@@ -5,10 +5,10 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
-public class UserPreference {
+public class UserPreferenceService {
     private Context _context;
 
-    public UserPreference(final Context context) {
+    public UserPreferenceService(final Context context) {
         _context = context;
     }
 
@@ -27,7 +27,7 @@ public class UserPreference {
         }
     }
 
-    public Units.UnitsType getUnitsTyped() {
+    public Units.UnitsType getUnits() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
         return Units.UnitsType.valueOf(sharedPreferences.getString("units", Units.UnitsType.Metric.toString()));
     }

@@ -40,6 +40,7 @@
         <item name="android:drawSelectorOnTop">true</item>
         <item name="android:listSelector">@drawable/photogrid_list_selector</item>
     </style>
+
     <style name="diveboardRatingBar" parent="@android:style/Widget.RatingBar">
         <!-- <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item> -->
         <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item>
@@ -60,5 +61,13 @@
         <item name="android:paddingBottom">@dimen/input_label_vertical_spacing</item>
         <item name="android:paddingLeft">@dimen/input_label_horizontal_spacing</item>
         <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
+
+    <style name="Toolbar2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="navigationIcon">@drawable/ic_menu</item>
     </style>
 </resources>

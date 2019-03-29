@@ -18,7 +18,7 @@ import com.diveboard.model.Dive;
 import com.diveboard.model.DiveboardModel;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.SpotsDbUpdater;
-import com.diveboard.model.UserPreference;
+import com.diveboard.model.UserPreferenceService;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
@@ -45,11 +45,12 @@ public class ApplicationController extends Application {
     private int mRefresh = 0;
     private int mCurrentTab = 0;
     private SpotsDbUpdater spotsDbUpdater;
-    private UserPreference userPreference;
+    private UserPreferenceService userPreferenceService;
     private AuthenticationService authenticationService;
     private SessionRepository sessionRepository;
     private UserOfflineRepository userOfflineRepository;
     private DivesService divesService;
+    private UserService userService;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -82,11 +83,11 @@ public class ApplicationController extends Application {
         return authenticationService;
     }
 
-    public UserPreference getUserPreference() {
-        if (userPreference == null) {
-            userPreference = new UserPreference(this);
+    public UserPreferenceService getUserPreferenceService() {
+        if (userPreferenceService == null) {
+            userPreferenceService = new UserPreferenceService(this);
         }
-        return userPreference;
+        return userPreferenceService;
     }
 
     public DiveboardModel getModel() {
@@ -228,5 +229,12 @@ public class ApplicationController extends Application {
                     new DivesOnlineRepository(this, getAuthenticationService(), getUserOfflineRepository()));
         }
         return divesService;
+    }
+
+    public UserService getUserService() {
+        if (userService == null) {
+            userService = new UserService(new UserOfflineRepository(this));
+        }
+        return userService;
     }
 }

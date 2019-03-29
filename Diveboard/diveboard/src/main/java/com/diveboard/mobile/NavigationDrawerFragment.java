@@ -24,10 +24,7 @@ public class NavigationDrawerFragment extends Fragment {
 
         User user = ApplicationController.getInstance().getModel().getUser();
         //TODO: refactor: getSessionEmail should be at user level
-        DrawerHeaderViewModel viewModel = new DrawerHeaderViewModel(
-                user.getPicture(),
-                user.getNickname(),
-                ApplicationController.getInstance().getModel().getSessionEmail());
+        DrawerHeaderViewModel viewModel = new DrawerHeaderViewModel();
 
         ViewDataBinding binding = DataBindingUtil.inflate(
                 inflater, R.layout.navigation_drawer_fragment, container, false);

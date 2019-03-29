@@ -86,8 +86,8 @@ public abstract class NavDrawer extends FragmentActivity {
 					line.setVisibility(View.VISIBLE);
 				else if(mActivity instanceof NewDiveActivity && position == 1)
 		        	line.setVisibility(View.VISIBLE);
-				else if(mActivity instanceof StatisticActivity && position == 2)
-					line.setVisibility(View.VISIBLE);
+//				else if(mActivity instanceof StatisticActivity && position == 2)
+//					line.setVisibility(View.VISIBLE);
 		        else if(mActivity instanceof WalletActivity && position == 3)
 		        	line.setVisibility(View.VISIBLE);
 		        else if(mActivity instanceof ClosestShopActivity && position == 4)
@@ -202,13 +202,13 @@ public abstract class NavDrawer extends FragmentActivity {
     			
     		// Statistics
     		case 2:
-                if(!(this instanceof StatisticActivity)){
-                    Intent intent = new Intent(this, StatisticActivity.class);
-                    startActivity(intent);
-                    if(!(this instanceof DivesActivity))
-                        finish();
-                }
-                break;
+//                if(!(this instanceof StatisticActivity)){
+//                    Intent intent = new Intent(this, StatisticActivity.class);
+//                    startActivity(intent);
+//                    if(!(this instanceof DivesActivity))
+//                        finish();
+//                }
+//                break;
 
     		// Wallet Activity
     		case 3:
@@ -241,7 +241,7 @@ public abstract class NavDrawer extends FragmentActivity {
     			
     		// Settings
     		case 6:
-    			Intent settingsActivity = new Intent(this, SettingsActivity2.class);
+    			Intent settingsActivity = new Intent(this, SettingsPage.class);
     			startActivity(settingsActivity);
     			if(!(this instanceof DivesActivity))
     				finish();

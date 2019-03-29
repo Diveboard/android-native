@@ -1,15 +1,42 @@
 package com.diveboard.viewModel;
 
-import com.diveboard.model.Picture;
+import com.diveboard.mobile.BR;
 
-public class DrawerHeaderViewModel {
-    public Picture profileImagePath;
-    public String name;
-    public String email;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
-    public DrawerHeaderViewModel(Picture profileImagePath, String name, String email) {
-        this.profileImagePath = profileImagePath;
+public class DrawerHeaderViewModel extends BaseObservable {
+    private String profileImageUrl;
+    private String name;
+    private String email;
+
+    @Bindable
+    public String getProfileImageUrl() {
+        return profileImageUrl;
+    }
+
+    public void setProfileImageUrl(String profileImageUrl) {
+        this.profileImageUrl = profileImageUrl;
+        notifyPropertyChanged(BR.profileImageUrl);
+    }
+
+    @Bindable
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
         this.name = name;
+        notifyPropertyChanged(BR.name);
+    }
+
+    @Bindable
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
         this.email = email;
+        notifyPropertyChanged(BR.email);
     }
 }

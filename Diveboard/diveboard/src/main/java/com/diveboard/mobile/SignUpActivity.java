@@ -98,20 +98,8 @@ public class SignUpActivity extends Fragment {
         mLoginStatusView = view.findViewById(R.id.login_status);
         mLoginStatusMessageView = view.findViewById(R.id.login_status_message);
         mError = view.findViewById(R.id.error);
-        view.findViewById(R.id.sign_in_button).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        attemptLogin();
-                    }
-                });
-        view.findViewById(R.id.authButton).setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Navigation.findNavController(view).navigate(R.id.fb_login);
-                    }
-                });
+        view.findViewById(R.id.sign_in_button).setOnClickListener(view1 -> attemptLogin());
+        //TODO: replace fb login button on sign up page as it is done on this page
         return view;
     }
 

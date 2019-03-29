@@ -10,7 +10,7 @@
             type="com.diveboard.viewModel.DrawerHeaderViewModel" />
     </data>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:background="?attr/colorPrimaryDark"
@@ -19,35 +19,42 @@
         android:padding="16dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:id="@+id/imageView"
+            android:layout_width="200dp"
+            android:layout_height="50dp"
             android:layout_gravity="start"
-            android:src="@drawable/logo_250" />
+            android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginLeft="@dimen/view_margin"
+            android:src="@drawable/full_diveboard_grey"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <com.diveboard.ui.CircularImageView
-            android:id="@+id/iv_profile"
+            android:id="@+id/profile_image"
             android:layout_width="80dp"
             android:layout_height="80dp"
             android:layout_centerInParent="true"
+            android:layout_marginStart="@dimen/view_margin"
+            android:layout_marginLeft="@dimen/view_margin"
             app:civ_border="true"
             app:civ_border_color="@color/textColorPrimaryInverse"
-            app:civ_border_width="1dp" />
+            app:civ_border_width="1dp"
+            app:imageUrl="@{model.profileImageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/textView13"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_margin"
             android:text="@{model.name}"
-            android:textSize="14sp"
             android:textColor="@color/textColorPrimaryInverse"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@+id/profile_image"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image"
             tools:text="Bill Clinton" />
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@{model.email}"
-            android:textColor="@color/textColorPrimaryInverse"
-            tools:text="bill-clinton@gmail.com" />
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

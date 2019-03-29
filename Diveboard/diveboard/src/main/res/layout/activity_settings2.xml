@@ -1,29 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<androidx.appcompat.widget.LinearLayoutCompat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:orientation="vertical">
 
-    <androidx.appcompat.widget.LinearLayoutCompat
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        style="@style/Toolbar2"
+        app:title="@string/action_settings" />
+
+    <fragment
+        android:id="@+id/static_fragment"
+        android:name="com.diveboard.mobile.SettingsFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent" />
+</androidx.appcompat.widget.LinearLayoutCompat>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
-
-        <FrameLayout
-            android:id="@+id/pref_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </androidx.appcompat.widget.LinearLayoutCompat>
-
-    <include layout="@layout/navigation_drawer_fragment" />
-
-</androidx.drawerlayout.widget.DrawerLayout>

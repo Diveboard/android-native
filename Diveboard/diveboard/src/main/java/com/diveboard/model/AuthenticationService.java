@@ -46,14 +46,11 @@ public class AuthenticationService {
             return;
         }
         LoginRepository loginRepository = new LoginRepository(context);
-        Callback<LoginResponse> intCallback = new Callback<LoginResponse>() {
-            @Override
-            public void execute(LoginResponse data) {
-                sessionRepository.saveSession(data);
-                userOfflineRepository.save(data.user);
-                if (callback != null) {
-                    callback.execute(data);
-                }
+        Callback<LoginResponse> intCallback = data -> {
+            sessionRepository.saveSession(data);
+            userOfflineRepository.save(data.user);
+            if (callback != null) {
+                callback.execute(data);
             }
         };
         loginRepository.login(login, password, intCallback, errorCallback);
@@ -67,14 +64,11 @@ public class AuthenticationService {
             return;
         }
         LoginWithFacebookRepository loginRepository = new LoginWithFacebookRepository(context);
-        Callback<LoginResponse> intCallback = new Callback<LoginResponse>() {
-            @Override
-            public void execute(LoginResponse data) {
-                sessionRepository.saveSession(data);
-                userOfflineRepository.save(data.user);
-                if (callback != null) {
-                    callback.execute(data);
-                }
+        Callback<LoginResponse> intCallback = data -> {
+            sessionRepository.saveSession(data);
+            userOfflineRepository.save(data.user);
+            if (callback != null) {
+                callback.execute(data);
             }
         };
         loginRepository.login(userId, token, intCallback, errorCallback);

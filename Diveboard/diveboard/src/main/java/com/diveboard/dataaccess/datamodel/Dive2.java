@@ -17,26 +17,26 @@ public class Dive2 {
     public Integer duration;
     @SerializedName("maxdepth")
     public Double maxDepth;
-    @SerializedName("maxdepth_value")
-    public Double maxDepthValue;
-    @SerializedName("maxdepth_unit")
-    public String maxDepthUnit;
+//    @SerializedName("maxdepth_value")
+//    public Double maxDepthValue;
+//    @SerializedName("maxdepth_unit")
+//    public String maxDepthUnit;
     @SerializedName("user_id")
     public Integer userId;
     @SerializedName("spot_id")
     public Integer spotId;
     @SerializedName("temp_surface")
     public Object tempSurface;
-    @SerializedName("temp_surface_value")
-    public Double tempSurfaceValue;
-    @SerializedName("temp_surface_unit")
-    public String tempSurfaceUnit;
+//    @SerializedName("temp_surface_value")
+//    public Double tempSurfaceValue;
+//    @SerializedName("temp_surface_unit")
+//    public String tempSurfaceUnit;
     @SerializedName("temp_bottom")
     public Double tempBottom;
-    @SerializedName("temp_bottom_unit")
-    public String tempBottomUnit;
-    @SerializedName("temp_bottom_value")
-    public Double tempBottomValue;
+//    @SerializedName("temp_bottom_unit")
+//    public String tempBottomUnit;
+//    @SerializedName("temp_bottom_value")
+//    public Double tempBottomValue;
     @SerializedName("privacy")
     public Integer privacy;
     @SerializedName("weights")

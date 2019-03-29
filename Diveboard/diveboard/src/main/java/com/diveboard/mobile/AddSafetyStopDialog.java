@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.diveboard.model.Units;
 import com.diveboard.util.Callback;
 import com.diveboard.viewModel.AddSafetyStopViewModel;
 
@@ -35,7 +34,7 @@ public class AddSafetyStopDialog extends DialogFragment {
         ViewDataBinding binding = DataBindingUtil.bind(view);
         ApplicationController context = (ApplicationController) getActivity().getApplicationContext();
 
-        final AddSafetyStopViewModel viewModel = new AddSafetyStopViewModel(context.getUserPreference().getUnitsTyped());
+        final AddSafetyStopViewModel viewModel = new AddSafetyStopViewModel(context.getUserPreferenceService().getUnits());
         binding.setVariable(BR.model, viewModel);
 
         builder.setView(view)

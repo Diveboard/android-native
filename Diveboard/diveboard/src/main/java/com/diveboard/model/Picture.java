@@ -133,14 +133,14 @@ public class Picture {
     }
 
     public synchronized Bitmap getPicture(final Context context) throws IOException {
-        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
+        if (ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Size.MEDIUM)
             return (getPicture(context, Size.MEDIUM));
         else
             return (getPicture(context, Size.LARGE));
     }
 
     public synchronized Bitmap getPicture(final Context context, Size size) throws IOException {
-        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
+        if (ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Size.MEDIUM)
             size = Size.MEDIUM;
         else
             size = Size.LARGE;
@@ -157,7 +157,7 @@ public class Picture {
     }
 
     public synchronized void checkPicture(final Context context, Size size) throws IOException {
-        if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
+        if (ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Size.MEDIUM)
             size = Size.MEDIUM;
         else
             size = Size.LARGE;
@@ -178,7 +178,7 @@ public class Picture {
     public Bitmap storePicture(final Context context) throws IOException {
         final Size size;
         if (loadPicture(context)) {
-            if (ApplicationController.getInstance().getUserPreference().getPictureQuality() == Size.MEDIUM)
+            if (ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Size.MEDIUM)
                 size = Size.MEDIUM;
             else
                 size = Size.LARGE;

@@ -61,9 +61,7 @@ public abstract class FileRepository<T> {
 
         @Override
         protected void onPostExecute(T t) {
-            if (t != null) {
-                callback.success(t);
-            }
+            callback.success(t);
         }
 
         @Override

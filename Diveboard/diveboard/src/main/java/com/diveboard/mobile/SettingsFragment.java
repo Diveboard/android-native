@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 import android.widget.Toast;
 
 import com.diveboard.config.AppConfig;
@@ -18,6 +16,9 @@ import com.uservoice.uservoicesdk.UserVoice;
 import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override

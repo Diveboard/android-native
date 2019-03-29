@@ -16,13 +16,14 @@ import androidx.appcompat.widget.AppCompatImageView;
 import android.util.AttributeSet;
 
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.R;
 
 import static android.widget.ImageView.ScaleType.CENTER_CROP;
 import static android.widget.ImageView.ScaleType.CENTER_INSIDE;
 
 
-public class CircularImageView extends AppCompatImageView {
+public class CircularImageView extends NetworkImageView {
 
     // Default Values
     private static final float DEFAULT_BORDER_WIDTH = 4;

@@ -5,6 +5,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.databinding.ActivityDivesListBinding;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
@@ -24,7 +25,6 @@ public class LogbookPage extends Fragment {
 
     private DrawerLayout drawerLayout;
 
-    @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ActivityDivesListBinding binding = DataBindingUtil.inflate(inflater, R.layout.activity_dives_list, container, false);

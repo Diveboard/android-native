@@ -43,8 +43,8 @@ public class TankDialog extends DialogFragment {
 
         ResourceHolder holder = new ResourceHolder(context);
         final TankViewModel viewModel = tank == null ?
-                TankViewModel.createDefault(context.getUserPreference().getUnitsTyped(), holder) :
-                TankViewModel.fromModel(tank, context.getUserPreference().getUnitsTyped(), holder);
+                TankViewModel.createDefault(context.getUserPreferenceService().getUnits(), holder) :
+                TankViewModel.fromModel(tank, context.getUserPreferenceService().getUnits(), holder);
 
         binding.setVariable(BR.model, viewModel);
         binding.setVariable(BR.converter, new BindingConvertions());

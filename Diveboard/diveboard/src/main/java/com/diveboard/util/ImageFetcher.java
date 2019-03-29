@@ -36,6 +36,7 @@ import java.net.URL;
 
 import com.diveboard.mobile.BuildConfig;
 import com.diveboard.mobile.R;
+import com.jakewharton.disklrucache.DiskLruCache;
 
 /**
  * A simple subclass of {@link ImageResizer} that fetches and resizes images fetched from a URL.

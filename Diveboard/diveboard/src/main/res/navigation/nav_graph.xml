@@ -26,9 +26,6 @@
         <action
             android:id="@+id/action_login_to_signup"
             app:destination="@id/signup" />
-        <action
-            android:id="@+id/action_login_to_fb_login"
-            app:destination="@id/fb_login" />
     </fragment>
 
     <fragment
@@ -36,12 +33,6 @@
         android:name="com.diveboard.mobile.SignUpActivity"
         android:label="signup"
         tools:layout="@layout/activity_sign_up" />
-
-    <fragment
-        android:id="@+id/fb_login"
-        android:name="com.diveboard.mobile.FBLoginActivity"
-        android:label="fb_login"
-        tools:layout="@layout/activity_fblogin" />
 
     <fragment
         android:id="@+id/diveDetails"
@@ -58,4 +49,16 @@
         android:name="com.diveboard.mobile.SelectSpotFragment"
         android:label="select_spot"
         tools:layout="@layout/select_spot" />
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.diveboard.mobile.SettingsPage"
+        android:label="settings"
+        tools:layout="@layout/activity_settings2" />
+
+    <fragment
+        android:id="@+id/statistics"
+        android:name="com.diveboard.mobile.StatisticPage"
+        android:label="settings"
+        tools:layout="@layout/activity_settings2" />
 </navigation>

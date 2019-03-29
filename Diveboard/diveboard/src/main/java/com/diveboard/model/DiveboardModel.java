@@ -79,7 +79,7 @@ public class					DiveboardModel
 	private boolean				_connected = false;
 	private String				_token;
 	private String				_unitPreferences;
-	private UserPreference		_preference;
+	private UserPreferenceService _preference;
 	private Wallet 				_wallet = null;
 	public static ArrayList<Pair<String, Picture>>	pictureList;
 	public static ArrayList<String>	savedPictureList;
@@ -145,7 +145,7 @@ public class					DiveboardModel
 				while (fileInputStream.read(buffer) != -1)
 					fileContent.append(new String(buffer));
 				_userId = Integer.parseInt(fileContent.toString());
-				_preference = new UserPreference(_context);
+				_preference = new UserPreferenceService(_context);
 				fileInputStream.close();
 				
 				fileInputStream = _context.openFileInput(file_token.getName());
@@ -216,7 +216,7 @@ public class					DiveboardModel
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
-				_preference = new UserPreference(_context);
+				_preference = new UserPreferenceService(_context);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
@@ -307,7 +307,7 @@ public class					DiveboardModel
 				json = new JSONObject(result);
 				json = json.getJSONObject("result");
 				_userId = json.getInt("id");
-				_preference = new UserPreference(_context);
+				_preference = new UserPreferenceService(_context);
 				// Initialize DataManager
 				_cache = new DataManager(_context, _userId, _token, this);
 				_connected = true;
@@ -1059,7 +1059,7 @@ public class					DiveboardModel
 						{
 							synchronized (_lock1)
 							{
-								if(ApplicationController.getInstance().getUserPreference().getPictureQuality() == Picture.Size.MEDIUM){
+								if(ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Picture.Size.MEDIUM){
 									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
@@ -1084,7 +1084,7 @@ public class					DiveboardModel
 						{
 							synchronized (_lock2)
 							{
-								if(ApplicationController.getInstance().getUserPreference().getPictureQuality() == Picture.Size.MEDIUM){
+								if(ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Picture.Size.MEDIUM){
 									if (!_run || !checkNetwork())
 									break ;
 								pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
@@ -1142,7 +1142,7 @@ public class					DiveboardModel
 //						if (!_run || !wifiNetwork.isConnected())
 //							break ;
 //						pictureList.get(i).second.getPicture(_context, Picture.Size.SMALL);
-						if(ApplicationController.getInstance().getUserPreference().getPictureQuality() == Picture.Size.MEDIUM){
+						if(ApplicationController.getInstance().getUserPreferenceService().getPictureQuality() == Picture.Size.MEDIUM){
 							if (!_run || !checkNetwork())
 								break ;
 							pictureList.get(i).second.checkPicture(_context, Picture.Size.MEDIUM);
@@ -1883,7 +1883,7 @@ public class					DiveboardModel
 		return null;
 	}
 	
-	public UserPreference					getPreference()
+	public UserPreferenceService getPreference()
 	{
 		return _preference;
 	}

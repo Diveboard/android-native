@@ -190,7 +190,7 @@ public class DiveDetailsActivity extends TabActivity {
 
     		// Settings
     		case 5:
-    			Intent settingsActivity = new Intent(this, SettingsActivity2.class);
+    			Intent settingsActivity = new Intent(this, SettingsPage.class);
     			startActivity(settingsActivity);
     			if(!((Activity)this instanceof DivesActivity))
     				finish();

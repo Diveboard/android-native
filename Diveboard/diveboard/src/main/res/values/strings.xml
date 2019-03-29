@@ -258,4 +258,6 @@
     <string name="login_with_facebook">LOGIN WITH FACEBOOK</string>
     <string name="error_get_dives_message">Error retrieving dives:</string>
     <string name="logbook">Logbook</string>
+    <string name="error_profile_message">Error getting user profile</string>
+    <string name="statistics">Statistics</string>
 </resources>

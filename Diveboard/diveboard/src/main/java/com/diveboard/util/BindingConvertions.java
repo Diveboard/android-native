@@ -3,6 +3,7 @@ package com.diveboard.util;
 import android.content.Context;
 import android.view.View;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.GasMixes;
@@ -12,6 +13,7 @@ import com.diveboard.model.Units;
 
 import java.text.DecimalFormat;
 
+import androidx.databinding.BindingAdapter;
 import androidx.databinding.BindingConversion;
 import androidx.databinding.InverseMethod;
 
@@ -45,6 +47,12 @@ public final class BindingConvertions {
         return result;
     }
 
+    @BindingAdapter("imageUrl")
+    public static void getImageUrl(View view, String imageUrl) {
+        NetworkImageView imageView = (NetworkImageView) view;
+        imageView.setImageUrl(imageUrl, VolleySingleton.getInstance().getImageLoader());
+    }
+
     @InverseMethod("stringToIntegerConverter")
     public String integerToStringConverter(Integer value) {
         if (value == null) {
@@ -61,7 +69,6 @@ public final class BindingConvertions {
         }
         return null;
     }
-
 
     @InverseMethod("stringToDoubleConverter")
     public String doubleToStringConverter(Double value) {
