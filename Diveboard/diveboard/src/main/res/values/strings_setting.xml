@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="cache_cleared">Cache cleared</string>
     <string name="spots_db_latest_update">Updated</string>
     <string name="spots_db_never_updated">Never downloaded</string>
     <string name="spots_db_updated">Spots cache updated</string>

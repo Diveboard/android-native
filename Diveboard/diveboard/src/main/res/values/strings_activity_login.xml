@@ -6,6 +6,5 @@
     <string name="prompt_email">YOUR EMAIL</string>
     <string name="prompt_password">YOUR PASSWORD</string>
     <string name="action_login">LOGIN</string>
-    <string name="action_FBlogin">FB LOGIN</string>
 
 </resources>

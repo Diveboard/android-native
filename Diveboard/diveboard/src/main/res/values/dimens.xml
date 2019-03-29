@@ -5,10 +5,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="view_margin">8dp</dimen>
     <dimen name="view_double_margin">16dp</dimen>
-	<dimen name="image_thumbnail_size">100dp</dimen>
-    <dimen name="image_thumbnail_spacing">1dp</dimen>
-    <dimen name="image_detail_pager_margin">80dp</dimen>
-    <dimen name="map">250dp</dimen>
     <dimen name="text_size_big">18sp</dimen>
     <dimen name="view_half_margin">4dp</dimen>
     <dimen name="edit_text_height">20dp</dimen>

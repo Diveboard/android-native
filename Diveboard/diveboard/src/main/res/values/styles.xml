@@ -6,14 +6,6 @@
         by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
 
     -->
-    <style name="AppBaseTheme" parent="@android:style/Theme.NoTitleBar">
-        <!--
-            Theme customizations available in newer API levels can go in
-            res/values-vXX/styles.xml, while customizations related to
-            backward-compatibility can go here.
-
-        -->
-    </style>
 
     <!-- Application theme. -->
     <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -24,21 +16,6 @@
         <item name="colorSecondary">@color/colorSecondary</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
-    </style>
-
-    <style name="LoginFormContainer">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">16dp</item>
-    </style>
-
-    <style name="myEditText" parent="@android:style/Widget.EditText">
-        <item name="android:gravity">center</item>
-    </style>
-
-    <style name="PhotoGridLayout">
-        <item name="android:drawSelectorOnTop">true</item>
-        <item name="android:listSelector">@drawable/photogrid_list_selector</item>
     </style>
 
     <style name="SectionHeader">

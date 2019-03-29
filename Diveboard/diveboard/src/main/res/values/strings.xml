@@ -2,211 +2,28 @@
 <resources>
 
     <string name="app_name">Diveboard</string>
-    <string name="google_play_services_version">4030500</string>
 
     <string name="facebook_app_id">193803977296892</string>
     <string name="fb_login_protocol_scheme">fb193803977296892</string>
     <!-- private API GoogleMaps key for Gonzalo debugging- -->
-    <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
     <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
-    <string name="maps_app_id_debug">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
-    <string name="maps_app_id_release">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
-    <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
-    <string name="title_activity_edit_dive">EditDiveActivity</string>
     <string name="action_settings">Settings</string>
-    <string name="hello_world">Hello World!</string>
-    <string name="tab_notes_edit_title">DIVE NOTES</string>
-    <string name="tab_spots_title">SPOTS</string>
-    <string name="tab_shop_title">SHOP</string>
-    <string name="tab_buddies_title">BUDDIES</string>
-    <string name="tab_photos_title">PHOTOS</string>
-    <string name="save_button">SAVE</string>
     <string name="tab_details_label">Details</string>
     <string name="tab_notes_label">NOTES</string>
-    <string name="tab_gear_label">GEAR</string>
-    <string name="tab_species_label">Species</string>
-    <string name="tab_photos_label">PHOTOS</string>
-    <string name="tab_map_label">MAP</string>
-    <string name="tab_spots_label">SPOTS</string>
-    <string name="edit_tripname_title">Trip Name</string>
-    <string name="characters_left">Characters Left</string>
-    <string name="tripname_hint">Trip name</string>
     <string name="cancel">Cancel</string>
-    <string name="save">Ok</string>
-    <string name="divenumber_hint">Dive Number</string>
-    <string name="edit_divenumber_title">Dive Number</string>
-    <string name="edit_date_title">Date</string>
-    <string name="edit_time_in_title">Time In</string>
-    <string name="title_activity_dive_details">DiveDetailsActivity</string>
-    <string name="title_shop_activity">ClosestShopActivity</string>
-    <string name="title_map_activity">MapActivity</string>
-    <string name="title_activity_dive_details_main">DiveDetailsMainActivity</string>
-    <string name="edit_max_depth_title">Max Depth</string>
-    <string name="maxdepth_hint">Max Depth</string>
-    <string name="edit_duration_title">Duration</string>
-    <string name="duration_hint">Duration</string>
     <string name="duration_label">Duration, min</string>
-    <string name="surface_temp_hint">Surface Temp.</string>
-    <string name="edit_surface_temp_title">Surface Temp.</string>
-    <string name="edit_bottom_temp_title">Bottom Temp.</string>
-    <string name="bottom_temp_hint">Bottom Temp.</string>
-    <string name="weights_hint">Weights</string>
-    <string name="edit_weights_title">Weights</string>
-    <string name="exit_title">Exit</string>
-    <string name="edit_confirm_title">Exit without save?</string>
-    <string name="confirm_logout">Are you sure you want to logout?</string>
-    <string name="bad_visibility">Bad (under 5m / 15ft)</string>
-    <string name="average_visibility">Average (5-10m / 15-30ft)</string>
-    <string name="good_visibility">Good (10-25m / 40-75ft)</string>
-    <string name="excellent_visibility">Excellent (over 25m / 75ft)</string>
-    <string name="edit_visibility_title">Visibility</string>
-    <string name="edit_review_title">Review</string>
-    <string name="edit_current_title">Current</string>
-    <string name="none_current">None</string>
-    <string name="light_current">Light (up to 1 knot)</string>
-    <string name="medium_current">Medium (up to 2 knots)</string>
-    <string name="strong_current">Strong (up to 3 knots)</string>
-    <string name="extreme_current">Extreme (over 3 knots)</string>
-    <string name="edit_altitude_title">Altitude</string>
-    <string name="altitude_hint">Altitude</string>
-    <string name="edit_water_title">Water Type</string>
-    <string name="salt_water">Salt</string>
-    <string name="fresh_water">Fresh</string>
-    <string name="title_activity_diveboard_facebook_login">DiveboardFacebookLoginActivity</string>
-    <string name="title_activity_fblogin_fragment">FBLoginFragment</string>
-    <string name="title_activity_fblogin">FBLoginActivity</string>
-    <string name="title_activity_intro">IntroActivity</string>
-    <string name="title_banner_closest_shop">CLOSEST SHOPS</string>
-    <string name="title_banner_wallet">MY WALLET</string>
-    <string name="tab_details_edit_title">DIVE DETAILS</string>
-    <string name="title_activity_new_dive">NewDiveActivity</string>
     <string name="add_button">Add</string>
-    <string name="confirm_button">Confirm</string>
-    <string name="search_hint">Search spot</string>
-    <string name="search_hint_shop">Search shop</string>
-    <string name="title_activity_empty">EmptyActivity</string>
-    <string name="activity_in_progress">No picture in dive!</string>
-    <string name="title_activity_photos">PhotosActivity</string>
-    <string name="null_select">-</string>
-    <string name="title_activity_map">MapActivity</string>
-    <string name="title_activity_test">TestActivity</string>
-    <string name="title_activity_graph_image">GraphImageActivity</string>
-    <string name="title_activity_wallet">WalletActivity</string>
-    <string name="delete_confirm_title">Delete dive</string>
-    <string name="delete_confirm_message">You are about to delete this dive. This cannot be recovered. Are you sure?</string>
-    <string name="delete_button">Delete</string>
     <string name="wait_message">Please wait</string>
-    <string name="edit_safetystops_title">Safety Stops</string>
-    <string name="edit_tanks_title">Tanks</string>
-    <string name="add_safetystops_button">Add Safety Stop</string>
-    <string name="add_tank_button">Add Tank</string>
-    <string name="edit_divetype_title">Diving Type</string>
-    <string name="recreational_type">Recreational</string>
-    <string name="training_type">Training</string>
-    <string name="nightdive_type">Night Dive</string>
-    <string name="deepdive_type">Deep Dive</string>
-    <string name="drift_type">Drift</string>
-    <string name="wreck_type">Wreck</string>
-    <string name="cave_type">Cave</string>
-    <string name="reef_type">Reef</string>
-    <string name="photo_type">Photo</string>
-    <string name="research_type">Research</string>
-    <string name="admin_category">Admin</string>
-    <string name="sudo_hint">User Id</string>
-    <string name="review_overall">Overall: </string>
-    <string name="review_difficulty">Dive difficulty: </string>
-    <string name="review_life">Marine life: </string>
-    <string name="review_fish">Big fish: </string>
-    <string name="review_wreck">Wreck sighted: </string>
-    <string name="hint_poor">Poor</string>
-    <string name="hint_terrible">Terrible</string>
-    <string name="hint_average">Average</string>
-    <string name="hint_very_good">Very good</string>
-    <string name="hint_excellent">Excellent!</string>
-    <string name="hint_trivial">Trivial</string>
-    <string name="hint_simple">Simple</string>
-    <string name="hint_somewhat_simple">Somewhat simple</string>
-    <string name="hint_tricky">Tricky</string>
-    <string name="hint_hardcore">Hardcore!</string>
-    <string name="name_spot_hint">Name of your spot</string>
-    <string name="edit_guidename_title">Guide Name</string>
-    <string name="guidename_hint">Guide Name</string>
-    <string name="no_network_connection_toast">No network connection found</string>
-    <string name="new_spot_marker_toast">Make a long click in the map to place the Spot</string>
-    <string name="new_spot_welcome_screen">Search for predefined dive spots or place your own spot by clicking on the left marker icon</string>
-    <string name="no_spot_found_spinner">No nearby spot was found</string>
-    <string name="search_spot_button">CHANGE SPOT >></string>
-    <string name="search_shop_button">SEARCH A SHOP >></string>
-    <string name="gps_textview">GPS:</string>
-    <string name="region_textview">REGION:</string>
-    <string name="location_textview">LOCATION:</string>
-    <string name="country_textview">COUNTRY:</string>
-    <string name="name_textview">NAME:</string>
-    <string name="no_coordinates">Coordinates unknown</string>
-    <string name="no_spots_around">We could not find spots around, check your connection or try again later</string>
-    <string name="no_internet_co_new_spot">Sorry but creating a manual spot requires internet connection</string>
-    <string name="no_internet_co_wallet">Wallet pictures could not be downloaded due to problems with the connection</string>
     <string name="no_db">Spots DB does not exist or it was never downloaded previously</string>
     <string name="db_generic_error">Cannot request spots DB</string>
-    <string name="share_msg">Share it!</string>
-    <string name="menu_refresh">Refresh</string>
-    <string name="menu_new_dive">New dive</string>
-    <string name="menu_shop">Closest shop</string>
-    <string name="menu_settings">Settings</string>
     <string name="menu_report_bug">Report a bug</string>
-    <string name="menu_wallet">See your wallet</string>
-    <string name="menu_test">Go and play</string>
     <string name="menu_logout">Logout</string>
-    <string name="choose_gallery">Choose from gallery</string>
-    <string name="take_picture">Take a picture</string>
-    <string name="upload_not_finished">Please wait until the picture has been uploaded to the server to save</string>
-    <string name="upload_not_finished_exit">Please wait until the picture has been uploaded to the server to exit</string>
-    <string name="upload_error">Oupps, there was an error trying to upload the picture. Please try again later</string>
-    <string name="rate_title">Rate Diveboard</string>
-    <string name="rate_text">Hey! Did you enjoy using Diveboard? If so, could you rate us on the play store?\nThanks!!</string>
-    <string name="rate_later">Later</string>
-    <string name="rate_refuse">Nope</string>
-    <string name="rate_accept">Sure!</string>
     <string name="menu_links_logbook">Logbook</string>
     <string name="menu_links_statistics">Statistics</string>
     <string name="menu_links_wallet">Wallet</string>
     <string name="menu_links_setting">Settings</string>
 
-    <string name="menu_links_has_not_rated">Rate App</string>
-    <string-array name="menu_links_has_rated">
-        <item>Logbook</item>
-        <item>New Dive</item>
-        <item>Statistics</item>
-        <item>Wallet</item>
-        <item>Closest Shop</item>
-        <item>Refresh</item>
-        <item>Settings</item>
-        <item>Report a bug</item>
-        <item>Logout</item>
-    </string-array>
-    <string-array name="menu_links_has_rated_nobug">
-        <item>Logbook</item>
-        <item>New Dive</item>
-        <item>Statistics</item>
-        <item>Wallet</item>
-        <item>Closest Shop</item>
-        <item>Refresh</item>
-        <item>Settings</item>
-        <item>Logout</item>
-    </string-array>
-
-    <string name="title_activity_navigation_drawer">NavigationDrawerActivity</string>
-    <string name="shop_review_title">REVIEW</string>
-    <string name="shop_review_title_hint">Title</string>
-    <string name="shop_review_comment">Comment</string>
-    <string name="shop_review_organisation">Organisation</string>
-    <string name="shop_review_friend">Friend</string>
-    <string name="shop_review_security">Security</string>
-    <string name="shop_review_boat">Boat</string>
-    <string name="shop_review_rent">Rent</string>
-    <string name="shop_review_anonymous">Anonymous</string>
-    <string name="shop_review_recommend">Recommend</string>
     <string name="tab_people_label">PEOPLE</string>
     <string name="dive_details_general_title">GENERAL</string>
     <string name="dive_number">Dive #</string>
@@ -215,23 +32,19 @@
     <string name="dive_profile">DIVE PROFILE</string>
 
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="depth">Depth</string>
     <string name="duration">Duration, min</string>
     <string name="add_safetystop">Safety stop</string>
     <string name="safetyStopItemFormat">%d %s - %d min;</string>
     <string name="meter">m</string>
     <string name="foot">ft</string>
-    <string name="title_activity_select_spot">Select spot</string>
     <string name="dive_details_title">Dive Details</string>
     <string name="clone_dive_title">Clone</string>
     <string name="save_dive_title">Save</string>
     <string name="environment">ENVIRONMENT</string>
     <string name="dive_type">Dive Type</string>
-    <string name="air_temperature">Air Temp</string>
     <string name="water_temperature_metric">Water Temp, &#176;C</string>
     <string name="water_temperature_imperial">Water Temp, &#176;F</string>
-    <string name="set_button">Set</string>
     <string name="save_button2">Save</string>
     <string name="air_temperature_metric">Air Temp, &#176;C</string>
     <string name="air_temperature_imperial">Air Temp, &#176;F</string>
