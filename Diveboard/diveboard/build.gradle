@@ -53,14 +53,13 @@ android {
 
 dependencies {
     implementation 'com.google.android.gms:play-services-maps:16.1.0'
-    implementation 'com.google.android.gms:play-services-analytics:16.0.7'
+    implementation 'com.google.android.gms:play-services-analytics:16.0.8'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
     implementation 'androidx.appcompat:appcompat:1.0.2'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation 'com.google.android.material:material:1.0.0'
     implementation 'androidx.preference:preference:1.0.0'
     implementation 'androidx.lifecycle:lifecycle-extensions:2.0.0'
-    implementation 'com.astuetz:pagerslidingtabstrip:1.0.1'
     implementation 'com.facebook.android:facebook-login:4.41.0'
     implementation 'com.uservoice:uservoice-android-sdk:1.1.2'
     implementation 'com.github.Ilhasoft:data-binding-validator:2.0.0'
