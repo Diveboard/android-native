@@ -17,13 +17,13 @@ public class UserPreferenceService {
         return sharedPreferences.getBoolean("data_usage", true);
     }
 
-    public Picture.Size getPictureQuality() {
+    public PictureSize getPictureQuality() {
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
         String value = sharedPreferences.getString("picquality", null);
         if ("High Definition".equals(value)) {
-            return Picture.Size.LARGE;
+            return PictureSize.LARGE;
         } else {
-            return Picture.Size.MEDIUM;
+            return PictureSize.MEDIUM;
         }
     }
 

@@ -1,8 +1,8 @@
 package com.diveboard.dataaccess;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
-import com.diveboard.util.AsyncTask;
 import com.diveboard.util.ResponseCallback;
 import com.google.gson.Gson;
 

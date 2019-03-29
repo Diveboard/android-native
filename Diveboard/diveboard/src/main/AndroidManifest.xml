@@ -49,8 +49,6 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity android:name=".LogbookPage" />
-
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_app_id" />
@@ -65,67 +63,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.facebook.LoginActivity"
-            android:label="@string/app_name"
-            android:theme="@android:style/Theme.Translucent.NoTitleBar" />
-        <activity
-            android:name=".DivesActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".GalleryCarouselActivity"
-            android:label="@string/app_name" />
-        <activity
-            android:name=".editdive.EditDiveActivity"
-            android:label="@string/title_activity_edit_dive"
-            android:windowSoftInputMode="adjustResize|stateHidden" />
-        <activity
-            android:name=".editdive.TabEditDetailsActivity"
-            android:label="@string/title_activity_edit_dive" />
-        <activity
-            android:name=".editdive.TabEditNotesActivity"
-            android:label="@string/title_activity_edit_dive" />
-        <activity
-            android:name=".editdive.TabEditSpotsActivity"
-            android:label="@string/title_activity_edit_dive" />
-        <activity
-            android:name=".editdive.TabEditPhotosActivity"
-            android:label="@string/title_activity_edit_dive" />
-        <activity
-            android:name=".DiveDetailsActivity"
-            android:label="@string/title_activity_dive_details_main" />
-        <activity
-            android:name=".MapActivity"
-            android:label="@string/title_map_activity" />
-        <activity
-            android:name=".ClosestShopActivity"
-            android:label="@string/title_shop_activity" />
-        <activity
-            android:name=".DiveDetailsMainActivity"
-            android:label="@string/title_activity_dive_details_main" />
-        <activity
-            android:name=".SignUpActivity"
-            android:label="@string/title_activity_sign_up"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".SettingsPage"
-            android:label="@string/title_activity_settings" />
-        <!--    <activity
-                android:name=".DiveDetailsActivity2"
-                android:label="@string/title_activity_dive_details_main"
-                android:windowSoftInputMode="stateHidden" />-->
-        <activity
-            android:name=".FBLoginActivity"
-            android:label="@string/title_activity_fblogin" />
-        <activity
-            android:name=".newdive.NewDiveActivity"
-            android:label="@string/title_activity_new_dive" />
-        <activity
-            android:name=".newdive.TabNewDetailsActivity"
-            android:label="@string/title_activity_new_dive" />
-        <activity
-            android:name=".PhotosActivity"
-            android:label="@string/title_activity_photos" />
+
         <activity android:name="com.uservoice.uservoicesdk.activity.PortalActivity" />
         <activity android:name="com.uservoice.uservoicesdk.activity.ForumActivity" />
         <activity
@@ -138,33 +76,6 @@
         <activity
             android:name="com.uservoice.uservoicesdk.activity.PostIdeaActivity"
             android:hardwareAccelerated="true" />
-        <activity
-            android:name=".newdive.TabNewNotesActivity"
-            android:label="@string/title_activity_new_dive" />
-        <activity
-            android:name=".newdive.TabNewSpotsActivity"
-            android:label="@string/title_activity_new_dive" />
-        <activity
-            android:name=".GraphImageActivity"
-            android:label="@string/title_activity_graph_image"
-            android:screenOrientation="landscape" />
-        <activity
-            android:name=".TestActivity"
-            android:label="@string/title_activity_graph_image" />
-        <activity
-            android:name=".WalletActivity"
-            android:label="@string/title_activity_wallet" />
-        <activity
-            android:name=".NavDrawer"
-            android:label="@string/title_activity_navigation_drawer" />
-        <activity
-            android:name=".StatisticPage"
-            android:label="StatisticActivity" />
-
-
-        <meta-data
-            android:name="com.facebook.sdk.ApplicationId"
-            android:value="@string/facebook_app_id" />
 
         <activity
             android:name="com.facebook.FacebookActivity"

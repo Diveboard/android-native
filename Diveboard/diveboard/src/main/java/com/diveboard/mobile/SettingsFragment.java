@@ -7,8 +7,7 @@ import android.os.Bundle;
 import android.widget.Toast;
 
 import com.diveboard.config.AppConfig;
-import com.diveboard.model.DiveboardModel;
-import com.diveboard.model.SpotsDbUpdater;
+import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.util.Callback;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
@@ -26,8 +25,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         setPreferencesFromResource(R.xml.settings_screen, rootKey);
         ApplicationController ac = ((ApplicationController) getActivity().getApplicationContext());
 
-        Preference cachePreference = this.findPreference("clear_cache");
-        cachePreference.setOnPreferenceClickListener(new CacheOnPreferenceClickListener(ac));
         setAppVersion(ac);
         setSpotsInfo(ac);
         setLogout(ac);
@@ -68,22 +65,6 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             findPreference("app_version").setSummary(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
-        }
-    }
-
-    private static class CacheOnPreferenceClickListener implements Preference.OnPreferenceClickListener {
-        private ApplicationController applicationController;
-
-        CacheOnPreferenceClickListener(ApplicationController applicationController) {
-            this.applicationController = applicationController;
-        }
-
-        @Override
-        public boolean onPreferenceClick(Preference preference) {
-            applicationController.getModel().getDataManager().trimCache(applicationController);
-            Toast toast = Toast.makeText(applicationController, R.string.cache_cleared, Toast.LENGTH_SHORT);
-            toast.show();
-            return false;
         }
     }
 
@@ -133,7 +114,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         void logout() {
             ac.getAuthenticationService().logout();
-            Intent loginActivity = new Intent(ac, DiveboardLoginActivity.class);
+            Intent loginActivity = new Intent(ac, LoginPage.class);
             loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(loginActivity);
         }
@@ -148,13 +129,12 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            // Use of UserVoice report bug system
-            DiveboardModel model = ac.getModel();
             WaitDialogFragment bugDialog = new WaitDialogFragment();
             bugDialog.show(getFragmentManager(), "WaitDialogFragment");
             Config config = new Config("diveboard.uservoice.com");
-            if (model.getSessionEmail() != null)
-                config.identifyUser(null, model.getUser().getNickname(), model.getSessionEmail());
+            //TODO: fix email issue. where to get it from? it is not always presented in response. see API documentation
+//            if (model.getSessionEmail() != null)
+//                config.identifyUser(null, model.getUser().getNickname(), model.getSessionEmail());
             UserVoice.init(config, ac);
             config.setShowForum(false);
             config.setShowContactUs(true);

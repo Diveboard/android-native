@@ -41,13 +41,6 @@
         <item name="android:listSelector">@drawable/photogrid_list_selector</item>
     </style>
 
-    <style name="diveboardRatingBar" parent="@android:style/Widget.RatingBar">
-        <!-- <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item> -->
-        <item name="android:progressDrawable">@drawable/rating_bar_diveboard</item>
-        <item name="android:minHeight">35dip</item>
-        <item name="android:maxHeight">35dip</item>
-    </style>
-
     <style name="SectionHeader">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>

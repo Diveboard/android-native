@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/login"
-        android:name="com.diveboard.mobile.DiveboardLoginActivity"
+        android:name="com.diveboard.mobile.LoginPage"
         android:label="login"
         tools:layout="@layout/activity_login">
         <action
@@ -30,13 +30,13 @@
 
     <fragment
         android:id="@+id/signup"
-        android:name="com.diveboard.mobile.SignUpActivity"
+        android:name="com.diveboard.mobile.SignUpPage"
         android:label="signup"
         tools:layout="@layout/activity_sign_up" />
 
     <fragment
         android:id="@+id/diveDetails"
-        android:name="com.diveboard.mobile.DiveDetailsFragment2"
+        android:name="com.diveboard.mobile.DiveDetailsPage"
         android:label="dive_details2"
         tools:layout="@layout/activity_dive_details2">
         <action

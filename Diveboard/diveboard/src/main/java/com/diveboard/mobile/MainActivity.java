@@ -6,7 +6,8 @@ import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.dataaccess.datamodel.User2;
-import com.diveboard.model.SpotsDbUpdater;
+import com.diveboard.dataaccess.SpotsDbUpdater;
+import com.diveboard.model.UserService;
 import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.viewModel.DrawerHeaderViewModel;

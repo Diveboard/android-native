@@ -1,6 +1,5 @@
 package com.diveboard.viewModel;
 
-import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.BR;
 import com.diveboard.mobile.DiveType;
 import com.diveboard.model.Distance2;
@@ -122,7 +121,9 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public List<String> getTripNames() {
-        return ApplicationController.getInstance().getModel().getUser().getTripNames();
+        //TODO: fix
+        return null;
+//        return ApplicationController.getInstance().getModel().getUser().getTripNames();
     }
 
     @Bindable

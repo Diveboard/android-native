@@ -9,7 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
 import com.diveboard.mobile.databinding.DiveDetailsGeneralBinding;
-import com.diveboard.model.SafetyStop;
+import com.diveboard.model.SafetyStop2;
 import com.diveboard.model.Tank2;
 import com.diveboard.model.Units;
 import com.diveboard.util.BindingConvertions;
@@ -64,11 +64,12 @@ public class DiveDetailsGeneralFragment extends Fragment {
     }
 
     private void setupTripName(View view) {
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-                android.R.layout.simple_dropdown_item_1line,
-                ApplicationController.getInstance().getModel().getUser().getTripNames());
-        AutoCompleteTextView textView = view.findViewById(R.id.trip_name);
-        textView.setAdapter(adapter);
+//        TODO: migrate to new model
+//        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
+//                android.R.layout.simple_dropdown_item_1line,
+//                ApplicationController.getInstance().getModel().getUser().getTripNames());
+//        AutoCompleteTextView textView = view.findViewById(R.id.trip_name);
+//        textView.setAdapter(adapter);
     }
 
     public String getTimeFormat() {
@@ -81,36 +82,20 @@ public class DiveDetailsGeneralFragment extends Fragment {
 
     public void showSafetyStopDialog() {
         AddSafetyStopDialog dialog = new AddSafetyStopDialog();
-        dialog.setPositiveCallback(new Callback<AddSafetyStopViewModel>() {
-            @Override
-            public void execute(AddSafetyStopViewModel data) {
-                viewModel.safetyStops.add(data.toModel());
-            }
-        });
+        dialog.setPositiveCallback(data -> viewModel.safetyStops.add(data.toModel()));
         dialog.show(getFragmentManager(), "add_safety_stop");
     }
 
-    public ItemBinder<SafetyStop> safetyStopsItemViewBinder() {
+    public ItemBinder<SafetyStop2> safetyStopsItemViewBinder() {
         return new ItemBinderBase<>(BR.model, R.layout.safety_stop_item);
     }
 
-    public ClickHandler<SafetyStop> removeStopHandler() {
-        return new ClickHandler<SafetyStop>() {
-            @Override
-            public void onClick(SafetyStop safetyStop) {
-                viewModel.safetyStops.remove(safetyStop);
-            }
-        };
+    public ClickHandler<SafetyStop2> removeStopHandler() {
+        return safetyStop -> viewModel.safetyStops.remove(safetyStop);
     }
 
     public ClickHandler<Tank2> editTanksDialogHandler() {
-
-        return new ClickHandler<Tank2>() {
-            @Override
-            public void onClick(Tank2 tank) {
-                showTanksDialog(tank);
-            }
-        };
+        return tank -> showTanksDialog(tank);
     }
 
     public ItemBinder<String> diveTypeItemViewBinder() {
@@ -127,23 +112,15 @@ public class DiveDetailsGeneralFragment extends Fragment {
     }
 
     private void showTanksDialog(final Tank2 tank) {
-        Callback<TankViewModel> callback = new Callback<TankViewModel>() {
-            @Override
-            public void execute(TankViewModel data) {
-                if (tank == null) {
-                    viewModel.tanks.add(data.toModel());
-                } else {
-                    int index = viewModel.tanks.indexOf(tank);
-                    viewModel.tanks.set(index, data.toModel());
-                }
+        Callback<TankViewModel> callback = data -> {
+            if (tank == null) {
+                viewModel.tanks.add(data.toModel());
+            } else {
+                int index = viewModel.tanks.indexOf(tank);
+                viewModel.tanks.set(index, data.toModel());
             }
         };
-        Runnable deleteCallback = new Runnable() {
-            @Override
-            public void run() {
-                viewModel.tanks.remove(viewModel.tanks.indexOf(tank));
-            }
-        };
+        Runnable deleteCallback = () -> viewModel.tanks.remove(viewModel.tanks.indexOf(tank));
         TankDialog dialog = new TankDialog(tank, callback, deleteCallback);
         dialog.show(getFragmentManager(), "tank");
     }

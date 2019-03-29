@@ -108,7 +108,7 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private void setupAutocompleteList(View view) {
-        service = new SpotService(ac);
+        service = new SpotService(ac, ac.getSessionRepository());
         suggest = view.findViewById(R.id.appCompatAutoCompleteTextView);
         progress = view.findViewById(R.id.progress_bar);
         adapter = new AutoSuggestAdapter<>(ac, android.R.layout.simple_dropdown_item_1line);

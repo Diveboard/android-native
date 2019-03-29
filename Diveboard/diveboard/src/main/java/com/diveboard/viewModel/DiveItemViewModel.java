@@ -1,15 +1,9 @@
 package com.diveboard.viewModel;
 
-import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
 import com.diveboard.dataaccess.datamodel.Spot2;
-import com.diveboard.mobile.ApplicationController;
-import com.diveboard.mobile.DiveDetailsActivity;
-import com.diveboard.mobile.DivesActivity;
-import com.diveboard.model.Spot;
 
 public class DiveItemViewModel implements Comparable {
     public final int index;
@@ -36,10 +30,7 @@ public class DiveItemViewModel implements Comparable {
     }
 
     public void onClick(View view) {
-        Context context = view.getContext();
-        Intent diveDetailsActivity = new Intent(context, DiveDetailsActivity.class);
-        diveDetailsActivity.putExtra("index", index);
-        context.startActivity(diveDetailsActivity);
+
     }
 
     private String getString(String str) {

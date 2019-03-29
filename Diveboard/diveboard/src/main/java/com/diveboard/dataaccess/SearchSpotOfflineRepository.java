@@ -7,7 +7,6 @@ import android.database.sqlite.SQLiteException;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.SearchSpot;
-import com.diveboard.model.SpotsDbUpdater;
 import com.diveboard.util.Callback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -20,9 +19,9 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
     private final int userId;
     private ApplicationController context;
 
-    public SearchSpotOfflineRepository(ApplicationController context) {
+    public SearchSpotOfflineRepository(ApplicationController context, int userId) {
         this.context = context;
-        userId = context.getModel().getUser().getId();
+        this.userId = userId;
     }
 
     @Override

@@ -29,10 +29,6 @@
     <androidx.preference.PreferenceCategory app:title="@string/tools_category_title" />
 
     <androidx.preference.Preference
-        app:key="clear_cache"
-        app:title="@string/clear_cache_title" />
-
-    <androidx.preference.Preference
         app:key="db_version"
         app:title="@string/db_version_title" />
 

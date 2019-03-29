@@ -10,7 +10,7 @@
 
         <variable
             name="model"
-            type="com.diveboard.mobile.SetDiveTypeViewModel" />
+            type="com.diveboard.viewModel.SetDiveTypeViewModel" />
     </data>
 
     <androidx.recyclerview.widget.RecyclerView

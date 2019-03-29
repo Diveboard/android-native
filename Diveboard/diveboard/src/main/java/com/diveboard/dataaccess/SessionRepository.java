@@ -10,6 +10,7 @@ public class SessionRepository {
     private final SharedPreferences prefs;
     private Context context;
 
+    //TODO: implement token refresh functionality
     public SessionRepository(Context context) {
         this.context = context;
         prefs = context.getSharedPreferences("com.diveboard.session", Context.MODE_PRIVATE);

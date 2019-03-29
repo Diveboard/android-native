@@ -26,22 +26,10 @@ public class Tank2 {
     public Integer order;
     @SerializedName("p_end")
     public Double endPressure;
-//    @SerializedName("p_end_value")
-//    public Double pEndValue;
-//    @SerializedName("p_end_unit")
-//    public String pEndUnit;
     @SerializedName("p_start")
     public Double startPressure;
-//    @SerializedName("p_start_value")
-//    public Double startPressure;
-//    @SerializedName("p_start_unit")
-//    public String startPressureUnit;
     @SerializedName("time_start")
     public Integer timeStart;
     @SerializedName("volume")
     public Double volume;
-//    @SerializedName("volume_unit")
-//    public String volumeUnit;
-//    @SerializedName("volume_value")
-//    public Double volumeValue;
 }

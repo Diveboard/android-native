@@ -8,7 +8,7 @@ import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.SearchSpot;
-import com.diveboard.model.SpotsSearchResponse;
+import com.diveboard.dataaccess.datamodel.SpotsSearchResponse;
 import com.diveboard.util.Callback;
 import com.diveboard.util.GsonRequest;
 import com.google.android.gms.maps.model.LatLng;
@@ -22,9 +22,11 @@ import java.util.List;
 
 public class SearchSpotOnlineRepository implements SearchSpotRepository {
     private ApplicationController context;
+    private String token;
 
-    public SearchSpotOnlineRepository(ApplicationController context) {
+    public SearchSpotOnlineRepository(ApplicationController context, String token) {
         this.context = context;
+        this.token = token;
     }
 
     @Override
@@ -61,7 +63,7 @@ public class SearchSpotOnlineRepository implements SearchSpotRepository {
             @Override
             public byte[] getBody() {
                 try {
-                    String bodyString = getRequestBody(term, position, bounds, context.getModel().getToken()).toString();
+                    String bodyString = getRequestBody(term, position, bounds, token).toString();
                     return bodyString.getBytes("utf-8");
                 } catch (UnsupportedEncodingException uee) {
                     return null;

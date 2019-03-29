@@ -7,9 +7,9 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowManager;
 
-import com.diveboard.util.Callback;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
+import com.diveboard.viewModel.SetDiveTypeViewModel;
 
 import java.util.ArrayList;
 import java.util.List;
