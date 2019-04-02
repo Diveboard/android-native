@@ -13,19 +13,6 @@
         <item>research</item>
     </string-array>
 
-    <string-array name="dive_type_titles">
-        <item>Recreational</item>
-        <item>Training</item>
-        <item>Night Dive</item>
-        <item>Deep Dive</item>
-        <item>Drift</item>
-        <item>Wreck</item>
-        <item>Cave</item>
-        <item>Reef</item>
-        <item>Photo</item>
-        <item>Research</item>
-    </string-array>
-
     <string-array name="visibility_values">
         <item></item>
         <item>bad</item>

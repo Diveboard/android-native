@@ -6,6 +6,7 @@ import android.content.ContextWrapper;
 import androidx.databinding.BindingAdapter;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
 
 import com.diveboard.ui.EditTextWithDatePicker;
@@ -28,8 +29,8 @@ public class TextInputEditTextBindings {
 
     @BindingAdapter("autoCompleteList")
     public static void autoCompleteList(AppCompatAutoCompleteTextView view, List list) {
-//        ArrayAdapter adapter = new ArrayAdapter(getActivity(view), android.R.layout.simple_dropdown_item_1line, list);
-//        view.setAdapter(adapter);
+        ArrayAdapter adapter = new ArrayAdapter(getActivity(view), android.R.layout.simple_dropdown_item_1line, list);
+        view.setAdapter(adapter);
     }
 
     private static Activity getActivity(View view) {

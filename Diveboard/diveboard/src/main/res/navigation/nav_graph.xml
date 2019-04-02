@@ -12,7 +12,12 @@
         tools:layout="@layout/activity_dives_list">
         <action
             android:id="@+id/action_logbook_to_diveDetails"
-            app:destination="@id/diveDetails" />
+            app:destination="@id/diveDetails">
+            <argument
+                android:name="diveId"
+                android:defaultValue="-1"
+                app:argType="integer" />
+        </action>
     </fragment>
 
     <fragment
@@ -42,13 +47,22 @@
         <action
             android:id="@+id/action_diveDetails_to_selectSpot"
             app:destination="@id/selectSpot" />
+        <argument
+            android:name="diveId"
+            android:defaultValue="-1"
+            app:argType="integer" />
     </fragment>
 
     <fragment
         android:id="@+id/selectSpot"
-        android:name="com.diveboard.mobile.SelectSpotFragment"
+        android:name="com.diveboard.mobile.SelectSpotPage"
         android:label="select_spot"
-        tools:layout="@layout/select_spot" />
+        tools:layout="@layout/select_spot" >
+        <!--<argument
+            android:name="diveId"
+            android:defaultValue="-1"
+            app:argType="integer" />-->
+    </fragment>
 
     <fragment
         android:id="@+id/settings"

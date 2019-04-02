@@ -2,7 +2,7 @@ package com.diveboard.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Tank2 {
+public class Tank {
     @SerializedName("dive_id")
     public Integer diveId;
     @SerializedName("gas")

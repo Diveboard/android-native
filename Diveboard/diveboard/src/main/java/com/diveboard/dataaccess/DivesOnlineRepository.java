@@ -8,7 +8,7 @@ import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
-import com.diveboard.dataaccess.datamodel.User2;
+import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.VolleyMultipartRequest;
@@ -37,9 +37,9 @@ public class DivesOnlineRepository {
     }
 
     public void load(final ResponseCallback<DivesResponse, String> callback) {
-        ResponseCallback<User2, Exception> intCallback = new ResponseCallback<User2, Exception>() {
+        ResponseCallback<User, Exception> intCallback = new ResponseCallback<User, Exception>() {
             @Override
-            public void success(User2 data) {
+            public void success(User data) {
                 if (data != null) {
                     if (data.dives.size() == 0) {
                         callback.success(new DivesResponse());

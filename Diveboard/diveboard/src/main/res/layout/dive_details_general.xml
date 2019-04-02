@@ -145,8 +145,8 @@
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
+                    android:inputType="textNoSuggestions"
                     android:focusableInTouchMode="false"
-                    android:inputType="textAutoComplete"
                     android:onClick="@{()->view.showSpotDialog()}"
                     android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.name, model.spot.cname)}" />
 
@@ -188,7 +188,7 @@
                     android:inputType="numberDecimal"
                     android:nextFocusForward="@+id/duration"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.maxDepth.value)}"
+                    android:text="@={converter.doubleToStringConverter(model.maxDepth)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}"
                     tools:text="12" />
@@ -431,7 +431,7 @@
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="@{converter.getTitleByUnits(model.airTemp.unit, @string/air_temperature_metric, @string/air_temperature_imperial)}"
+                android:hint="@{converter.getTitleByUnits(model.units, @string/air_temperature_metric, @string/air_temperature_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
                 tools:hint="@string/air_temperature_metric">
@@ -442,7 +442,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.airTemp.value)}"
+                    android:text="@={converter.doubleToStringConverter(model.airTemp)}"
                     tools:text="24" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -454,7 +454,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
-                android:hint="@{converter.getTitleByUnits(model.waterTemp.unit, @string/water_temperature_metric, @string/water_temperature_imperial)}"
+                android:hint="@{converter.getTitleByUnits(model.units, @string/water_temperature_metric, @string/water_temperature_imperial)}"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
                 tools:hint="@string/water_temperature_metric">
@@ -465,7 +465,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.waterTemp.value)}"
+                    android:text="@={converter.doubleToStringConverter(model.waterTemp)}"
                     tools:text="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -539,7 +539,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_marginLeft="8dp"
                     android:layout_marginTop="8dp"
-                    android:entries="@{converter.getArrayByUnits(model.waterTemp.unit, @stringArray/visibility_titles_metric, @stringArray/visibility_titles_imperial)}"
+                    android:entries="@{converter.getArrayByUnits(model.units, @stringArray/visibility_titles_metric, @stringArray/visibility_titles_imperial)}"
                     android:hint="@string/visibility_label"
                     android:selectedItemPosition="@={model.visibilityPosition}"
                     app:layout_constraintStart_toStartOf="@+id/textView10"
@@ -620,7 +620,7 @@
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
-                    android:text="@={converter.doubleToStringConverter(model.altitude.value)}"
+                    android:text="@={converter.doubleToStringConverter(model.altitude)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}"
                     tools:text="12" />

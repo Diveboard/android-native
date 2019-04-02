@@ -1,104 +1,131 @@
 package com.diveboard.viewModel;
 
+import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.mobile.BR;
-import com.diveboard.mobile.DiveType;
-import com.diveboard.model.Distance2;
-import com.diveboard.model.SafetyStop2;
+import com.diveboard.model.Converter;
+import com.diveboard.model.SafetyStop;
 import com.diveboard.model.SearchSpot;
-import com.diveboard.model.Tank2;
-import com.diveboard.model.Temperature;
+import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.diveboard.model.WaterType;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 import androidx.databinding.ObservableArrayList;
 
 public class DiveDetailsViewModel extends BaseObservable {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     @Bindable
-    public ObservableArrayList<SafetyStop2> safetyStops = new ObservableArrayList<>();
-    public ObservableArrayList<Tank2> tanks = new ObservableArrayList<>();
+    public ObservableArrayList<AddSafetyStopViewModel> safetyStops = new ObservableArrayList<>();
+    public ObservableArrayList<Tank> tanks = new ObservableArrayList<>();
     public Integer diveNumber = 0;
-    public Temperature airTemp;
-    public Temperature waterTemp;
+    public Double airTemp;
+    public Double waterTemp;
     @Bindable
-    public ObservableArrayList<DiveType> diveTypes = new ObservableArrayList<>();
-    public Boolean isFreshWater;
+    public ObservableArrayList<DiveTypeViewModel> diveTypes = new ObservableArrayList<>();
     public String visibility;
     public String current;
     public Double weights;
-    public Distance2 altitude;
+    public Double altitude;
     public Calendar diveDateTime;
     public String tripName;
-    public Distance2 maxDepth;
+    public Double maxDepth;
     public Integer durationMin;
     @Bindable
     public int visibilityPosition = 0;
     @Bindable
     public int currentPosition = 0;
     public Units.UnitsType units;
-    private boolean freshWaterChecked = false;
-    private boolean saltWaterChecked;
+    private Boolean isFreshWater;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
     private SearchSpot spot;
+    private List<String> tripNames = new ArrayList<>();
+
+    public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
+        this.visibilityDictionary = Arrays.asList(visibilityDictionary);
+        this.currentDictionary = Arrays.asList(currentDictionary);
+        this.units = units;
+    }
 
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
-        DiveDetailsViewModel result = new DiveDetailsViewModel();
-        result.visibilityDictionary = Arrays.asList(visibilityDictionary);
-        result.currentDictionary = Arrays.asList(currentDictionary);
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
         result.diveNumber = diveNumber;
-        result.units = units;
-        result.airTemp = new Temperature(null, units);
-        result.waterTemp = new Temperature(null, units);
+        result.airTemp = null;
+        result.waterTemp = null;
         result.diveDateTime = Calendar.getInstance();
         result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
         result.diveDateTime.set(Calendar.MINUTE, 0);
         result.tripName = lastTripName;
-        result.safetyStops.add(SafetyStop2.getDefault(units));
+        result.safetyStops.add(AddSafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
+        return result;
+    }
+
+    public static DiveDetailsViewModel createFromModel(Dive data, String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
+        result.diveNumber = data.number;
+        result.airTemp = Converter.convertTemp(data.tempSurface, units);
+        result.waterTemp = Converter.convertTemp(data.tempBottom, units);
+        try {
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            calendar.setTime(dateFormat.parse(data.timeIn));
+            result.diveDateTime = calendar;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        result.tripName = data.tripName;
+        result.spot = SearchSpot.createFromSpot(data.spot);
+        result.maxDepth = Converter.convertDistance(data.maxDepth, units);
+        result.durationMin = data.duration;
+        for (SafetyStop ss : data.getSafetyStops()) {
+            result.safetyStops.add(AddSafetyStopViewModel.fromModel(ss, units));
+        }
+        result.weights = data.weights;
+        result.tanks.addAll(data.tanks);
+        for (String diveType : data.divetype) {
+            result.diveTypes.add(new DiveTypeViewModel(diveType));
+        }
+        result.setWaterType(data.isFreshWater());
+        result.visibility = data.visibility;
+        result.current = data.current;
+        result.altitude = data.altitude;
         return result;
     }
 
     @Bindable
     public boolean getSaltWaterChecked() {
-        return saltWaterChecked;
+        return isFreshWater != null && !isFreshWater;
     }
 
     @Bindable
     public void setSaltWaterChecked(boolean value) {
-        saltWaterChecked = value;
-        if (value == true) {
-            freshWaterChecked = !value;
-            notifyPropertyChanged(BR.freshWaterChecked);
-        }
+        setWaterType(!value);
     }
 
     @Bindable
     public boolean getFreshWaterChecked() {
-        return freshWaterChecked;
+        return isFreshWater != null && isFreshWater;
     }
 
     @Bindable
     public void setFreshWaterChecked(boolean value) {
-        freshWaterChecked = value;
-        if (value == true) {
-            saltWaterChecked = !value;
-            notifyPropertyChanged(BR.saltWaterChecked);
-        }
+        setWaterType(value);
     }
 
-    public WaterType getWaterType() {
-        if (freshWaterChecked) {
-            return WaterType.Fresh;
+    private void setWaterType(Boolean isFreshWater) {
+        if (this.isFreshWater == isFreshWater) {
+            return;
         }
-        if (saltWaterChecked) {
-            return WaterType.Salt;
-        }
-        return null;
+        this.isFreshWater = isFreshWater;
+        notifyPropertyChanged(BR.freshWaterChecked);
+        notifyPropertyChanged(BR.saltWaterChecked);
     }
 
     public Calendar getUiDate() {
@@ -121,9 +148,11 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public List<String> getTripNames() {
-        //TODO: fix
-        return null;
-//        return ApplicationController.getInstance().getModel().getUser().getTripNames();
+        return tripNames;
+    }
+
+    public void setTripNames(List<String> tripNames) {
+        this.tripNames = tripNames;
     }
 
     @Bindable

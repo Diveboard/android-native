@@ -1,12 +1,14 @@
 package com.diveboard.dataaccess.datamodel;
 
-import com.diveboard.model.Tank2;
+import com.diveboard.model.SafetyStop;
+import com.diveboard.model.Tank;
+import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dive2 {
+public class Dive {
     @SerializedName("id")
     public Integer id;
     @SerializedName("shaken_id")
@@ -17,34 +19,22 @@ public class Dive2 {
     public Integer duration;
     @SerializedName("maxdepth")
     public Double maxDepth;
-//    @SerializedName("maxdepth_value")
-//    public Double maxDepthValue;
-//    @SerializedName("maxdepth_unit")
-//    public String maxDepthUnit;
     @SerializedName("user_id")
     public Integer userId;
     @SerializedName("spot_id")
     public Integer spotId;
     @SerializedName("temp_surface")
-    public Object tempSurface;
-//    @SerializedName("temp_surface_value")
-//    public Double tempSurfaceValue;
-//    @SerializedName("temp_surface_unit")
-//    public String tempSurfaceUnit;
+    public Double tempSurface;
     @SerializedName("temp_bottom")
     public Double tempBottom;
-//    @SerializedName("temp_bottom_unit")
-//    public String tempBottomUnit;
-//    @SerializedName("temp_bottom_value")
-//    public Double tempBottomValue;
     @SerializedName("privacy")
     public Integer privacy;
     @SerializedName("weights")
     public Double weights;
-    @SerializedName("weights_value")
-    public Double weightsValue;
-    @SerializedName("weights_unit")
-    public String weightsUnit;
+    //    @SerializedName("weights_value")
+//    public Double weightsValue;
+//    @SerializedName("weights_unit")
+//    public String weightsUnit;
     @SerializedName("safetystops")
     public String safetystops;
     @SerializedName("safetystops_unit_value")
@@ -88,7 +78,7 @@ public class Dive2 {
     @SerializedName("time")
     public String time;
     @SerializedName("tanks")
-    public List<Tank2> tanks = new ArrayList();
+    public List<Tank> tanks = new ArrayList();
     @SerializedName("updated_at")
     public String updatedAt;
     @SerializedName("featured_picture")
@@ -96,5 +86,33 @@ public class Dive2 {
     @SerializedName("number")
     public Integer number;
     @SerializedName("spot")
-    public Spot2 spot;
+    public Spot spot;
+
+    public Boolean isFreshWater() {
+        if (water == null) {
+            return null;
+        }
+        if ("fresh".equals(water)) {
+            return true;
+        }
+        return false;
+    }
+
+    public List<SafetyStop> getSafetyStops() {
+        if (safetystops == null) {
+            return new ArrayList<>();
+        }
+        List<SafetyStop> result = new ArrayList<>();
+        Gson gson = new Gson();
+        try {
+            String[][] res = gson.fromJson(safetystops, String[][].class);
+            for (String[] ss : res) {
+                result.add(new SafetyStop(Integer.parseInt(ss[0]), Integer.parseInt(ss[1])));
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return new ArrayList<>();
+        }
+        return result;
+    }
 }

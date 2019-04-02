@@ -40,4 +40,12 @@
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="navigationIcon">@drawable/ic_menu</item>
     </style>
+
+    <style name="BackToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="navigationIcon">@drawable/ic_baseline_keyboard_backspace_24px</item>
+    </style>
 </resources>

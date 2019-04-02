@@ -6,7 +6,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.diveboard.model.Tank2;
+import com.diveboard.model.Tank;
 import com.diveboard.util.BindingConvertions;
 import com.diveboard.util.Callback;
 import com.diveboard.util.ResourceHolder;
@@ -20,11 +20,11 @@ import androidx.fragment.app.DialogFragment;
 
 public class TankDialog extends DialogFragment {
 
-    private Tank2 tank;
+    private Tank tank;
     private Callback<TankViewModel> callback;
     private Runnable deleteCallback;
 
-    public TankDialog(Tank2 tank, Callback<TankViewModel> callback, Runnable deleteCallback) {
+    public TankDialog(Tank tank, Callback<TankViewModel> callback, Runnable deleteCallback) {
         this.tank = tank;
         this.callback = callback;
         this.deleteCallback = deleteCallback;

@@ -2,7 +2,7 @@ package com.diveboard.dataaccess.datamodel;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Spot2 {
+public class Spot {
     @SerializedName("id")
     public Integer id;
     @SerializedName("country_name")

@@ -5,7 +5,7 @@ import com.google.gson.annotations.SerializedName;
 import java.util.ArrayList;
 import java.util.List;
 
-public class User2 {
+public class User {
     public Integer id;
     public String nickname;
     @SerializedName("picture")
@@ -17,7 +17,7 @@ public class User2 {
 
     @SerializedName("all_dive_ids")
     public List<Integer> dives;
-    public User2() {
+    public User() {
         dives = new ArrayList<>();
     }
 }

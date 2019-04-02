@@ -27,7 +27,7 @@ public class AuthenticationService {
     }
 
     public boolean isLoggedIn() {
-        //TODO: check that userRepository.getUser(); returns value and initialized
+        //TODO: check that userRepository.getUser(); returns diveType and initialized
         //TODO: move it out of cache directory?
         //TODO: user might be logged in in FB but not in the app. in this case login in the app should be reinitiated
         StoredSession session = sessionRepository.getSession();

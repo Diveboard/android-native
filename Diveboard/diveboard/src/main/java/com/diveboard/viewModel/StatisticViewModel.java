@@ -38,7 +38,7 @@ public class StatisticViewModel {
         if (units == Units.UnitsType.Metric) {
             return formatter.format(temp) + " C";
         } else {
-            return formatter.format(Converter.convert(temp, Units.Temperature.C, Units.Temperature.F)) + " F";
+            return formatter.format(Converter.convertTemp(temp, units)) + " F";
         }
     }
 
@@ -47,7 +47,8 @@ public class StatisticViewModel {
         if (units == Units.UnitsType.Metric) {
             return formatter.format(maxDepth) + " m";
         } else {
-            return formatter.format(Converter.convert(maxDepth, Units.Distance.KM, Units.Distance.FT)) + " ft";
+            //TODO: should be taken from resources "m" and "ft"
+            return formatter.format(Converter.convertDistance(maxDepth, units)) + " ft";
         }
     }
 

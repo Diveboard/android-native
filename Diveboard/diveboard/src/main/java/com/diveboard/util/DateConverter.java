@@ -20,6 +20,9 @@ public class DateConverter {
 
     @InverseMethod("convertStringToDate")
     public String convertDateToString(Calendar date) {
+        if (date == null) {
+            return null;
+        }
         DateFormat df = getDateFormat(context);
         return df.format(date.getTime());
     }
@@ -50,6 +53,9 @@ public class DateConverter {
 
     @InverseMethod("convertStringToTime")
     public String convertTimeToString(Calendar time) {
+        if (time == null) {
+            return null;
+        }
         DateFormat df = getTimeFormat(context);
         return df.format(time.getTime());
     }

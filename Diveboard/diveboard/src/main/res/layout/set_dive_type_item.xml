@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.diveboard.mobile.DiveType" />
+            type="com.diveboard.viewModel.DiveTypeViewModel" />
     </data>
 
     <androidx.appcompat.widget.AppCompatCheckBox

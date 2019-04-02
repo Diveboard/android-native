@@ -1,6 +1,6 @@
 package com.diveboard.model;
 
-import com.diveboard.dataaccess.datamodel.Dive2;
+import com.diveboard.dataaccess.datamodel.Dive;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -35,7 +35,7 @@ public class Statistic {
         this.warmest = warmest;
     }
 
-    public static Statistic create(List<Dive2> dives) {
+    public static Statistic create(List<Dive> dives) {
         int publishedDivesCount = dives.size();
         int divesCount = 0;
         int divesThisYear = 0;
@@ -51,7 +51,7 @@ public class Statistic {
         calendar.setTime(new Date());
         int currentYear = calendar.get(Calendar.YEAR);
 
-        for (Dive2 dive : dives) {
+        for (Dive dive : dives) {
             if (dive.number > divesCount) {
                 divesCount = dive.number;
             }

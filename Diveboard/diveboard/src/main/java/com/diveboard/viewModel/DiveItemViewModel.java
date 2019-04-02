@@ -1,22 +1,23 @@
 package com.diveboard.viewModel;
 
 import android.text.TextUtils;
-import android.view.View;
 
-import com.diveboard.dataaccess.datamodel.Spot2;
+import com.diveboard.dataaccess.datamodel.Spot;
 
 public class DiveItemViewModel implements Comparable {
     public final int index;
     public final int number;
+    public final Integer id;
     public final String date;
     public final String location;
     public final String siteName;
     public final String durationStr;
     public final String maxDepthStr;
 
-    public DiveItemViewModel(int index, int number, String date, Spot2 spot, Integer minutes, Double maxDepth, String depthUnit) {
+    public DiveItemViewModel(int index, Integer id, int number, String date, Spot spot, Integer minutes, Double maxDepth, String depthUnit) {
         this.index = index;
         this.number = number;
+        this.id = id;
         this.date = date;
         if (spot == null) {
             location = "N/A";
@@ -29,19 +30,15 @@ public class DiveItemViewModel implements Comparable {
         this.maxDepthStr = maxDepth == null ? "" : Double.toString(maxDepth) + " " + depthUnit;
     }
 
-    public void onClick(View view) {
-
-    }
-
     private String getString(String str) {
         return TextUtils.isEmpty(str) ? "N/A" : str;
     }
 
     @Override
     public int compareTo(Object o) {
-        if (o == null || !(o instanceof DiveItemViewModel)) {
-            return -1;
+        if (o instanceof DiveItemViewModel) {
+            return ((DiveItemViewModel) o).number - this.number;
         }
-        return ((DiveItemViewModel) o).number - this.number;
+        return -1;
     }
 }

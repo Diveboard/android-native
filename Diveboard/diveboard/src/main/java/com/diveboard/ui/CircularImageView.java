@@ -373,7 +373,7 @@ public class CircularImageView extends NetworkImageView {
                 case END:
                     return 5;
             }
-            throw new IllegalArgumentException("Not value available for this ShadowGravity: " + this);
+            throw new IllegalArgumentException("Not diveType available for this ShadowGravity: " + this);
         }
 
         public static ShadowGravity fromValue(int value) {
@@ -389,7 +389,7 @@ public class CircularImageView extends NetworkImageView {
                 case 5:
                     return END;
             }
-            throw new IllegalArgumentException("This value is not supported for ShadowGravity: " + value);
+            throw new IllegalArgumentException("This diveType is not supported for ShadowGravity: " + value);
         }
 
     }

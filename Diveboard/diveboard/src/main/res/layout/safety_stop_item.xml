@@ -6,7 +6,7 @@
 
         <variable
             name="model"
-            type="com.diveboard.model.SafetyStop2" />
+            type="com.diveboard.viewModel.AddSafetyStopViewModel" />
     </data>
 
     <androidx.appcompat.widget.AppCompatTextView

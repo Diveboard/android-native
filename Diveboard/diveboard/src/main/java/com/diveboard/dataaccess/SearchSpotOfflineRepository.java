@@ -86,7 +86,6 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
             } else {
                 while (cursor.moveToNext()) {
                     SearchSpot spot = new SearchSpot();
-                    spot.id = cursor.getInt(0);
                     spot.name = cursor.getString(1);
                     spot.location = cursor.getString(2);
                     spot.cname = cursor.getString(3);

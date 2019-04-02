@@ -2,7 +2,7 @@ package com.diveboard.viewModel;
 
 import com.diveboard.mobile.BR;
 import com.diveboard.model.GasMixes;
-import com.diveboard.model.Tank2;
+import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.util.ResourceHolder;
 
@@ -48,7 +48,7 @@ public class TankViewModel extends BaseObservable {
         return result;
     }
 
-    public static TankViewModel fromModel(Tank2 tank, Units.UnitsType unitsTyped, ResourceHolder resourceHolder) {
+    public static TankViewModel fromModel(Tank tank, Units.UnitsType unitsTyped, ResourceHolder resourceHolder) {
         TankViewModel result = new TankViewModel(unitsTyped, resourceHolder);
         result.setCylindersCount(tank.cylindersCount);
         result.setGasMix(tank.gasType);
@@ -118,7 +118,7 @@ public class TankViewModel extends BaseObservable {
     public void setCylindersCount(int value) {
         int position = cylindersCountDictionary.indexOf(Integer.toString(value));
         if (position == -1) {
-            throw new IllegalArgumentException("value provided is not from dictionary");
+            throw new IllegalArgumentException("diveType provided is not from dictionary");
         }
         this.cylindersCountPosition = position;
         notifyPropertyChanged(BR.cylindersCountPosition);
@@ -131,7 +131,7 @@ public class TankViewModel extends BaseObservable {
     public void setMaterial(String value) {
         int position = materialsDictionary.indexOf(value);
         if (position == -1) {
-            throw new IllegalArgumentException("value provided is not from dictionary");
+            throw new IllegalArgumentException("diveType provided is not from dictionary");
         }
         this.materialPosition = position;
         notifyPropertyChanged(BR.materialPosition);
@@ -144,14 +144,14 @@ public class TankViewModel extends BaseObservable {
     public void setGasMix(String value) {
         int position = gasMixDictionary.indexOf(value);
         if (position == -1) {
-            throw new IllegalArgumentException("value provided is not from dictionary");
+            throw new IllegalArgumentException("diveType provided is not from dictionary");
         }
         this.gasMixPosition = position;
         notifyPropertyChanged(BR.gasMixPosition);
     }
 
-    public Tank2 toModel() {
-        Tank2 result = new Tank2();
+    public Tank toModel() {
+        Tank result = new Tank();
         result.cylindersCount = getCylindersCount();
         result.gasType = getGasMix();
         if (GasMixes.NITROX.equals(result.gasType) || GasMixes.TRIMIX.equals(result.gasType)) {

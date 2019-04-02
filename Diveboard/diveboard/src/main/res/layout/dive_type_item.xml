@@ -6,14 +6,14 @@
 
         <variable
             name="model"
-            type="com.diveboard.mobile.DiveType" />
+            type="com.diveboard.viewModel.DiveTypeViewModel" />
     </data>
 
     <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/view_margin"
-        android:text="@{model.title + `;`}"
+        android:text="@{ model.title + `;`}"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         tools:text="Training" />
 </layout>

@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
+import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
 import com.diveboard.util.NetworkUtils;

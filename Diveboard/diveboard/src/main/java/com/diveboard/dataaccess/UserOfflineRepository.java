@@ -2,9 +2,9 @@ package com.diveboard.dataaccess;
 
 import android.content.Context;
 
-import com.diveboard.dataaccess.datamodel.User2;
+import com.diveboard.dataaccess.datamodel.User;
 
-public class UserOfflineRepository extends FileRepository<User2> {
+public class UserOfflineRepository extends FileRepository<User> {
 
     public UserOfflineRepository(Context context) {
         super(context);
@@ -17,6 +17,6 @@ public class UserOfflineRepository extends FileRepository<User2> {
 
     @Override
     protected Class getClazz() {
-        return User2.class;
+        return User.class;
     }
 }

@@ -3,7 +3,7 @@ package com.diveboard.viewModel;
 import android.content.Context;
 import android.widget.Toast;
 
-import com.diveboard.dataaccess.datamodel.Dive2;
+import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
@@ -37,14 +37,15 @@ public class DivesListViewModel {
                 dataLoadInProgress.set(false);
                 SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
                 for (int i = 0; i < data.dives.size(); i++) {
-                    Dive2 dive = data.dives.get(i);
+                    Dive dive = data.dives.get(i);
                     result.insertSorted(new DiveItemViewModel(i,
+                            dive.id,
                             dive.number,
                             dive.date,
                             dive.spot,
                             dive.duration,
                             dive.maxDepth,
-                            //TODO: initialize with the proper value
+                            //TODO: initialize with the proper diveType
                             "m"));
                 }
                 dives.clear();

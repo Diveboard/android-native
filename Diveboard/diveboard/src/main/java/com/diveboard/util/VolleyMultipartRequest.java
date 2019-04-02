@@ -133,7 +133,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     }
 
     /**
-     * Parse string map into data output stream by key and value.
+     * Parse string map into data output stream by key and diveType.
      *
      * @param dataOutputStream data output stream handle string parsing
      * @param params           string inputs collection
@@ -168,7 +168,7 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      *
      * @param dataOutputStream data output stream handle string parsing
      * @param parameterName    name of input
-     * @param parameterValue   value of input
+     * @param parameterValue   diveType of input
      * @throws IOException
      */
     private void buildTextPart(DataOutputStream dataOutputStream, String parameterName, String parameterValue) throws IOException {

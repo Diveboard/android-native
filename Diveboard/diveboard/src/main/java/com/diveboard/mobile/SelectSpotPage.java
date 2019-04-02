@@ -42,7 +42,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener {
+public class SelectSpotPage extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener {
     private static final int MESSAGE_TEXT_CHANGED = 1;
     private static final long DELAY_MS = 300;
     private static final float MIN_ZOOM_WITH_MARKERS = 10;
@@ -85,25 +85,17 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
 
     private void setupBack(View view) {
         View backButton = view.findViewById(R.id.backButton);
-        backButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Navigation.findNavController(view).popBackStack();
-            }
-        });
+        backButton.setOnClickListener(view1 -> Navigation.findNavController(view1).popBackStack());
     }
 
     private void setupSubmit(View view) {
         submitButton = view.findViewById(R.id.submit);
-        submitButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (selectedMarker == null) {
-                    return;
-                }
-                ac.currentDive.setSpot((SearchSpot) selectedMarker.getTag());
-                Navigation.findNavController(view).popBackStack();
+        submitButton.setOnClickListener(view1 -> {
+            if (selectedMarker == null) {
+                return;
             }
+            ac.currentDive.setSpot((SearchSpot) selectedMarker.getTag());
+            Navigation.findNavController(view1).popBackStack();
         });
     }
 
@@ -113,16 +105,13 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
         progress = view.findViewById(R.id.progress_bar);
         adapter = new AutoSuggestAdapter<>(ac, android.R.layout.simple_dropdown_item_1line);
         suggest.setAdapter(adapter);
-        suggest.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-                //hide keyboard
-                InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-                //navigate to position
-                SearchSpot spot = (SearchSpot) adapterView.getItemAtPosition(position);
-                setMapPosition(spot);
-            }
+        suggest.setOnItemClickListener((adapterView, view1, position, id) -> {
+            //hide keyboard
+            InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+            //navigate to position
+            SearchSpot spot = (SearchSpot) adapterView.getItemAtPosition(position);
+            setMapPosition(spot);
         });
         suggest.addTextChangedListener(new TextWatcher() {
             @Override
@@ -276,53 +265,47 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
     }
 
     private static class MapMoveHandler extends Handler {
-        private WeakReference<SelectSpotFragment> outerRef;
+        private WeakReference<SelectSpotPage> outerRef;
 
-        MapMoveHandler(SelectSpotFragment outer) {
+        MapMoveHandler(SelectSpotPage outer) {
             this.outerRef = new WeakReference<>(outer);
         }
 
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            final SelectSpotFragment activity = outerRef.get();
+            final SelectSpotPage activity = outerRef.get();
             if (activity == null) {
                 return;
             }
             if (activity.map == null || activity.map.getCameraPosition().zoom < MIN_ZOOM_WITH_MARKERS) {
                 return;
             }
-            Log.d(SelectSpotFragment.class.getName(), "Bound Spots requested");
+            Log.d(SelectSpotPage.class.getName(), "Bound Spots requested");
             CameraPosition position = activity.map.getCameraPosition();
             final LatLngBounds latLngBounds = activity.map.getProjection().getVisibleRegion().latLngBounds;
             activity.removeMarkersOutOfBounds(latLngBounds);
-            activity.service.searchSpot(null, position.target, latLngBounds, new com.diveboard.util.Callback<List<SearchSpot>>() {
-                @Override
-                public void execute(List<SearchSpot> data) {
-                    if (data == null) {
-                        return;
-                    }
-                    Log.d(SelectSpotFragment.class.getName(), "Bound Spots arrived: " + data.size());
-                    SelectSpotFragment outer = outerRef.get();
-                    if (outer == null) {
-                        return;
-                    }
-                    addMarkers(data);
+            activity.service.searchSpot(null, position.target, latLngBounds, data -> {
+                if (data == null) {
+                    return;
                 }
-            }, new com.diveboard.util.Callback<String>() {
-                @Override
-                public void execute(String data) {
-                    SelectSpotFragment outer = outerRef.get();
-                    if (outer == null) {
-                        return;
-                    }
-                    outer.showError(data);
+                Log.d(SelectSpotPage.class.getName(), "Bound Spots arrived: " + data.size());
+                SelectSpotPage outer = outerRef.get();
+                if (outer == null) {
+                    return;
                 }
+                addMarkers(data);
+            }, data -> {
+                SelectSpotPage outer = outerRef.get();
+                if (outer == null) {
+                    return;
+                }
+                outer.showError(data);
             });
         }
 
         private synchronized void addMarkers(List<SearchSpot> data) {
-            final SelectSpotFragment activity = outerRef.get();
+            final SelectSpotPage activity = outerRef.get();
             if (activity == null) {
                 return;
             }
@@ -334,39 +317,33 @@ public class SelectSpotFragment extends Fragment implements OnMapReadyCallback, 
 
     private static class AutoSuggestHandler extends Handler {
 
-        private WeakReference<SelectSpotFragment> outerRef;
+        private WeakReference<SelectSpotPage> outerRef;
 
-        AutoSuggestHandler(SelectSpotFragment outer) {
+        AutoSuggestHandler(SelectSpotPage outer) {
             this.outerRef = new WeakReference<>(outer);
         }
 
         @Override
         public void handleMessage(Message msg) {
-            SelectSpotFragment outer = outerRef.get();
+            SelectSpotPage outer = outerRef.get();
             if (outer == null) {
                 return;
             }
             outer.progress.setVisibility(View.VISIBLE);
-            outer.service.searchSpot(msg.obj.toString(), null, null, new com.diveboard.util.Callback<List<SearchSpot>>() {
-                @Override
-                public void execute(List<SearchSpot> data) {
-                    //TODO: there is an issue. if user types next letter and results from prev term arrived then autosuggest will shown inconsistent results
-                    SelectSpotFragment outer = outerRef.get();
-                    if (outer == null) {
-                        return;
-                    }
-                    outer.adapter.setData(data);
-                    outer.progress.setVisibility(View.GONE);
+            outer.service.searchSpot(msg.obj.toString(), null, null, data -> {
+                //TODO: there is an issue. if user types next letter and results from prev term arrived then autosuggest will shown inconsistent results
+                SelectSpotPage outer12 = outerRef.get();
+                if (outer12 == null) {
+                    return;
                 }
-            }, new com.diveboard.util.Callback<String>() {
-                @Override
-                public void execute(String data) {
-                    SelectSpotFragment outer = outerRef.get();
-                    if (outer == null) {
-                        return;
-                    }
-                    outer.showError(data);
+                outer12.adapter.setData(data);
+                outer12.progress.setVisibility(View.GONE);
+            }, data -> {
+                SelectSpotPage outer1 = outerRef.get();
+                if (outer1 == null) {
+                    return;
                 }
+                outer1.showError(data);
             });
         }
     }

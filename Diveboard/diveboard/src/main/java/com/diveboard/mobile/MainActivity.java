@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.android.volley.toolbox.NetworkImageView;
-import com.diveboard.dataaccess.datamodel.User2;
+import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.model.UserService;
 import com.diveboard.util.NetworkUtils;
@@ -55,9 +55,9 @@ public class MainActivity extends AppCompatActivity {
 
         UserService userService = ac.getUserService();
 
-        userService.getUserAsync(new ResponseCallback<User2, Exception>() {
+        userService.getUserAsync(new ResponseCallback<User, Exception>() {
             @Override
-            public void success(User2 data) {
+            public void success(User data) {
                 viewModel.setName(data.nickname);
                 viewModel.setProfileImageUrl(data.getSanitizedPictureUrl());
             }

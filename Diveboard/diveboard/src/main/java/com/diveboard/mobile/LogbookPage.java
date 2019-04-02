@@ -5,7 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.databinding.ActivityDivesListBinding;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
@@ -20,10 +19,12 @@ import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 public class LogbookPage extends Fragment {
 
     private DrawerLayout drawerLayout;
+    private View listView;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -35,7 +36,7 @@ public class LogbookPage extends Fragment {
         //TODO: make a singlton?
         DivesListViewModel viewModel = new DivesListViewModel(applicationContext, applicationContext.getDivesService());
         viewModel.init();
-
+        listView = binding.listView;
         binding.setModel(viewModel);
         binding.setView(this);
         return view;
@@ -50,7 +51,9 @@ public class LogbookPage extends Fragment {
 
     public ClickHandler<DiveItemViewModel> showDiveHandler() {
         return viewModel -> {
-
+            LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails();
+            action.setDiveId(viewModel.id);
+            Navigation.findNavController(listView).navigate(action);
         };
     }
 

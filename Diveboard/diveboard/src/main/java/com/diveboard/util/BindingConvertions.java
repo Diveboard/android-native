@@ -7,9 +7,9 @@ import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.GasMixes;
-import com.diveboard.model.SafetyStop2;
-import com.diveboard.model.Tank2;
+import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
+import com.diveboard.viewModel.AddSafetyStopViewModel;
 
 import java.text.DecimalFormat;
 
@@ -24,13 +24,13 @@ public final class BindingConvertions {
     }
 
     @BindingConversion
-    public static String convertSafetyStopToString(SafetyStop2 safetyStop) {
+    public static String convertSafetyStopToString(AddSafetyStopViewModel safetyStop) {
         Context context = ApplicationController.getInstance().getApplicationContext();
         String safetyStopItemFormat = context.getString(R.string.safetyStopItemFormat);
-        return String.format(safetyStopItemFormat, safetyStop.depth, context.getString(safetyStop.unit == Units.UnitsType.Metric ? R.string.meter : R.string.foot), safetyStop.duration);
+        return String.format(safetyStopItemFormat, safetyStop.getDepth(), context.getString(safetyStop.getUnits() == Units.UnitsType.Metric ? R.string.meter : R.string.foot), safetyStop.getDurationMinutes());
     }
 
-    public static String convertTankToString(Tank2 tank, Context view) {
+    public static String convertTankToString(Tank tank, Context view) {
         DecimalFormat format = new DecimalFormat("#");
         String result = format.format(tank.startPressure) + " - " + format.format(tank.endPressure) + " (";
         switch (tank.gasType) {
