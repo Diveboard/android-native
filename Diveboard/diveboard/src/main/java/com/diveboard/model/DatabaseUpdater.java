@@ -68,9 +68,9 @@ public class					DatabaseUpdater
 				//We download first the database to a temp folder and once it has successfully be downloaded then it is copied to the final directory
 				URL url = new URL(AppConfig.SERVER_URL + "/assets/mobilespots.db.gz");
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
-				TEMP_DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/aux/" : "/data/data/" + _context.getPackageName() + "/databases/aux/";  
+				TEMP_DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/aux/" : "/data/data/" + _context.getPackageName() + "/databases/aux/";
 				InputStream mInput = url.openConnection().getInputStream();
-				GZIPInputStream zis = new GZIPInputStream(new BufferedInputStream(mInput));
+                BufferedInputStream bis = new BufferedInputStream(mInput);
 				File tempFile = new File(TEMP_DB_PATH);
 				File file = new File(DB_PATH);
 				file.mkdirs();
@@ -79,12 +79,12 @@ public class					DatabaseUpdater
 				OutputStream mOutput = new FileOutputStream(outputFile);
 				byte[] mBuffer = new byte[1024];
 				int mLength;
-				while ((mLength = zis.read(mBuffer))>0)
+				while ((mLength = bis.read(mBuffer))>0)
 		            mOutput.write(mBuffer, 0, mLength);
 		        mOutput.flush();
 		        mOutput.close();
 		        mInput.close();
-		        zis.close();
+		        bis.close();
 				System.out.println("DB downloaded correctly");
 
 //				//We copy the recently downloaded db to the final directory
