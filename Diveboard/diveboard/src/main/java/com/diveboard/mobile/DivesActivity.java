@@ -210,7 +210,9 @@ public class DivesActivity extends NavDrawer implements TaskFragment.TaskCallbac
 
 	@Override
 	public void onBackPressed()
-	{		
+	{
+		moveTaskToBack(true);
+		super.onBackPressed();
 	};
 
 	// The three methods below are called by the TaskFragment when new
