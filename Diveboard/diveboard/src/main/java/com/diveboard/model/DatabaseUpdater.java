@@ -70,7 +70,7 @@ public class					DatabaseUpdater
 				DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/" : "/data/data/" + _context.getPackageName() + "/databases/";  
 				TEMP_DB_PATH = (android.os.Build.VERSION.SDK_INT >= 17) ? _context.getApplicationInfo().dataDir + "/databases/aux/" : "/data/data/" + _context.getPackageName() + "/databases/aux/";
 				InputStream mInput = url.openConnection().getInputStream();
-                BufferedInputStream bis = new BufferedInputStream(mInput);
+				BufferedInputStream bis = new BufferedInputStream(mInput);
 				File tempFile = new File(TEMP_DB_PATH);
 				File file = new File(DB_PATH);
 				file.mkdirs();
