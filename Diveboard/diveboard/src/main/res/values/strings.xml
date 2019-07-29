@@ -8,8 +8,8 @@
  <!-- private API GoogleMaps key for Gonzalo debugging- -->
     <string name="maps_app_id_debug2">AIzaSyDx8YUJrmj-cXZE5VwYeoPAIR-10PL-C4s</string>
  <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
-    <string name="maps_app_id_debug">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
-    <string name="maps_app_id_release">AIzaSyDWgf0exr1Yra5ongZ3Rp7z5oAqaTK7eL4</string>
+    <string name="maps_app_id_debug">AIzaSyB8dPEuI201oSdRxf9IkrGFFk69NdHIMF4</string>
+    <string name="maps_app_id_release">AIzaSyB8dPEuI201oSdRxf9IkrGFFk69NdHIMF4</string>
     <string name="title_activity_dives">List of dives</string>
     <string name="progress_load_data">Loading data</string>
     <string name="title_activity_edit_dive">EditDiveActivity</string>
