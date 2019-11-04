@@ -2,13 +2,19 @@ package com.diveboard.dataaccess.datamodel;
 
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
+import com.diveboard.viewModel.SafetyStopViewModel;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
+import java.util.TimeZone;
 
 public class Dive {
+    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     @SerializedName("id")
     public Integer id;
     @SerializedName("shaken_id")
@@ -88,6 +94,21 @@ public class Dive {
     @SerializedName("spot")
     public Spot spot;
 
+    public Calendar getTimeIn() {
+        try {
+            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            calendar.setTime(dateFormat.parse(timeIn));
+            return calendar;
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public void setTimeIn(Calendar value) {
+        timeIn = dateFormat.format(value.getTime());
+    }
+
     public Boolean isFreshWater() {
         if (water == null) {
             return null;
@@ -114,5 +135,17 @@ public class Dive {
             return new ArrayList<>();
         }
         return result;
+    }
+
+    public void setFreshWater(Boolean isFreshWater) {
+        if (isFreshWater == null) {
+            water = null;
+            return;
+        }
+        water = isFreshWater ? "fresh" : "salt";
+    }
+
+    public void setSafetyStops(List<SafetyStop> safetyStops) {
+        //TODO: implement
     }
 }

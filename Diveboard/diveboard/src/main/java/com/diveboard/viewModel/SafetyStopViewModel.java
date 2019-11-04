@@ -8,19 +8,20 @@ import com.diveboard.model.Units;
 import androidx.databinding.BaseObservable;
 import androidx.databinding.Bindable;
 
-public class AddSafetyStopViewModel extends BaseObservable {
+public class SafetyStopViewModel extends BaseObservable {
     private Units.UnitsType units;
     private Integer depth;
     private Integer durationMinutes;
-    public AddSafetyStopViewModel(Units.UnitsType units) {
+
+    public SafetyStopViewModel(Units.UnitsType units) {
         this.units = units;
         SafetyStop defaultSafetyStop = SafetyStop.getDefault();
         depth = defaultSafetyStop.depthInMeters;
         durationMinutes = defaultSafetyStop.durationInMinutes;
     }
 
-    public static AddSafetyStopViewModel fromModel(SafetyStop safetyStop, Units.UnitsType units) {
-        AddSafetyStopViewModel result = new AddSafetyStopViewModel(units);
+    public static SafetyStopViewModel fromModel(SafetyStop safetyStop, Units.UnitsType units) {
+        SafetyStopViewModel result = new SafetyStopViewModel(units);
         result.durationMinutes = safetyStop.durationInMinutes;
         result.depth = Converter.convertDistance(safetyStop.depthInMeters, units);
         return result;
@@ -57,7 +58,6 @@ public class AddSafetyStopViewModel extends BaseObservable {
     }
 
     public SafetyStop toModel() {
-        //TODO: add units
-        return new SafetyStop(getDepth(), getDurationMinutes());
+        return new SafetyStop(Converter.convertDistance(getDepth(), units), getDurationMinutes());
     }
 }

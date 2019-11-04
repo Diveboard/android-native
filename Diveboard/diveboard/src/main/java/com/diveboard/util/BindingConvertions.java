@@ -9,7 +9,7 @@ import com.diveboard.mobile.R;
 import com.diveboard.model.GasMixes;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.diveboard.viewModel.AddSafetyStopViewModel;
+import com.diveboard.viewModel.SafetyStopViewModel;
 
 import java.text.DecimalFormat;
 
@@ -24,7 +24,7 @@ public final class BindingConvertions {
     }
 
     @BindingConversion
-    public static String convertSafetyStopToString(AddSafetyStopViewModel safetyStop) {
+    public static String convertSafetyStopToString(SafetyStopViewModel safetyStop) {
         Context context = ApplicationController.getInstance().getApplicationContext();
         String safetyStopItemFormat = context.getString(R.string.safetyStopItemFormat);
         return String.format(safetyStopItemFormat, safetyStop.getDepth(), context.getString(safetyStop.getUnits() == Units.UnitsType.Metric ? R.string.meter : R.string.foot), safetyStop.getDurationMinutes());

@@ -5,6 +5,7 @@ import android.content.Context;
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
 import com.diveboard.dataaccess.datamodel.Dive;
+import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
 import com.diveboard.util.NetworkUtils;
@@ -57,6 +58,25 @@ public class DivesService {
             });
         } else {
             callback.error(context.getString(R.string.no_internet));
+        }
+    }
+
+    public void saveDiveAsync(Dive dive, ResponseCallback<DiveResponse, Exception> callback) {
+        if (NetworkUtils.isConnected(context)) {
+            onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
+                @Override
+                public void success(DiveResponse data) {
+                    //TODO: update offline repo, just trigger reload of the all dives?
+                    callback.success(data);
+                }
+
+                @Override
+                public void error(Exception s) {
+                    callback.error(s);
+                }
+            });
+        } else {
+            offlineRepository.saveDive(dive, callback);
         }
     }
 }

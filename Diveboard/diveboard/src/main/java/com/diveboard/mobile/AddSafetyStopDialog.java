@@ -13,13 +13,13 @@ import android.view.View;
 import android.view.WindowManager;
 
 import com.diveboard.util.Callback;
-import com.diveboard.viewModel.AddSafetyStopViewModel;
+import com.diveboard.viewModel.SafetyStopViewModel;
 
 public class AddSafetyStopDialog extends DialogFragment {
 
-    private Callback<AddSafetyStopViewModel> callback;
+    private Callback<SafetyStopViewModel> callback;
 
-    public void setPositiveCallback(Callback<AddSafetyStopViewModel> callback) {
+    public void setPositiveCallback(Callback<SafetyStopViewModel> callback) {
         this.callback = callback;
     }
 
@@ -34,7 +34,7 @@ public class AddSafetyStopDialog extends DialogFragment {
         ViewDataBinding binding = DataBindingUtil.bind(view);
         ApplicationController context = (ApplicationController) getActivity().getApplicationContext();
 
-        final AddSafetyStopViewModel viewModel = new AddSafetyStopViewModel(context.getUserPreferenceService().getUnits());
+        final SafetyStopViewModel viewModel = new SafetyStopViewModel(context.getUserPreferenceService().getUnits());
         binding.setVariable(BR.model, viewModel);
 
         builder.setView(view)

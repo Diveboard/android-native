@@ -4,9 +4,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.databinding.DataBindingUtil;
+import androidx.databinding.ViewDataBinding;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.navigation.Navigation;
+
 import com.android.volley.toolbox.NetworkImageView;
-import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.dataaccess.SpotsDbUpdater;
+import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.UserService;
 import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
@@ -14,12 +20,6 @@ import com.diveboard.viewModel.DrawerHeaderViewModel;
 import com.google.android.material.navigation.NavigationView;
 
 import java.util.Date;
-
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.databinding.DataBindingUtil;
-import androidx.databinding.ViewDataBinding;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.navigation.Navigation;
 
 public class MainActivity extends AppCompatActivity {
     private ApplicationController ac;
@@ -37,21 +37,26 @@ public class MainActivity extends AppCompatActivity {
         drawerLayout = findViewById(R.id.drawer_layout);
         view = findViewById(R.id.nav_host_fragment);
         //TODO: user might be loggged in but doesn't have dives.json and user.json stored locally
-        if (ac.getAuthenticationService().isLoggedIn()) {
+        boolean loggedIn = ac.getAuthenticationService().isLoggedIn();
+        if (loggedIn) {
             Navigation.findNavController(view).navigate(R.id.logbook);
         } else {
             Navigation.findNavController(view).navigate(R.id.login);
         }
-        setupNavigationHeader();
+        setupNavigationHeader(loggedIn);
         setupNavigationMenu();
     }
 
-    private void setupNavigationHeader() {
+    private void setupNavigationHeader(boolean loggedIn) {
         View header = navigationView.getHeaderView(0);
         DrawerHeaderViewModel viewModel = new DrawerHeaderViewModel();
         ((NetworkImageView) header.findViewById(R.id.profile_image)).setDefaultImageResId(R.drawable.ic_diveboard_grey2);
         ViewDataBinding binding = DataBindingUtil.bind(header);
         binding.setVariable(BR.model, viewModel);
+
+        if (!loggedIn) {
+            return;
+        }
 
         UserService userService = ac.getUserService();
 
@@ -82,6 +87,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSpots() {
         SpotsDbUpdater dbUpdater = ac.getSpotsDbUpdater();
+        if (dbUpdater.getSpotsFile() == null) {
+            dbUpdater.launchUpdate(null);
+            return;
+        }
         double daysSinceUpdated = Math.floor((((new Date().getTime() / (24.0 * 60 * 60 * 1000)) - (dbUpdater.getSpotsFile().lastModified() / (24.0 * 60 * 60 * 1000)))));
         if (NetworkUtils.isWifiAlive(ac) && daysSinceUpdated > 7) {
             dbUpdater.launchUpdate(null);

@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 import androidx.annotation.NonNull;
 
 public class SearchSpot {
-    //    public Integer id;
+    public Integer id;
     public String name;
     public Double lat;
     @SerializedName("long")
@@ -42,5 +42,12 @@ public class SearchSpot {
     @Override
     public String toString() {
         return name;
+    }
+
+    public Spot toModel() {
+        Spot result = new Spot();
+        result.id = id;
+        //TODO: init other values
+        return result;
     }
 }

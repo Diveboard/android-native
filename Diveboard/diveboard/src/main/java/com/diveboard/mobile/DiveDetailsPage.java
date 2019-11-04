@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
 
+import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.util.ResourceHolder;
 import com.diveboard.util.ResponseCallback;
@@ -116,6 +117,18 @@ public class DiveDetailsPage extends Fragment {
         if (!generalValidator.validate()) {
             TabLayout.Tab tab = tabLayout.getTabAt(0);
             tab.select();
+            return;
         }
+        ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<DiveResponse, Exception>() {
+            @Override
+            public void success(DiveResponse data) {
+                //TODO notify user
+            }
+
+            @Override
+            public void error(Exception e) {
+                //TODO notify user
+            }
+        });
     }
 }

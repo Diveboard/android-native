@@ -7,6 +7,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
+import com.diveboard.dataaccess.datamodel.Dive;
+import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
@@ -20,7 +22,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -79,10 +80,7 @@ public class DivesOnlineRepository {
         }) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> args = new HashMap<>();
-                args.put("auth_token", authenticationService.getSession().token);
-                args.put("apikey", "xJ9GunZaNwLjP4Dz2jy3rdF");
-                args.put("flavour", "mobile");
+                Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
                 args.put("arg", getDives(dives).toString());
                 return args;
             }
@@ -101,5 +99,34 @@ public class DivesOnlineRepository {
             throw new RuntimeException();
         }
         return result;
+    }
+
+    public void saveDive(Dive dive, ResponseCallback<DiveResponse, Exception> callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        VolleyMultipartRequest request = getSaveDiveRequest(callback, dive);
+        queue.add(request);
+    }
+
+    private VolleyMultipartRequest getSaveDiveRequest(final ResponseCallback<DiveResponse, Exception> callback, Dive dive) {
+        String url = AppConfig.SERVER_URL + "/api/V2/dive";
+        return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
+            try {
+                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+                callback.success((new Gson()).fromJson(json, DiveResponse.class));
+            } catch (UnsupportedEncodingException e) {
+                callback.error(e);
+            } catch (JsonSyntaxException e) {
+                callback.error(e);
+            }
+        }, error -> {
+            callback.error(new NetworkException(error.getMessage()));
+        }) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
+                args.put("arg", (new Gson()).toJson(dive));
+                return args;
+            }
+        };
     }
 }

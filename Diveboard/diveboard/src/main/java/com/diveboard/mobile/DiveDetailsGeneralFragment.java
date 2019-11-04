@@ -44,7 +44,6 @@ public class DiveDetailsGeneralFragment extends Fragment {
         binding.setDateConverter(new DateConverter(getContext()));
         validator = new Validator(binding);
         validator.enableFormValidationMode();
-        setupTripName(view);
         return view;
     }
 
@@ -57,15 +56,6 @@ public class DiveDetailsGeneralFragment extends Fragment {
 
     public Validator getValidator() {
         return validator;
-    }
-
-    private void setupTripName(View view) {
-//        TODO: migrate to new model
-//        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(),
-//                android.R.layout.simple_dropdown_item_1line,
-//                ApplicationController.getInstance().getModel().getUser().getTripNames());
-//        AutoCompleteTextView textView = view.findViewById(R.id.trip_name);
-//        textView.setAdapter(adapter);
     }
 
     public String getTimeFormat() {

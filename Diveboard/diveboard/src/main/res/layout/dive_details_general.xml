@@ -145,8 +145,8 @@
                     android:clickable="true"
                     android:cursorVisible="false"
                     android:focusable="false"
-                    android:inputType="textNoSuggestions"
                     android:focusableInTouchMode="false"
+                    android:inputType="textNoSuggestions"
                     android:onClick="@{()->view.showSpotDialog()}"
                     android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.name, model.spot.cname)}" />
 
@@ -609,6 +609,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginLeft="8dp"
                 android:layout_marginTop="8dp"
+                android:layout_marginBottom="@dimen/view_double_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/altitude_metric, @string/altitude_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout14"
@@ -621,8 +622,6 @@
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.altitude)}"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
                     tools:text="12" />
 
             </com.google.android.material.textfield.TextInputLayout>

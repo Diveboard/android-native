@@ -1,5 +1,9 @@
 package com.diveboard.viewModel;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+import androidx.databinding.ObservableArrayList;
+
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.mobile.BR;
 import com.diveboard.model.Converter;
@@ -8,46 +12,40 @@ import com.diveboard.model.SearchSpot;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
-
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
-import androidx.databinding.ObservableArrayList;
 
 public class DiveDetailsViewModel extends BaseObservable {
-    private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     @Bindable
-    public ObservableArrayList<AddSafetyStopViewModel> safetyStops = new ObservableArrayList<>();
+    public ObservableArrayList<SafetyStopViewModel> safetyStops = new ObservableArrayList<>();
     public ObservableArrayList<Tank> tanks = new ObservableArrayList<>();
-    public Integer diveNumber = 0;
-    public Double airTemp;
-    public Double waterTemp;
     @Bindable
     public ObservableArrayList<DiveTypeViewModel> diveTypes = new ObservableArrayList<>();
-    public String visibility;
-    public String current;
-    public Double weights;
-    public Double altitude;
-    public Calendar diveDateTime;
-    public String tripName;
-    public Double maxDepth;
-    public Integer durationMin;
     @Bindable
     public int visibilityPosition = 0;
     @Bindable
     public int currentPosition = 0;
     public Units.UnitsType units;
-    private Boolean isFreshWater;
+    private Calendar diveDateTime;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
     private SearchSpot spot;
     private List<String> tripNames = new ArrayList<>();
+    //    private Dive model;
+    private int number;
+    private String tripName;
+    private Double altitude;
+    private Double maxDepth;
+    private Integer duration;
+    private Double weights;
+    private Double tempSurface;
+    private Double tempBottom;
+    private Boolean isFreshWater;
+    private String visibility;
+    private String current;
+    private Calendar timeIn;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -55,48 +53,113 @@ public class DiveDetailsViewModel extends BaseObservable {
         this.units = units;
     }
 
-    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
-        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
-        result.diveNumber = diveNumber;
-        result.airTemp = null;
-        result.waterTemp = null;
-        result.diveDateTime = Calendar.getInstance();
-        result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
-        result.diveDateTime.set(Calendar.MINUTE, 0);
-        result.tripName = lastTripName;
-        result.safetyStops.add(AddSafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
-        return result;
-    }
-
     public static DiveDetailsViewModel createFromModel(Dive data, String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
         DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
-        result.diveNumber = data.number;
-        result.airTemp = Converter.convertTemp(data.tempSurface, units);
-        result.waterTemp = Converter.convertTemp(data.tempBottom, units);
-        try {
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
-            calendar.setTime(dateFormat.parse(data.timeIn));
-            result.diveDateTime = calendar;
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-        result.tripName = data.tripName;
+        result.setAltitude(data.altitude);
+        result.setTripName(data.tripName);
+        result.setMaxDepth(data.maxDepth);
+        result.setDurationMin(data.duration);
+        result.setWeights(data.weights);
+        result.setAirTemp(data.tempSurface);
+        result.setWaterTemp(data.tempBottom);
+        result.setDiveNumber(data.number);
+        result.setWaterType(data.isFreshWater());
+        result.setVisibility(data.visibility);
+        result.setCurrent(data.current);
+        result.setDiveDateTime(data.getTimeIn());
         result.spot = SearchSpot.createFromSpot(data.spot);
-        result.maxDepth = Converter.convertDistance(data.maxDepth, units);
-        result.durationMin = data.duration;
+        result.diveDateTime = data.getTimeIn();
         for (SafetyStop ss : data.getSafetyStops()) {
-            result.safetyStops.add(AddSafetyStopViewModel.fromModel(ss, units));
+            result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
         }
-        result.weights = data.weights;
         result.tanks.addAll(data.tanks);
         for (String diveType : data.divetype) {
             result.diveTypes.add(new DiveTypeViewModel(diveType));
         }
-        result.setWaterType(data.isFreshWater());
-        result.visibility = data.visibility;
-        result.current = data.current;
-        result.altitude = data.altitude;
         return result;
+    }
+
+    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
+        result.setDiveNumber(diveNumber);
+        result.setTripName(lastTripName);
+        result.diveDateTime = Calendar.getInstance();
+        result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
+        result.diveDateTime.set(Calendar.MINUTE, 0);
+        result.safetyStops.add(SafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
+        return result;
+    }
+
+    public Calendar getDiveDateTime() {
+        return timeIn;
+    }
+
+    public void setDiveDateTime(Calendar diveDateTime) {
+        timeIn = diveDateTime;
+    }
+
+    public Double getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(Double altitude) {
+        this.altitude = altitude;
+    }
+
+    public String getTripName() {
+        return tripName;
+    }
+
+    public void setTripName(String tripName) {
+        this.tripName = tripName;
+    }
+
+    public Double getMaxDepth() {
+        return Converter.convertDistance(maxDepth, units);
+    }
+
+    public void setMaxDepth(Double maxDepth) {
+        maxDepth = Converter.convertDistanceToMetric(maxDepth, units);
+    }
+
+    public Integer getDurationMin() {
+        return duration;
+    }
+
+    public void setDurationMin(Integer durationMin) {
+        this.duration = durationMin;
+    }
+
+    public Double getWeights() {
+        return weights;
+    }
+
+    public void setWeights(Double weights) {
+        this.weights = weights;
+    }
+
+    public Double getAirTemp() {
+        return Converter.convertTemp(tempSurface, units);
+    }
+
+    public void setAirTemp(Double airTemp) {
+        this.tempSurface = Converter.convertTempToMetric(airTemp, units);
+    }
+
+    public Double getWaterTemp() {
+        return Converter.convertTemp(tempBottom, units);
+    }
+
+    public void setWaterTemp(Double temp) {
+        tempBottom = Converter.convertTempToMetric(temp, units);
+    }
+
+    public Integer getDiveNumber() {
+        return number;
+    }
+
+    public void setDiveNumber(Integer diveNumber) {
+        this.number = diveNumber;
     }
 
     @Bindable
@@ -147,6 +210,27 @@ public class DiveDetailsViewModel extends BaseObservable {
         diveDateTime.set(Calendar.MINUTE, uiTime.get(Calendar.MINUTE));
     }
 
+    public Dive getModel() {
+        Dive model = new Dive();
+        model.setTimeIn(diveDateTime);
+        model.spot = spot.toModel();
+
+        ArrayList<SafetyStop> ssl = new ArrayList<>();
+        for (SafetyStopViewModel ss : safetyStops) {
+            ssl.add(ss.toModel());
+        }
+        model.setSafetyStops(ssl);
+
+        model.tanks = tanks;
+
+        ArrayList<String> dts = new ArrayList<String>();
+        for (DiveTypeViewModel dt : diveTypes) {
+            dts.add(dt.diveType);
+        }
+        model.divetype = dts;
+        return model;
+    }
+
     public List<String> getTripNames() {
         return tripNames;
     }
@@ -166,20 +250,24 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public String getVisibility() {
-        return visibilityDictionary.get(visibilityPosition);
+        visibility = visibilityDictionary.get(visibilityPosition);
+        return visibility;
     }
 
     public void setVisibility(String value) {
         visibilityPosition = visibilityDictionary.indexOf(value);
+        visibility = value;
         notifyPropertyChanged(BR.visibilityPosition);
     }
 
     public String getCurrent() {
-        return currentDictionary.get(currentPosition);
+        current = currentDictionary.get(currentPosition);
+        return current;
     }
 
     public void setCurrent(String value) {
         currentPosition = currentDictionary.indexOf(value);
+        current = value;
         notifyPropertyChanged(BR.currentPosition);
     }
 }
