@@ -59,7 +59,7 @@ public class Statistic {
             try {
                 Calendar diveCalendar = Calendar.getInstance();
                 DateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-                diveCalendar.setTime(format.parse(dive.date));
+                diveCalendar.setTime(format.parse(dive.timeIn));
                 if (diveCalendar.get(Calendar.YEAR) == currentYear) {
                     divesThisYear++;
                 }

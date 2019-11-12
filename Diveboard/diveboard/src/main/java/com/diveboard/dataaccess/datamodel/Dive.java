@@ -2,7 +2,6 @@ package com.diveboard.dataaccess.datamodel;
 
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
-import com.diveboard.viewModel.SafetyStopViewModel;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -37,14 +36,10 @@ public class Dive {
     public Integer privacy;
     @SerializedName("weights")
     public Double weights;
-    //    @SerializedName("weights_value")
-//    public Double weightsValue;
-//    @SerializedName("weights_unit")
-//    public String weightsUnit;
     @SerializedName("safetystops")
     public String safetystops;
-    @SerializedName("safetystops_unit_value")
-    public String safetystopsUnitValue;
+//    @SerializedName("safetystops_unit_value")
+//    public String safetystopsUnitValue;
     @SerializedName("divetype")
     public List<String> divetype = new ArrayList<>();
     @SerializedName("favorite")
@@ -75,14 +70,10 @@ public class Dive {
     public String publicNotes;
     @SerializedName("current")
     public String current;
-    @SerializedName("lat")
-    public Double lat;
-    @SerializedName("lng")
-    public Double lng;
-    @SerializedName("date")
-    public String date;
-    @SerializedName("time")
-    public String time;
+//    @SerializedName("date")
+//    public String date;
+//    @SerializedName("time")
+//    public String time;
     @SerializedName("tanks")
     public List<Tank> tanks = new ArrayList();
     @SerializedName("updated_at")
@@ -137,15 +128,25 @@ public class Dive {
         return result;
     }
 
+    public void setSafetyStops(List<SafetyStop> safetyStops) {
+        if (safetyStops == null || safetyStops.isEmpty()) {
+            return;
+        }
+        String[][] temp = new String[safetyStops.size()][2];
+        for (int i = 0; i < safetyStops.size(); i++) {
+            SafetyStop ss = safetyStops.get(i);
+            temp[i][0] = ss.depthInMeters.toString();
+            temp[i][1] = ss.durationInMinutes.toString();
+        }
+        Gson gson = new Gson();
+        this.safetystops = gson.toJson(temp);
+    }
+
     public void setFreshWater(Boolean isFreshWater) {
         if (isFreshWater == null) {
             water = null;
             return;
         }
         water = isFreshWater ? "fresh" : "salt";
-    }
-
-    public void setSafetyStops(List<SafetyStop> safetyStops) {
-        //TODO: implement
     }
 }

@@ -209,30 +209,28 @@ public class DiveDetailsViewModel extends BaseObservable {
     public Dive getModel() {
         Dive result = new Dive();
         result.id = getId();
-        result.altitude = getAltitude();
-        result.tripName = getTripName();
-        result.maxDepth = getMaxDepth();
-        result.durationMin = getDurationMin();
-        result.weights = getWeights();
-        result.airTemp = getAirTemp();
-        result.waterTemp = getWaterTemp();
-        result.diveNumber = getDiveNumber();
-        result.setFreshWater(isFreshWater);
-        result.visibility = getVisibility();
-        result.current = getCurrent();
         result.setTimeIn(diveDateTime);
-        //TODO: check that all the fields are copied
+        result.durationMin = getDurationMin();
+        result.maxDepth = getMaxDepth();
         result.userId = userId;
         result.spot = spot == null ? null : spot.toModel();
+        result.airTemp = getAirTemp();
+        result.waterTemp = getWaterTemp();
+        result.weights = getWeights();
+        result.visibility = getVisibility();
+        result.tripName = getTripName();
+        result.setFreshWater(isFreshWater);
+        result.altitude = getAltitude();
+        result.current = getCurrent();
+        result.diveNumber = getDiveNumber();
 
-        if (!safetyStops.isEmpty()) {
-            ArrayList<SafetyStop> ssl = new ArrayList<>();
-            for (SafetyStopViewModel ss : safetyStops) {
-                ssl.add(ss.toModel());
-            }
-            result.setSafetyStops(ssl);
+        ArrayList<SafetyStop> ssl = new ArrayList<>();
+        for (SafetyStopViewModel ss : safetyStops) {
+            ssl.add(ss.toModel());
         }
-//TODO: call tanks toModel
+        result.setSafetyStops(ssl);
+
+//TODO: copy tank models?
         result.tanks = tanks;
 
         if (!diveTypes.isEmpty()) {

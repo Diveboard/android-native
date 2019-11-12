@@ -41,7 +41,7 @@ public class DivesListViewModel {
                     result.insertSorted(new DiveItemViewModel(i,
                             dive.id,
                             dive.diveNumber,
-                            dive.date,
+                            dive.timeIn,
                             dive.spot,
                             dive.durationMin,
                             dive.maxDepth,
