@@ -6,7 +6,7 @@ public class DiveResponse {
     @SerializedName("success")
     public Boolean success;
     @SerializedName("error")
-    public ErrorResponse error;
+    public ErrorItemResponse[] errors;
     @SerializedName("result")
     public Dive result;
 }

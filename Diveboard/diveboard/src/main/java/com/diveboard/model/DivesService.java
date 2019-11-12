@@ -66,7 +66,7 @@ public class DivesService {
             onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
                 @Override
                 public void success(DiveResponse data) {
-                    //TODO: update offline repo, just trigger reload of the all dives?
+                    offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>());
                     callback.success(data);
                 }
 

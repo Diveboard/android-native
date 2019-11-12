@@ -17,6 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <androidx.appcompat.widget.Toolbar
             android:id="@+id/toolbar"
             style="@style/Toolbar2" />
@@ -44,6 +45,22 @@
                 android:indeterminateOnly="true"
                 android:shadowColor="@color/black"
                 android:visibility="@{model.dataLoadInProgress}" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fab"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/view_double_margin"
+                android:layout_marginLeft="@dimen/view_double_margin"
+                android:layout_marginEnd="@dimen/view_double_margin"
+                android:layout_marginRight="@dimen/view_double_margin"
+                android:layout_marginBottom="@dimen/view_double_margin"
+                app:elevation="4dp"
+                android:onClick="@{()->view.addDive()}"
+                android:src="@drawable/ic_baseline_add_24px" />
         </RelativeLayout>
     </LinearLayout>
 </layout>

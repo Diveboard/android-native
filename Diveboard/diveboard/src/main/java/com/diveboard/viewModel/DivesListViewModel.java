@@ -40,10 +40,10 @@ public class DivesListViewModel {
                     Dive dive = data.dives.get(i);
                     result.insertSorted(new DiveItemViewModel(i,
                             dive.id,
-                            dive.number,
+                            dive.diveNumber,
                             dive.date,
                             dive.spot,
-                            dive.duration,
+                            dive.durationMin,
                             dive.maxDepth,
                             //TODO: initialize with the proper diveType
                             "m"));

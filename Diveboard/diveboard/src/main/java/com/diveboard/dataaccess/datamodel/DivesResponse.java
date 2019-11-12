@@ -41,8 +41,8 @@ public class DivesResponse {
     public int getMaxDiveNumber() {
         int result = 1;
         for (Dive dive : this.dives) {
-            if (dive.number > result) {
-                result = dive.number;
+            if (dive.diveNumber > result) {
+                result = dive.diveNumber;
             }
         }
         return result;

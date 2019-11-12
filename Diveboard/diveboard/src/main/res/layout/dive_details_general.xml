@@ -304,8 +304,6 @@
                     android:nextFocusForward="@+id/duration"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.weights)}"
-                    app:validateEmpty="@{true}"
-                    app:validateEmptyAutoDismiss="@{true}"
                     tools:text="6" />
 
             </com.google.android.material.textfield.TextInputLayout>

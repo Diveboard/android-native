@@ -7,10 +7,12 @@ import com.diveboard.dataaccess.DivesOnlineRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.dataaccess.UserOfflineRepository;
+import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.UserPreferenceService;
 import com.diveboard.model.UserService;
+import com.diveboard.util.ResponseCallback;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
 
@@ -27,6 +29,7 @@ public class ApplicationController extends Application {
     private UserOfflineRepository userOfflineRepository;
     private DivesService divesService;
     private UserService userService;
+    private User currentUser;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -58,6 +61,19 @@ public class ApplicationController extends Application {
         super.onCreate();
         sAnalytics = GoogleAnalytics.getInstance(this);
         singleton = this;
+
+        //TODO: handle properly if user is not logged in
+        getUserService().getUserAsync(new ResponseCallback<User, Exception>() {
+            @Override
+            public void success(User data) {
+                currentUser = data;
+            }
+
+            @Override
+            public void error(Exception e) {
+//TODO: log exception
+            }
+        });
     }
 
     public SessionRepository getSessionRepository() {
@@ -82,6 +98,10 @@ public class ApplicationController extends Application {
                     new DivesOnlineRepository(this, getAuthenticationService(), getUserOfflineRepository()));
         }
         return divesService;
+    }
+
+    public User getCurrentUser() {
+        return currentUser;
     }
 
     public UserService getUserService() {

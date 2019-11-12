@@ -5,13 +5,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.diveboard.mobile.databinding.ActivityDivesListBinding;
-import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
-import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
-import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
-import com.diveboard.viewModel.DiveItemViewModel;
-import com.diveboard.viewModel.DivesListViewModel;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
@@ -20,6 +13,13 @@ import androidx.databinding.DataBindingUtil;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.diveboard.mobile.databinding.ActivityDivesListBinding;
+import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
+import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
+import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
+import com.diveboard.viewModel.DiveItemViewModel;
+import com.diveboard.viewModel.DivesListViewModel;
 
 public class LogbookPage extends Fragment {
 
@@ -55,6 +55,11 @@ public class LogbookPage extends Fragment {
             action.setDiveId(viewModel.id);
             Navigation.findNavController(listView).navigate(action);
         };
+    }
+
+    public void addDive() {
+        LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails();
+        Navigation.findNavController(listView).navigate(action);
     }
 
     public ItemBinder<String> diveItemViewBinder() {

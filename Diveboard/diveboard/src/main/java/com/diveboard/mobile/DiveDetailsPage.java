@@ -1,10 +1,17 @@
 package com.diveboard.mobile;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
+
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.viewpager.widget.ViewPager;
 
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
@@ -14,10 +21,6 @@ import com.diveboard.util.TabAdapter;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.material.tabs.TabLayout;
 
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
-import androidx.viewpager.widget.ViewPager;
 import br.com.ilhasoft.support.validation.Validator;
 
 public class DiveDetailsPage extends Fragment {
@@ -59,7 +62,8 @@ public class DiveDetailsPage extends Fragment {
                                 data.getLastTripName(),
                                 ac.getUserPreferenceService().getUnits(),
                                 resourceHolder.getVisibilityValues(),
-                                resourceHolder.getCurrentValues());
+                                resourceHolder.getCurrentValues(),
+                                ac.getCurrentUser().id);
                     } else {
                         viewModel = ac.currentDive;
                     }
@@ -99,7 +103,11 @@ public class DiveDetailsPage extends Fragment {
     private void setupToolbar(View view) {
         Toolbar actionBar = view.findViewById(R.id.toolbar);
         actionBar.inflateMenu(R.menu.dive_details);
-        actionBar.setNavigationOnClickListener(v -> Navigation.findNavController(v).popBackStack());
+        actionBar.setNavigationOnClickListener(v -> {
+            //TODO: ask to save changes
+            hideKeyBoard(getView());
+            Navigation.findNavController(v).popBackStack();
+        });
         actionBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.save:
@@ -113,6 +121,10 @@ public class DiveDetailsPage extends Fragment {
     }
 
     public void save() {
+        //TODO: there should be a better solution for this
+        this.getView().requestFocus();
+        hideKeyBoard(getView());
+
         Validator generalValidator = general.getValidator();
         if (!generalValidator.validate()) {
             TabLayout.Tab tab = tabLayout.getTabAt(0);
@@ -122,13 +134,19 @@ public class DiveDetailsPage extends Fragment {
         ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<DiveResponse, Exception>() {
             @Override
             public void success(DiveResponse data) {
-                //TODO notify user
+                Navigation.findNavController(tabLayout).popBackStack();
             }
 
             @Override
             public void error(Exception e) {
-                //TODO notify user
+                Toast toast = Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT);
+                toast.show();
             }
         });
+    }
+
+    public void hideKeyBoard(View v) {
+        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
     }
 }

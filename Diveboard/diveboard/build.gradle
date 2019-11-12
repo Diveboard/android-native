@@ -68,4 +68,5 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.2'
     implementation 'android.arch.navigation:navigation-fragment:1.0.0'
     implementation 'com.jakewharton:disklrucache:2.0.2'
+    implementation 'com.google.android.material:material:1.0.0'
 }

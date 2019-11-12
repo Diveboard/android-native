@@ -45,30 +45,34 @@ public class DiveDetailsViewModel extends BaseObservable {
     private Boolean isFreshWater;
     private String visibility;
     private String current;
-    private Calendar timeIn;
+    private Integer userId;
+    private Integer id;
 
-    public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
+    public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
         this.currentDictionary = Arrays.asList(currentDictionary);
         this.units = units;
+        this.userId = userId;
     }
 
     public static DiveDetailsViewModel createFromModel(Dive data, String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
-        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, data.userId);
+        result.setId(data.id);
         result.setAltitude(data.altitude);
         result.setTripName(data.tripName);
         result.setMaxDepth(data.maxDepth);
-        result.setDurationMin(data.duration);
+        result.setDurationMin(data.durationMin);
         result.setWeights(data.weights);
-        result.setAirTemp(data.tempSurface);
-        result.setWaterTemp(data.tempBottom);
-        result.setDiveNumber(data.number);
+        result.setAirTemp(data.airTemp);
+        result.setWaterTemp(data.waterTemp);
+        result.setDiveNumber(data.diveNumber);
         result.setWaterType(data.isFreshWater());
         result.setVisibility(data.visibility);
         result.setCurrent(data.current);
-        result.setDiveDateTime(data.getTimeIn());
+        result.diveDateTime = data.getTimeIn();
         result.spot = SearchSpot.createFromSpot(data.spot);
         result.diveDateTime = data.getTimeIn();
+
         for (SafetyStop ss : data.getSafetyStops()) {
             result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
         }
@@ -79,8 +83,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         return result;
     }
 
-    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary) {
-        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units);
+    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary, Integer userId) {
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, userId);
         result.setDiveNumber(diveNumber);
         result.setTripName(lastTripName);
         result.diveDateTime = Calendar.getInstance();
@@ -88,14 +92,6 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveDateTime.set(Calendar.MINUTE, 0);
         result.safetyStops.add(SafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
         return result;
-    }
-
-    public Calendar getDiveDateTime() {
-        return timeIn;
-    }
-
-    public void setDiveDateTime(Calendar diveDateTime) {
-        timeIn = diveDateTime;
     }
 
     public Double getAltitude() {
@@ -119,7 +115,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public void setMaxDepth(Double maxDepth) {
-        maxDepth = Converter.convertDistanceToMetric(maxDepth, units);
+        this.maxDepth = Converter.convertDistanceToMetric(maxDepth, units);
     }
 
     public Integer getDurationMin() {
@@ -211,24 +207,43 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public Dive getModel() {
-        Dive model = new Dive();
-        model.setTimeIn(diveDateTime);
-        model.spot = spot.toModel();
+        Dive result = new Dive();
+        result.id = getId();
+        result.altitude = getAltitude();
+        result.tripName = getTripName();
+        result.maxDepth = getMaxDepth();
+        result.durationMin = getDurationMin();
+        result.weights = getWeights();
+        result.airTemp = getAirTemp();
+        result.waterTemp = getWaterTemp();
+        result.diveNumber = getDiveNumber();
+        result.setFreshWater(isFreshWater);
+        result.visibility = getVisibility();
+        result.current = getCurrent();
+        result.setTimeIn(diveDateTime);
+        //TODO: check that all the fields are copied
+        result.userId = userId;
+        result.spot = spot == null ? null : spot.toModel();
 
-        ArrayList<SafetyStop> ssl = new ArrayList<>();
-        for (SafetyStopViewModel ss : safetyStops) {
-            ssl.add(ss.toModel());
+        if (!safetyStops.isEmpty()) {
+            ArrayList<SafetyStop> ssl = new ArrayList<>();
+            for (SafetyStopViewModel ss : safetyStops) {
+                ssl.add(ss.toModel());
+            }
+            result.setSafetyStops(ssl);
         }
-        model.setSafetyStops(ssl);
+//TODO: call tanks toModel
+        result.tanks = tanks;
 
-        model.tanks = tanks;
-
-        ArrayList<String> dts = new ArrayList<String>();
-        for (DiveTypeViewModel dt : diveTypes) {
-            dts.add(dt.diveType);
+        if (!diveTypes.isEmpty()) {
+            ArrayList<String> dts = new ArrayList<String>();
+            for (DiveTypeViewModel dt : diveTypes) {
+                dts.add(dt.diveType);
+            }
+            result.divetype = dts;
         }
-        model.divetype = dts;
-        return model;
+
+        return result;
     }
 
     public List<String> getTripNames() {
@@ -269,5 +284,13 @@ public class DiveDetailsViewModel extends BaseObservable {
         currentPosition = currentDictionary.indexOf(value);
         current = value;
         notifyPropertyChanged(BR.currentPosition);
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }

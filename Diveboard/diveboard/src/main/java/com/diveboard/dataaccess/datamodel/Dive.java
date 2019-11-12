@@ -22,7 +22,7 @@ public class Dive {
     @SerializedName("time_in")
     public String timeIn;
     @SerializedName("duration")
-    public Integer duration;
+    public Integer durationMin;
     @SerializedName("maxdepth")
     public Double maxDepth;
     @SerializedName("user_id")
@@ -30,9 +30,9 @@ public class Dive {
     @SerializedName("spot_id")
     public Integer spotId;
     @SerializedName("temp_surface")
-    public Double tempSurface;
+    public Double airTemp;
     @SerializedName("temp_bottom")
-    public Double tempBottom;
+    public Double waterTemp;
     @SerializedName("privacy")
     public Integer privacy;
     @SerializedName("weights")
@@ -90,7 +90,7 @@ public class Dive {
     @SerializedName("featured_picture")
     public String featuredPicture;
     @SerializedName("number")
-    public Integer number;
+    public Integer diveNumber;
     @SerializedName("spot")
     public Spot spot;
 

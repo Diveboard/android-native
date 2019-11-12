@@ -52,8 +52,8 @@ public class Statistic {
         int currentYear = calendar.get(Calendar.YEAR);
 
         for (Dive dive : dives) {
-            if (dive.number > divesCount) {
-                divesCount = dive.number;
+            if (dive.diveNumber > divesCount) {
+                divesCount = dive.diveNumber;
             }
 
             try {
@@ -66,14 +66,14 @@ public class Statistic {
             } catch (ParseException e) {
 
             }
-            totalUnderwaterTimeMinutes += (dive.duration == null ? 0 : dive.duration);
+            totalUnderwaterTimeMinutes += (dive.durationMin == null ? 0 : dive.durationMin);
 
             if (maxDepth < dive.maxDepth) {
                 maxDepth = dive.maxDepth;
             }
 
-            if (maxTime < dive.duration) {
-                maxTime = dive.duration;
+            if (maxTime < dive.durationMin) {
+                maxTime = dive.durationMin;
             }
             if (dive.spot != null) {
                 String name = dive.spot.name;
@@ -85,12 +85,12 @@ public class Statistic {
                     countries.add(countryId);
                 }
             }
-            if (dive.tempBottom != null) {
-                if (coldest == null || coldest > dive.tempBottom) {
-                    coldest = dive.tempBottom;
+            if (dive.waterTemp != null) {
+                if (coldest == null || coldest > dive.waterTemp) {
+                    coldest = dive.waterTemp;
                 }
-                if (warmest == null || warmest < dive.tempBottom) {
-                    warmest = dive.tempBottom;
+                if (warmest == null || warmest < dive.waterTemp) {
+                    warmest = dive.waterTemp;
                 }
             }
         }
