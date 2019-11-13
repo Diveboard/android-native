@@ -1,5 +1,6 @@
 package com.diveboard.mobile;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -13,8 +14,10 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 
+import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
+import com.diveboard.model.DivesService;
 import com.diveboard.util.ResourceHolder;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.TabAdapter;
@@ -30,27 +33,30 @@ public class DiveDetailsPage extends Fragment {
     private ApplicationController ac;
     private DiveDetailsPeopleFragment people;
     private DiveDetailsNotesFragment notes;
+    private AlertDialog deleteConfirmationDialog;
+    private DivesService divesService;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.activity_dive_details2, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
+        divesService = ac.getDivesService();
         int diveId = DiveDetailsPageArgs.fromBundle(getArguments()).getDiveId();
         setupToolbar(view);
         setupTabs(view);
-        setupViewModel(diveId);
+        setupViewModel(diveId == -1 ? null : diveId);
         return view;
     }
 
-    private void setupViewModel(int diveId) {
+    private void setupViewModel(Integer diveId) {
         //TODO: get model from singleton tempDive so it is restored after app switch
         ResourceHolder resourceHolder = new ResourceHolder(ac);
 
         ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
-                if (diveId != -1) {
+                if (diveId != null) {
                     viewModel = DiveDetailsViewModel.createFromModel(data.getDive(diveId),
                             resourceHolder.getVisibilityValues(),
                             resourceHolder.getCurrentValues(),
@@ -115,9 +121,42 @@ public class DiveDetailsPage extends Fragment {
                     break;
                 case R.id.clone:
                     break;
+                case R.id.delete:
+                    getDeleteConfirmationDialog().show();
+                    break;
             }
             return true;
         });
+    }
+
+    private void delete() {
+        divesService.deleteDiveAsync(viewModel.getModel(), new ResponseCallback<DeleteResponse, Exception>() {
+            @Override
+            public void success(DeleteResponse data) {
+                Navigation.findNavController(tabLayout).popBackStack();
+            }
+
+            @Override
+            public void error(Exception e) {
+                Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private AlertDialog getDeleteConfirmationDialog() {
+        if (deleteConfirmationDialog != null) {
+            return deleteConfirmationDialog;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.deleteDive);
+        builder.setPositiveButton(R.string.delete, (dialog, id) -> {
+            delete();
+        });
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
+
+        });
+        deleteConfirmationDialog = builder.create();
+        return deleteConfirmationDialog;
     }
 
     public void save() {
@@ -147,6 +186,9 @@ public class DiveDetailsPage extends Fragment {
 
     public void hideKeyBoard(View v) {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+        View currentFocus = getActivity().getCurrentFocus();
+        if (currentFocus != null) {
+            imm.hideSoftInputFromWindow(currentFocus.getWindowToken(), 0);
+        }
     }
 }

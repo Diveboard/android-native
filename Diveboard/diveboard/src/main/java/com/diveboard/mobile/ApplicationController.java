@@ -6,6 +6,7 @@ import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
+import com.diveboard.dataaccess.SyncRepository;
 import com.diveboard.dataaccess.UserOfflineRepository;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
@@ -30,6 +31,7 @@ public class ApplicationController extends Application {
     private DivesService divesService;
     private UserService userService;
     private User currentUser;
+    private SyncRepository syncRepository;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -94,10 +96,17 @@ public class ApplicationController extends Application {
         if (divesService == null) {
             divesService = new DivesService(
                     this,
-                    new DivesOfflineRepository(this),
+                    new DivesOfflineRepository(this, getSyncRepository()),
                     new DivesOnlineRepository(this, getAuthenticationService(), getUserOfflineRepository()));
         }
         return divesService;
+    }
+
+    private SyncRepository getSyncRepository() {
+        if (syncRepository == null) {
+            syncRepository = new SyncRepository();
+        }
+        return syncRepository;
     }
 
     public User getCurrentUser() {

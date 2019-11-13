@@ -4,6 +4,7 @@ import android.content.Context;
 
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
+import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
@@ -66,7 +67,8 @@ public class DivesService {
             onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
                 @Override
                 public void success(DiveResponse data) {
-                    offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>());
+                    //it is important to pass old shaken id, so sync repo can find it properly
+                    offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>(), false, dive.shakenId);
                     callback.success(data);
                 }
 
@@ -76,7 +78,27 @@ public class DivesService {
                 }
             });
         } else {
-            offlineRepository.saveDive(dive, callback);
+            offlineRepository.saveDive(dive, callback, true, dive.shakenId);
+        }
+    }
+
+    public void deleteDiveAsync(Dive dive, ResponseCallback<DeleteResponse, Exception> callback) {
+        //dive might be created and then deleted offline so it doesn't have id
+        if (NetworkUtils.isConnected(context) && dive.id != null) {
+            onlineRepository.deleteDive(dive, new ResponseCallback<DeleteResponse, Exception>() {
+                @Override
+                public void success(DeleteResponse data) {
+                    offlineRepository.deleteDive(dive, new ResponseCallback.Empty<>(), false);
+                    callback.success(data);
+                }
+
+                @Override
+                public void error(Exception s) {
+                    callback.error(s);
+                }
+            });
+        } else {
+            offlineRepository.deleteDive(dive, callback, true);
         }
     }
 }

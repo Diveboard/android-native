@@ -9,8 +9,14 @@
 
     <item
         android:id="@+id/clone"
-        android:orderInCategory="100"
+        android:orderInCategory="110"
         android:title="@string/clone_dive_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="120"
+        android:title="@string/delete_dive_title"
         app:showAsAction="never" />
 
 </menu>

@@ -40,6 +40,7 @@
     <string name="foot">ft</string>
     <string name="dive_details_title">Dive Details</string>
     <string name="clone_dive_title">Clone</string>
+    <string name="delete_dive_title">Delete</string>
     <string name="save_dive_title">Save</string>
     <string name="environment">ENVIRONMENT</string>
     <string name="dive_type">Dive Type</string>
@@ -74,4 +75,6 @@
     <string name="error_profile_message">Error getting user profile</string>
     <string name="statistics">Statistics</string>
     <string name="cannot_find_dive">Cannot find dive</string>
+    <string name="delete">Delete</string>
+    <string name="deleteDive">Delete dive?</string>
 </resources>

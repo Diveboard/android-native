@@ -1,17 +1,18 @@
 package com.diveboard.dataaccess;
 
 import android.content.Context;
-import android.util.Log;
 
+import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
+import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
+import com.diveboard.dataaccess.datamodel.ResponseBase;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.util.ResponseCallback;
@@ -24,6 +25,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
 
@@ -112,24 +114,7 @@ public class DivesOnlineRepository {
     private VolleyMultipartRequest getSaveDiveRequest(final ResponseCallback<DiveResponse, Exception> callback, Dive dive) {
         String url = AppConfig.SERVER_URL + "/api/V2/dive";
         return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
-            try {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                DiveResponse data = (new Gson()).fromJson(json, DiveResponse.class);
-                if (data.success) {
-                    callback.success(data);
-                } else {
-                    if (data.errors != null && data.errors.length > 0) {
-//TODO: include all the errors not the first one only
-                        callback.error(new NetworkException(data.errors[0].message));
-                    } else {
-                        callback.error(new NetworkException("Cannot save dive. Unknown error"));
-                    }
-                }
-            } catch (UnsupportedEncodingException e) {
-                callback.error(e);
-            } catch (JsonSyntaxException e) {
-                callback.error(e);
-            }
+            handleResponse(response, callback, DiveResponse.class);
         }, error -> {
             callback.error(new NetworkException(error.getMessage()));
         }) {
@@ -140,5 +125,48 @@ public class DivesOnlineRepository {
                 return args;
             }
         };
+    }
+
+    public void deleteDive(Dive dive, ResponseCallback<DeleteResponse, Exception> callback) {
+        RequestQueue queue = Volley.newRequestQueue(context);
+        VolleyMultipartRequest request = getDeleteDiveRequest(callback, dive);
+        queue.add(request);
+    }
+
+    private VolleyMultipartRequest getDeleteDiveRequest(ResponseCallback<DeleteResponse, Exception> callback, Dive dive) {
+        String url = AppConfig.SERVER_URL + "/api/V2/dive/" + dive.id + "?";
+        Map<String, String> params = RequestHelper.getCommonRequestArgs(authenticationService);
+        for (String key : params.keySet()) {
+            try {
+                url += URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8") + "&";
+            } catch (UnsupportedEncodingException e) {
+            }
+        }
+        url = url.substring(0, url.length() - 1);
+        return new VolleyMultipartRequest(Request.Method.DELETE, url, response -> {
+            handleResponse(response, callback, DeleteResponse.class);
+        }, error -> callback.error(new NetworkException(error.getMessage()))) {
+        };
+    }
+
+    private <R extends ResponseBase<?>> void handleResponse(NetworkResponse response, ResponseCallback<R, Exception> callback, Class<R> classOfR) {
+        try {
+            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            R data = (new Gson()).fromJson(json, classOfR);
+            if (data.success) {
+                callback.success(data);
+            } else {
+                if (data.errors != null && data.errors.length > 0) {
+//TODO: include all the errors not the first one only
+                    callback.error(new NetworkException(data.errors[0].message));
+                } else {
+                    callback.error(new NetworkException("Cannot save dive. Unknown error"));
+                }
+            }
+        } catch (UnsupportedEncodingException e) {
+            callback.error(e);
+        } catch (JsonSyntaxException e) {
+            callback.error(e);
+        }
     }
 }

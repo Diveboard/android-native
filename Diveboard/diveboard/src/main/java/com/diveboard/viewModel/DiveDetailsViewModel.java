@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
+import java.util.UUID;
 
 public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
@@ -47,6 +48,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private String current;
     private Integer userId;
     private Integer id;
+    private String shakenId;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -72,6 +74,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveDateTime = data.getTimeIn();
         result.spot = SearchSpot.createFromSpot(data.spot);
         result.diveDateTime = data.getTimeIn();
+        result.shakenId = data.shakenId;
 
         for (SafetyStop ss : data.getSafetyStops()) {
             result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
@@ -91,6 +94,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
         result.diveDateTime.set(Calendar.MINUTE, 0);
         result.safetyStops.add(SafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
+        result.shakenId = UUID.randomUUID().toString();
         return result;
     }
 
@@ -223,6 +227,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.altitude = getAltitude();
         result.current = getCurrent();
         result.diveNumber = getDiveNumber();
+        result.shakenId = shakenId;
 
         ArrayList<SafetyStop> ssl = new ArrayList<>();
         for (SafetyStopViewModel ss : safetyStops) {
@@ -274,6 +279,9 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public String getCurrent() {
+        if (currentPosition == -1) {
+            return null;
+        }
         current = currentDictionary.get(currentPosition);
         return current;
     }
