@@ -5,20 +5,22 @@ import android.content.SharedPreferences;
 
 import androidx.preference.PreferenceManager;
 
+import com.diveboard.util.RoomConverters;
+
+import java.util.Date;
+
 public class UserPreferenceService {
-    private Context _context;
+    private SharedPreferences sharedPreferences;
 
     public UserPreferenceService(final Context context) {
-        _context = context;
+        sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
     }
 
     public Boolean isRestricDataUsage() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
         return sharedPreferences.getBoolean("data_usage", true);
     }
 
     public PictureSize getPictureQuality() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
         String value = sharedPreferences.getString("picquality", null);
         if ("High Definition".equals(value)) {
             return PictureSize.LARGE;
@@ -28,7 +30,17 @@ public class UserPreferenceService {
     }
 
     public Units.UnitsType getUnits() {
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(_context);
         return Units.UnitsType.valueOf(sharedPreferences.getString("units", Units.UnitsType.Metric.toString()));
+    }
+
+    public Date getLastSyncTime() {
+        long lastSyncTime = sharedPreferences.getLong("lastSyncTime", -1);
+        return lastSyncTime == -1 ? null : RoomConverters.fromTimestamp(lastSyncTime);
+    }
+
+    public void setLastSyncTime(Date date) {
+        SharedPreferences.Editor edit = sharedPreferences.edit();
+        edit.putLong("lastSyncTime", RoomConverters.dateToTimestamp(date));
+        edit.apply();
     }
 }

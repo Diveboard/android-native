@@ -1,6 +1,7 @@
 package com.diveboard.dataaccess;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
@@ -33,12 +34,12 @@ public class DivesOnlineRepository {
 
     private Context context;
     private AuthenticationService authenticationService;
-    private UserOfflineRepository userOfflineRepository;
+    private UserOnlineRepository userOnlineRepository;
 
-    public DivesOnlineRepository(Context context, AuthenticationService authenticationService, UserOfflineRepository userOfflineRepository) {
+    public DivesOnlineRepository(Context context, AuthenticationService authenticationService, UserOnlineRepository userOnlineRepository) {
         this.context = context;
         this.authenticationService = authenticationService;
-        this.userOfflineRepository = userOfflineRepository;
+        this.userOnlineRepository = userOnlineRepository;
     }
 
     public void load(final ResponseCallback<DivesResponse, String> callback) {
@@ -61,7 +62,8 @@ public class DivesOnlineRepository {
                 callback.error(s.getMessage());
             }
         };
-        userOfflineRepository.getAsync(intCallback);
+        userOnlineRepository.getAsync(intCallback);
+        Log.d(DivesOnlineRepository.class.toString(), "Get dives online");
     }
 
     private VolleyMultipartRequest getGetDivesRequest(final ResponseCallback<DivesResponse, String> callback, List<Integer> dives) {
@@ -69,9 +71,9 @@ public class DivesOnlineRepository {
         return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
             try {
                 String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                if (callback != null) {
-                    callback.success((new Gson()).fromJson(json, DivesResponse.class));
-                }
+                DivesResponse data = (new Gson()).fromJson(json, DivesResponse.class);
+                if (data.er)
+                callback.success(data);
             } catch (UnsupportedEncodingException e) {
                 callback.error(e.getMessage());
             } catch (JsonSyntaxException e) {
@@ -156,12 +158,7 @@ public class DivesOnlineRepository {
             if (data.success) {
                 callback.success(data);
             } else {
-                if (data.errors != null && data.errors.length > 0) {
-//TODO: include all the errors not the first one only
-                    callback.error(new NetworkException(data.errors[0].message));
-                } else {
-                    callback.error(new NetworkException("Cannot save dive. Unknown error"));
-                }
+                callback.error(new DiveboardApiException(data.errors));
             }
         } catch (UnsupportedEncodingException e) {
             callback.error(e);

@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "aa0b1fd8b8c5943da3f862aef410d1a3",
+    "identityHash": "f175cd680586dedc683964497d5dba7b",
     "entities": [
       {
         "tableName": "sync_object",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `change_date` INTEGER, `action` TEXT, `object` TEXT, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `change_date` INTEGER, `action` TEXT, `object` TEXT, `sync_attempts_count` INTEGER NOT NULL DEFAULT 0, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -31,6 +31,13 @@
             "columnName": "object",
             "affinity": "TEXT",
             "notNull": false
+          },
+          {
+            "fieldPath": "syncAttemptsCount",
+            "columnName": "sync_attempts_count",
+            "affinity": "INTEGER",
+            "notNull": true,
+            "defaultValue": "0"
           }
         ],
         "primaryKey": {
@@ -46,7 +53,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'aa0b1fd8b8c5943da3f862aef410d1a3')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'f175cd680586dedc683964497d5dba7b')"
     ]
   }
 }

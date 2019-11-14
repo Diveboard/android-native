@@ -22,45 +22,45 @@
             android:id="@+id/toolbar"
             style="@style/Toolbar2" />
 
-        <RelativeLayout
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/listView"
+            <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:clickHandler="@{view.showDiveHandler}"
-                app:itemViewBinder="@{view.diveItemViewBinder}"
-                app:items="@{model.dives}"
-                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                android:layout_height="match_parent">
 
-            <ProgressBar
-                android:id="@+id/progressBar"
-                android:layout_width="70dp"
-                android:layout_height="70dp"
-                android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
-                android:indeterminateDrawable="@drawable/spinner_ring"
-                android:indeterminateOnly="true"
-                android:shadowColor="@color/black"
-                android:visibility="@{model.dataLoadInProgress}" />
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    app:clickHandler="@{view.showDiveHandler}"
+                    app:itemViewBinder="@{view.diveItemViewBinder}"
+                    app:items="@{model.dives}"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-            <com.google.android.material.floatingactionbutton.FloatingActionButton
-                android:id="@+id/fab"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginStart="@dimen/view_double_margin"
-                android:layout_marginLeft="@dimen/view_double_margin"
-                android:layout_marginEnd="@dimen/view_double_margin"
-                android:layout_marginRight="@dimen/view_double_margin"
-                android:layout_marginBottom="@dimen/view_double_margin"
-                app:elevation="4dp"
-                android:onClick="@{()->view.addDive()}"
-                android:src="@drawable/ic_baseline_add_24px" />
-        </RelativeLayout>
+                <!--            <ProgressBar-->
+                <!--                android:id="@+id/progressBar"-->
+                <!--                android:layout_width="70dp"-->
+                <!--                android:layout_height="70dp"-->
+                <!--                android:layout_centerHorizontal="true"-->
+                <!--                android:layout_centerVertical="true"-->
+                <!--                android:indeterminateDrawable="@drawable/spinner_ring"-->
+                <!--                android:indeterminateOnly="true"-->
+                <!--                android:shadowColor="@color/black"-->
+                <!--                android:visibility="@{model.dataLoadInProgress}" />-->
+
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/fab"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom|right"
+                    android:layout_margin="@dimen/view_double_margin"
+                    android:onClick="@{()->view.addDive()}"
+                    android:src="@drawable/ic_baseline_add_24px"
+                    app:elevation="4dp" />
+            </FrameLayout>
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 </layout>

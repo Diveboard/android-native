@@ -2,20 +2,26 @@ package com.diveboard.mobile;
 
 import android.app.Application;
 
+import androidx.room.Room;
+
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
-import com.diveboard.dataaccess.SyncRepository;
+import com.diveboard.dataaccess.SyncObjectDatabase;
 import com.diveboard.dataaccess.UserOfflineRepository;
+import com.diveboard.dataaccess.UserOnlineRepository;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.model.DivesService;
+import com.diveboard.model.SyncService;
 import com.diveboard.model.UserPreferenceService;
 import com.diveboard.model.UserService;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
+
+import java.util.concurrent.CompletableFuture;
 
 public class ApplicationController extends Application {
 
@@ -31,7 +37,8 @@ public class ApplicationController extends Application {
     private DivesService divesService;
     private UserService userService;
     private User currentUser;
-    private SyncRepository syncRepository;
+    private SyncService syncService;
+    private SyncObjectDatabase db;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -96,17 +103,29 @@ public class ApplicationController extends Application {
         if (divesService == null) {
             divesService = new DivesService(
                     this,
-                    new DivesOfflineRepository(this, getSyncRepository()),
-                    new DivesOnlineRepository(this, getAuthenticationService(), getUserOfflineRepository()));
+                    new DivesOfflineRepository(this, getSyncService()),
+                    getOnlineRepository(),
+                    getUserPreferenceService(),
+                    getSyncService());
         }
         return divesService;
     }
 
-    private SyncRepository getSyncRepository() {
-        if (syncRepository == null) {
-            syncRepository = new SyncRepository();
+    public UserOnlineRepository getUserOnlineRepository() {
+        return new UserOnlineRepository(this, getAuthenticationService());
+    }
+
+    private DivesOnlineRepository getOnlineRepository() {
+        return new DivesOnlineRepository(this, getAuthenticationService(), getUserOnlineRepository());
+    }
+
+    private SyncService getSyncService() {
+        db = Room.databaseBuilder(this, SyncObjectDatabase.class, "sync-objects").allowMainThreadQueries().build();
+        if (syncService == null) {
+            syncService = new SyncService(db.userDao(), getOnlineRepository());
         }
-        return syncRepository;
+        CompletableFuture feature;
+        return syncService;
     }
 
     public User getCurrentUser() {

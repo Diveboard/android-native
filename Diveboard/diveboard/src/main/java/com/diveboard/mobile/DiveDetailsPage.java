@@ -15,6 +15,7 @@ import androidx.navigation.Navigation;
 import androidx.viewpager.widget.ViewPager;
 
 import com.diveboard.dataaccess.datamodel.DeleteResponse;
+import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.model.DivesService;
@@ -82,7 +83,7 @@ public class DiveDetailsPage extends Fragment {
             public void error(String s) {
                 Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
             }
-        });
+        }, false);
     }
 
     private void setupTabs(View view) {
@@ -170,9 +171,9 @@ public class DiveDetailsPage extends Fragment {
             tab.select();
             return;
         }
-        ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<DiveResponse, Exception>() {
+        ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<Dive, Exception>() {
             @Override
-            public void success(DiveResponse data) {
+            public void success(Dive data) {
                 Navigation.findNavController(tabLayout).popBackStack();
             }
 

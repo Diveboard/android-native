@@ -26,19 +26,12 @@ public class SyncObject {
     @ColumnInfo(name = "object")
     public String object;
 
+    @ColumnInfo(name = "sync_attempts_count", defaultValue = "0")
+    public int syncAttemptsCount;
+
     public enum Action {
-        New("new"),
-        Update("update"),
-        Delete("delete");
-        private final String text;
-
-        Action(final String text) {
-            this.text = text;
-        }
-
-        @Override
-        public String toString() {
-            return text;
-        }
+        New,
+        Update,
+        Delete
     }
 }

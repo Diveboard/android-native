@@ -3,6 +3,10 @@ package com.diveboard.viewModel;
 import android.content.Context;
 import android.widget.Toast;
 
+import androidx.databinding.ObservableArrayList;
+import androidx.databinding.ObservableBoolean;
+import androidx.databinding.ObservableList;
+
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
@@ -11,10 +15,6 @@ import com.diveboard.util.ResponseCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import androidx.databinding.ObservableArrayList;
-import androidx.databinding.ObservableBoolean;
-import androidx.databinding.ObservableList;
 
 public class DivesListViewModel {
 
@@ -29,7 +29,7 @@ public class DivesListViewModel {
         this.divesService = divesService;
     }
 
-    public void init() {
+    public void init(boolean forceOnline) {
         dataLoadInProgress.set(true);
         divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
@@ -54,11 +54,15 @@ public class DivesListViewModel {
 
             @Override
             public void error(String s) {
+                dataLoadInProgress.set(false);
                 Toast.makeText(context, context.getString(R.string.error_get_dives_message) + " " + s, Toast.LENGTH_SHORT).show();
             }
-        });
+        }, forceOnline);
     }
 
+    public void refresh() {
+        init(true);
+    }
 
     static class SortedArrayList<T> extends ArrayList<T> {
         @SuppressWarnings("unchecked")

@@ -4,20 +4,20 @@ import android.content.Context;
 
 import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
-import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
+import com.diveboard.model.SyncService;
 import com.diveboard.util.ResponseCallback;
 
 public class DivesOfflineRepository extends FileRepository<DivesResponse> {
 
-    private SyncRepository syncRepository;
+    private SyncService syncService;
 
-    public DivesOfflineRepository(Context context, SyncRepository syncRepository) {
+    public DivesOfflineRepository(Context context, SyncService syncService) {
         super(context);
-        this.syncRepository = syncRepository;
+        this.syncService = syncService;
     }
 
-    public void saveDive(Dive dive, ResponseCallback<DiveResponse, Exception> callback, boolean toBeSynced, String shakenId) {
+    public void saveDive(Dive dive, ResponseCallback<Dive, Exception> callback, boolean toBeSynced, String shakenId) {
         getAsync(new ResponseCallback<DivesResponse, Exception>() {
             @Override
             public void success(DivesResponse data) {
@@ -26,24 +26,26 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
                     //new dive
                     data.dives.add(dive);
                     if (toBeSynced) {
-                        syncRepository.newDive(dive);
+                        syncService.newDive(dive);
                     } else {
-                        syncRepository.markSynced(shakenId);
+                        syncService.markSynced(shakenId);
                     }
                 } else {
                     //update dive
                     for (int i = 0; i < data.dives.size(); i++) {
                         if (data.dives.get(i).id.equals(dive.id)) {
                             data.dives.set(i, dive);
+                            break;
                         }
                     }
                     if (toBeSynced) {
-                        syncRepository.updateDive(dive);
+                        syncService.updateDive(dive);
                     } else {
-                        syncRepository.markSynced(shakenId);
+                        syncService.markSynced(shakenId);
                     }
                 }
                 save(data);
+                callback.success(dive);
             }
 
             @Override
@@ -70,14 +72,15 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
                 for (int i = 0; i < data.dives.size(); i++) {
                     if (data.dives.get(i).shakenId.equals(dive.shakenId)) {
                         data.dives.remove(i);
+                        break;
                     }
                 }
                 if (dive.id == null) {
                     //this dive is not yet synced
-                    syncRepository.markSynced(dive.shakenId);
+                    syncService.markSynced(dive.shakenId);
                 }
                 if (dive.id != null && toBeSynced) {
-                    syncRepository.deleteDive(dive);
+                    syncService.deleteDive(dive);
                 }
                 save(data);
             }

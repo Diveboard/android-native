@@ -1,6 +1,7 @@
 package com.diveboard.model;
 
 import android.content.Context;
+import android.os.AsyncTask;
 
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
@@ -12,19 +13,33 @@ import com.diveboard.mobile.R;
 import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
 
+import java.util.Date;
+
 public class DivesService {
 
     private Context context;
     private DivesOfflineRepository offlineRepository;
     private DivesOnlineRepository onlineRepository;
+    private UserPreferenceService userPreferenceService;
+    private SyncService syncService;
 
-    public DivesService(Context context, DivesOfflineRepository offlineRepository, DivesOnlineRepository onlineRepository) {
+    public DivesService(Context context,
+                        DivesOfflineRepository offlineRepository,
+                        DivesOnlineRepository onlineRepository,
+                        UserPreferenceService userPreferenceService,
+                        SyncService syncService) {
         this.context = context;
         this.offlineRepository = offlineRepository;
         this.onlineRepository = onlineRepository;
+        this.userPreferenceService = userPreferenceService;
+        this.syncService = syncService;
     }
 
-    public void getDivesAsync(final ResponseCallback<DivesResponse, String> callback) {
+    public void getDivesAsync(final ResponseCallback<DivesResponse, String> callback, boolean forceOnline) {
+        if (forceOnline) {
+            onlineCall(callback);
+            return;
+        }
         final ResponseCallback<DivesResponse, Exception> intCallback = new ResponseCallback<DivesResponse, Exception>() {
             @Override
             public void success(DivesResponse data) {
@@ -40,36 +55,27 @@ public class DivesService {
                 onlineCall(callback);
             }
         };
+
         offlineRepository.getAsync(intCallback);
     }
 
     private void onlineCall(ResponseCallback<DivesResponse, String> callback) {
         if (NetworkUtils.isConnected(context)) {
-            onlineRepository.load(new ResponseCallback<DivesResponse, String>() {
-                @Override
-                public void success(DivesResponse data) {
-                    offlineRepository.save(data);
-                    callback.success(data);
-                }
-
-                @Override
-                public void error(String s) {
-                    callback.error(s);
-                }
-            });
+            SyncChangesAndGetFreshResultsTask syncChangesTask = new SyncChangesAndGetFreshResultsTask(callback);
+            syncChangesTask.execute((Void) null);
         } else {
             callback.error(context.getString(R.string.no_internet));
         }
     }
 
-    public void saveDiveAsync(Dive dive, ResponseCallback<DiveResponse, Exception> callback) {
+    public void saveDiveAsync(Dive dive, ResponseCallback<Dive, Exception> callback) {
         if (NetworkUtils.isConnected(context)) {
             onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
                 @Override
                 public void success(DiveResponse data) {
                     //it is important to pass old shaken id, so sync repo can find it properly
                     offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>(), false, dive.shakenId);
-                    callback.success(data);
+                    callback.success(data.result);
                 }
 
                 @Override
@@ -99,6 +105,42 @@ public class DivesService {
             });
         } else {
             offlineRepository.deleteDive(dive, callback, true);
+        }
+    }
+
+    private class SyncChangesAndGetFreshResultsTask extends AsyncTask<Void, Void, Exception> {
+        private ResponseCallback<DivesResponse, String> callback;
+
+        public SyncChangesAndGetFreshResultsTask(ResponseCallback<DivesResponse, String> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        protected void onPostExecute(Exception e) {
+            super.onPostExecute(e);
+            if (e != null) {
+                callback.error(e.getMessage());
+                //get fresh results from server even if syncronization failed
+            }
+
+            onlineRepository.load(new ResponseCallback<DivesResponse, String>() {
+                @Override
+                public void success(DivesResponse data) {
+                    offlineRepository.save(data);
+                    userPreferenceService.setLastSyncTime(new Date());
+                    callback.success(data);
+                }
+
+                @Override
+                public void error(String s) {
+                    callback.error(s);
+                }
+            });
+        }
+
+        @Override
+        protected Exception doInBackground(Void... voids) {
+            return syncService.syncChanges();
         }
     }
 }

@@ -11,6 +11,7 @@ import com.diveboard.model.SafetyStop;
 import com.diveboard.model.SearchSpot;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
+import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -221,11 +222,11 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.airTemp = getAirTemp();
         result.waterTemp = getWaterTemp();
         result.weights = getWeights();
-        result.visibility = getVisibility();
+        result.visibility = Strings.isEmptyOrWhitespace(getVisibility()) ? null : getVisibility();
         result.tripName = getTripName();
         result.setFreshWater(isFreshWater);
         result.altitude = getAltitude();
-        result.current = getCurrent();
+        result.current = Strings.isEmptyOrWhitespace(getCurrent()) ? null : getCurrent();
         result.diveNumber = getDiveNumber();
         result.shakenId = shakenId;
 

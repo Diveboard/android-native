@@ -10,9 +10,11 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import com.diveboard.mobile.databinding.ActivityDivesListBinding;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
@@ -21,25 +23,51 @@ import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBa
 import com.diveboard.viewModel.DiveItemViewModel;
 import com.diveboard.viewModel.DivesListViewModel;
 
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
+
 public class LogbookPage extends Fragment {
 
     private DrawerLayout drawerLayout;
     private View listView;
+    private ApplicationController ac;
+    private DivesListViewModel viewModel;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         ActivityDivesListBinding binding = DataBindingUtil.inflate(inflater, R.layout.activity_dives_list, container, false);
         View view = binding.getRoot();
         setupToolbar(view);
-        ApplicationController applicationContext = (ApplicationController) getActivity().getApplicationContext();
+        ac = (ApplicationController) getActivity().getApplicationContext();
         drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         //TODO: make a singlton?
-        DivesListViewModel viewModel = new DivesListViewModel(applicationContext, applicationContext.getDivesService());
-        viewModel.init();
+        viewModel = new DivesListViewModel(ac, ac.getDivesService());
+        setupPullToRefresh(view);
+        viewModel.init(getForceOnline());
         listView = binding.listView;
         binding.setModel(viewModel);
         binding.setView(this);
         return view;
+    }
+
+    private boolean getForceOnline() {
+        Date lastSyncTime = ac.getUserPreferenceService().getLastSyncTime();
+        if (lastSyncTime == null) {
+            return true;
+        }
+        long days = TimeUnit.DAYS.convert(new Date().getTime() - lastSyncTime.getTime(), TimeUnit.MILLISECONDS);
+        return days >= 3;
+    }
+
+    private void setupPullToRefresh(View view) {
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.pullToRefresh);
+        viewModel.dataLoadInProgress.addOnPropertyChangedCallback(new Observable.OnPropertyChangedCallback() {
+            @Override
+            public void onPropertyChanged(Observable sender, int propertyId) {
+                pullToRefresh.setRefreshing(viewModel.dataLoadInProgress.get());
+            }
+        });
+        pullToRefresh.setOnRefreshListener(() -> viewModel.refresh());
     }
 
     private void setupToolbar(View view) {

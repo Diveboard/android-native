@@ -5,6 +5,7 @@ import androidx.room.Delete;
 import androidx.room.Insert;
 import androidx.room.OnConflictStrategy;
 import androidx.room.Query;
+import androidx.room.Update;
 
 import com.diveboard.dataaccess.datamodel.SyncObject;
 
@@ -21,4 +22,7 @@ public interface SyncObjectDao {
 
     @Delete
     void delete(SyncObject syncObject);
+
+    @Update
+    void update(SyncObject syncObject);
 }
