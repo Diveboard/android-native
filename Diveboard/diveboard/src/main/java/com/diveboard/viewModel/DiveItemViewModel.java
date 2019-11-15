@@ -8,14 +8,16 @@ public class DiveItemViewModel implements Comparable {
     public final int index;
     public final int number;
     public final Integer id;
+    public final String shakenId;
     public final String date;
     public final String location;
     public final String siteName;
     public final String durationStr;
     public final String maxDepthStr;
 
-    public DiveItemViewModel(int index, Integer id, int number, String date, Spot spot, Integer minutes, Double maxDepth, String depthUnit) {
+    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, String depthUnit) {
         this.index = index;
+        this.shakenId = shakenId;
         this.number = number;
         this.id = id;
         this.date = date;

@@ -79,14 +79,13 @@ public class LogbookPage extends Fragment {
 
     public ClickHandler<DiveItemViewModel> showDiveHandler() {
         return viewModel -> {
-            LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails();
-            action.setDiveId(viewModel.id);
+            LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails(viewModel.shakenId);
             Navigation.findNavController(listView).navigate(action);
         };
     }
 
     public void addDive() {
-        LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails();
+        LogbookPageDirections.ActionLogbookToDiveDetails action = LogbookPageDirections.actionLogbookToDiveDetails(null);
         Navigation.findNavController(listView).navigate(action);
     }
 

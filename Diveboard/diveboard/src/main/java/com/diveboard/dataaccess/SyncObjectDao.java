@@ -17,6 +17,9 @@ public interface SyncObjectDao {
     @Query("SELECT * FROM sync_object")
     List<SyncObject> getAll();
 
+    @Query("SELECT * FROM sync_object WHERE id=:id")
+    SyncObject getById(String id);
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     void insert(SyncObject... syncObjects);
 

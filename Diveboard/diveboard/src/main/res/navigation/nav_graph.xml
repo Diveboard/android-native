@@ -14,9 +14,9 @@
             android:id="@+id/action_logbook_to_diveDetails"
             app:destination="@id/diveDetails">
             <argument
-                android:name="diveId"
-                android:defaultValue="-1"
-                app:argType="integer" />
+                android:name="shakenId"
+                app:nullable="true"
+                app:argType="string" />
         </action>
     </fragment>
 
@@ -48,9 +48,9 @@
             android:id="@+id/action_diveDetails_to_selectSpot"
             app:destination="@id/selectSpot" />
         <argument
-            android:name="diveId"
-            android:defaultValue="-1"
-            app:argType="integer" />
+            android:name="shakenId"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
 
     <fragment

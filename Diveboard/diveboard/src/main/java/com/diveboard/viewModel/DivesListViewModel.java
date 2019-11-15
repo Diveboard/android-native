@@ -36,10 +36,11 @@ public class DivesListViewModel {
             public void success(DivesResponse data) {
                 dataLoadInProgress.set(false);
                 SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
-                for (int i = 0; i < data.dives.size(); i++) {
-                    Dive dive = data.dives.get(i);
+                for (int i = 0; i < data.result.size(); i++) {
+                    Dive dive = data.result.get(i);
                     result.insertSorted(new DiveItemViewModel(i,
                             dive.id,
+                            dive.shakenId,
                             dive.diveNumber,
                             dive.timeIn,
                             dive.spot,

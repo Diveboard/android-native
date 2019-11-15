@@ -10,14 +10,14 @@ public class User {
     public String nickname;
     @SerializedName("picture")
     public String pictureUrl;
-
-    public String getSanitizedPictureUrl(){
-        return pictureUrl != null && pictureUrl.startsWith("//") ? "https:" + pictureUrl : pictureUrl;
-    }
-
     @SerializedName("all_dive_ids")
     public List<Integer> dives;
+
     public User() {
         dives = new ArrayList<>();
+    }
+
+    public String getSanitizedPictureUrl() {
+        return pictureUrl != null && pictureUrl.startsWith("//") ? "https:" + pictureUrl : pictureUrl;
     }
 }

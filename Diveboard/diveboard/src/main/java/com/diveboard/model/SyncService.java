@@ -21,16 +21,16 @@ public class SyncService {
     private static final int MAX_SYNC_ATTEMPTS = 3;
     private final Gson gson;
     private DivesOnlineRepository onlineRepository;
-    private SyncObjectDao syncObjectDao;
+    private SyncObjectDao dao;
 
-    public SyncService(SyncObjectDao syncObjectDao, DivesOnlineRepository onlineRepository) {
-        this.syncObjectDao = syncObjectDao;
+    public SyncService(SyncObjectDao dao, DivesOnlineRepository onlineRepository) {
+        this.dao = dao;
         this.onlineRepository = onlineRepository;
         gson = new Gson();
     }
 
     public Exception syncChanges() {
-        List<SyncObject> changes = syncObjectDao.getAll();
+        List<SyncObject> changes = dao.getAll();
         Semaphore semaphore = new Semaphore(0);
         final Exception[] error = {null};
         //submit changes sequentially
@@ -71,9 +71,9 @@ public class SyncService {
                     //increase attempt count and give another chance to sync in future
                     if (syncObject.syncAttemptsCount < MAX_SYNC_ATTEMPTS) {
                         syncObject.syncAttemptsCount++;
-                        syncObjectDao.update(syncObject);
+                        dao.update(syncObject);
                     } else {
-                        syncObjectDao.delete(syncObject);
+                        dao.delete(syncObject);
                     }
                 } else {
                     //these errors happen because of some network or other errors, not business so do not not increase attempts
@@ -97,11 +97,29 @@ public class SyncService {
     }
 
     public void updateDive(Dive dive) {
-        addAction(dive, SyncObject.Action.Update);
+        SyncObject syncObject = dao.getById(dive.shakenId);
+        if (syncObject == null) {
+            addAction(dive, SyncObject.Action.Update);
+        } else {
+            //preserve action
+            syncObject.syncAttemptsCount = 0;
+            syncObject.actionDate = new Date();
+            syncObject.object = getString(dive);
+            dao.update(syncObject);
+        }
     }
 
     public void deleteDive(Dive dive) {
-        addAction(dive, SyncObject.Action.Delete);
+        SyncObject syncObject = dao.getById(dive.shakenId);
+        if (syncObject == null) {
+            addAction(dive, SyncObject.Action.Delete);
+        } else {
+            syncObject.syncAttemptsCount = 0;
+            syncObject.actionDate = new Date();
+            syncObject.object = getString(dive); //should be not really necessary
+            syncObject.action = SyncObject.Action.Delete;
+            dao.update(syncObject);
+        }
     }
 
     private void addAction(Dive dive, SyncObject.Action action) {
@@ -111,12 +129,12 @@ public class SyncService {
         syncObject.actionDate = new Date();
         syncObject.object = getString(dive);
 //        make all these calls with rxjava usage? and test dive update in offline
-        syncObjectDao.insert(syncObject);
+        dao.insert(syncObject);
     }
 
     public void markSynced(String shakenId) {
         SyncObject so = new SyncObject();
         so.id = shakenId;
-        syncObjectDao.delete(so);
+        dao.delete(so);
     }
 }

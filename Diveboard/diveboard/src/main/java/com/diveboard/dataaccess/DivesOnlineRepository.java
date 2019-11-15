@@ -72,8 +72,11 @@ public class DivesOnlineRepository {
             try {
                 String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
                 DivesResponse data = (new Gson()).fromJson(json, DivesResponse.class);
-                if (data.er)
-                callback.success(data);
+                if (data.success) {
+                    callback.success(data);
+                } else {
+                    callback.error(new DiveboardApiException(data.errors).getMessage());
+                }
             } catch (UnsupportedEncodingException e) {
                 callback.error(e.getMessage());
             } catch (JsonSyntaxException e) {

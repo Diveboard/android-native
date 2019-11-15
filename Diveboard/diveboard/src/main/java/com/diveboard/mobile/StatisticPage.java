@@ -41,7 +41,7 @@ public class StatisticPage extends Fragment {
         divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
-                binding.setModel(StatisticViewModel.create(Statistic.create(data.dives), ac.getUserPreferenceService().getUnits()));
+                binding.setModel(StatisticViewModel.create(Statistic.create(data.result), ac.getUserPreferenceService().getUnits()));
             }
 
             @Override

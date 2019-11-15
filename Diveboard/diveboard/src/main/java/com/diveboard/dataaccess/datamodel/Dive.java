@@ -40,7 +40,7 @@ public class Dive {
     public Double weights;
     @SerializedName("safetystops")
     public String safetystops;
-//    @SerializedName("safetystops_unit_value")
+    //    @SerializedName("safetystops_unit_value")
 //    public String safetystopsUnitValue;
     @SerializedName("divetype")
     public List<String> divetype = new ArrayList<>();
@@ -72,7 +72,7 @@ public class Dive {
     public String publicNotes;
     @SerializedName("current")
     public String current;
-//    @SerializedName("date")
+    //    @SerializedName("date")
 //    public String date;
 //    @SerializedName("time")
 //    public String time;
@@ -150,5 +150,9 @@ public class Dive {
             return;
         }
         water = isFreshWater ? "fresh" : "salt";
+    }
+
+    public boolean existsOnline() {
+        return id != null;
     }
 }

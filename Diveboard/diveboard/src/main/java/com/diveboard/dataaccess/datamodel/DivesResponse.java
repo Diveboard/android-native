@@ -1,17 +1,16 @@
 package com.diveboard.dataaccess.datamodel;
 
-import com.google.gson.annotations.SerializedName;
-
 import java.util.ArrayList;
 import java.util.List;
 
-public class DivesResponse {
-    @SerializedName("result")
-    public List<Dive> dives = new ArrayList<>();
+public class DivesResponse extends ResponseBase<List<Dive>> {
+    public DivesResponse() {
+        result = new ArrayList<>();
+    }
 
     public List<String> getTripNames() {
         ArrayList<String> result = new ArrayList<>();
-        for (Dive dive : dives) {
+        for (Dive dive : this.result) {
             if (dive.tripName == null) {
                 continue;
             }
@@ -29,9 +28,9 @@ public class DivesResponse {
         return result;
     }
 
-    public Dive getDive(int diveId) {
-        for (Dive dive : this.dives) {
-            if (dive.id == diveId) {
+    public Dive getDive(String shakenId) {
+        for (Dive dive : this.result) {
+            if (dive.shakenId.equals(shakenId)) {
                 return dive;
             }
         }
@@ -40,7 +39,7 @@ public class DivesResponse {
 
     public int getMaxDiveNumber() {
         int result = 1;
-        for (Dive dive : this.dives) {
+        for (Dive dive : this.result) {
             if (dive.diveNumber > result) {
                 result = dive.diveNumber;
             }

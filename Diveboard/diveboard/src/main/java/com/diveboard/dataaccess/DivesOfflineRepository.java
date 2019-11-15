@@ -17,14 +17,14 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
         this.syncService = syncService;
     }
 
-    public void saveDive(Dive dive, ResponseCallback<Dive, Exception> callback, boolean toBeSynced, String shakenId) {
+    public void saveDive(Dive dive, ResponseCallback<Dive, Exception> callback, boolean toBeSynced, String shakenId, boolean newDive) {
         getAsync(new ResponseCallback<DivesResponse, Exception>() {
             @Override
             public void success(DivesResponse data) {
-                if (dive.id == null) {
+                if (newDive) {
                     //TODO: it is not always a new dive, it could be a dive which was created offline and now edited
                     //new dive
-                    data.dives.add(dive);
+                    data.result.add(dive);
                     if (toBeSynced) {
                         syncService.newDive(dive);
                     } else {
@@ -32,9 +32,9 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
                     }
                 } else {
                     //update dive
-                    for (int i = 0; i < data.dives.size(); i++) {
-                        if (data.dives.get(i).id.equals(dive.id)) {
-                            data.dives.set(i, dive);
+                    for (int i = 0; i < data.result.size(); i++) {
+                        if (data.result.get(i).shakenId.equals(dive.shakenId)) {
+                            data.result.set(i, dive);
                             break;
                         }
                     }
@@ -69,20 +69,21 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
         getAsync(new ResponseCallback<DivesResponse, Exception>() {
             @Override
             public void success(DivesResponse data) {
-                for (int i = 0; i < data.dives.size(); i++) {
-                    if (data.dives.get(i).shakenId.equals(dive.shakenId)) {
-                        data.dives.remove(i);
+                for (int i = 0; i < data.result.size(); i++) {
+                    if (data.result.get(i).shakenId.equals(dive.shakenId)) {
+                        data.result.remove(i);
                         break;
                     }
                 }
-                if (dive.id == null) {
-                    //this dive is not yet synced
+                if (!dive.existsOnline()) {
+                    //this dive is not yet synced so remove from synchronization log
                     syncService.markSynced(dive.shakenId);
                 }
-                if (dive.id != null && toBeSynced) {
+                if (dive.existsOnline() && toBeSynced) {
                     syncService.deleteDive(dive);
                 }
                 save(data);
+                callback.success(new DeleteResponse());
             }
 
             @Override

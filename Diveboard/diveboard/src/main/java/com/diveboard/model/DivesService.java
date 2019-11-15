@@ -68,13 +68,13 @@ public class DivesService {
         }
     }
 
-    public void saveDiveAsync(Dive dive, ResponseCallback<Dive, Exception> callback) {
+    public void saveDiveAsync(Dive dive, ResponseCallback<Dive, Exception> callback, boolean isNewDive) {
         if (NetworkUtils.isConnected(context)) {
             onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
                 @Override
                 public void success(DiveResponse data) {
                     //it is important to pass old shaken id, so sync repo can find it properly
-                    offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>(), false, dive.shakenId);
+                    offlineRepository.saveDive(data.result, new ResponseCallback.Empty<>(), false, dive.shakenId, isNewDive);
                     callback.success(data.result);
                 }
 
@@ -84,13 +84,13 @@ public class DivesService {
                 }
             });
         } else {
-            offlineRepository.saveDive(dive, callback, true, dive.shakenId);
+            offlineRepository.saveDive(dive, callback, true, dive.shakenId, isNewDive);
         }
     }
 
     public void deleteDiveAsync(Dive dive, ResponseCallback<DeleteResponse, Exception> callback) {
         //dive might be created and then deleted offline so it doesn't have id
-        if (NetworkUtils.isConnected(context) && dive.id != null) {
+        if (NetworkUtils.isConnected(context) && dive.existsOnline()) {
             onlineRepository.deleteDive(dive, new ResponseCallback<DeleteResponse, Exception>() {
                 @Override
                 public void success(DeleteResponse data) {

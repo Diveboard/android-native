@@ -16,7 +16,6 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
-import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.model.DivesService;
 import com.diveboard.util.ResourceHolder;
@@ -36,6 +35,7 @@ public class DiveDetailsPage extends Fragment {
     private DiveDetailsNotesFragment notes;
     private AlertDialog deleteConfirmationDialog;
     private DivesService divesService;
+    private boolean isNewDive;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -43,27 +43,24 @@ public class DiveDetailsPage extends Fragment {
         View view = inflater.inflate(R.layout.activity_dive_details2, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
         divesService = ac.getDivesService();
-        int diveId = DiveDetailsPageArgs.fromBundle(getArguments()).getDiveId();
+        //cannot use dive.id as it is not always exist e.g. for offline dives
+        String shakenId = DiveDetailsPageArgs.fromBundle(getArguments()).getShakenId();
+        isNewDive = shakenId == null;
         setupToolbar(view);
         setupTabs(view);
-        setupViewModel(diveId == -1 ? null : diveId);
+        setupViewModel(shakenId);
         return view;
     }
 
-    private void setupViewModel(Integer diveId) {
+    private void setupViewModel(String shakenId) {
         //TODO: get model from singleton tempDive so it is restored after app switch
         ResourceHolder resourceHolder = new ResourceHolder(ac);
 
         ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
-                if (diveId != null) {
-                    viewModel = DiveDetailsViewModel.createFromModel(data.getDive(diveId),
-                            resourceHolder.getVisibilityValues(),
-                            resourceHolder.getCurrentValues(),
-                            ac.getUserPreferenceService().getUnits());
-                } else {
-                    if (ac.currentDive == null) {
+                if (isNewDive) {
+//                    if (ac.currentDive == null) {
                         viewModel = DiveDetailsViewModel.createNewDive(
                                 data.getMaxDiveNumber() + 1,
                                 data.getLastTripName(),
@@ -71,9 +68,14 @@ public class DiveDetailsPage extends Fragment {
                                 resourceHolder.getVisibilityValues(),
                                 resourceHolder.getCurrentValues(),
                                 ac.getCurrentUser().id);
-                    } else {
-                        viewModel = ac.currentDive;
-                    }
+//                    } else {
+//                        viewModel = ac.currentDive;
+//                    }
+                } else {
+                    viewModel = DiveDetailsViewModel.createFromModel(data.getDive(shakenId),
+                            resourceHolder.getVisibilityValues(),
+                            resourceHolder.getCurrentValues(),
+                            ac.getUserPreferenceService().getUnits());
                 }
                 viewModel.setTripNames(data.getTripNames());
                 setViewModel(viewModel);
@@ -182,7 +184,7 @@ public class DiveDetailsPage extends Fragment {
                 Toast toast = Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT);
                 toast.show();
             }
-        });
+        }, isNewDive);
     }
 
     public void hideKeyBoard(View v) {
