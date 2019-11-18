@@ -36,19 +36,23 @@ public class DiveDetailsPage extends Fragment {
     private AlertDialog deleteConfirmationDialog;
     private DivesService divesService;
     private boolean isNewDive;
+    private View view;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_dive_details2, container, false);
+        if (view != null) {
+            return view;
+        }
+        view = inflater.inflate(R.layout.activity_dive_details2, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
         divesService = ac.getDivesService();
         //cannot use dive.id as it is not always exist e.g. for offline dives
         String shakenId = DiveDetailsPageArgs.fromBundle(getArguments()).getShakenId();
         isNewDive = shakenId == null;
-        setupToolbar(view);
-        setupTabs(view);
         setupViewModel(shakenId);
+        setupTabs(view);
+        setupToolbar(view);
         return view;
     }
 
@@ -61,13 +65,13 @@ public class DiveDetailsPage extends Fragment {
             public void success(DivesResponse data) {
                 if (isNewDive) {
 //                    if (ac.currentDive == null) {
-                        viewModel = DiveDetailsViewModel.createNewDive(
-                                data.getMaxDiveNumber() + 1,
-                                data.getLastTripName(),
-                                ac.getUserPreferenceService().getUnits(),
-                                resourceHolder.getVisibilityValues(),
-                                resourceHolder.getCurrentValues(),
-                                ac.getCurrentUser().id);
+                    viewModel = DiveDetailsViewModel.createNewDive(
+                            data.getMaxDiveNumber() + 1,
+                            data.getLastTripName(),
+                            ac.getUserPreferenceService().getUnits(),
+                            resourceHolder.getVisibilityValues(),
+                            resourceHolder.getCurrentValues(),
+                            ac.getCurrentUser().id);
 //                    } else {
 //                        viewModel = ac.currentDive;
 //                    }

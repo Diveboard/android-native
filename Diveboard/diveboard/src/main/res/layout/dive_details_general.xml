@@ -55,6 +55,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.diveNumber)}"
                     app:validateEmpty="@{true}"
@@ -75,9 +76,8 @@
                     android:id="@+id/uiDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
                     android:inputType="date"
-                    android:nextFocusForward="@+id/uiTime"
+                    android:imeOptions="actionDone"
                     android:text="@={dateConverter.convertDateToString(model.uiDate)}"
                     app:attachCalendar='@{"date"}'
                     app:validateDate='@{null}'
@@ -90,8 +90,8 @@
                 android:id="@+id/textInputLayout4"
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
+                android:layout_marginStart="@dimen/view_margin"
+                android:layout_marginLeft="@dimen/view_margin"
                 android:hint="@string/time_label"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout3"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
@@ -121,9 +121,8 @@
                     android:id="@+id/trip_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
                     android:inputType="textAutoComplete"
-                    android:nextFocusForward="@+id/spot"
+                    android:imeOptions="actionDone"
                     android:text="@={model.tripName}"
                     app:autoCompleteList="@{model.tripNames}" />
 
@@ -160,8 +159,7 @@
                 android:onClick="@{()->view.showSpotDialog()}"
                 android:src="@drawable/ic_baseline_search_24px"
                 app:layout_constraintBottom_toBottomOf="@+id/textInputLayout7"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/textInputLayout7" />
+                app:layout_constraintEnd_toEndOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView3"
@@ -172,7 +170,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout7" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/textInputLayout8"
+                android:id="@+id/maxDepth"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/view_margin"
@@ -184,9 +182,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
+                    android:imeOptions="actionDone"
                     android:inputType="numberDecimal"
-                    android:nextFocusForward="@+id/duration"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.maxDepth)}"
                     app:validateEmpty="@{true}"
@@ -197,13 +194,13 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout9"
-                android:layout_width="150dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/view_margin"
+                android:layout_marginLeft="@dimen/view_margin"
+                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@string/duration_label"
-                app:layout_constraintStart_toEndOf="@+id/textInputLayout8"
+                app:layout_constraintStart_toEndOf="@+id/maxDepth"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
 
                 <com.google.android.material.textfield.TextInputEditText
@@ -211,6 +208,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"
                     android:text="@={converter.integerToStringConverter(model.durationMin)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}" />
@@ -223,13 +221,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout8">
+                app:layout_constraintTop_toBottomOf="@+id/maxDepth">
 
                 <TextView
                     android:id="@+id/textView9"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@string/safety_stops_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -238,7 +236,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/safety_stop_list"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/view_half_margin"
                     android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_margin"
@@ -269,7 +267,7 @@
                     android:id="@+id/divider"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/safety_stop_list"
                     app:layout_constraintStart_toStartOf="@+id/safety_stop_list"
@@ -282,26 +280,27 @@
                 style="@style/SectionHeader"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/view_margin"
                 android:text="@string/equipment"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout80"
-                android:layout_width="match_parent"
+                android:layout_width="150dp"
                 android:layout_height="match_parent"
+                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/weights_label_metric, @string/weights_label_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
                 tools:hint="@string/weights_label_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/weight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
-                    android:nextFocusForward="@+id/duration"
+                    android:imeOptions="actionDone"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.weights)}"
                     tools:text="6" />
@@ -319,7 +318,7 @@
                     android:id="@+id/textView91"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@{converter.getTitleByUnits(model.units, @string/tanks_metric, @string/tanks_imperial)}"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -360,7 +359,7 @@
                     android:id="@+id/divider5"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/tanks_list"
                     app:layout_constraintStart_toStartOf="@+id/tanks_list"
@@ -377,18 +376,18 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayout5"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_double_margin"
+                android:layout_marginTop="@dimen/view_margin"
                 android:onClick="@{()->view.showDiveTypesDialog()}"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/appCompatTextView4">
+                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4">
 
                 <TextView
                     android:id="@+id/textView11"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@string/dive_type"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -397,7 +396,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dive_type_list"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/view_half_margin"
                     android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_margin"
@@ -414,9 +413,13 @@
 
                 <View
                     android:id="@+id/divider2"
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="@dimen/view_half_margin"
+                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:layout_marginTop="@dimen/view_half_margin"
+                    android:layout_marginEnd="@dimen/view_half_margin"
+                    android:layout_marginRight="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/dive_type_list"
                     app:layout_constraintStart_toStartOf="@+id/dive_type_list"
@@ -428,17 +431,18 @@
                 android:id="@+id/textInputLayout10"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/air_temperature_metric, @string/air_temperature_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
                 tools:hint="@string/air_temperature_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/airTemp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
+                    android:imeOptions="actionDone"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.airTemp)}"
                     tools:text="24" />
@@ -449,15 +453,16 @@
                 android:id="@+id/textInputLayout11"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginStart="@dimen/view_margin"
+                android:layout_marginLeft="@dimen/view_margin"
+                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/water_temperature_metric, @string/water_temperature_imperial)}"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
                 tools:hint="@string/water_temperature_metric">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/waterTemp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
@@ -473,6 +478,7 @@
                 android:id="@+id/textInputLayout18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout10">
 
@@ -480,7 +486,7 @@
                     android:id="@+id/textView15"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@string/water_type_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -490,6 +496,7 @@
                     android:id="@+id/toggleButton1"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_marginTop="@dimen/view_margin"
                     android:background="@drawable/toggle_water_salt"
                     android:checked="@={model.saltWaterChecked}"
                     android:textOff=""
@@ -501,6 +508,7 @@
                     android:id="@+id/toggleButton2"
                     android:layout_width="50dp"
                     android:layout_height="50dp"
+                    android:layout_marginTop="@dimen/view_margin"
                     android:background="@drawable/toggle_water_fresh"
                     android:checked="@={model.freshWaterChecked}"
                     android:textOff=""
@@ -512,11 +520,9 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/textInputLayout13"
-                android:layout_width="wrap_content"
+                android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="@dimen/view_margin"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout11"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
 
@@ -524,7 +530,7 @@
                     android:id="@+id/textView10"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@string/visibility_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -532,11 +538,9 @@
 
                 <androidx.appcompat.widget.AppCompatSpinner
                     android:id="@+id/spinner1"
-                    android:layout_width="150dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/view_margin"
                     android:entries="@{converter.getArrayByUnits(model.units, @stringArray/visibility_titles_metric, @stringArray/visibility_titles_imperial)}"
                     android:hint="@string/visibility_label"
                     android:selectedItemPosition="@={model.visibilityPosition}"
@@ -547,7 +551,11 @@
                     android:id="@+id/divider3"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginStart="@dimen/view_half_margin"
+                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:layout_marginTop="@dimen/view_half_margin"
+                    android:layout_marginEnd="@dimen/view_half_margin"
+                    android:layout_marginRight="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/spinner1"
                     app:layout_constraintStart_toStartOf="@+id/spinner1"
@@ -557,19 +565,17 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/textInputLayout14"
-                android:layout_width="match_parent"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout13"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout13">
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout18">
 
                 <TextView
                     android:id="@+id/textView12"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="4dp"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:text="@string/current_label"
                     android:textAppearance="@style/TextAppearance.AppCompat.Caption"
                     app:layout_constraintStart_toStartOf="parent"
@@ -579,9 +585,7 @@
                     android:id="@+id/spinner2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="8dp"
-                    android:layout_marginLeft="8dp"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="@dimen/view_margin"
                     android:entries="@array/current_titles"
                     android:hint="@string/current_label"
                     android:selectedItemPosition="@={model.currentPosition}"
@@ -592,7 +596,7 @@
                     android:id="@+id/divider4"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
-                    android:layout_marginTop="4dp"
+                    android:layout_marginTop="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/spinner2"
                     app:layout_constraintStart_toStartOf="@+id/spinner2"
@@ -604,10 +608,7 @@
                 android:id="@+id/textInputLayout15"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginLeft="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="@dimen/view_double_margin"
+                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/altitude_metric, @string/altitude_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout14"
@@ -623,6 +624,11 @@
                     tools:text="12" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="30dp"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout15" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>
 </layout>
