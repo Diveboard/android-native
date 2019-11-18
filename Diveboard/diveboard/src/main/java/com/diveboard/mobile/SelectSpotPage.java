@@ -14,8 +14,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
+import androidx.core.app.ActivityCompat;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 
 import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotService;
@@ -35,12 +40,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
-import androidx.core.app.ActivityCompat;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 public class SelectSpotPage extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener {
     private static final int MESSAGE_TEXT_CHANGED = 1;
@@ -121,7 +120,8 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedMarker != null && ((SearchSpot) selectedMarker.getTag()).name != null && ((SearchSpot) selectedMarker.getTag()).name.equals(s.toString())) {
+                SearchSpot tag = (SearchSpot) selectedMarker.getTag();
+                if (selectedMarker != null && tag != null && tag.name != null && tag.name.equals(s.toString())) {
                     return;
                 } else {
                     resetSelectedSpot();

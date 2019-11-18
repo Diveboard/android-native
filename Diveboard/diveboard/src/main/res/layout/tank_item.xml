@@ -16,6 +16,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/view_margin"
         android:text="@{BindingConvertions.convertTankToString(model, context)}"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/App.TextAppearance.AppCompat.Medium"
         tools:text="10->12" />
 </layout>

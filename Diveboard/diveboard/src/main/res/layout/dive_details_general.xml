@@ -147,7 +147,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:onClick="@{()->view.showSpotDialog()}"
-                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.name, model.spot.cname)}" />
+                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.cname==null||model.spot.cname.trim().equals(``)?`N/A`:model.spot.cname, model.spot.name)}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -380,6 +380,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/view_margin"
                 android:onClick="@{()->view.showDiveTypesDialog()}"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4">
 
@@ -403,9 +404,9 @@
                     android:layout_marginEnd="@dimen/view_margin"
                     android:layout_marginRight="@dimen/view_margin"
                     android:onClick="@{()->view.showDiveTypesDialog()}"
-                    app:clickHandler="@{view.showDiveTypesDialogHandler}"
                     android:orientation="horizontal"
                     android:scrollbars="none"
+                    app:clickHandler="@{view.showDiveTypesDialogHandler}"
                     app:itemViewBinder="@{view.diveTypeItemViewBinder}"
                     app:items="@{model.diveTypes}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
@@ -452,7 +453,7 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout11"
-                android:layout_width="150dp"
+                android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/view_margin"
                 android:layout_marginLeft="@dimen/view_margin"
@@ -521,9 +522,10 @@
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/textInputLayout13"
-                android:layout_width="150dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/view_margin"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/textInputLayout11"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout11">
 
@@ -597,7 +599,11 @@
                     android:id="@+id/divider4"
                     android:layout_width="0dp"
                     android:layout_height="1dp"
+                    android:layout_marginStart="@dimen/view_half_margin"
+                    android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_half_margin"
+                    android:layout_marginEnd="@dimen/view_half_margin"
+                    android:layout_marginRight="@dimen/view_half_margin"
                     android:background="@color/colorUnderline"
                     app:layout_constraintEnd_toEndOf="@+id/spinner2"
                     app:layout_constraintStart_toStartOf="@+id/spinner2"

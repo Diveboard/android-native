@@ -14,6 +14,6 @@
         android:layout_height="wrap_content"
         android:layout_marginRight="@dimen/view_margin"
         android:text="@{ model.title + `;`}"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        android:textAppearance="@style/App.TextAppearance.AppCompat.Medium"
         tools:text="Training" />
 </layout>

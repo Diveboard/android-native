@@ -48,4 +48,8 @@
         <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
         <item name="navigationIcon">@drawable/ic_baseline_keyboard_backspace_24px</item>
     </style>
+
+    <style name="App.TextAppearance.AppCompat.Medium" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
 </resources>

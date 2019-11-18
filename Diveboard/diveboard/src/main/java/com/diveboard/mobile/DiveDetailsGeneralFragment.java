@@ -17,6 +17,7 @@ import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.diveboard.viewModel.DiveTypeViewModel;
+import com.diveboard.viewModel.SafetyStopViewModel;
 import com.diveboard.viewModel.TankViewModel;
 
 import java.text.SimpleDateFormat;
@@ -77,7 +78,7 @@ public class DiveDetailsGeneralFragment extends Fragment {
         return new ItemBinderBase<>(BR.model, R.layout.safety_stop_item);
     }
 
-    public ClickHandler<SafetyStop> removeStopHandler() {
+    public ClickHandler<SafetyStopViewModel> removeStopHandler() {
         return safetyStop -> viewModel.safetyStops.remove(safetyStop);
     }
 
