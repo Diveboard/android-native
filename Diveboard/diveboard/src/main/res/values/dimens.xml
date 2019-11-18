@@ -8,6 +8,7 @@
     <dimen name="text_size_big">18sp</dimen>
     <dimen name="view_half_margin">4dp</dimen>
     <dimen name="edit_text_height">20dp</dimen>
+    <dimen name="edit_text_height_for_recycler">24dp</dimen>
 
     <dimen name="input_label_vertical_spacing">8dp</dimen>
     <dimen name="input_label_horizontal_spacing">4dp</dimen>

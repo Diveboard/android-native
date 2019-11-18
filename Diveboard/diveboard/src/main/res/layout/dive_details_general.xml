@@ -236,7 +236,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/safety_stop_list"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/edit_text_height_for_recycler"
                     android:layout_marginStart="@dimen/view_half_margin"
                     android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_margin"
@@ -328,7 +328,7 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tanks_list"
                     android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height"
+                    android:layout_height="@dimen/edit_text_height_for_recycler"
                     android:layout_marginStart="@dimen/view_half_margin"
                     android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_margin"
@@ -396,13 +396,14 @@
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dive_type_list"
                     android:layout_width="0dp"
-                    android:layout_height="wrap_content"
+                    android:layout_height="@dimen/edit_text_height_for_recycler"
                     android:layout_marginStart="@dimen/view_half_margin"
                     android:layout_marginLeft="@dimen/view_half_margin"
                     android:layout_marginTop="@dimen/view_margin"
                     android:layout_marginEnd="@dimen/view_margin"
                     android:layout_marginRight="@dimen/view_margin"
                     android:onClick="@{()->view.showDiveTypesDialog()}"
+                    app:clickHandler="@{view.showDiveTypesDialogHandler}"
                     android:orientation="horizontal"
                     android:scrollbars="none"
                     app:itemViewBinder="@{view.diveTypeItemViewBinder}"

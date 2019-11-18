@@ -16,6 +16,7 @@ import com.diveboard.util.binding.recyclerViewBinder.adapter.ClickHandler;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
 import com.diveboard.viewModel.DiveDetailsViewModel;
+import com.diveboard.viewModel.DiveTypeViewModel;
 import com.diveboard.viewModel.TankViewModel;
 
 import java.text.SimpleDateFormat;
@@ -78,6 +79,10 @@ public class DiveDetailsGeneralFragment extends Fragment {
 
     public ClickHandler<SafetyStop> removeStopHandler() {
         return safetyStop -> viewModel.safetyStops.remove(safetyStop);
+    }
+
+    public ClickHandler<DiveTypeViewModel> showDiveTypesDialogHandler() {
+        return dt -> showDiveTypesDialog();
     }
 
     public ClickHandler<Tank> editTanksDialogHandler() {
