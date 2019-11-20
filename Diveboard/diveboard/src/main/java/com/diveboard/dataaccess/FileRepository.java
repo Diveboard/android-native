@@ -61,7 +61,11 @@ public abstract class FileRepository<T> {
 
         @Override
         protected void onPostExecute(T t) {
-            callback.success(t);
+            if (t == null) {
+                callback.error(new RuntimeException("No data in storage file"));
+            } else {
+                callback.success(t);
+            }
         }
 
         @Override

@@ -134,7 +134,7 @@ public class ApplicationController extends Application {
 
     public UserService getUserService() {
         if (userService == null) {
-            userService = new UserService(new UserOfflineRepository(this));
+            userService = new UserService(this, getUserOfflineRepository(), getUserOnlineRepository());
         }
         return userService;
     }
