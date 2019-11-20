@@ -116,7 +116,7 @@ public class ApplicationController extends Application {
     }
 
     private DivesOnlineRepository getOnlineRepository() {
-        return new DivesOnlineRepository(this, getAuthenticationService(), getUserOnlineRepository());
+        return new DivesOnlineRepository(this, getAuthenticationService(), getUserOnlineRepository(), getUserOfflineRepository());
     }
 
     private SyncService getSyncService() {

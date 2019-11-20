@@ -35,11 +35,17 @@ public class DivesOnlineRepository {
     private Context context;
     private AuthenticationService authenticationService;
     private UserOnlineRepository userOnlineRepository;
+    private UserOfflineRepository userOfflineRepository;
 
-    public DivesOnlineRepository(Context context, AuthenticationService authenticationService, UserOnlineRepository userOnlineRepository) {
+    public DivesOnlineRepository(Context context,
+                                 AuthenticationService authenticationService,
+                                 UserOnlineRepository userOnlineRepository,
+                                 UserOfflineRepository userOfflineRepository) {
         this.context = context;
         this.authenticationService = authenticationService;
+        //TODO: minor, this service should be rather dependent upon UserService, not underlying repos?
         this.userOnlineRepository = userOnlineRepository;
+        this.userOfflineRepository = userOfflineRepository;
     }
 
     public void load(final ResponseCallback<DivesResponse, String> callback) {
@@ -47,6 +53,8 @@ public class DivesOnlineRepository {
             @Override
             public void success(User data) {
                 if (data != null) {
+                    //update offline user data
+                    userOfflineRepository.save(data);
                     if (data.dives.size() == 0) {
                         callback.success(new DivesResponse());
                     } else {
