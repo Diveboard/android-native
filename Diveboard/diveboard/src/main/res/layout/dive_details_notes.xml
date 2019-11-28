@@ -1,6 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DiveDetailsNotesFragment">
 
-</LinearLayout>
+    <data>
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.DiveDetailsNotesFragment" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.DiveDetailsViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/view_margin"
+            android:gravity="top"
+            android:background="@android:color/transparent"
+            android:text="@={model.notes}" >
+            <requestFocus />
+        </EditText>
+    </LinearLayout>
+</layout>

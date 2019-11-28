@@ -50,6 +50,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private Integer userId;
     private Integer id;
     private String shakenId;
+    private String notes;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -72,6 +73,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.setWaterType(data.isFreshWater());
         result.setVisibility(data.visibility);
         result.setCurrent(data.current);
+        result.setNotes(data.notes);
         result.diveDateTime = data.getTimeIn();
         result.spot = SearchSpot.createFromSpot(data.spot);
         result.diveDateTime = data.getTimeIn();
@@ -229,6 +231,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.current = Strings.isEmptyOrWhitespace(getCurrent()) ? null : getCurrent();
         result.diveNumber = getDiveNumber();
         result.shakenId = shakenId;
+        result.notes = getNotes();
 
         ArrayList<SafetyStop> ssl = new ArrayList<>();
         for (SafetyStopViewModel ss : safetyStops) {
@@ -299,5 +302,13 @@ public class DiveDetailsViewModel extends BaseObservable {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 }
