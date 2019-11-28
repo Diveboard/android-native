@@ -11,6 +11,7 @@ import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
+import com.diveboard.model.Units;
 import com.diveboard.util.ResponseCallback;
 
 import java.util.ArrayList;
@@ -23,10 +24,12 @@ public class DivesListViewModel {
 
     private Context context;
     private DivesService divesService;
+    private Units.UnitsType units;
 
-    public DivesListViewModel(Context context, DivesService divesService) {
+    public DivesListViewModel(Context context, DivesService divesService, Units.UnitsType units) {
         this.context = context;
         this.divesService = divesService;
+        this.units = units;
     }
 
     public void init(boolean forceOnline) {
@@ -46,8 +49,7 @@ public class DivesListViewModel {
                             dive.spot,
                             dive.durationMin,
                             dive.maxDepth,
-                            //TODO: initialize with the proper diveType
-                            "m"));
+                            units));
                 }
                 dives.clear();
                 dives.addAll(result);

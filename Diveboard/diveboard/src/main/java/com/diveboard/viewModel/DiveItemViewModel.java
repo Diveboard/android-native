@@ -3,6 +3,7 @@ package com.diveboard.viewModel;
 import android.text.TextUtils;
 
 import com.diveboard.dataaccess.datamodel.Spot;
+import com.diveboard.model.Units;
 
 public class DiveItemViewModel implements Comparable {
     public final int index;
@@ -15,7 +16,7 @@ public class DiveItemViewModel implements Comparable {
     public final String durationStr;
     public final String maxDepthStr;
 
-    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, String depthUnit) {
+    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units) {
         this.index = index;
         this.shakenId = shakenId;
         this.number = number;
@@ -28,8 +29,8 @@ public class DiveItemViewModel implements Comparable {
             location = getString(spot.countryName);
             siteName = getString(spot.name);
         }
-        this.durationStr = minutes == null ? "" : Integer.toString(minutes) + " min";
-        this.maxDepthStr = maxDepth == null ? "" : Double.toString(maxDepth) + " " + depthUnit;
+        this.durationStr = minutes == null ? "" : minutes + " min";
+        this.maxDepthStr = maxDepth == null ? "" : String.format("%.0f", maxDepth) + " " + (units == Units.UnitsType.Metric ? "m" : "ft");
     }
 
     private String getString(String str) {

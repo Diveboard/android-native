@@ -7,7 +7,7 @@
         app:dialogTitle="@string/unit_setting_title"
         app:entries="@array/unit_entries"
         app:entryValues="@array/unit_entry_values"
-        app:key="unit"
+        app:key="units"
         app:summary="%s"
         app:title="@string/unit_setting_title"
         app:defaultValue="Metric" />

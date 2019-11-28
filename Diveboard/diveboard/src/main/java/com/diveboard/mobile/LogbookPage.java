@@ -41,7 +41,7 @@ public class LogbookPage extends Fragment {
         ac = (ApplicationController) getActivity().getApplicationContext();
         drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         //TODO: make a singlton?
-        viewModel = new DivesListViewModel(ac, ac.getDivesService());
+        viewModel = new DivesListViewModel(ac, ac.getDivesService(), ac.getUserPreferenceService().getUnits());
         setupPullToRefresh(view);
         viewModel.init(getForceOnline());
         listView = binding.listView;
