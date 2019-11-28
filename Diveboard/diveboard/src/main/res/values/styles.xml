@@ -52,4 +52,26 @@
     <style name="App.TextAppearance.AppCompat.Medium" parent="Base.TextAppearance.AppCompat.Medium">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
     </style>
+    <style name="TextInputLayoutAppearance" parent="Widget.Design.TextInputLayout"/>
+
+    <style name="listCaption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:layout_marginBottom">@dimen/emptyTitleMargin</item>
+        <item name="android:textSize">@dimen/emptyListTextSize</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="recyclerViewStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/edit_text_height_for_recycler</item>
+        <item name="android:layout_marginStart">@dimen/view_half_margin</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginEnd">@dimen/view_margin</item>
+        <item name="android:layout_marginRight">@dimen/view_margin</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:scrollbars">none</item>
+    </style>
 </resources>

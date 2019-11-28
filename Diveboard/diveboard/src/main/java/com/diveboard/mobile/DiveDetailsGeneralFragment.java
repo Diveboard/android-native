@@ -6,6 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.databinding.DataBindingUtil;
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.diveboard.mobile.databinding.DiveDetailsGeneralBinding;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
@@ -22,10 +27,6 @@ import com.diveboard.viewModel.TankViewModel;
 
 import java.text.SimpleDateFormat;
 
-import androidx.annotation.NonNull;
-import androidx.databinding.DataBindingUtil;
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 import br.com.ilhasoft.support.validation.Validator;
 
 public class DiveDetailsGeneralFragment extends Fragment {
@@ -68,7 +69,11 @@ public class DiveDetailsGeneralFragment extends Fragment {
         Navigation.findNavController(this.getView()).navigate(R.id.selectSpot);
     }
 
-    public void showSafetyStopDialog() {
+    public void showSafetyStopDialog(boolean isAddButton) {
+        //act only when list is empty
+        if (!isAddButton && !viewModel.safetyStops.isEmpty()) {
+            return;
+        }
         AddSafetyStopDialog dialog = new AddSafetyStopDialog();
         dialog.setPositiveCallback(data -> viewModel.safetyStops.add(data));
         dialog.show(getFragmentManager(), "add_safety_stop");
@@ -100,7 +105,11 @@ public class DiveDetailsGeneralFragment extends Fragment {
         dialog.show(getFragmentManager(), "set_dive_type");
     }
 
-    public void newTankDialog() {
+    public void newTankDialog(boolean isAddButton) {
+        //act only when list is empty
+        if (!isAddButton && !viewModel.tanks.isEmpty()) {
+            return;
+        }
         showTanksDialog(null);
     }
 

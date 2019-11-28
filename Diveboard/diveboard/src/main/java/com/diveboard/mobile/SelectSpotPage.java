@@ -120,6 +120,9 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                if (selectedMarker == null) {
+                    return;
+                }
                 SearchSpot tag = (SearchSpot) selectedMarker.getTag();
                 if (selectedMarker != null && tag != null && tag.name != null && tag.name.equals(s.toString())) {
                     return;

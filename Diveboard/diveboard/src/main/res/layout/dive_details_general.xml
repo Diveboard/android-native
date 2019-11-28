@@ -54,8 +54,8 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.diveNumber)}"
                     app:validateEmpty="@{true}"
@@ -76,8 +76,8 @@
                     android:id="@+id/uiDate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date"
                     android:imeOptions="actionDone"
+                    android:inputType="date"
                     android:text="@={dateConverter.convertDateToString(model.uiDate)}"
                     app:attachCalendar='@{"date"}'
                     app:validateDate='@{null}'
@@ -121,8 +121,8 @@
                     android:id="@+id/trip_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textAutoComplete"
                     android:imeOptions="actionDone"
+                    android:inputType="textAutoComplete"
                     android:text="@={model.tripName}"
                     app:autoCompleteList="@{model.tripNames}" />
 
@@ -207,8 +207,8 @@
                     android:id="@+id/duration"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
                     android:text="@={converter.integerToStringConverter(model.durationMin)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}" />
@@ -224,40 +224,31 @@
                 app:layout_constraintTop_toBottomOf="@+id/maxDepth">
 
                 <TextView
-                    android:id="@+id/textView9"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:id="@+id/ssTitle"
+                    style="@style/listCaption"
+                    android:onClick="@{()->view.showSafetyStopDialog(false)}"
+                    android:recyclerTitleAnimation="@{model.safetyStops}"
                     android:text="@string/safety_stops_label"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintBottom_toTopOf="@+id/divider"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/safety_stop_list"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height_for_recycler"
-                    android:layout_marginStart="@dimen/view_half_margin"
-                    android:layout_marginLeft="@dimen/view_half_margin"
-                    android:layout_marginTop="@dimen/view_margin"
-                    android:layout_marginEnd="@dimen/view_margin"
-                    android:layout_marginRight="@dimen/view_margin"
-                    android:orientation="horizontal"
-                    android:scrollbars="none"
+                    style="@style/recyclerViewStyle"
                     app:clickHandler="@{view.removeStopHandler}"
                     app:itemViewBinder="@{view.safetyStopsItemViewBinder}"
                     app:items="@{model.safetyStops}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toStartOf="@+id/appCompatImageButton"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView9" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/appCompatImageButton"
                     style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->view.showSafetyStopDialog()}"
+                    android:onClick="@{()->view.showSafetyStopDialog(true)}"
                     android:src="@drawable/ic_baseline_add_24px"
                     app:layout_constraintBottom_toBottomOf="@+id/safety_stop_list"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -299,8 +290,8 @@
                     android:id="@+id/weight"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.weights)}"
                     tools:text="6" />
@@ -315,41 +306,32 @@
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout80">
 
                 <TextView
-                    android:id="@+id/textView91"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:id="@+id/tanksTitle"
+                    style="@style/listCaption"
+                    android:onClick="@{()->view.newTankDialog(false)}"
+                    android:recyclerTitleAnimation="@{model.tanks}"
                     android:text="@{converter.getTitleByUnits(model.units, @string/tanks_metric, @string/tanks_imperial)}"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                    app:layout_constraintBottom_toTopOf="@+id/divider5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
                     tools:text="@string/tanks_metric" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/tanks_list"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height_for_recycler"
-                    android:layout_marginStart="@dimen/view_half_margin"
-                    android:layout_marginLeft="@dimen/view_half_margin"
-                    android:layout_marginTop="@dimen/view_margin"
-                    android:layout_marginEnd="@dimen/view_margin"
-                    android:layout_marginRight="@dimen/view_margin"
-                    android:orientation="horizontal"
-                    android:scrollbars="none"
+                    style="@style/recyclerViewStyle"
                     app:clickHandler="@{view.editTanksDialogHandler}"
                     app:itemViewBinder="@{view.tanksItemViewBinder}"
                     app:items="@{model.tanks}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintEnd_toStartOf="@+id/appCompatImageButton2"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView91" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/appCompatImageButton2"
                     style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:onClick="@{()->view.newTankDialog()}"
+                    android:onClick="@{()->view.newTankDialog(true)}"
                     android:src="@drawable/ic_baseline_add_24px"
                     app:layout_constraintBottom_toBottomOf="@+id/tanks_list"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -385,33 +367,24 @@
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView4">
 
                 <TextView
-                    android:id="@+id/textView11"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginLeft="@dimen/view_half_margin"
+                    android:id="@+id/diveTypeTitle"
+                    style="@style/listCaption"
+                    android:onClick="@{()->view.showDiveTypesDialog()}"
+                    android:recyclerTitleAnimation="@{model.diveTypes}"
                     android:text="@string/dive_type"
-                    android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintBottom_toTopOf="@+id/divider2"
+                    app:layout_constraintStart_toStartOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/dive_type_list"
-                    android:layout_width="0dp"
-                    android:layout_height="@dimen/edit_text_height_for_recycler"
-                    android:layout_marginStart="@dimen/view_half_margin"
-                    android:layout_marginLeft="@dimen/view_half_margin"
-                    android:layout_marginTop="@dimen/view_margin"
-                    android:layout_marginEnd="@dimen/view_margin"
-                    android:layout_marginRight="@dimen/view_margin"
+                    style="@style/recyclerViewStyle"
                     android:onClick="@{()->view.showDiveTypesDialog()}"
-                    android:orientation="horizontal"
-                    android:scrollbars="none"
                     app:clickHandler="@{view.showDiveTypesDialogHandler}"
                     app:itemViewBinder="@{view.diveTypeItemViewBinder}"
                     app:items="@{model.diveTypes}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/textView11" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <View
                     android:id="@+id/divider2"
@@ -443,8 +416,8 @@
                     android:id="@+id/airTemp"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
                     android:imeOptions="actionDone"
+                    android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.airTemp)}"
                     tools:text="24" />
