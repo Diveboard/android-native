@@ -37,13 +37,13 @@ public class BuddyViewModel {
         //replace existing buddy with newly created one
         for (int i = 0; i < buddies.size(); i++) {
             Buddy buddy = buddies.get(i);
+            //need this workaround to not lose buddy after resave
+            buddy.setId(buddy.id);
 //            if (buddy.id != null) {
             buddies.set(i, buddy);
             return buddies;
 //            }
         }
-        //if not found what to replace then just add new one
-        buddies.add(buddy);
         return buddies;
     }
 }

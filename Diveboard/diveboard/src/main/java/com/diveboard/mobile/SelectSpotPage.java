@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SelectSpotPage extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener {
-    public static final int MESSAGE_TEXT_CHANGED = 1;
-    public static final long DELAY_MS = 300;
+    private static final int MESSAGE_TEXT_CHANGED = 1;
+    private static final long DELAY_MS = 300;
     private static final float MIN_ZOOM_WITH_MARKERS = 10;
     private static final int MESSAGE_MAP_MOVED = 2;
     //to not spam server

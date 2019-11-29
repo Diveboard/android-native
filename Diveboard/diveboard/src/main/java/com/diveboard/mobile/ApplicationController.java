@@ -7,6 +7,7 @@ import androidx.room.Room;
 import com.diveboard.dataaccess.DiveboardSearchBuddyRepository;
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
+import com.diveboard.dataaccess.SearchShopRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.dataaccess.SyncObjectDatabase;
@@ -142,5 +143,9 @@ public class ApplicationController extends Application {
 
     public DiveboardSearchBuddyRepository getDiveboardSearchBuddyRepository() {
         return new DiveboardSearchBuddyRepository(this);
+    }
+
+    public SearchShopRepository getSearchShopRepository() {
+        return new SearchShopRepository(this);
     }
 }

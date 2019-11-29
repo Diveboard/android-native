@@ -54,6 +54,37 @@
                 app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
                 app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
                 app:layout_constraintTop_toTopOf="@+id/textInputLayout2" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout33"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/view_margin"
+                android:hint="@string/dive_center"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/diveCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textNoSuggestions"
+                    android:text="@{(model.diveCenter==null)?``:model.diveCenter.name}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar2"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="@dimen/view_margin"
+                android:layout_marginRight="@dimen/view_margin"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout33"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout33"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout33" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </RelativeLayout>
 </layout>

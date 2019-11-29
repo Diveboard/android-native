@@ -5,6 +5,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.ObservableArrayList;
 
 import com.diveboard.dataaccess.datamodel.Dive;
+import com.diveboard.dataaccess.datamodel.Shop;
 import com.diveboard.mobile.BR;
 import com.diveboard.model.Converter;
 import com.diveboard.model.SafetyStop;
@@ -52,6 +53,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private String shakenId;
     private String notes;
     private BuddyViewModel buddy;
+    private Shop diveCenter;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -80,6 +82,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveDateTime = data.getTimeIn();
         result.shakenId = data.shakenId;
         result.buddy = new BuddyViewModel(data.buddies);
+        result.diveCenter = data.diveCenter;
 
         for (SafetyStop ss : data.getSafetyStops()) {
             result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
@@ -235,6 +238,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.shakenId = shakenId;
         result.notes = getNotes();
         result.buddies = buddy.getModel();
+        result.diveCenter = getDiveCenter();
+        result.diveCenterId = getDiveCenter() != null ? getDiveCenter().id : null;
 
         ArrayList<SafetyStop> ssl = new ArrayList<>();
         for (SafetyStopViewModel ss : safetyStops) {
@@ -318,5 +323,13 @@ public class DiveDetailsViewModel extends BaseObservable {
 
     public BuddyViewModel getBuddy() {
         return buddy;
+    }
+
+    public Shop getDiveCenter() {
+        return diveCenter;
+    }
+
+    public void setDiveCenter(Shop shop) {
+        this.diveCenter = shop;
     }
 }

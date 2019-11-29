@@ -75,7 +75,7 @@ public final class BindingConvertions {
         if (value == null) {
             return null;
         } else {
-            return value.toString();
+            return String.format("%.1f", value);
         }
     }
 
