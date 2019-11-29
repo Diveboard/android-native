@@ -25,6 +25,7 @@ import com.diveboard.dataaccess.datamodel.SearchBuddyResponse;
 import com.diveboard.dataaccess.datamodel.SearchShop;
 import com.diveboard.dataaccess.datamodel.SearchShopResponse;
 import com.diveboard.mobile.databinding.DiveDetailsPeopleBinding;
+import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.binding.BindingArrayAdapter;
 import com.diveboard.viewModel.DiveDetailsViewModel;
@@ -36,7 +37,7 @@ public class DiveDetailsPeopleFragment extends Fragment {
     private static final int BUDDY_MESSAGE_TEXT_CHANGED = 1;
     private static final int DIVECENTER_MESSAGE_TEXT_CHANGED = 2;
     private static final long DELAY_MS = 300;
-    DiveboardSearchBuddyRepository searchBuddyRepository;
+    private DiveboardSearchBuddyRepository searchBuddyRepository;
     private DiveDetailsViewModel viewModel;
     private DiveDetailsPeopleBinding binding;
     private ApplicationController ac;
@@ -165,6 +166,10 @@ public class DiveDetailsPeopleFragment extends Fragment {
             if (outer.viewModel.getBuddy().getBuddy() != null && term.equals(outer.viewModel.getBuddy().getBuddy().nickname)) {
                 return;
             }
+            if (!NetworkUtils.isConnected(outer.ac)) {
+                Toast.makeText(outer.ac, R.string.no_internet, Toast.LENGTH_SHORT).show();
+                return;
+            }
             outer.buddyProgress.setVisibility(View.VISIBLE);
             outer.searchBuddyRepository.search(term, new ResponseCallback<SearchBuddyResponse, Exception>() {
                 @Override
@@ -209,6 +214,10 @@ public class DiveDetailsPeopleFragment extends Fragment {
             }
             //don't search when user selected an item from suggest or text was populated by binding initially
             if (outer.viewModel.getDiveCenter() != null && term.equals(outer.viewModel.getDiveCenter().name)) {
+                return;
+            }
+            if (!NetworkUtils.isConnected(outer.ac)) {
+                Toast.makeText(outer.ac, R.string.no_internet, Toast.LENGTH_SHORT).show();
                 return;
             }
             outer.diveCenterProgress.setVisibility(View.VISIBLE);
