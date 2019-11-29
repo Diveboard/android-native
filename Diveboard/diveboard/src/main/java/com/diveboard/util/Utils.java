@@ -5,11 +5,16 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Objects;
 
 /**
  * Class containing some static utility methods.
  */
 public class Utils {
+
+    public static boolean equals(Object a, Object b) {
+        return (a == b) || (a != null && a.equals(b));
+    }
 
     public static void copyInputStreamToFile(InputStream in, File file) {
         OutputStream out = null;

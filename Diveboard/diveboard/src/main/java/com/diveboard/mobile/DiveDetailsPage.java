@@ -9,6 +9,8 @@ import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
+import androidx.activity.OnBackPressedCallback;
+import androidx.annotation.Nullable;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
@@ -37,6 +39,19 @@ public class DiveDetailsPage extends Fragment {
     private DivesService divesService;
     private boolean isNewDive;
     private View view;
+    private AlertDialog backConfirmationDialog;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        OnBackPressedCallback callback = new OnBackPressedCallback(true /* enabled by default */) {
+            @Override
+            public void handleOnBackPressed() {
+                goBack();
+            }
+        };
+        requireActivity().getOnBackPressedDispatcher().addCallback(this, callback);
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -116,11 +131,7 @@ public class DiveDetailsPage extends Fragment {
     private void setupToolbar(View view) {
         Toolbar actionBar = view.findViewById(R.id.toolbar);
         actionBar.inflateMenu(R.menu.dive_details);
-        actionBar.setNavigationOnClickListener(v -> {
-            //TODO: ask to save changes
-            hideKeyBoard(getView());
-            Navigation.findNavController(v).popBackStack();
-        });
+        actionBar.setNavigationOnClickListener(v -> goBack());
         actionBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
                 case R.id.save:
@@ -134,6 +145,15 @@ public class DiveDetailsPage extends Fragment {
             }
             return true;
         });
+    }
+
+    private void goBack() {
+        hideKeyBoard(view);
+        if (viewModel.isModified()) {
+            getBackNavigationConfirmationDialog().show();
+            return;
+        }
+        Navigation.findNavController(view).popBackStack();
     }
 
     private void delete() {
@@ -164,6 +184,22 @@ public class DiveDetailsPage extends Fragment {
         });
         deleteConfirmationDialog = builder.create();
         return deleteConfirmationDialog;
+    }
+
+    private AlertDialog getBackNavigationConfirmationDialog() {
+        if (backConfirmationDialog != null) {
+            return backConfirmationDialog;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setMessage(R.string.unsavedChanges);
+        builder.setPositiveButton(R.string.yes, (dialog, id) -> {
+            Navigation.findNavController(view).popBackStack();
+        });
+        builder.setNegativeButton(R.string.no, (dialog, id) -> {
+
+        });
+        backConfirmationDialog = builder.create();
+        return backConfirmationDialog;
     }
 
     public void save() {

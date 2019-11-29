@@ -2,6 +2,7 @@ package com.diveboard.dataaccess.datamodel;
 
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
+import com.diveboard.util.Utils;
 import com.google.gson.Gson;
 import com.google.gson.annotations.SerializedName;
 
@@ -10,7 +11,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.TimeZone;
 
 public class Dive {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
@@ -95,7 +95,7 @@ public class Dive {
 
     public Calendar getTimeIn() {
         try {
-            Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("UTC"));
+            Calendar calendar = Calendar.getInstance();
             calendar.setTime(dateFormat.parse(timeIn));
             return calendar;
         } catch (ParseException e) {
@@ -160,5 +160,46 @@ public class Dive {
 
     public boolean existsOnline() {
         return id != null;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Dive dive = (Dive) o;
+        return Utils.equals(id, dive.id) &&
+                Utils.equals(shakenId, dive.shakenId) &&
+                Utils.equals(getTimeIn().getTimeInMillis(), dive.getTimeIn().getTimeInMillis()) &&
+                Utils.equals(durationMin, dive.durationMin) &&
+                Utils.equals(maxDepth, dive.maxDepth) &&
+                Utils.equals(userId, dive.userId) &&
+                Utils.equals(airTemp, dive.airTemp) &&
+                Utils.equals(waterTemp, dive.waterTemp) &&
+//                Utils.equals(privacy, dive.privacy) &&
+                Utils.equals(weights, dive.weights) &&
+//                Utils.equals(safetystops, dive.safetystops) &&
+//                Utils.equals(divetype, dive.divetype) &&
+//                Utils.equals(favorite, dive.favorite) &&
+                Utils.equals(visibility, dive.visibility) &&
+                Utils.equals(tripName, dive.tripName) &&
+                Utils.equals(water, dive.water) &&
+                Utils.equals(altitude, dive.altitude) &&
+//                Utils.equals(fullpermalink, dive.fullpermalink) &&
+//                Utils.equals(permalink, dive.permalink) &&
+//                Utils.equals(complete, dive.complete) &&
+//                Utils.equals(thumbnailImageUrl, dive.thumbnailImageUrl) &&
+//                Utils.equals(thumbnailProfileUrl, dive.thumbnailProfileUrl) &&
+                Utils.equals(guide, dive.guide) &&
+                Utils.equals(notes, dive.notes) &&
+//                Utils.equals(publicNotes, dive.publicNotes) &&
+                Utils.equals(current, dive.current) &&
+//                Utils.equals(tanks, dive.tanks) &&
+//                Utils.equals(updatedAt, dive.updatedAt) &&
+//                Utils.equals(featuredPicture, dive.featuredPicture) &&
+                Utils.equals(diveNumber, dive.diveNumber) &&
+//                Utils.equals(spot, dive.spot) &&
+//                Utils.equals(buddies, dive.buddies) &&
+//                Utils.equals(diveCenter, dive.diveCenter) &&
+                Utils.equals(diveCenterId, dive.diveCenterId);
     }
 }

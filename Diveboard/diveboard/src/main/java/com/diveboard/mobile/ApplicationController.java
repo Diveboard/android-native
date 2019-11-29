@@ -1,7 +1,6 @@
 package com.diveboard.mobile;
 
-import android.app.Application;
-
+import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
 import com.diveboard.dataaccess.DiveboardSearchBuddyRepository;
@@ -25,7 +24,7 @@ import com.google.android.gms.analytics.GoogleAnalytics;
 
 import java.util.concurrent.CompletableFuture;
 
-public class ApplicationController extends Application {
+public class ApplicationController extends MultiDexApplication {
 
     public static boolean UserVoiceReady = false;
     private static ApplicationController singleton;

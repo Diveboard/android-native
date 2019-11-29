@@ -77,7 +77,10 @@
     <string name="cannot_find_dive">Cannot find dive</string>
     <string name="delete">Delete</string>
     <string name="deleteDive">Delete dive?</string>
+    <string name="unsavedChanges">Your unsaved changes will be lost, continue?</string>
     <string name="diveboard_buddy">Diveboard Buddy</string>
     <string name="dive_center">Dive Center</string>
     <string name="guide_name">Guide Name</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
 </resources>

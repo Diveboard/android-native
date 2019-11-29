@@ -17,10 +17,12 @@ import com.google.android.gms.common.util.Strings;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
 public class DiveDetailsViewModel extends BaseObservable {
+    private static Dive sourceDive;
     @Bindable
     public ObservableArrayList<SafetyStopViewModel> safetyStops = new ObservableArrayList<>();
     public ObservableArrayList<Tank> tanks = new ObservableArrayList<>();
@@ -55,6 +57,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
+    private boolean modified;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -64,6 +67,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public static DiveDetailsViewModel createFromModel(Dive data, String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
+        sourceDive = data;
         DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, data.userId);
         result.setId(data.id);
         result.setAltitude(data.altitude);
@@ -78,7 +82,6 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.setVisibility(data.visibility);
         result.setCurrent(data.current);
         result.setNotes(data.notes);
-        result.diveDateTime = data.getTimeIn();
         result.spot = SearchSpot.createFromSpot(data.spot);
         result.diveDateTime = data.getTimeIn();
         result.shakenId = data.shakenId;
@@ -97,15 +100,24 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary, Integer userId) {
-        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, userId);
-        result.setDiveNumber(diveNumber);
-        result.setTripName(lastTripName);
-        result.diveDateTime = Calendar.getInstance();
-        result.diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
-        result.diveDateTime.set(Calendar.MINUTE, 0);
-        result.safetyStops.add(SafetyStopViewModel.fromModel(SafetyStop.getDefault(), units));
-        result.shakenId = UUID.randomUUID().toString();
-        return result;
+        Dive dive = new Dive();
+        dive.userId = userId;
+        dive.diveNumber = diveNumber;
+        dive.tripName = lastTripName;
+
+        Calendar diveDateTime = Calendar.getInstance();
+        diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
+        diveDateTime.set(Calendar.MINUTE, 0);
+        dive.setTimeIn(diveDateTime);
+
+        dive.setSafetyStops(Collections.singletonList(SafetyStop.getDefault()));
+        dive.shakenId = UUID.randomUUID().toString();
+
+        return createFromModel(dive, visibilityDictionary, currentDictionary, units);
+    }
+
+    public boolean isModified() {
+        return !sourceDive.equals(getModel());
     }
 
     public Double getAltitude() {
