@@ -79,4 +79,5 @@
     <string name="deleteDive">Delete dive?</string>
     <string name="diveboard_buddy">Diveboard Buddy</string>
     <string name="dive_center">Dive Center</string>
+    <string name="guide_name">Guide Name</string>
 </resources>

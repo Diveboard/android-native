@@ -54,6 +54,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private String notes;
     private BuddyViewModel buddy;
     private Shop diveCenter;
+    private String guide;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -83,6 +84,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.shakenId = data.shakenId;
         result.buddy = new BuddyViewModel(data.buddies);
         result.diveCenter = data.diveCenter;
+        result.guide = data.guide;
 
         for (SafetyStop ss : data.getSafetyStops()) {
             result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
@@ -240,6 +242,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.buddies = buddy.getModel();
         result.diveCenter = getDiveCenter();
         result.diveCenterId = getDiveCenter() != null ? getDiveCenter().id : null;
+        result.guide = getGuide();
 
         ArrayList<SafetyStop> ssl = new ArrayList<>();
         for (SafetyStopViewModel ss : safetyStops) {
@@ -331,5 +334,13 @@ public class DiveDetailsViewModel extends BaseObservable {
 
     public void setDiveCenter(Shop shop) {
         this.diveCenter = shop;
+    }
+
+    public String getGuide() {
+        return guide;
+    }
+
+    public void setGuide(String guide) {
+        this.guide = guide;
     }
 }
