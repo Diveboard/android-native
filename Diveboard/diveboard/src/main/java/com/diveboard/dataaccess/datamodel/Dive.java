@@ -86,6 +86,8 @@ public class Dive {
     public Integer diveNumber;
     @SerializedName("spot")
     public Spot spot;
+    @SerializedName("buddies")
+    public List<Buddy> buddies = new ArrayList();
 
     public Calendar getTimeIn() {
         try {

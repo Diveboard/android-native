@@ -4,6 +4,7 @@ import android.app.Application;
 
 import androidx.room.Room;
 
+import com.diveboard.dataaccess.DiveboardSearchBuddyRepository;
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
 import com.diveboard.dataaccess.SessionRepository;
@@ -137,5 +138,9 @@ public class ApplicationController extends Application {
             userService = new UserService(this, getUserOfflineRepository(), getUserOnlineRepository());
         }
         return userService;
+    }
+
+    public DiveboardSearchBuddyRepository getDiveboardSearchBuddyRepository() {
+        return new DiveboardSearchBuddyRepository(this);
     }
 }

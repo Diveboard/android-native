@@ -77,4 +77,5 @@
     <string name="cannot_find_dive">Cannot find dive</string>
     <string name="delete">Delete</string>
     <string name="deleteDive">Delete dive?</string>
+    <string name="diveboard_buddy">Diveboard Buddy</string>
 </resources>

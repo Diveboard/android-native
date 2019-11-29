@@ -42,8 +42,8 @@ import java.util.Iterator;
 import java.util.List;
 
 public class SelectSpotPage extends Fragment implements OnMapReadyCallback, GoogleMap.OnCameraMoveListener, GoogleMap.OnMarkerClickListener {
-    private static final int MESSAGE_TEXT_CHANGED = 1;
-    private static final long DELAY_MS = 300;
+    public static final int MESSAGE_TEXT_CHANGED = 1;
+    public static final long DELAY_MS = 300;
     private static final float MIN_ZOOM_WITH_MARKERS = 10;
     private static final int MESSAGE_MAP_MOVED = 2;
     //to not spam server
@@ -333,14 +333,18 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
                 return;
             }
             outer.progress.setVisibility(View.VISIBLE);
-            outer.service.searchSpot(msg.obj.toString(), null, null, data -> {
+            String term = msg.obj.toString();
+            outer.service.searchSpot(term, null, null, (List<SearchSpot> data) -> {
                 //TODO: there is an issue. if user types next letter and results from prev term arrived then autosuggest will shown inconsistent results
                 SelectSpotPage outer12 = outerRef.get();
                 if (outer12 == null) {
                     return;
                 }
-                outer12.adapter.setData(data);
                 outer12.progress.setVisibility(View.GONE);
+                if (!term.equals(outer12.suggest.getText().toString())) {
+                    return;
+                }
+                outer12.adapter.setData(data);
             }, data -> {
                 SelectSpotPage outer1 = outerRef.get();
                 if (outer1 == null) {

@@ -17,4 +17,5 @@
     <dimen name="emptyListTextSize">18sp</dimen>
     <dimen name="nonEmptyTitleMargin">32dp</dimen>
     <dimen name="emptyTitleMargin">4dp</dimen>
+    <dimen name="activity_margin">16dp</dimen>
 </resources>

@@ -14,19 +14,26 @@
             type="com.diveboard.viewModel.DiveDetailsViewModel" />
     </data>
 
-    <LinearLayout
+    <!--required for margin-->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <EditText
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_margin="@dimen/view_margin"
-            android:gravity="top"
-            android:background="@android:color/transparent"
-            android:text="@={model.notes}" >
-            <requestFocus />
-        </EditText>
-    </LinearLayout>
+            android:layout_margin="@dimen/activity_margin"
+            android:orientation="vertical">
+
+            <EditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@android:color/transparent"
+                android:gravity="top"
+                android:text="@={model.notes}">
+
+                <requestFocus />
+            </EditText>
+        </LinearLayout>
+    </RelativeLayout>
 </layout>

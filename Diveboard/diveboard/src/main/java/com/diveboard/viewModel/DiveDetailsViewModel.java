@@ -51,6 +51,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private Integer id;
     private String shakenId;
     private String notes;
+    private BuddyViewModel buddy;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -78,6 +79,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.spot = SearchSpot.createFromSpot(data.spot);
         result.diveDateTime = data.getTimeIn();
         result.shakenId = data.shakenId;
+        result.buddy = new BuddyViewModel(data.buddies);
 
         for (SafetyStop ss : data.getSafetyStops()) {
             result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
@@ -232,6 +234,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.diveNumber = getDiveNumber();
         result.shakenId = shakenId;
         result.notes = getNotes();
+        result.buddies = buddy.getModel();
 
         ArrayList<SafetyStop> ssl = new ArrayList<>();
         for (SafetyStopViewModel ss : safetyStops) {
@@ -252,6 +255,7 @@ public class DiveDetailsViewModel extends BaseObservable {
 
         return result;
     }
+
 
     public List<String> getTripNames() {
         return tripNames;
@@ -310,5 +314,9 @@ public class DiveDetailsViewModel extends BaseObservable {
 
     public void setNotes(String notes) {
         this.notes = notes;
+    }
+
+    public BuddyViewModel getBuddy() {
+        return buddy;
     }
 }

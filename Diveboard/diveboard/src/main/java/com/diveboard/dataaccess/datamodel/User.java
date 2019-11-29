@@ -1,5 +1,7 @@
 package com.diveboard.dataaccess.datamodel;
 
+import androidx.annotation.NonNull;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.util.ArrayList;
@@ -20,4 +22,11 @@ public class User {
     public String getSanitizedPictureUrl() {
         return pictureUrl != null && pictureUrl.startsWith("//") ? "https:" + pictureUrl : pictureUrl;
     }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return nickname;
+    }
+
 }
