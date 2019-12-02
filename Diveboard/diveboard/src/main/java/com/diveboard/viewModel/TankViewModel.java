@@ -1,16 +1,16 @@
 package com.diveboard.viewModel;
 
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
+
 import com.diveboard.mobile.BR;
+import com.diveboard.model.Converter;
 import com.diveboard.model.GasMixes;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
-import com.diveboard.util.ResourceHolder;
 
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.databinding.BaseObservable;
-import androidx.databinding.Bindable;
 
 public class TankViewModel extends BaseObservable {
     private final List<String> materialsDictionary;
@@ -28,15 +28,15 @@ public class TankViewModel extends BaseObservable {
     private Double volume;
     private List<String> cylindersCountDictionary;
 
-    public TankViewModel(Units.UnitsType units, ResourceHolder resourceHolder) {
+    public TankViewModel(Units.UnitsType units, String[] materialsDictionary, String[] gasMixDictionary, String[] cylindersCountDictionary) {
         this.units = units;
-        this.cylindersCountDictionary = Arrays.asList(resourceHolder.getCylindersCountValues());
-        this.materialsDictionary = Arrays.asList(resourceHolder.getMaterialsValues());
-        this.gasMixDictionary = Arrays.asList(resourceHolder.getGasMixValues());
+        this.materialsDictionary = Arrays.asList(materialsDictionary);
+        this.gasMixDictionary = Arrays.asList(gasMixDictionary);
+        this.cylindersCountDictionary = Arrays.asList(cylindersCountDictionary);
     }
 
-    public static TankViewModel createDefault(Units.UnitsType units, ResourceHolder resourceHolder) {
-        TankViewModel result = new TankViewModel(units, resourceHolder);
+    public static TankViewModel createDefault(Units.UnitsType units, String[] materialsDictionary, String[] gasMixDictionary, String[] cylindersCountDictionary) {
+        TankViewModel result = new TankViewModel(units, materialsDictionary, gasMixDictionary, cylindersCountDictionary);
         result.setCylindersCount(1);
         result.setGasMix("air");
         result.setMaterial("steel");
@@ -48,8 +48,8 @@ public class TankViewModel extends BaseObservable {
         return result;
     }
 
-    public static TankViewModel fromModel(Tank tank, Units.UnitsType unitsTyped, ResourceHolder resourceHolder) {
-        TankViewModel result = new TankViewModel(unitsTyped, resourceHolder);
+    public static TankViewModel fromModel(Tank tank, Units.UnitsType units, String[] materialsDictionary, String[] gasMixDictionary, String[] cylindersCountDictionary) {
+        TankViewModel result = new TankViewModel(units, materialsDictionary, gasMixDictionary, cylindersCountDictionary);
         result.setCylindersCount(tank.cylindersCount);
         result.setGasMix(tank.gasType);
         result.setMaterial(tank.material);
@@ -62,11 +62,11 @@ public class TankViewModel extends BaseObservable {
     }
 
     public Double getStartPressure() {
-        return startPressure;
+        return Converter.convertPressure(startPressure, units);
     }
 
     public void setStartPressure(Double startPressure) {
-        this.startPressure = startPressure;
+        this.startPressure = Converter.convertPressureToMetric(startPressure, units);
     }
 
     public Integer getO2() {
@@ -86,19 +86,19 @@ public class TankViewModel extends BaseObservable {
     }
 
     public Double getEndPressure() {
-        return endPressure;
+        return Converter.convertPressure(endPressure, units);
     }
 
     public void setEndPressure(Double endPressure) {
-        this.endPressure = endPressure;
+        this.endPressure = Converter.convertPressureToMetric(endPressure, units);
     }
 
     public Double getVolume() {
-        return volume;
+        return Converter.convertVolume(volume, units);
     }
 
     public void setVolume(Double volume) {
-        this.volume = volume;
+        this.volume = Converter.convertVolumeToMetric(volume, units);
     }
 
     @Bindable

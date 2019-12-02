@@ -1,6 +1,5 @@
 package com.diveboard.mobile;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -9,7 +8,6 @@ import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -27,6 +25,7 @@ import com.diveboard.dataaccess.datamodel.SearchShopResponse;
 import com.diveboard.mobile.databinding.DiveDetailsPeopleBinding;
 import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 import com.diveboard.util.binding.BindingArrayAdapter;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 
@@ -83,10 +82,7 @@ public class DiveDetailsPeopleFragment extends Fragment {
             diveCenterHandler.removeMessages(DIVECENTER_MESSAGE_TEXT_CHANGED);
             SearchShop shop = (SearchShop) adapterView.getItemAtPosition(position);
             viewModel.setDiveCenter(shop.getShop());
-
-            //hide keyboard
-            InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view1.getApplicationWindowToken(), 0);
+            Utils.hideKeyboard(ac, view1);
         });
         diveCenterSuggest.addTextChangedListener(new TextWatcher() {
             @Override
@@ -114,13 +110,10 @@ public class DiveDetailsPeopleFragment extends Fragment {
         buddyAdapter = new BindingArrayAdapter<>(ac, R.layout.buddy_item);
         buddySuggest.setAdapter(buddyAdapter);
         buddySuggest.setOnItemClickListener((adapterView, view1, position, id) -> {
+            Utils.hideKeyboard(ac, view1);
             diveCenterHandler.removeMessages(BUDDY_MESSAGE_TEXT_CHANGED);
             SearchBuddy buddy = (SearchBuddy) adapterView.getItemAtPosition(position);
             viewModel.getBuddy().setBuddy(buddy.getBuddy());
-
-            //hide keyboard
-            InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view1.getApplicationWindowToken(), 0);
         });
         buddySuggest.addTextChangedListener(new TextWatcher() {
             @Override

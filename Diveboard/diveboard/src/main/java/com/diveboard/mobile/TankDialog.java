@@ -6,25 +6,24 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.diveboard.model.Tank;
-import com.diveboard.util.BindingConvertions;
-import com.diveboard.util.Callback;
-import com.diveboard.util.ResourceHolder;
-import com.diveboard.viewModel.TankViewModel;
-
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ViewDataBinding;
 import androidx.fragment.app.DialogFragment;
 
+import com.diveboard.util.BindingConvertions;
+import com.diveboard.util.Callback;
+import com.diveboard.util.ResourceHolder;
+import com.diveboard.viewModel.TankViewModel;
+
 public class TankDialog extends DialogFragment {
 
-    private Tank tank;
+    private TankViewModel tank;
     private Callback<TankViewModel> callback;
     private Runnable deleteCallback;
 
-    public TankDialog(Tank tank, Callback<TankViewModel> callback, Runnable deleteCallback) {
+    public TankDialog(TankViewModel tank, Callback<TankViewModel> callback, Runnable deleteCallback) {
         this.tank = tank;
         this.callback = callback;
         this.deleteCallback = deleteCallback;
@@ -42,9 +41,10 @@ public class TankDialog extends DialogFragment {
         ViewDataBinding binding = DataBindingUtil.bind(view);
 
         ResourceHolder holder = new ResourceHolder(context);
+
         final TankViewModel viewModel = tank == null ?
-                TankViewModel.createDefault(context.getUserPreferenceService().getUnits(), holder) :
-                TankViewModel.fromModel(tank, context.getUserPreferenceService().getUnits(), holder);
+                TankViewModel.createDefault(context.getUserPreferenceService().getUnits(), holder.getMaterialsValues(), holder.getGasMixValues(), holder.getCylindersCountValues()) :
+                tank;
 
         binding.setVariable(BR.model, viewModel);
         binding.setVariable(BR.converter, new BindingConvertions());

@@ -2,7 +2,6 @@ package com.diveboard.mobile;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
@@ -10,14 +9,17 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+
 import com.diveboard.dataaccess.datamodel.LoginResponse;
 import com.diveboard.util.Callback;
+import com.diveboard.util.Utils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
 import com.facebook.FacebookCallback;
@@ -26,9 +28,6 @@ import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 
 import java.util.Arrays;
-
-import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 /**
  * Activity which displays a login screen to the user, offering registration as
@@ -202,9 +201,7 @@ public class LoginPage extends Fragment {
     }
 
     private void showProgress(final boolean show) {
-        InputMethodManager imm = (InputMethodManager) ac.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
+        Utils.hideKeyboard(ac, mEmailView);
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
         mLoginStatusView.setVisibility(View.VISIBLE);
         mLoginStatusView.animate().setDuration(shortAnimTime)

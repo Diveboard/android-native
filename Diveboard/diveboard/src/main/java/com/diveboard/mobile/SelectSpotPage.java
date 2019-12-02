@@ -2,7 +2,6 @@ package com.diveboard.mobile;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.content.Context;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -13,18 +12,19 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotService;
 import com.diveboard.util.ImageUtils;
+import com.diveboard.util.Utils;
 import com.diveboard.util.binding.AutoSuggestAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -105,9 +105,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
         adapter = new AutoSuggestAdapter<>(ac, android.R.layout.simple_dropdown_item_1line);
         suggest.setAdapter(adapter);
         suggest.setOnItemClickListener((adapterView, view1, position, id) -> {
-            //hide keyboard
-            InputMethodManager imm = (InputMethodManager) ac.getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view1.getWindowToken(), 0);
+            Utils.hideKeyboard(ac, view1);
             //navigate to position
             SearchSpot spot = (SearchSpot) adapterView.getItemAtPosition(position);
             setMapPosition(spot);
@@ -120,11 +118,12 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
-                if (selectedMarker == null) {
-                    return;
-                }
-                SearchSpot tag = (SearchSpot) selectedMarker.getTag();
-                if (selectedMarker != null && tag != null && tag.name != null && tag.name.equals(s.toString())) {
+                handler.removeMessages(MESSAGE_TEXT_CHANGED);
+                //user either can type in spot name or select in on map and name is autopopulated in search box
+                if (selectedMarker != null
+                        && selectedMarker.getTag() != null
+                        && ((SearchSpot) selectedMarker.getTag()).name != null
+                        && ((SearchSpot) selectedMarker.getTag()).name.equals(s.toString())) {
                     return;
                 } else {
                     resetSelectedSpot();
@@ -133,7 +132,6 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
                     adapter.setData(null);
                     return;
                 }
-                handler.removeMessages(MESSAGE_TEXT_CHANGED);
                 handler.sendMessageDelayed(handler.obtainMessage(MESSAGE_TEXT_CHANGED, s.toString()), DELAY_MS);
             }
 
@@ -335,7 +333,6 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             outer.progress.setVisibility(View.VISIBLE);
             String term = msg.obj.toString();
             outer.service.searchSpot(term, null, null, (List<SearchSpot> data) -> {
-                //TODO: there is an issue. if user types next letter and results from prev term arrived then autosuggest will shown inconsistent results
                 SelectSpotPage outer12 = outerRef.get();
                 if (outer12 == null) {
                     return;

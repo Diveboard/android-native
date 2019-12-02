@@ -25,7 +25,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private static Dive sourceDive;
     @Bindable
     public ObservableArrayList<SafetyStopViewModel> safetyStops = new ObservableArrayList<>();
-    public ObservableArrayList<Tank> tanks = new ObservableArrayList<>();
+    public ObservableArrayList<TankViewModel> tanks = new ObservableArrayList<>();
     @Bindable
     public ObservableArrayList<DiveTypeViewModel> diveTypes = new ObservableArrayList<>();
     @Bindable
@@ -39,14 +39,14 @@ public class DiveDetailsViewModel extends BaseObservable {
     private SearchSpot spot;
     private List<String> tripNames = new ArrayList<>();
     //    private Dive model;
-    private int number;
+    private int diveNumber;
     private String tripName;
     private Double altitude;
     private Double maxDepth;
-    private Integer duration;
+    private Integer durationMin;
     private Double weights;
-    private Double tempSurface;
-    private Double tempBottom;
+    private Double airTemp;
+    private Double waterTemp;
     private Boolean isFreshWater;
     private String visibility;
     private String current;
@@ -66,40 +66,15 @@ public class DiveDetailsViewModel extends BaseObservable {
         this.userId = userId;
     }
 
-    public static DiveDetailsViewModel createFromModel(Dive data, String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units) {
-        sourceDive = data;
-        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, data.userId);
-        result.setId(data.id);
-        result.setAltitude(data.altitude);
-        result.setTripName(data.tripName);
-        result.setMaxDepth(data.maxDepth);
-        result.setDurationMin(data.durationMin);
-        result.setWeights(data.weights);
-        result.setAirTemp(data.airTemp);
-        result.setWaterTemp(data.waterTemp);
-        result.setDiveNumber(data.diveNumber);
-        result.setWaterType(data.isFreshWater());
-        result.setVisibility(data.visibility);
-        result.setCurrent(data.current);
-        result.setNotes(data.notes);
-        result.spot = SearchSpot.createFromSpot(data.spot);
-        result.diveDateTime = data.getTimeIn();
-        result.shakenId = data.shakenId;
-        result.buddy = new BuddyViewModel(data.buddies);
-        result.diveCenter = data.diveCenter;
-        result.guide = data.guide;
-
-        for (SafetyStop ss : data.getSafetyStops()) {
-            result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
-        }
-        result.tanks.addAll(data.tanks);
-        for (String diveType : data.divetype) {
-            result.diveTypes.add(new DiveTypeViewModel(diveType));
-        }
-        return result;
-    }
-
-    public static DiveDetailsViewModel createNewDive(int diveNumber, String lastTripName, Units.UnitsType units, String[] visibilityDictionary, String[] currentDictionary, Integer userId) {
+    public static DiveDetailsViewModel createNewDive(int diveNumber,
+                                                     String lastTripName,
+                                                     Units.UnitsType units,
+                                                     String[] visibilityDictionary,
+                                                     String[] currentDictionary,
+                                                     Integer userId,
+                                                     String[] materialsDictionary,
+                                                     String[] gasMixDictionary,
+                                                     String[] cylindersCountDictionary) {
         Dive dive = new Dive();
         dive.userId = userId;
         dive.diveNumber = diveNumber;
@@ -113,7 +88,99 @@ public class DiveDetailsViewModel extends BaseObservable {
         dive.setSafetyStops(Collections.singletonList(SafetyStop.getDefault()));
         dive.shakenId = UUID.randomUUID().toString();
 
-        return createFromModel(dive, visibilityDictionary, currentDictionary, units);
+        return createFromModel(dive, visibilityDictionary, currentDictionary, units, materialsDictionary, gasMixDictionary, cylindersCountDictionary);
+    }
+
+    public static DiveDetailsViewModel createFromModel(Dive data,
+                                                       String[] visibilityDictionary,
+                                                       String[] currentDictionary,
+                                                       Units.UnitsType units,
+                                                       String[] materialsDictionary,
+                                                       String[] gasMixDictionary,
+                                                       String[] cylindersCountDictionary) {
+        sourceDive = data;
+        DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, data.userId);
+        result.id = data.id;
+        result.altitude = data.altitude;
+        result.setTripName(data.tripName);
+        result.maxDepth = data.maxDepth;
+        result.durationMin = data.durationMin;
+        //don't use setters, they convert into user locale
+        result.weights = data.weights;
+        result.airTemp = data.airTemp;
+        result.waterTemp = data.waterTemp;
+        result.diveNumber = data.diveNumber;
+        result.setWaterType(data.isFreshWater());
+        result.setVisibility(data.visibility);
+        result.setCurrent(data.current);
+        result.notes = data.notes;
+        result.spot = SearchSpot.createFromSpot(data.spot);
+        result.diveDateTime = data.getTimeIn();
+        result.shakenId = data.shakenId;
+        result.buddy = new BuddyViewModel(data.buddies);
+        result.diveCenter = data.diveCenter;
+        result.guide = data.guide;
+
+        for (SafetyStop ss : data.getSafetyStops()) {
+            result.safetyStops.add(SafetyStopViewModel.fromModel(ss, units));
+        }
+
+        for (Tank tank : data.tanks) {
+            result.tanks.add(TankViewModel.fromModel(tank, units, materialsDictionary, gasMixDictionary, cylindersCountDictionary));
+        }
+
+        for (String diveType : data.divetype) {
+            result.diveTypes.add(new DiveTypeViewModel(diveType));
+        }
+        return result;
+    }
+
+    public Dive getModel() {
+        Dive result = new Dive();
+        result.id = id;
+        result.setTimeIn(diveDateTime);
+        result.durationMin = durationMin;
+        result.maxDepth = maxDepth;
+        result.userId = userId;
+        result.spot = spot == null ? null : spot.toModel();
+        //don't use getters, they convert into user locale
+        result.airTemp = airTemp;
+        result.waterTemp = waterTemp;
+        result.weights = weights;
+        result.visibility = Strings.isEmptyOrWhitespace(getVisibility()) ? null : getVisibility();
+        result.tripName = tripName;
+        result.setFreshWater(isFreshWater);
+        result.altitude = altitude;
+        result.current = Strings.isEmptyOrWhitespace(getCurrent()) ? null : getCurrent();
+        result.diveNumber = diveNumber;
+        result.shakenId = shakenId;
+        result.notes = notes;
+        result.buddies = buddy.getModel();
+        result.diveCenter = diveCenter;
+        result.diveCenterId = diveCenter != null ? diveCenter.id : null;
+        result.guide = guide;
+
+        ArrayList<SafetyStop> ssl = new ArrayList<>();
+        for (SafetyStopViewModel ss : safetyStops) {
+            ssl.add(ss.toModel());
+        }
+        result.setSafetyStops(ssl);
+
+        ArrayList<Tank> tnks = new ArrayList<>();
+        for (TankViewModel tnk : tanks) {
+            tnks.add(tnk.toModel());
+        }
+        result.tanks = tnks;
+
+        if (!diveTypes.isEmpty()) {
+            ArrayList<String> dts = new ArrayList<String>();
+            for (DiveTypeViewModel dt : diveTypes) {
+                dts.add(dt.diveType);
+            }
+            result.divetype = dts;
+        }
+
+        return result;
     }
 
     public boolean isModified() {
@@ -121,11 +188,11 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public Double getAltitude() {
-        return altitude;
+        return Converter.convertDistance(altitude, units);
     }
 
     public void setAltitude(Double altitude) {
-        this.altitude = altitude;
+        this.altitude = Converter.convertDistanceToMetric(altitude, units);
     }
 
     public String getTripName() {
@@ -145,43 +212,43 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public Integer getDurationMin() {
-        return duration;
+        return durationMin;
     }
 
     public void setDurationMin(Integer durationMin) {
-        this.duration = durationMin;
+        this.durationMin = durationMin;
     }
 
     public Double getWeights() {
-        return weights;
+        return Converter.convertWeight(weights, units);
     }
 
     public void setWeights(Double weights) {
-        this.weights = weights;
+        this.weights = Converter.convertWeightToMetric(weights, units);
     }
 
     public Double getAirTemp() {
-        return Converter.convertTemp(tempSurface, units);
+        return Converter.convertTemp(airTemp, units);
     }
 
     public void setAirTemp(Double airTemp) {
-        this.tempSurface = Converter.convertTempToMetric(airTemp, units);
+        this.airTemp = Converter.convertTempToMetric(airTemp, units);
     }
 
     public Double getWaterTemp() {
-        return Converter.convertTemp(tempBottom, units);
+        return Converter.convertTemp(waterTemp, units);
     }
 
     public void setWaterTemp(Double temp) {
-        tempBottom = Converter.convertTempToMetric(temp, units);
+        waterTemp = Converter.convertTempToMetric(temp, units);
     }
 
     public Integer getDiveNumber() {
-        return number;
+        return diveNumber;
     }
 
     public void setDiveNumber(Integer diveNumber) {
-        this.number = diveNumber;
+        this.diveNumber = diveNumber;
     }
 
     @Bindable
@@ -231,51 +298,6 @@ public class DiveDetailsViewModel extends BaseObservable {
         diveDateTime.set(Calendar.HOUR_OF_DAY, uiTime.get(Calendar.HOUR_OF_DAY));
         diveDateTime.set(Calendar.MINUTE, uiTime.get(Calendar.MINUTE));
     }
-
-    public Dive getModel() {
-        Dive result = new Dive();
-        result.id = getId();
-        result.setTimeIn(diveDateTime);
-        result.durationMin = getDurationMin();
-        result.maxDepth = getMaxDepth();
-        result.userId = userId;
-        result.spot = spot == null ? null : spot.toModel();
-        result.airTemp = getAirTemp();
-        result.waterTemp = getWaterTemp();
-        result.weights = getWeights();
-        result.visibility = Strings.isEmptyOrWhitespace(getVisibility()) ? null : getVisibility();
-        result.tripName = getTripName();
-        result.setFreshWater(isFreshWater);
-        result.altitude = getAltitude();
-        result.current = Strings.isEmptyOrWhitespace(getCurrent()) ? null : getCurrent();
-        result.diveNumber = getDiveNumber();
-        result.shakenId = shakenId;
-        result.notes = getNotes();
-        result.buddies = buddy.getModel();
-        result.diveCenter = getDiveCenter();
-        result.diveCenterId = getDiveCenter() != null ? getDiveCenter().id : null;
-        result.guide = getGuide();
-
-        ArrayList<SafetyStop> ssl = new ArrayList<>();
-        for (SafetyStopViewModel ss : safetyStops) {
-            ssl.add(ss.toModel());
-        }
-        result.setSafetyStops(ssl);
-
-//TODO: copy tank models?
-        result.tanks = tanks;
-
-        if (!diveTypes.isEmpty()) {
-            ArrayList<String> dts = new ArrayList<String>();
-            for (DiveTypeViewModel dt : diveTypes) {
-                dts.add(dt.diveType);
-            }
-            result.divetype = dts;
-        }
-
-        return result;
-    }
-
 
     public List<String> getTripNames() {
         return tripNames;

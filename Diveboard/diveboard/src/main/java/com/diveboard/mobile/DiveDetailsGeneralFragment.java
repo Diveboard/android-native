@@ -34,10 +34,16 @@ public class DiveDetailsGeneralFragment extends Fragment {
     private DiveDetailsViewModel viewModel;
     private Validator validator;
     private DiveDetailsGeneralBinding binding;
+    private View view;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dive_details_general, container, false);
+        //TODO: should be better way to avoid view duplication while navigating back from spot selection
+        if (view != null) {
+            ((ViewGroup) view.getParent()).removeView(view);
+            return view;
+        }
+        view = inflater.inflate(R.layout.dive_details_general, null, false);
         binding = DataBindingUtil.bind(view);
         binding.setView(this);
         if (viewModel != null) {
@@ -91,8 +97,8 @@ public class DiveDetailsGeneralFragment extends Fragment {
         return dt -> showDiveTypesDialog();
     }
 
-    public ClickHandler<Tank> editTanksDialogHandler() {
-        return tank -> showTanksDialog(tank);
+    public ClickHandler<TankViewModel> editTanksDialogHandler() {
+        return this::showTanksDialog;
     }
 
     public ItemBinder<String> diveTypeItemViewBinder() {
@@ -113,13 +119,13 @@ public class DiveDetailsGeneralFragment extends Fragment {
         showTanksDialog(null);
     }
 
-    private void showTanksDialog(final Tank tank) {
+    private void showTanksDialog(final TankViewModel tank) {
         Callback<TankViewModel> callback = data -> {
             if (tank == null) {
-                viewModel.tanks.add(data.toModel());
+                viewModel.tanks.add(data);
             } else {
                 int index = viewModel.tanks.indexOf(tank);
-                viewModel.tanks.set(index, data.toModel());
+                viewModel.tanks.set(index, data);
             }
         };
         Runnable deleteCallback = () -> viewModel.tanks.remove(viewModel.tanks.indexOf(tank));

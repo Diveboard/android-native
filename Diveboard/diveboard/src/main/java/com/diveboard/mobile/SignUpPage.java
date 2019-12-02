@@ -20,6 +20,7 @@ import android.widget.Toast;
 import com.diveboard.dataaccess.datamodel.LoginResponse;
 import com.diveboard.dataaccess.datamodel.SignUpResponse;
 import com.diveboard.util.Callback;
+import com.diveboard.util.Utils;
 
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
@@ -196,9 +197,7 @@ public class SignUpPage extends Fragment {
      * Shows the progress UI and hides the login form.
      */
     private void showProgress(final boolean show) {
-        InputMethodManager imm = (InputMethodManager) ac.getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(mEmailView.getWindowToken(), 0);
+        Utils.hideKeyboard(ac, mEmailView);
 
         int shortAnimTime = getResources().getInteger(
                 android.R.integer.config_shortAnimTime);

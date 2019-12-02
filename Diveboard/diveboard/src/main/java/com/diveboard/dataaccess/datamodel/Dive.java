@@ -81,7 +81,7 @@ public class Dive {
     @SerializedName("updated_at")
     public String updatedAt;
     @SerializedName("featured_picture")
-    public String featuredPicture;
+    public Picture featuredPicture;
     @SerializedName("number")
     public Integer diveNumber;
     @SerializedName("spot")

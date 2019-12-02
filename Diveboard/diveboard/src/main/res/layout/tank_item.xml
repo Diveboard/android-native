@@ -8,7 +8,7 @@
 
         <variable
             name="model"
-            type="com.diveboard.model.Tank" />
+            type="com.diveboard.viewModel.TankViewModel" />
     </data>
 
     <androidx.appcompat.widget.AppCompatTextView

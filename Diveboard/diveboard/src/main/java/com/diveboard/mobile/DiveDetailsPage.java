@@ -25,6 +25,9 @@ import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.TabAdapter;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.material.tabs.TabLayout;
+import com.google.gson.Gson;
+
+import java.util.UUID;
 
 import br.com.ilhasoft.support.validation.Validator;
 
@@ -78,25 +81,31 @@ public class DiveDetailsPage extends Fragment {
         ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
-                if (isNewDive) {
-//                    if (ac.currentDive == null) {
-                    viewModel = DiveDetailsViewModel.createNewDive(
-                            data.getMaxDiveNumber() + 1,
-                            data.getLastTripName(),
-                            ac.getUserPreferenceService().getUnits(),
-                            resourceHolder.getVisibilityValues(),
-                            resourceHolder.getCurrentValues(),
-                            ac.getCurrentUser().id);
-//                    } else {
-//                        viewModel = ac.currentDive;
-//                    }
+                if (ac.currentDive != null) {
+                    viewModel = ac.currentDive;
                 } else {
-                    viewModel = DiveDetailsViewModel.createFromModel(data.getDive(shakenId),
-                            resourceHolder.getVisibilityValues(),
-                            resourceHolder.getCurrentValues(),
-                            ac.getUserPreferenceService().getUnits());
+                    if (isNewDive) {
+                        viewModel = DiveDetailsViewModel.createNewDive(
+                                data.getMaxDiveNumber() + 1,
+                                data.getLastTripName(),
+                                ac.getUserPreferenceService().getUnits(),
+                                resourceHolder.getVisibilityValues(),
+                                resourceHolder.getCurrentValues(),
+                                ac.getCurrentUser().id,
+                                resourceHolder.getMaterialsValues(),
+                                resourceHolder.getGasMixValues(),
+                                resourceHolder.getCylindersCountValues());
+                    } else {
+                        viewModel = DiveDetailsViewModel.createFromModel(data.getDive(shakenId),
+                                resourceHolder.getVisibilityValues(),
+                                resourceHolder.getCurrentValues(),
+                                ac.getUserPreferenceService().getUnits(),
+                                resourceHolder.getMaterialsValues(),
+                                resourceHolder.getGasMixValues(),
+                                resourceHolder.getCylindersCountValues());
+                    }
+                    viewModel.setTripNames(data.getTripNames());
                 }
-                viewModel.setTripNames(data.getTripNames());
                 setViewModel(viewModel);
             }
 
@@ -138,6 +147,7 @@ public class DiveDetailsPage extends Fragment {
                     save();
                     break;
                 case R.id.clone:
+                    cloneDive();
                     break;
                 case R.id.delete:
                     getDeleteConfirmationDialog().show();
@@ -147,12 +157,43 @@ public class DiveDetailsPage extends Fragment {
         });
     }
 
+    private void cloneDive() {
+        if (viewModel.isModified()) {
+            getBackNavigationConfirmationDialog(false).show();
+            return;
+        }
+        doClone();
+    }
+
+    private void doClone() {
+        Gson gson = new Gson();
+        ResourceHolder resourceHolder = new ResourceHolder(ac);
+        Dive clonedDive = gson.fromJson(gson.toJson(viewModel.getModel()), Dive.class);
+
+        clonedDive.shakenId = UUID.randomUUID().toString();
+//TODO: initialize!!!
+        //        clonedDive.diveNumber=
+
+        viewModel = DiveDetailsViewModel.createFromModel(clonedDive,
+                resourceHolder.getVisibilityValues(),
+                resourceHolder.getCurrentValues(),
+                ac.getUserPreferenceService().getUnits(),
+                resourceHolder.getMaterialsValues(),
+                resourceHolder.getGasMixValues(),
+                resourceHolder.getCylindersCountValues());
+//TODO: initialize!!!
+//        viewModel.setTripNames(data.getTripNames());
+//        TODO: init isNewDive
+        setViewModel(viewModel);
+    }
+
     private void goBack() {
         hideKeyBoard(view);
         if (viewModel.isModified()) {
-            getBackNavigationConfirmationDialog().show();
+            getBackNavigationConfirmationDialog(true).show();
             return;
         }
+        ac.currentDive = null;
         Navigation.findNavController(view).popBackStack();
     }
 
@@ -186,20 +227,21 @@ public class DiveDetailsPage extends Fragment {
         return deleteConfirmationDialog;
     }
 
-    private AlertDialog getBackNavigationConfirmationDialog() {
-        if (backConfirmationDialog != null) {
-            return backConfirmationDialog;
-        }
+    private AlertDialog getBackNavigationConfirmationDialog(boolean goBack) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.unsavedChanges);
         builder.setPositiveButton(R.string.yes, (dialog, id) -> {
-            Navigation.findNavController(view).popBackStack();
+            if (goBack) {
+                ac.currentDive = null;
+                Navigation.findNavController(view).popBackStack();
+            } else {
+                doClone();
+            }
         });
         builder.setNegativeButton(R.string.no, (dialog, id) -> {
 
         });
-        backConfirmationDialog = builder.create();
-        return backConfirmationDialog;
+        return builder.create();
     }
 
     public void save() {

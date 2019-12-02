@@ -3,19 +3,19 @@ package com.diveboard.util;
 import android.content.Context;
 import android.view.View;
 
+import androidx.databinding.BindingAdapter;
+import androidx.databinding.BindingConversion;
+import androidx.databinding.InverseMethod;
+
 import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.GasMixes;
-import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.diveboard.viewModel.SafetyStopViewModel;
+import com.diveboard.viewModel.TankViewModel;
 
 import java.text.DecimalFormat;
-
-import androidx.databinding.BindingAdapter;
-import androidx.databinding.BindingConversion;
-import androidx.databinding.InverseMethod;
 
 public final class BindingConvertions {
     @BindingConversion
@@ -30,15 +30,15 @@ public final class BindingConvertions {
         return String.format(safetyStopItemFormat, safetyStop.getDepth(), context.getString(safetyStop.getUnits() == Units.UnitsType.Metric ? R.string.meter : R.string.foot), safetyStop.getDurationMinutes());
     }
 
-    public static String convertTankToString(Tank tank, Context view) {
+    public static String convertTankToString(TankViewModel tank, Context view) {
         DecimalFormat format = new DecimalFormat("#");
-        String result = format.format(tank.startPressure) + " - " + format.format(tank.endPressure) + " (";
-        switch (tank.gasType) {
+        String result = format.format(tank.getStartPressure()) + " - " + format.format(tank.getEndPressure()) + " (";
+        switch (tank.getGasMix()) {
             case GasMixes.NITROX:
-                result += view.getResources().getString(R.string.nitrox_short) + " " + tank.o2;
+                result += view.getResources().getString(R.string.nitrox_short) + " " + tank.getO2();
                 break;
             case GasMixes.TRIMIX:
-                result += view.getResources().getString(R.string.trimix_short) + " " + tank.o2 + "/" + tank.he;
+                result += view.getResources().getString(R.string.trimix_short) + " " + tank.getO2() + "/" + tank.getHe();
                 break;
             default:
                 result += view.getResources().getString(R.string.air_mix_short);
