@@ -68,7 +68,7 @@ public class DiveDetailsPage extends Fragment {
         if (view != null) {
             return view;
         }
-        view = inflater.inflate(R.layout.activity_dive_details2, container, false);
+        view = inflater.inflate(R.layout.activity_dive_details, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
         resourceHolder = new ResourceHolder(ac);
         divesService = ac.getDivesService();
@@ -197,6 +197,7 @@ public class DiveDetailsPage extends Fragment {
                 Dive clonedDive = gson.fromJson(gson.toJson(viewModel.getModel()), Dive.class);
                 clonedDive.diveNumber = data.getMaxDiveNumber() + 1;
                 clonedDive.shakenId = UUID.randomUUID().toString();
+                clonedDive.id = null;
 
                 viewModel = DiveDetailsViewModel.createFromModel(clonedDive,
                         resourceHolder.getVisibilityValues(),

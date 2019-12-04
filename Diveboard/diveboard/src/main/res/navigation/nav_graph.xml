@@ -43,7 +43,7 @@
         android:id="@+id/diveDetails"
         android:name="com.diveboard.mobile.DiveDetailsPage"
         android:label="dive_details2"
-        tools:layout="@layout/activity_dive_details2">
+        tools:layout="@layout/activity_dive_details">
         <action
             android:id="@+id/action_diveDetails_to_selectSpot"
             app:destination="@id/selectSpot" />

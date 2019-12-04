@@ -1,5 +1,7 @@
 package com.diveboard.mobile;
 
+import android.util.Log;
+
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
@@ -72,7 +74,9 @@ public class ApplicationController extends MultiDexApplication {
         sAnalytics = GoogleAnalytics.getInstance(this);
         singleton = this;
 
-        //TODO: handle properly if user is not logged in
+        if (!getAuthenticationService().isLoggedIn()) {
+            return;
+        }
         getUserService().getUserAsync(new ResponseCallback<User, Exception>() {
             @Override
             public void success(User data) {
@@ -81,7 +85,7 @@ public class ApplicationController extends MultiDexApplication {
 
             @Override
             public void error(Exception e) {
-//TODO: log exception
+                Log.e(this.getClass().getName(), "Error logging in", e);
             }
         });
     }
