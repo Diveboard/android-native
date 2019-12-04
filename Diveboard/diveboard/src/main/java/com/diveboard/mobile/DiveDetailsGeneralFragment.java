@@ -5,6 +5,7 @@ import android.text.format.DateFormat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ScrollView;
 
 import androidx.annotation.NonNull;
 import androidx.databinding.DataBindingUtil;
@@ -54,6 +55,11 @@ public class DiveDetailsGeneralFragment extends Fragment {
         validator = new Validator(binding);
         validator.enableFormValidationMode();
         return view;
+    }
+
+    public void scrollToTop() {
+        ScrollView scrollView = view.findViewById(R.id.scrollView);
+        scrollView.scrollTo(0, 0);
     }
 
     public void setViewModel(DiveDetailsViewModel viewModel) {

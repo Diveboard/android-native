@@ -1,11 +1,16 @@
 package com.diveboard.mobile;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.DecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
@@ -43,6 +48,7 @@ public class DiveDetailsPage extends Fragment {
     private boolean isNewDive;
     private View view;
     private AlertDialog backConfirmationDialog;
+    private ResourceHolder resourceHolder;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -64,6 +70,7 @@ public class DiveDetailsPage extends Fragment {
         }
         view = inflater.inflate(R.layout.activity_dive_details2, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
+        resourceHolder = new ResourceHolder(ac);
         divesService = ac.getDivesService();
         //cannot use dive.id as it is not always exist e.g. for offline dives
         String shakenId = DiveDetailsPageArgs.fromBundle(getArguments()).getShakenId();
@@ -75,9 +82,6 @@ public class DiveDetailsPage extends Fragment {
     }
 
     private void setupViewModel(String shakenId) {
-        //TODO: get model from singleton tempDive so it is restored after app switch
-        ResourceHolder resourceHolder = new ResourceHolder(ac);
-
         ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
@@ -94,7 +98,8 @@ public class DiveDetailsPage extends Fragment {
                                 ac.getCurrentUser().id,
                                 resourceHolder.getMaterialsValues(),
                                 resourceHolder.getGasMixValues(),
-                                resourceHolder.getCylindersCountValues());
+                                resourceHolder.getCylindersCountValues(),
+                                data.getTripNames());
                     } else {
                         viewModel = DiveDetailsViewModel.createFromModel(data.getDive(shakenId),
                                 resourceHolder.getVisibilityValues(),
@@ -102,9 +107,9 @@ public class DiveDetailsPage extends Fragment {
                                 ac.getUserPreferenceService().getUnits(),
                                 resourceHolder.getMaterialsValues(),
                                 resourceHolder.getGasMixValues(),
-                                resourceHolder.getCylindersCountValues());
+                                resourceHolder.getCylindersCountValues(),
+                                data.getTripNames());
                     }
-                    viewModel.setTripNames(data.getTripNames());
                 }
                 setViewModel(viewModel);
             }
@@ -165,26 +170,51 @@ public class DiveDetailsPage extends Fragment {
         doClone();
     }
 
+    public void rotateAnimation(View view) {
+        final ObjectAnimator oa1 = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0f);
+        final ObjectAnimator oa2 = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f);
+        oa1.setInterpolator(new DecelerateInterpolator());
+        oa2.setInterpolator(new AccelerateDecelerateInterpolator());
+        oa1.addListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                oa2.start();
+            }
+        });
+        oa1.start();
+    }
+
     private void doClone() {
-        Gson gson = new Gson();
-        ResourceHolder resourceHolder = new ResourceHolder(ac);
-        Dive clonedDive = gson.fromJson(gson.toJson(viewModel.getModel()), Dive.class);
+        ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+            @Override
+            public void success(DivesResponse data) {
+                general.scrollToTop();
+                TabLayout.Tab tab = tabLayout.getTabAt(0);
+                tab.select();
+                rotateAnimation(view);
+                isNewDive = true;
+                Gson gson = new Gson();
+                Dive clonedDive = gson.fromJson(gson.toJson(viewModel.getModel()), Dive.class);
+                clonedDive.diveNumber = data.getMaxDiveNumber() + 1;
+                clonedDive.shakenId = UUID.randomUUID().toString();
 
-        clonedDive.shakenId = UUID.randomUUID().toString();
-//TODO: initialize!!!
-        //        clonedDive.diveNumber=
+                viewModel = DiveDetailsViewModel.createFromModel(clonedDive,
+                        resourceHolder.getVisibilityValues(),
+                        resourceHolder.getCurrentValues(),
+                        ac.getUserPreferenceService().getUnits(),
+                        resourceHolder.getMaterialsValues(),
+                        resourceHolder.getGasMixValues(),
+                        resourceHolder.getCylindersCountValues(),
+                        data.getTripNames());
 
-        viewModel = DiveDetailsViewModel.createFromModel(clonedDive,
-                resourceHolder.getVisibilityValues(),
-                resourceHolder.getCurrentValues(),
-                ac.getUserPreferenceService().getUnits(),
-                resourceHolder.getMaterialsValues(),
-                resourceHolder.getGasMixValues(),
-                resourceHolder.getCylindersCountValues());
-//TODO: initialize!!!
-//        viewModel.setTripNames(data.getTripNames());
-//        TODO: init isNewDive
-        setViewModel(viewModel);
+                setViewModel(viewModel);
+            }
+
+            @Override
+            public void error(String s) {
+                Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
+            }
+        }, false);
     }
 
     private void goBack() {
@@ -255,6 +285,7 @@ public class DiveDetailsPage extends Fragment {
             tab.select();
             return;
         }
+        Toast.makeText(ac, R.string.saving, Toast.LENGTH_LONG).show();
         ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<Dive, Exception>() {
             @Override
             public void success(Dive data) {

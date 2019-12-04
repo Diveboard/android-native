@@ -24,6 +24,7 @@
     </data>
 
     <ScrollView
+        android:id="@+id/scrollView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true">
@@ -147,7 +148,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:onClick="@{()->view.showSpotDialog()}"
-                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.cname==null||model.spot.cname.trim().equals(``)?`N/A`:model.spot.cname, model.spot.name)}" />
+                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.countryName==null||model.spot.countryName.trim().equals(``)?`N/A`:model.spot.countryName, model.spot.name)}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 

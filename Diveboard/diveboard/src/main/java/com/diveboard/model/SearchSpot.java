@@ -1,10 +1,10 @@
 package com.diveboard.model;
 
+import androidx.annotation.NonNull;
+
 import com.diveboard.dataaccess.datamodel.Spot;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
-
-import androidx.annotation.NonNull;
 
 public class SearchSpot {
     public Integer id;
@@ -15,8 +15,6 @@ public class SearchSpot {
     public String location;
     public String region;
     public String cname;
-//    @SerializedName("dive_count")
-//    public Integer diveCount;
 
     public static SearchSpot createFromSpot(Spot spot) {
         if (spot == null) {
@@ -47,7 +45,12 @@ public class SearchSpot {
     public Spot toModel() {
         Spot result = new Spot();
         result.id = id;
-        //TODO: init other values
+        result.name = this.name;
+        result.lat = this.lat;
+        result.lng = lng;
+        result.countryName = cname;
+        result.regionName = region;
+        result.locationName = location;
         return result;
     }
 }

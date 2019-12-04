@@ -6,6 +6,7 @@ import androidx.databinding.ObservableArrayList;
 
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.Shop;
+import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.mobile.BR;
 import com.diveboard.model.Converter;
 import com.diveboard.model.SafetyStop;
@@ -36,9 +37,8 @@ public class DiveDetailsViewModel extends BaseObservable {
     private Calendar diveDateTime;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
-    private SearchSpot spot;
+    private Spot spot;
     private List<String> tripNames = new ArrayList<>();
-    //    private Dive model;
     private int diveNumber;
     private String tripName;
     private Double altitude;
@@ -57,7 +57,6 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
-    private boolean modified;
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -74,7 +73,8 @@ public class DiveDetailsViewModel extends BaseObservable {
                                                      Integer userId,
                                                      String[] materialsDictionary,
                                                      String[] gasMixDictionary,
-                                                     String[] cylindersCountDictionary) {
+                                                     String[] cylindersCountDictionary,
+                                                     List<String> tripNames) {
         Dive dive = new Dive();
         dive.userId = userId;
         dive.diveNumber = diveNumber;
@@ -88,7 +88,14 @@ public class DiveDetailsViewModel extends BaseObservable {
         dive.setSafetyStops(Collections.singletonList(SafetyStop.getDefault()));
         dive.shakenId = UUID.randomUUID().toString();
 
-        return createFromModel(dive, visibilityDictionary, currentDictionary, units, materialsDictionary, gasMixDictionary, cylindersCountDictionary);
+        return createFromModel(dive,
+                visibilityDictionary,
+                currentDictionary,
+                units,
+                materialsDictionary,
+                gasMixDictionary,
+                cylindersCountDictionary,
+                tripNames);
     }
 
     public static DiveDetailsViewModel createFromModel(Dive data,
@@ -97,9 +104,11 @@ public class DiveDetailsViewModel extends BaseObservable {
                                                        Units.UnitsType units,
                                                        String[] materialsDictionary,
                                                        String[] gasMixDictionary,
-                                                       String[] cylindersCountDictionary) {
+                                                       String[] cylindersCountDictionary,
+                                                       List<String> tripNames) {
         sourceDive = data;
         DiveDetailsViewModel result = new DiveDetailsViewModel(visibilityDictionary, currentDictionary, units, data.userId);
+        result.tripNames = tripNames;
         result.id = data.id;
         result.altitude = data.altitude;
         result.setTripName(data.tripName);
@@ -114,7 +123,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.setVisibility(data.visibility);
         result.setCurrent(data.current);
         result.notes = data.notes;
-        result.spot = SearchSpot.createFromSpot(data.spot);
+        result.spot = data.spot;
         result.diveDateTime = data.getTimeIn();
         result.shakenId = data.shakenId;
         result.buddy = new BuddyViewModel(data.buddies);
@@ -142,7 +151,7 @@ public class DiveDetailsViewModel extends BaseObservable {
         result.durationMin = durationMin;
         result.maxDepth = maxDepth;
         result.userId = userId;
-        result.spot = spot == null ? null : spot.toModel();
+        result.spot = spot;
         //don't use getters, they convert into user locale
         result.airTemp = airTemp;
         result.waterTemp = waterTemp;
@@ -303,21 +312,20 @@ public class DiveDetailsViewModel extends BaseObservable {
         return tripNames;
     }
 
-    public void setTripNames(List<String> tripNames) {
-        this.tripNames = tripNames;
-    }
-
     @Bindable
-    public SearchSpot getSpot() {
+    public Spot getSpot() {
         return spot;
     }
 
     public void setSpot(SearchSpot spot) {
-        this.spot = spot;
+        this.spot = spot.toModel();
         notifyPropertyChanged(BR.spot);
     }
 
     public String getVisibility() {
+        if (currentPosition == -1) {
+            return null;
+        }
         visibility = visibilityDictionary.get(visibilityPosition);
         return visibility;
     }

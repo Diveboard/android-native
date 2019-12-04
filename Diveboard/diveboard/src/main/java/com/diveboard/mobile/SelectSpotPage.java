@@ -18,7 +18,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.navigation.Navigation;
 
 import com.diveboard.model.SearchSpot;
@@ -79,7 +78,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             toggleSubmitButton(false);
             return;
         }
-        setMapPosition(ac.currentDive.getSpot());
+        setMapPosition(SearchSpot.createFromSpot(ac.currentDive.getSpot()));
     }
 
     private void setupBack(View view) {
