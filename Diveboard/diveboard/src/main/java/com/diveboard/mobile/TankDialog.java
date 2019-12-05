@@ -51,26 +51,16 @@ public class TankDialog extends DialogFragment {
 
         builder.setView(view)
                 .setTitle(R.string.tank_dialog_title)
-                .setPositiveButton(R.string.save_button2, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int id) {
-                        if (callback != null) {
-                            callback.execute(viewModel);
-                        }
+                .setPositiveButton(R.string.save_button2, (dialog, id) -> {
+                    if (callback != null) {
+                        callback.execute(viewModel);
                     }
                 })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        getDialog().cancel();
-                    }
-                });
+                .setNegativeButton(R.string.cancel, (dialog, id) -> getDialog().cancel());
         if (tank != null) {
-            builder.setNeutralButton(getString(R.string.dialog_delete), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    if (deleteCallback != null) {
-                        deleteCallback.run();
-                    }
+            builder.setNeutralButton(getString(R.string.dialog_delete), (dialog, which) -> {
+                if (deleteCallback != null) {
+                    deleteCallback.run();
                 }
             });
         }

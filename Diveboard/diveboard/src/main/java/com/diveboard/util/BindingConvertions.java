@@ -1,6 +1,7 @@
 package com.diveboard.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 
 import androidx.databinding.BindingAdapter;
@@ -16,6 +17,8 @@ import com.diveboard.viewModel.SafetyStopViewModel;
 import com.diveboard.viewModel.TankViewModel;
 
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 public final class BindingConvertions {
     @BindingConversion
@@ -81,8 +84,11 @@ public final class BindingConvertions {
 
     public Double stringToDoubleConverter(String value) {
         try {
-            return Double.parseDouble(value);
-        } catch (NumberFormatException e) {
+            NumberFormat format = NumberFormat.getInstance();
+            Number number = format.parse(value);
+            return number.doubleValue();
+        } catch (ParseException e) {
+            Log.i("BindingConvertions", "Cannot parse Double", e);
         }
         return null;
     }
