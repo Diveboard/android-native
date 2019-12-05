@@ -165,7 +165,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView3"
                 style="@style/SectionHeader"
-                android:layout_marginTop="@dimen/view_margin"
                 android:text="@string/dive_profile"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout7" />
@@ -270,9 +269,6 @@
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/appCompatTextView2"
                 style="@style/SectionHeader"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
                 android:text="@string/equipment"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout2" />
@@ -361,7 +357,7 @@
                 android:id="@+id/constraintLayout5"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="@dimen/view_half_margin"
                 android:onClick="@{()->view.showDiveTypesDialog()}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
