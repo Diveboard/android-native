@@ -9,18 +9,21 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Objects;
 
 /**
  * Class containing some static utility methods.
  */
 public class Utils {
 
+    public static boolean isNullOrEmpty(String str) {
+        return str == null || str.trim().isEmpty();
+    }
+
     public static boolean equals(Object a, Object b) {
         return (a == b) || (a != null && a.equals(b));
     }
 
-    public static void hideKeyboard(Context context, View view){
+    public static void hideKeyboard(Context context, View view) {
         InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
         imm.hideSoftInputFromWindow(view.getApplicationWindowToken(), 0);
     }

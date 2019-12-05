@@ -3,6 +3,7 @@ package com.diveboard.model;
 import androidx.annotation.NonNull;
 
 import com.diveboard.dataaccess.datamodel.Spot;
+import com.diveboard.util.Utils;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
@@ -39,7 +40,10 @@ public class SearchSpot {
     @NonNull
     @Override
     public String toString() {
-        return name;
+        if (Utils.isNullOrEmpty(cname)) {
+            return name;
+        }
+        return name + ", " + cname;
     }
 
     public Spot toModel() {

@@ -1,5 +1,8 @@
 package com.diveboard.dataaccess.datamodel;
 
+import androidx.annotation.NonNull;
+
+import com.diveboard.util.Utils;
 import com.google.gson.annotations.SerializedName;
 
 public class Spot {
@@ -31,4 +34,13 @@ public class Spot {
     public Double lat;
     @SerializedName("lng")
     public Double lng;
+
+    @NonNull
+    @Override
+    public String toString() {
+        if (Utils.isNullOrEmpty(countryName)) {
+            return name;
+        }
+        return name + ", " + countryName;
+    }
 }

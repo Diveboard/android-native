@@ -2,6 +2,7 @@ package com.diveboard.dataaccess.datamodel;
 
 import androidx.annotation.NonNull;
 
+import com.diveboard.util.Utils;
 import com.google.gson.annotations.SerializedName;
 
 public class SearchShop {
@@ -48,10 +49,10 @@ public class SearchShop {
 
     public String getLocation() {
         String result = "";
-        if (city != null && !city.trim().isEmpty()) {
+        if (!Utils.isNullOrEmpty(city)) {
             result += city;
         }
-        if (country != null && !country.trim().isEmpty()) {
+        if (!Utils.isNullOrEmpty(country)) {
             if (result.length() != 0) {
                 result += ", " + country;
             } else {

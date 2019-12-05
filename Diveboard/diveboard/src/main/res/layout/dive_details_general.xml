@@ -148,7 +148,7 @@
                     android:focusableInTouchMode="false"
                     android:inputType="textNoSuggestions"
                     android:onClick="@{()->view.showSpotDialog()}"
-                    android:text="@{model.spot==null ? `` : String.format(`%s, %s`, model.spot.countryName==null||model.spot.countryName.trim().equals(``)?`N/A`:model.spot.countryName, model.spot.name)}" />
+                    android:text="@{model.spot.toString()}" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
