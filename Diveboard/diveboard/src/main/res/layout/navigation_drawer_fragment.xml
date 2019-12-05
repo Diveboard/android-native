@@ -9,4 +9,4 @@
     android:fitsSystemWindows="true"
     app:headerLayout="@layout/nav_header"
     app:menu="@menu/drawer_view"
-    tools:showIn="@layout/activity_settings2" />
+    tools:showIn="@layout/activity_settings" />

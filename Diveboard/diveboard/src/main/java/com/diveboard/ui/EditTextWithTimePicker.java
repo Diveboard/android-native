@@ -9,7 +9,6 @@ import android.widget.TimePicker;
 import com.diveboard.util.DateConverter;
 
 import java.util.Calendar;
-import java.util.TimeZone;
 
 import static android.text.format.DateFormat.is24HourFormat;
 
@@ -27,7 +26,7 @@ public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListene
 
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.HOUR, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         editText.setText(conversion.convertTimeToString(calendar));
@@ -38,7 +37,8 @@ public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListene
         if (!hasFocus) {
             return;
         }
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
+        Calendar calendar = conversion.convertStringToTime(editText.getText().toString());
+        calendar = calendar == null ? Calendar.getInstance() : calendar;
         TimePickerDialog dialog = new TimePickerDialog(
                 context,
                 this,

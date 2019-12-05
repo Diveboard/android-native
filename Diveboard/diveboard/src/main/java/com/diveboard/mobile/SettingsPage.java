@@ -17,7 +17,7 @@ public class SettingsPage extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.activity_settings2, container, false);
+        View view = inflater.inflate(R.layout.activity_settings, container, false);
         setupToolbar(view);
         return view;
     }

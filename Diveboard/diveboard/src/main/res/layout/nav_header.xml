@@ -26,6 +26,7 @@
             android:layout_gravity="start"
             android:layout_marginStart="@dimen/view_margin"
             android:layout_marginLeft="@dimen/view_margin"
+            android:layout_marginTop="@dimen/view_margin"
             android:src="@drawable/full_diveboard_grey"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />

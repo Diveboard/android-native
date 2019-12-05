@@ -7,7 +7,7 @@ public class Converter {
     private static Double BarToPsi = 14.5137;
 
     public static Double convertTemp(Double tempInCelsius, Units.UnitsType to) {
-        return tempInCelsius == null ? null : to == Units.UnitsType.Metric ? tempInCelsius : (Double) ((tempInCelsius * 1.8) + 32);
+        return tempInCelsius == null ? null : to == Units.UnitsType.Metric ? tempInCelsius : (Double) ((tempInCelsius * 9 / 5) + 32);
     }
 
     public static Double convertDistance(Double distanceInMeters, Units.UnitsType to) {
@@ -57,6 +57,6 @@ public class Converter {
         if (temp == null) {
             return null;
         }
-        return from == Units.UnitsType.Metric ? temp : (int) ((temp - 32) / 1.8);
+        return from == Units.UnitsType.Metric ? temp : (int) ((temp - 32) * 5 / 9);
     }
 }

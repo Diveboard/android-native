@@ -41,7 +41,10 @@ public class DiveDetailsGeneralFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         //TODO: should be better way to avoid view duplication while navigating back from spot selection
         if (view != null) {
-            ((ViewGroup) view.getParent()).removeView(view);
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
             return view;
         }
         view = inflater.inflate(R.layout.dive_details_general, null, false);

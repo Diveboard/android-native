@@ -20,7 +20,7 @@ public class EditTextWithDatePicker implements View.OnFocusChangeListener {
         this.editText = editTextViewID;
         this.editText.setOnFocusChangeListener(this);
         context = editText.getContext();
-        conversion=new DateConverter(context);
+        conversion = new DateConverter(context);
     }
 
     @Override
@@ -28,8 +28,8 @@ public class EditTextWithDatePicker implements View.OnFocusChangeListener {
         if (!hasFocus) {
             return;
         }
-        Calendar calendar = Calendar.getInstance(TimeZone.getDefault());
-
+        Calendar calendar = conversion.convertStringToDate(editText.getText().toString());
+        calendar = calendar == null ? Calendar.getInstance() : calendar;
         DatePickerDialog dialog = new DatePickerDialog(
                 context,
                 new DateSetListener(),

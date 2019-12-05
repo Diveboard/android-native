@@ -68,11 +68,11 @@
         android:id="@+id/settings"
         android:name="com.diveboard.mobile.SettingsPage"
         android:label="settings"
-        tools:layout="@layout/activity_settings2" />
+        tools:layout="@layout/activity_settings" />
 
     <fragment
         android:id="@+id/statistics"
         android:name="com.diveboard.mobile.StatisticPage"
         android:label="settings"
-        tools:layout="@layout/activity_settings2" />
+        tools:layout="@layout/activity_settings" />
 </navigation>

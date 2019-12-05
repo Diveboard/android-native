@@ -49,6 +49,7 @@ public class DiveDetailsPage extends Fragment {
     private View view;
     private AlertDialog backConfirmationDialog;
     private ResourceHolder resourceHolder;
+    private View savingIndicator;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,25 +70,27 @@ public class DiveDetailsPage extends Fragment {
             return view;
         }
         view = inflater.inflate(R.layout.activity_dive_details, container, false);
+        savingIndicator = view.findViewById(R.id.savingIndicator);
         ac = (ApplicationController) getActivity().getApplicationContext();
         resourceHolder = new ResourceHolder(ac);
         divesService = ac.getDivesService();
         //cannot use dive.id as it is not always exist e.g. for offline dives
         String shakenId = DiveDetailsPageArgs.fromBundle(getArguments()).getShakenId();
         isNewDive = shakenId == null;
-        setupViewModel(shakenId);
         setupTabs(view);
         setupToolbar(view);
+        setupViewModel(shakenId);
         return view;
     }
 
     private void setupViewModel(String shakenId) {
-        ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
-            @Override
-            public void success(DivesResponse data) {
-                if (ac.currentDive != null) {
-                    viewModel = ac.currentDive;
-                } else {
+        if (ac.currentDive != null && ac.currentDive.getShakenId().equals(shakenId)) {
+            setViewModel(ac.currentDive);
+        } else {
+            ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+                @Override
+                public void success(DivesResponse data) {
+
                     if (isNewDive) {
                         viewModel = DiveDetailsViewModel.createNewDive(
                                 data.getMaxDiveNumber() + 1,
@@ -110,15 +113,15 @@ public class DiveDetailsPage extends Fragment {
                                 resourceHolder.getCylindersCountValues(),
                                 data.getTripNames());
                     }
+                    setViewModel(viewModel);
                 }
-                setViewModel(viewModel);
-            }
 
-            @Override
-            public void error(String s) {
-                Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
-            }
-        }, false);
+                @Override
+                public void error(String s) {
+                    Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
+                }
+            }, false);
+        }
     }
 
     private void setupTabs(View view) {
@@ -219,7 +222,7 @@ public class DiveDetailsPage extends Fragment {
     }
 
     private void goBack() {
-        hideKeyBoard(view);
+        hideKeyBoard();
         if (viewModel.isModified()) {
             getBackNavigationConfirmationDialog(true).show();
             return;
@@ -232,6 +235,7 @@ public class DiveDetailsPage extends Fragment {
         divesService.deleteDiveAsync(viewModel.getModel(), new ResponseCallback<DeleteResponse, Exception>() {
             @Override
             public void success(DeleteResponse data) {
+                ac.currentDive = null;
                 Navigation.findNavController(tabLayout).popBackStack();
             }
 
@@ -278,7 +282,7 @@ public class DiveDetailsPage extends Fragment {
     public void save() {
         //TODO: there should be a better solution for this
         this.getView().requestFocus();
-        hideKeyBoard(getView());
+        hideKeyBoard();
 
         Validator generalValidator = general.getValidator();
         if (!generalValidator.validate()) {
@@ -286,22 +290,29 @@ public class DiveDetailsPage extends Fragment {
             tab.select();
             return;
         }
-        Toast.makeText(ac, R.string.saving, Toast.LENGTH_LONG).show();
+        toggleSavingIndicator(true);
         ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<Dive, Exception>() {
             @Override
             public void success(Dive data) {
+                toggleSavingIndicator(false);
+                ac.currentDive = null;
                 Navigation.findNavController(tabLayout).popBackStack();
             }
 
             @Override
             public void error(Exception e) {
-                Toast toast = Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT);
-                toast.show();
+                toggleSavingIndicator(false);
+                Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }, isNewDive);
     }
 
-    public void hideKeyBoard(View v) {
+
+    private void toggleSavingIndicator(boolean show) {
+        savingIndicator.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void hideKeyBoard() {
         InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
         View currentFocus = getActivity().getCurrentFocus();
         if (currentFocus != null) {

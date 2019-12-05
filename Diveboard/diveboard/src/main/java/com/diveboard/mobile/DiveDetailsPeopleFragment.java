@@ -49,10 +49,19 @@ public class DiveDetailsPeopleFragment extends Fragment {
     private ProgressBar diveCenterProgress;
     private BindingArrayAdapter<SearchShop> diveCenterAdapter;
     private DiveCenterAutoSuggestHandler diveCenterHandler;
+    private View view;
 
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.dive_details_people, container, false);
+        //TODO: should be better way to avoid view duplication while navigating back from spot selection
+        if (view != null) {
+            ViewGroup parent = (ViewGroup) view.getParent();
+            if (parent != null) {
+                parent.removeView(view);
+            }
+            return view;
+        }
+        view = inflater.inflate(R.layout.dive_details_people, container, false);
         ac = (ApplicationController) getActivity().getApplicationContext();
         searchBuddyRepository = ac.getDiveboardSearchBuddyRepository();
         searchShopRepository = ac.getSearchShopRepository();

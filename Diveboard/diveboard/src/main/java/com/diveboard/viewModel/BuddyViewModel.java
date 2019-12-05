@@ -1,11 +1,18 @@
 package com.diveboard.viewModel;
 
-import com.diveboard.dataaccess.datamodel.Buddy;
+import androidx.databinding.BaseObservable;
+import androidx.databinding.Bindable;
 
+import com.diveboard.dataaccess.datamodel.Buddy;
+import com.diveboard.mobile.BR;
+
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 //one buddy supported for now
-public class BuddyViewModel {
+public class BuddyViewModel extends BaseObservable {
+    @Bindable
     Buddy buddy;
     private List<Buddy> buddies;
 
@@ -31,19 +38,13 @@ public class BuddyViewModel {
     public void setBuddy(Buddy buddy) {
         //might require to copy field by field
         this.buddy = buddy;
+        notifyPropertyChanged(BR.buddy);
     }
 
     public List<Buddy> getModel() {
-        //replace existing buddy with newly created one
-        for (int i = 0; i < buddies.size(); i++) {
-            Buddy buddy = buddies.get(i);
-            //need this workaround to not lose buddy after resave
-            buddy.setId(buddy.id);
-//            if (buddy.id != null) {
-            buddies.set(i, buddy);
-            return buddies;
-//            }
+        if (buddy == null) {
+            return new ArrayList<>();
         }
-        return buddies;
+        return Collections.singletonList(buddy);
     }
 }

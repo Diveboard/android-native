@@ -57,7 +57,6 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
-
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
         this.currentDictionary = Arrays.asList(currentDictionary);
@@ -142,6 +141,10 @@ public class DiveDetailsViewModel extends BaseObservable {
             result.diveTypes.add(new DiveTypeViewModel(diveType));
         }
         return result;
+    }
+
+    public String getShakenId() {
+        return shakenId;
     }
 
     public Dive getModel() {
@@ -370,12 +373,14 @@ public class DiveDetailsViewModel extends BaseObservable {
         return buddy;
     }
 
+    @Bindable
     public Shop getDiveCenter() {
         return diveCenter;
     }
 
     public void setDiveCenter(Shop shop) {
         this.diveCenter = shop;
+        notifyPropertyChanged(BR.diveCenter);
     }
 
     public String getGuide() {

@@ -12,6 +12,7 @@ import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.Units;
+import com.diveboard.util.DateConverter;
 import com.diveboard.util.ResponseCallback;
 
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ public class DivesListViewModel {
 
     public void init(boolean forceOnline) {
         dataLoadInProgress.set(true);
+        DateConverter conversion = new DateConverter(context);
         divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
@@ -45,7 +47,7 @@ public class DivesListViewModel {
                             dive.id,
                             dive.shakenId,
                             dive.diveNumber,
-                            dive.timeIn,
+                            conversion.convertDateToString(dive.getTimeIn()),
                             dive.spot,
                             dive.durationMin,
                             dive.maxDepth,
