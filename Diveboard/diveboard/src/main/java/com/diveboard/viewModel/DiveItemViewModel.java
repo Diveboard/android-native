@@ -15,13 +15,15 @@ public class DiveItemViewModel implements Comparable {
     public final String siteName;
     public final String durationStr;
     public final String maxDepthStr;
+    public final boolean unsynced;
 
-    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units) {
+    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units, boolean unsynced) {
         this.index = index;
         this.shakenId = shakenId;
         this.number = number;
         this.id = id;
         this.date = date;
+        this.unsynced = unsynced;
         if (spot == null) {
             location = "N/A";
             siteName = "N/A";

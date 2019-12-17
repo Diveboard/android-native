@@ -38,6 +38,7 @@ public class SessionRepository {
     public void resetSession() {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString("token", null);
+        editor.putInt("userId", -1);
         editor.apply();
     }
 }

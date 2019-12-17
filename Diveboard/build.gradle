@@ -3,10 +3,15 @@ buildscript {
     repositories {
         jcenter()
         google()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.2'
-        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.0.0"
+        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:2.1.0"
+        classpath 'com.google.gms:google-services:4.3.3'// Add dependency
+        classpath 'io.fabric.tools:gradle:1.31.2'  // Crashlytics plugin
     }
 }
 

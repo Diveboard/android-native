@@ -52,6 +52,13 @@ public abstract class FileRepository<T> {
         task.execute();
     }
 
+    public void cleanUp() {
+        cached = null;
+        if (file.exists()) {
+            file.delete();
+        }
+    }
+
     private class ReadAsyncTask extends AsyncTask<Void, Void, T> {
         private ResponseCallback<T, Exception> callback;
 

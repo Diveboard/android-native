@@ -1,23 +1,27 @@
 package com.diveboard.mobile;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import androidx.navigation.Navigation;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+
 import com.diveboard.config.AppConfig;
 import com.diveboard.dataaccess.SpotsDbUpdater;
+import com.diveboard.model.AuthenticationService;
 import com.diveboard.util.Callback;
 import com.uservoice.uservoicesdk.Config;
 import com.uservoice.uservoicesdk.UserVoice;
+import com.uservoice.uservoicesdk.activity.ContactActivity;
 
 import java.io.File;
 import java.text.DateFormat;
 import java.util.Date;
-
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
 
 public class SettingsFragment extends PreferenceFragmentCompat {
     @Override
@@ -38,7 +42,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private void setLogout(ApplicationController ac) {
         Preference preference = findPreference("logout");
-        preference.setOnPreferenceClickListener(new LogoutPreferenceClickListener(ac));
+        preference.setOnPreferenceClickListener(new LogoutPreferenceClickListener(ac, this));
     }
 
     private void setSpotsInfo(ApplicationController ac) {
@@ -101,9 +105,11 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
     private class LogoutPreferenceClickListener implements Preference.OnPreferenceClickListener {
         private ApplicationController ac;
+        private SettingsFragment settingsFragment;
 
-        public LogoutPreferenceClickListener(ApplicationController ac) {
+        LogoutPreferenceClickListener(ApplicationController ac, SettingsFragment settingsFragment) {
             this.ac = ac;
+            this.settingsFragment = settingsFragment;
         }
 
         @Override
@@ -113,17 +119,36 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         }
 
         void logout() {
-            ac.getAuthenticationService().logout();
-            Intent loginActivity = new Intent(ac, LoginPage.class);
-            loginActivity.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
-            startActivity(loginActivity);
+            if (ac.getSyncService().hasUnsynchedChanges()) {
+                getConfirmationDialog().show();
+            } else {
+                doLogout();
+            }
+        }
+
+        private void doLogout() {
+            ac.getLogoutService().logout();
+            //TODO: test it out!!! entire logout feature
+            Navigation.findNavController(settingsFragment.getView()).navigate(SettingsPageDirections.actionSettingsToLogin());
+        }
+
+        private AlertDialog getConfirmationDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage(R.string.unsyncedChanges);
+            builder.setPositiveButton(R.string.logout, (dialog, id) -> {
+                doLogout();
+            });
+            builder.setNegativeButton(R.string.sync_changes, (dialog, id) -> {
+                Navigation.findNavController(settingsFragment.getView()).navigate(R.id.logbook);
+            });
+            return builder.create();
         }
     }
 
     private class ReportBugPreferenceClickListener implements Preference.OnPreferenceClickListener {
         private ApplicationController ac;
 
-        public ReportBugPreferenceClickListener(ApplicationController ac) {
+        ReportBugPreferenceClickListener(ApplicationController ac) {
             this.ac = ac;
         }
 
@@ -132,6 +157,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             WaitDialogFragment bugDialog = new WaitDialogFragment();
             bugDialog.show(getFragmentManager(), "WaitDialogFragment");
             Config config = new Config("diveboard.uservoice.com");
+            AuthenticationService service;
             //TODO: fix email issue. where to get it from? it is not always presented in response. see API documentation
 //            if (model.getSessionEmail() != null)
 //                config.identifyUser(null, model.getUser().getNickname(), model.getSessionEmail());
@@ -141,7 +167,8 @@ public class SettingsFragment extends PreferenceFragmentCompat {
             config.setShowPostIdea(false);
             config.setShowKnowledgeBase(false);
             ApplicationController.UserVoiceReady = true;
-            UserVoice.launchContactUs(ac);
+            startActivity(new Intent(ac, ContactActivity.class));
+//            UserVoice.launchContactUs(ac); // doesn't work on Android 9.0
             bugDialog.dismiss();
             return true;
         }

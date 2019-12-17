@@ -265,7 +265,7 @@ public class DiveDetailsPage extends Fragment {
     private AlertDialog getBackNavigationConfirmationDialog(boolean goBack) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setMessage(R.string.unsavedChanges);
-        builder.setPositiveButton(R.string.yes, (dialog, id) -> {
+        builder.setPositiveButton(R.string.discard, (dialog, id) -> {
             if (goBack) {
                 ac.currentDive = null;
                 Navigation.findNavController(view).popBackStack();
@@ -273,7 +273,7 @@ public class DiveDetailsPage extends Fragment {
                 doClone();
             }
         });
-        builder.setNegativeButton(R.string.no, (dialog, id) -> {
+        builder.setNegativeButton(R.string.cancel, (dialog, id) -> {
 
         });
         return builder.create();

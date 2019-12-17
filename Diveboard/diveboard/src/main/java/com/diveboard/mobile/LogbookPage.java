@@ -41,7 +41,7 @@ public class LogbookPage extends Fragment {
         ac = (ApplicationController) getActivity().getApplicationContext();
         drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         //TODO: make a singlton?
-        viewModel = new DivesListViewModel(ac, ac.getDivesService(), ac.getUserPreferenceService().getUnits());
+        viewModel = new DivesListViewModel(ac, ac.getDivesService(), ac.getUserPreferenceService().getUnits(), ac.getSyncService());
         setupPullToRefresh(view);
         viewModel.init(getForceOnline());
         listView = binding.listView;
@@ -72,9 +72,18 @@ public class LogbookPage extends Fragment {
 
     private void setupToolbar(View view) {
         Toolbar actionBar = view.findViewById(R.id.toolbar);
+        actionBar.inflateMenu(R.menu.dive_list);
         actionBar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu));
         actionBar.setTitle(getString(R.string.logbook));
         actionBar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
+        actionBar.setOnMenuItemClickListener(item -> {
+            switch (item.getItemId()) {
+                case R.id.refresh:
+                    viewModel.refresh();
+                    break;
+            }
+            return true;
+        });
     }
 
     public ClickHandler<DiveItemViewModel> showDiveHandler() {

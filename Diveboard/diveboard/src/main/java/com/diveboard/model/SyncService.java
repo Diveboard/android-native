@@ -2,7 +2,7 @@ package com.diveboard.model;
 
 import com.diveboard.dataaccess.DiveboardApiException;
 import com.diveboard.dataaccess.DivesOnlineRepository;
-import com.diveboard.dataaccess.SyncObjectDao;
+import com.diveboard.dataaccess.SyncObjectRepository;
 import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
@@ -21,9 +21,9 @@ public class SyncService {
     private static final int MAX_SYNC_ATTEMPTS = 3;
     private final Gson gson;
     private DivesOnlineRepository onlineRepository;
-    private SyncObjectDao dao;
+    private SyncObjectRepository dao;
 
-    public SyncService(SyncObjectDao dao, DivesOnlineRepository onlineRepository) {
+    public SyncService(SyncObjectRepository dao, DivesOnlineRepository onlineRepository) {
         this.dao = dao;
         this.onlineRepository = onlineRepository;
         gson = new Gson();
@@ -136,5 +136,13 @@ public class SyncService {
         SyncObject so = new SyncObject();
         so.id = shakenId;
         dao.delete(so);
+    }
+
+    public boolean hasUnsynchedChanges() {
+        return dao.getCount() > 0;
+    }
+
+    public List<SyncObject> getChanges() {
+        return dao.getAll();
     }
 }

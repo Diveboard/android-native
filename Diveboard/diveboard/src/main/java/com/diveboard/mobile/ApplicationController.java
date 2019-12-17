@@ -12,19 +12,19 @@ import com.diveboard.dataaccess.SearchShopRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.dataaccess.SyncObjectDatabase;
+import com.diveboard.dataaccess.SyncObjectRepository;
 import com.diveboard.dataaccess.UserOfflineRepository;
 import com.diveboard.dataaccess.UserOnlineRepository;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.model.DivesService;
+import com.diveboard.model.LogoutService;
 import com.diveboard.model.SyncService;
 import com.diveboard.model.UserPreferenceService;
 import com.diveboard.model.UserService;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
-
-import java.util.concurrent.CompletableFuture;
 
 public class ApplicationController extends MultiDexApplication {
 
@@ -41,7 +41,13 @@ public class ApplicationController extends MultiDexApplication {
     private UserService userService;
     private User currentUser;
     private SyncService syncService;
-    private SyncObjectDatabase db;
+    private DivesOfflineRepository divesOfflineRepository;
+    private UserOnlineRepository userOnlineRepository;
+    private DivesOnlineRepository divesOnlineRepository;
+    private DiveboardSearchBuddyRepository diveboardSearchBuddyRepository;
+    private SearchShopRepository searchShopRepository;
+    private SyncObjectRepository syncObjectRepository;
+    private LogoutService logoutService;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -49,9 +55,17 @@ public class ApplicationController extends MultiDexApplication {
 
     public AuthenticationService getAuthenticationService() {
         if (authenticationService == null) {
-            authenticationService = new AuthenticationService(this);
+            authenticationService = new AuthenticationService(this, getSessionRepository(), getUserOfflineRepository());
         }
+
         return authenticationService;
+    }
+
+    public LogoutService getLogoutService() {
+        if (logoutService == null) {
+            logoutService = new LogoutService(getSessionRepository(), getUserOfflineRepository(), getDivesOfflineRepository(), getSyncObjectRepository());
+        }
+        return logoutService;
     }
 
     public UserPreferenceService getUserPreferenceService() {
@@ -108,29 +122,48 @@ public class ApplicationController extends MultiDexApplication {
         if (divesService == null) {
             divesService = new DivesService(
                     this,
-                    new DivesOfflineRepository(this, getSyncService()),
-                    getOnlineRepository(),
+                    getDivesOfflineRepository(),
+                    getDivesOnlineRepository(),
                     getUserPreferenceService(),
                     getSyncService());
         }
         return divesService;
     }
 
-    public UserOnlineRepository getUserOnlineRepository() {
-        return new UserOnlineRepository(this, getAuthenticationService());
-    }
-
-    private DivesOnlineRepository getOnlineRepository() {
-        return new DivesOnlineRepository(this, getAuthenticationService(), getUserOnlineRepository(), getUserOfflineRepository());
-    }
-
-    private SyncService getSyncService() {
-        db = Room.databaseBuilder(this, SyncObjectDatabase.class, "sync-objects").allowMainThreadQueries().build();
-        if (syncService == null) {
-            syncService = new SyncService(db.userDao(), getOnlineRepository());
+    private DivesOfflineRepository getDivesOfflineRepository() {
+        if (divesOfflineRepository == null) {
+            divesOfflineRepository = new DivesOfflineRepository(this, getSyncService());
         }
-        CompletableFuture feature;
+        return divesOfflineRepository;
+    }
+
+    public UserOnlineRepository getUserOnlineRepository() {
+        if (userOnlineRepository == null) {
+            userOnlineRepository = new UserOnlineRepository(this, getAuthenticationService());
+        }
+        return userOnlineRepository;
+    }
+
+    private DivesOnlineRepository getDivesOnlineRepository() {
+        if (divesOnlineRepository == null) {
+            divesOnlineRepository = new DivesOnlineRepository(this, getAuthenticationService(), getUserOnlineRepository(), getUserOfflineRepository());
+        }
+        return divesOnlineRepository;
+    }
+
+    public SyncService getSyncService() {
+        if (syncService == null) {
+            syncService = new SyncService(getSyncObjectRepository(), getDivesOnlineRepository());
+        }
         return syncService;
+    }
+
+    private SyncObjectRepository getSyncObjectRepository() {
+        if (syncObjectRepository == null) {
+            SyncObjectDatabase db = Room.databaseBuilder(this, SyncObjectDatabase.class, "sync-objects").allowMainThreadQueries().build();
+            syncObjectRepository = db.syncObjectRepository();
+        }
+        return syncObjectRepository;
     }
 
     public User getCurrentUser() {
@@ -145,10 +178,16 @@ public class ApplicationController extends MultiDexApplication {
     }
 
     public DiveboardSearchBuddyRepository getDiveboardSearchBuddyRepository() {
-        return new DiveboardSearchBuddyRepository(this);
+        if (diveboardSearchBuddyRepository == null) {
+            diveboardSearchBuddyRepository = new DiveboardSearchBuddyRepository(this);
+        }
+        return diveboardSearchBuddyRepository;
     }
 
     public SearchShopRepository getSearchShopRepository() {
-        return new SearchShopRepository(this);
+        if (searchShopRepository == null) {
+            searchShopRepository = new SearchShopRepository(this);
+        }
+        return searchShopRepository;
     }
 }

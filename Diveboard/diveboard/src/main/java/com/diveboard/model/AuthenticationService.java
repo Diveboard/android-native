@@ -2,15 +2,16 @@ package com.diveboard.model;
 
 import android.content.Context;
 
+import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.LoginRepository;
 import com.diveboard.dataaccess.LoginWithFacebookRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SignUpRepository;
+import com.diveboard.dataaccess.SyncObjectRepository;
 import com.diveboard.dataaccess.UserOfflineRepository;
 import com.diveboard.dataaccess.datamodel.LoginResponse;
 import com.diveboard.dataaccess.datamodel.SignUpResponse;
 import com.diveboard.dataaccess.datamodel.StoredSession;
-import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.util.Callback;
 import com.diveboard.util.NetworkUtils;
@@ -20,10 +21,12 @@ public class AuthenticationService {
     private final UserOfflineRepository userOfflineRepository;
     private Context context;
 
-    public AuthenticationService(Context context) {
+    public AuthenticationService(Context context,
+                                 SessionRepository sessionRepository,
+                                 UserOfflineRepository userOfflineRepository) {
         this.context = context;
-        sessionRepository = ((ApplicationController) context).getSessionRepository();
-        userOfflineRepository = ((ApplicationController) context).getUserOfflineRepository();
+        this.sessionRepository = sessionRepository;
+        this.userOfflineRepository = userOfflineRepository;
     }
 
     public boolean isLoggedIn() {
@@ -31,10 +34,6 @@ public class AuthenticationService {
         //TODO: user might be logged in in FB but not in the app. in this case login in the app should be reinitiated
         StoredSession session = sessionRepository.getSession();
         return session != null && session.isActive();
-    }
-
-    public void setTokenExpired() {
-        sessionRepository.resetSession();
     }
 
     public void loginAsync(final String login, final String password, final Callback<LoginResponse> callback, Callback<String> errorCallback) {
@@ -84,10 +83,6 @@ public class AuthenticationService {
         }
         SignUpRepository repository = new SignUpRepository(context);
         repository.signUp(email, password, confirmPassword, nickname, enableNewsletter, callback);
-    }
-
-    public void logout() {
-        throw new UnsupportedOperationException();
     }
 
     public StoredSession getSession() {

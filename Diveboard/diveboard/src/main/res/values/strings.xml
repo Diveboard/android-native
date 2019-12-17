@@ -77,11 +77,16 @@
     <string name="cannot_find_dive">Cannot find dive</string>
     <string name="delete">Delete</string>
     <string name="deleteDive">Delete dive?</string>
-    <string name="unsavedChanges">Your unsaved changes will be lost, continue?</string>
+    <string name="unsavedChanges">Discard your unsaved changes?</string>
+    <string name="unsyncedChanges">You have changes not synced/saved on Diveboard server. They will be lost after logout. Go online and refresh logbook list.</string>
     <string name="diveboard_buddy">Diveboard Buddy</string>
     <string name="dive_center">Dive Center</string>
     <string name="guide_name">Guide Name</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
     <string name="saving">Saving...</string>
+    <string name="logout">Logout</string>
+    <string name="sync_changes">Sync Changes</string>
+    <string name="discard">Discard</string>
+    <string name="refresh">Refresh</string>
 </resources>

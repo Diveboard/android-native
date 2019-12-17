@@ -12,7 +12,7 @@ import com.diveboard.dataaccess.datamodel.SyncObject;
 import java.util.List;
 
 @Dao
-public interface SyncObjectDao {
+public interface SyncObjectRepository {
 
     @Query("SELECT * FROM sync_object")
     List<SyncObject> getAll();
@@ -28,4 +28,10 @@ public interface SyncObjectDao {
 
     @Update
     void update(SyncObject syncObject);
+
+    @Query("DELETE FROM sync_object")
+    void purge();
+
+    @Query("SELECT COUNT(*) FROM sync_object")
+    int getCount();
 }

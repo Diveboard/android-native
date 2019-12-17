@@ -77,17 +77,9 @@ public class LoginPage extends Fragment {
             public void onSuccess(LoginResult loginResult) {
                 showProgress(true);
                 AccessToken accessToken = loginResult.getAccessToken();
-                ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(), new Callback<LoginResponse>() {
-                    @Override
-                    public void execute(LoginResponse data) {
-                        Navigation.findNavController(mLoginStatusView).navigate(R.id.logbook);
-                    }
-                }, new Callback<String>() {
-                    @Override
-                    public void execute(String data) {
-                        Toast.makeText(ac, data, Toast.LENGTH_SHORT).show();
-                    }
-                });
+                ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(),
+                        data -> Navigation.findNavController(view).navigate(R.id.logbook),
+                        data -> Toast.makeText(ac, data, Toast.LENGTH_SHORT).show());
             }
 
             @Override

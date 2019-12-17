@@ -15,8 +15,8 @@
             app:destination="@id/diveDetails">
             <argument
                 android:name="shakenId"
-                app:nullable="true"
-                app:argType="string" />
+                app:argType="string"
+                app:nullable="true" />
         </action>
     </fragment>
 
@@ -57,7 +57,7 @@
         android:id="@+id/selectSpot"
         android:name="com.diveboard.mobile.SelectSpotPage"
         android:label="select_spot"
-        tools:layout="@layout/select_spot" >
+        tools:layout="@layout/select_spot">
         <!--<argument
             android:name="diveId"
             android:defaultValue="-1"
@@ -68,7 +68,13 @@
         android:id="@+id/settings"
         android:name="com.diveboard.mobile.SettingsPage"
         android:label="settings"
-        tools:layout="@layout/activity_settings" />
+        tools:layout="@layout/activity_settings">
+        <action
+            android:id="@+id/action_settings_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@+id/login"
+            app:popUpToInclusive="true" />
+    </fragment>
 
     <fragment
         android:id="@+id/statistics"

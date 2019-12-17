@@ -16,6 +16,7 @@ import androidx.appcompat.widget.AppCompatAutoCompleteTextView;
 import androidx.databinding.DataBindingUtil;
 import androidx.fragment.app.Fragment;
 
+import com.android.volley.toolbox.NetworkImageView;
 import com.diveboard.dataaccess.DiveboardSearchBuddyRepository;
 import com.diveboard.dataaccess.SearchShopRepository;
 import com.diveboard.dataaccess.datamodel.SearchBuddy;
@@ -62,6 +63,8 @@ public class DiveDetailsPeopleFragment extends Fragment {
             return view;
         }
         view = inflater.inflate(R.layout.dive_details_people, container, false);
+        ((NetworkImageView) view.findViewById(R.id.profile_image)).setDefaultImageResId(R.drawable.ic_diveboard_grey2);
+        ((NetworkImageView) view.findViewById(R.id.profile_image2)).setDefaultImageResId(R.drawable.ic_diveboard_grey2);
         ac = (ApplicationController) getActivity().getApplicationContext();
         searchBuddyRepository = ac.getDiveboardSearchBuddyRepository();
         searchShopRepository = ac.getSearchShopRepository();

@@ -9,14 +9,17 @@ import androidx.databinding.ObservableList;
 
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
+import com.diveboard.dataaccess.datamodel.SyncObject;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
+import com.diveboard.model.SyncService;
 import com.diveboard.model.Units;
 import com.diveboard.util.DateConverter;
 import com.diveboard.util.ResponseCallback;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 
 public class DivesListViewModel {
 
@@ -26,11 +29,13 @@ public class DivesListViewModel {
     private Context context;
     private DivesService divesService;
     private Units.UnitsType units;
+    private SyncService syncService;
 
-    public DivesListViewModel(Context context, DivesService divesService, Units.UnitsType units) {
+    public DivesListViewModel(Context context, DivesService divesService, Units.UnitsType units, SyncService syncService) {
         this.context = context;
         this.divesService = divesService;
         this.units = units;
+        this.syncService = syncService;
     }
 
     public void init(boolean forceOnline) {
@@ -39,6 +44,7 @@ public class DivesListViewModel {
         divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
             @Override
             public void success(DivesResponse data) {
+                List<SyncObject> changes = syncService.getChanges();
                 dataLoadInProgress.set(false);
                 SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
                 for (int i = 0; i < data.result.size(); i++) {
@@ -51,7 +57,7 @@ public class DivesListViewModel {
                             dive.spot,
                             dive.durationMin,
                             dive.maxDepth,
-                            units));
+                            units, isUnsynced(changes, dive)));
                 }
                 dives.clear();
                 dives.addAll(result);
@@ -63,6 +69,15 @@ public class DivesListViewModel {
                 Toast.makeText(context, context.getString(R.string.error_get_dives_message) + " " + s, Toast.LENGTH_SHORT).show();
             }
         }, forceOnline);
+    }
+
+    private boolean isUnsynced(List<SyncObject> changes, Dive dive) {
+        for (SyncObject change : changes) {
+            if (change.id.equals(dive.shakenId)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void refresh() {

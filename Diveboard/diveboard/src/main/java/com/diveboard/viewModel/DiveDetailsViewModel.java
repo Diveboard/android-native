@@ -326,7 +326,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public String getVisibility() {
-        if (currentPosition == -1) {
+        if (visibilityPosition == -1) {
             return null;
         }
         visibility = visibilityDictionary.get(visibilityPosition);
