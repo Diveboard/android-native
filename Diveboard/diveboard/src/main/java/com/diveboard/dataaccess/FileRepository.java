@@ -12,6 +12,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import static com.diveboard.mobile.ApplicationController.getGson;
+
 public abstract class FileRepository<T> {
     protected final File file;
     private T cached;
@@ -29,8 +31,7 @@ public abstract class FileRepository<T> {
         FileOutputStream stream = null;
         try {
             stream = new FileOutputStream(file);
-            Gson gson = new Gson();
-            stream.write(gson.toJson(data).getBytes());
+            stream.write(getGson().toJson(data).getBytes());
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
 
@@ -47,7 +48,7 @@ public abstract class FileRepository<T> {
         }
     }
 
-    public void getAsync(ResponseCallback<T, Exception> callback) {
+    public void getAsync(ResponseCallback<T> callback) {
         ReadAsyncTask task = new ReadAsyncTask(callback);
         task.execute();
     }
@@ -60,9 +61,9 @@ public abstract class FileRepository<T> {
     }
 
     private class ReadAsyncTask extends AsyncTask<Void, Void, T> {
-        private ResponseCallback<T, Exception> callback;
+        private ResponseCallback<T> callback;
 
-        ReadAsyncTask(ResponseCallback<T, Exception> callback) {
+        ReadAsyncTask(ResponseCallback<T> callback) {
             this.callback = callback;
         }
 
@@ -88,8 +89,7 @@ public abstract class FileRepository<T> {
             try {
                 stream = new FileInputStream(file);
                 stream.read(bytes);
-                Gson gson = new Gson();
-                cached = (T) gson.fromJson(new String(bytes), getClazz());
+                cached = (T) getGson().fromJson(new String(bytes), getClazz());
             } catch (FileNotFoundException e) {
                 callback.error(e);
                 return null;

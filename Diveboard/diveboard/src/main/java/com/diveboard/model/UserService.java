@@ -19,12 +19,12 @@ public class UserService {
         this.onlineRepository = onlineRepository;
     }
 
-    public void getUserAsync(ResponseCallback<User, Exception> callback) {
+    public void getUserAsync(ResponseCallback<User> callback) {
         offlineRepository.getAsync(getFallbackToOnlineCallback(callback));
     }
 
-    private ResponseCallback<User, Exception> getFallbackToOnlineCallback(ResponseCallback<User, Exception> callback) {
-        return new ResponseCallback<User, Exception>() {
+    private ResponseCallback<User> getFallbackToOnlineCallback(ResponseCallback<User> callback) {
+        return new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 callback.success(data);
@@ -41,8 +41,8 @@ public class UserService {
         };
     }
 
-    private ResponseCallback<User, Exception> getSaveOfflineCallback(ResponseCallback<User, Exception> callback) {
-        return new ResponseCallback<User, Exception>() {
+    private ResponseCallback<User> getSaveOfflineCallback(ResponseCallback<User> callback) {
+        return new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 offlineRepository.save(data);

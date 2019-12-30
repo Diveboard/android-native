@@ -2,15 +2,13 @@ package com.diveboard.dataaccess;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
+import com.diveboard.dataaccess.datamodel.SpotsSearchResponse;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.model.SearchSpot;
-import com.diveboard.dataaccess.datamodel.SpotsSearchResponse;
-import com.diveboard.util.Callback;
-import com.diveboard.util.GsonRequest;
+import com.diveboard.util.DiveboardJsonRequest;
+import com.diveboard.util.ResponseCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -31,28 +29,27 @@ public class SearchSpotOnlineRepository implements SearchSpotRepository {
 
     @Override
     //TODO: add cancellation token
-    public void search(final String term, final LatLng position, final LatLngBounds bounds, final Callback<List<SearchSpot>> callback, final Callback<String> errorCallback) {
+    public void search(final String term, final LatLng position, final LatLngBounds bounds, final ResponseCallback<List<SearchSpot>> callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
 
         String url = AppConfig.SERVER_URL + "/api/search_spot_text";
 
-        GsonRequest<SpotsSearchResponse> stringRequest = new GsonRequest<SpotsSearchResponse>(
+        DiveboardJsonRequest<SpotsSearchResponse> stringRequest = new DiveboardJsonRequest<SpotsSearchResponse>(
                 Request.Method.POST, url,
                 SpotsSearchResponse.class,
-                new Response.Listener<SpotsSearchResponse>() {
+                new ResponseCallback<SpotsSearchResponse>() {
                     @Override
-                    public void onResponse(SpotsSearchResponse response) {
-                        if (callback != null) {
-                            callback.execute(response.spots);
+                    public void success(SpotsSearchResponse data) {
+                        if (data.success) {
+                            callback.success(data.spots);
+                        } else {
+                            callback.error(new Exception("Cannot get spots"));
                         }
                     }
-                },
-                new Response.ErrorListener() {
+
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (errorCallback != null) {
-                            errorCallback.execute(error.getMessage());
-                        }
+                    public void error(Exception error) {
+                        callback.error(error);
                     }
                 }) {
             @Override

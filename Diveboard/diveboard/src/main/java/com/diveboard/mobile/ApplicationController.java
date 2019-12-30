@@ -1,7 +1,5 @@
 package com.diveboard.mobile;
 
-import android.util.Log;
-
 import androidx.multidex.MultiDexApplication;
 import androidx.room.Room;
 
@@ -22,15 +20,22 @@ import com.diveboard.model.LogoutService;
 import com.diveboard.model.SyncService;
 import com.diveboard.model.UserPreferenceService;
 import com.diveboard.model.UserService;
+import com.diveboard.util.Exclude;
 import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.gms.analytics.GoogleAnalytics;
+import com.google.gson.ExclusionStrategy;
+import com.google.gson.FieldAttributes;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class ApplicationController extends MultiDexApplication {
 
     public static boolean UserVoiceReady = false;
     private static ApplicationController singleton;
     private static GoogleAnalytics sAnalytics;
+    private static Gson gson;
     public DiveDetailsViewModel currentDive;
     private SpotsDbUpdater spotsDbUpdater;
     private UserPreferenceService userPreferenceService;
@@ -51,6 +56,27 @@ public class ApplicationController extends MultiDexApplication {
 
     public static ApplicationController getInstance() {
         return singleton;
+    }
+
+    public static Gson getGson() {
+        if (gson == null) {
+            ExclusionStrategy strategy = new ExclusionStrategy() {
+                @Override
+                public boolean shouldSkipClass(Class<?> clazz) {
+                    return false;
+                }
+
+                @Override
+                public boolean shouldSkipField(FieldAttributes field) {
+                    return field.getAnnotation(Exclude.class) != null;
+                }
+            };
+            gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .addSerializationExclusionStrategy(strategy)
+                    .create();
+        }
+        return gson;
     }
 
     public AuthenticationService getAuthenticationService() {
@@ -91,7 +117,7 @@ public class ApplicationController extends MultiDexApplication {
         if (!getAuthenticationService().isLoggedIn()) {
             return;
         }
-        getUserService().getUserAsync(new ResponseCallback<User, Exception>() {
+        getUserService().getUserAsync(new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 currentUser = data;
@@ -99,7 +125,7 @@ public class ApplicationController extends MultiDexApplication {
 
             @Override
             public void error(Exception e) {
-                Log.e(this.getClass().getName(), "Error logging in", e);
+                Utils.logError(ApplicationController.class, "Cannot login", e);
             }
         });
     }
@@ -186,7 +212,7 @@ public class ApplicationController extends MultiDexApplication {
 
     public SearchShopRepository getSearchShopRepository() {
         if (searchShopRepository == null) {
-            searchShopRepository = new SearchShopRepository(this);
+            searchShopRepository = new SearchShopRepository(this, getAuthenticationService());
         }
         return searchShopRepository;
     }

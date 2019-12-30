@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.concurrent.Semaphore;
 import java.util.concurrent.TimeUnit;
 
+import static com.diveboard.mobile.ApplicationController.getGson;
+
 
 public class SyncService {
     private static final int MAX_SYNC_ATTEMPTS = 3;
@@ -26,7 +28,7 @@ public class SyncService {
     public SyncService(SyncObjectRepository dao, DivesOnlineRepository onlineRepository) {
         this.dao = dao;
         this.onlineRepository = onlineRepository;
-        gson = new Gson();
+        gson = getGson();
     }
 
     public Exception syncChanges() {
@@ -39,10 +41,10 @@ public class SyncService {
             switch (syncObject.action) {
                 case New:
                 case Update:
-                    onlineRepository.saveDive(dive, (ResponseCallback<DiveResponse, Exception>) getCallback(semaphore, error, syncObject, dive));
+                    onlineRepository.saveDive(dive, (ResponseCallback<DiveResponse>) getCallback(semaphore, error, syncObject, dive));
                     break;
                 case Delete:
-                    onlineRepository.deleteDive(dive, (ResponseCallback<DeleteResponse, Exception>) getCallback(semaphore, error, syncObject, dive));
+                    onlineRepository.deleteDive(dive, (ResponseCallback<DeleteResponse>) getCallback(semaphore, error, syncObject, dive));
             }
             try {
                 if (!semaphore.tryAcquire(30, TimeUnit.SECONDS)) {
@@ -55,8 +57,8 @@ public class SyncService {
         return error[0];
     }
 
-    private ResponseCallback<?, Exception> getCallback(Semaphore semaphore, Exception[] error, SyncObject syncObject, Dive dive) {
-        return new ResponseCallback<ResponseBase<?>, Exception>() {
+    private ResponseCallback<?> getCallback(Semaphore semaphore, Exception[] error, SyncObject syncObject, Dive dive) {
+        return new ResponseCallback<ResponseBase<?>>() {
             @Override
             public void success(ResponseBase<?> data) {
                 markSynced(syncObject.id);

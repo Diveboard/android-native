@@ -1,8 +1,11 @@
 package com.diveboard.util;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+
+import com.crashlytics.android.Crashlytics;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -14,6 +17,11 @@ import java.io.OutputStream;
  * Class containing some static utility methods.
  */
 public class Utils {
+
+    public static void logError(Class classForTag, String msg, Throwable error) {
+        Log.e(classForTag.getSimpleName(), msg, error);
+        Crashlytics.logException(error);
+    }
 
     public static boolean isNullOrEmpty(String str) {
         return str == null || str.trim().isEmpty();

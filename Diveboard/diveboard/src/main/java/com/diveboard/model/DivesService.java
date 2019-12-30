@@ -35,12 +35,12 @@ public class DivesService {
         this.syncService = syncService;
     }
 
-    public void getDivesAsync(final ResponseCallback<DivesResponse, String> callback, boolean forceOnline) {
+    public void getDivesAsync(final ResponseCallback<DivesResponse> callback, boolean forceOnline) {
         if (forceOnline) {
             onlineCall(callback);
             return;
         }
-        final ResponseCallback<DivesResponse, Exception> intCallback = new ResponseCallback<DivesResponse, Exception>() {
+        final ResponseCallback<DivesResponse> intCallback = new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 if (data != null) {
@@ -59,18 +59,18 @@ public class DivesService {
         offlineRepository.getAsync(intCallback);
     }
 
-    private void onlineCall(ResponseCallback<DivesResponse, String> callback) {
+    private void onlineCall(ResponseCallback<DivesResponse> callback) {
         if (NetworkUtils.isConnected(context)) {
             SyncChangesAndGetFreshResultsTask syncChangesTask = new SyncChangesAndGetFreshResultsTask(callback);
             syncChangesTask.execute((Void) null);
         } else {
-            callback.error(context.getString(R.string.no_internet));
+            callback.error(new Exception(context.getString(R.string.no_internet)));
         }
     }
 
-    public void saveDiveAsync(Dive dive, ResponseCallback<Dive, Exception> callback, boolean isNewDive) {
+    public void saveDiveAsync(Dive dive, ResponseCallback<Dive> callback, boolean isNewDive) {
         if (NetworkUtils.isConnected(context)) {
-            onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse, Exception>() {
+            onlineRepository.saveDive(dive, new ResponseCallback<DiveResponse>() {
                 @Override
                 public void success(DiveResponse data) {
                     //it is important to pass old shaken id, so sync repo can find it properly
@@ -88,10 +88,10 @@ public class DivesService {
         }
     }
 
-    public void deleteDiveAsync(Dive dive, ResponseCallback<DeleteResponse, Exception> callback) {
+    public void deleteDiveAsync(Dive dive, ResponseCallback<DeleteResponse> callback) {
         //dive might be created and then deleted offline so it doesn't have id
         if (NetworkUtils.isConnected(context) && dive.existsOnline()) {
-            onlineRepository.deleteDive(dive, new ResponseCallback<DeleteResponse, Exception>() {
+            onlineRepository.deleteDive(dive, new ResponseCallback<DeleteResponse>() {
                 @Override
                 public void success(DeleteResponse data) {
                     offlineRepository.deleteDive(dive, new ResponseCallback.Empty<>(), false);
@@ -109,9 +109,9 @@ public class DivesService {
     }
 
     private class SyncChangesAndGetFreshResultsTask extends AsyncTask<Void, Void, Exception> {
-        private ResponseCallback<DivesResponse, String> callback;
+        private ResponseCallback<DivesResponse> callback;
 
-        public SyncChangesAndGetFreshResultsTask(ResponseCallback<DivesResponse, String> callback) {
+        public SyncChangesAndGetFreshResultsTask(ResponseCallback<DivesResponse> callback) {
             this.callback = callback;
         }
 
@@ -119,11 +119,11 @@ public class DivesService {
         protected void onPostExecute(Exception e) {
             super.onPostExecute(e);
             if (e != null) {
-                callback.error(e.getMessage());
+                callback.error(e);
                 //get fresh results from server even if syncronization failed
             }
 
-            onlineRepository.load(new ResponseCallback<DivesResponse, String>() {
+            onlineRepository.load(new ResponseCallback<DivesResponse>() {
                 @Override
                 public void success(DivesResponse data) {
                     offlineRepository.save(data);
@@ -132,7 +132,7 @@ public class DivesService {
                 }
 
                 @Override
-                public void error(String s) {
+                public void error(Exception s) {
                     callback.error(s);
                 }
             });

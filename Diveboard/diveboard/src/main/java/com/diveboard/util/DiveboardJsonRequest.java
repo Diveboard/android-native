@@ -10,16 +10,16 @@ import com.google.gson.JsonSyntaxException;
 
 import java.io.UnsupportedEncodingException;
 
-public class GsonRequest<T> extends Request<T> {
+public class DiveboardJsonRequest<T> extends Request<T> {
     private final Gson gson = new Gson();
     private final Class<T> clazz;
     private final Response.Listener<T> listener;
 
-    public GsonRequest(int method, String url, Class<T> clazz,
-                       Response.Listener<T> listener, Response.ErrorListener errorListener) {
-        super(method, url, errorListener);
+    public DiveboardJsonRequest(int method, String url, Class<T> clazz,
+                                ResponseCallback<T> responseCallback) {
+        super(method, url, responseCallback::error);
         this.clazz = clazz;
-        this.listener = listener;
+        this.listener = responseCallback::success;
     }
 
     @Override

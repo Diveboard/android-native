@@ -16,6 +16,7 @@ import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.UserService;
 import com.diveboard.util.NetworkUtils;
 import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 import com.diveboard.viewModel.DrawerHeaderViewModel;
 import com.google.android.material.navigation.NavigationView;
 
@@ -60,7 +61,7 @@ public class MainActivity extends AppCompatActivity {
 
         UserService userService = ac.getUserService();
 
-        userService.getUserAsync(new ResponseCallback<User, Exception>() {
+        userService.getUserAsync(new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 viewModel.setName(data.nickname);
@@ -70,6 +71,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void error(Exception e) {
                 Toast.makeText(ac, R.string.error_profile_message + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Utils.logError(MainActivity.class, "Cannot get user profile", e);
             }
         });
     }
@@ -87,7 +89,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSpots() {
         SpotsDbUpdater dbUpdater = ac.getSpotsDbUpdater();
-        if (dbUpdater.getSpotsFile() == null) {
+        if (dbUpdater.getSpotsFile() == null && NetworkUtils.isConnected(ac)) {
             dbUpdater.launchUpdate(null);
             return;
         }

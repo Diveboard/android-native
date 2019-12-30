@@ -4,18 +4,14 @@ import android.content.Context;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.dataaccess.datamodel.UserResponse;
 import com.diveboard.model.AuthenticationService;
+import com.diveboard.util.DiveboardRequest;
 import com.diveboard.util.ResponseCallback;
-import com.diveboard.util.VolleyMultipartRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
-import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 public class UserOnlineRepository {
@@ -27,36 +23,23 @@ public class UserOnlineRepository {
         this.authenticationService = authenticationService;
     }
 
-    public void getAsync(ResponseCallback<User, Exception> callback) {
+    public void getAsync(ResponseCallback<User> callback) {
         RequestQueue queue = Volley.newRequestQueue(context);
-        VolleyMultipartRequest stringRequest = getGetUserRequest(callback, authenticationService.getSession().userId);
+        DiveboardRequest stringRequest = getGetUserRequest(callback, authenticationService.getSession().userId);
+        stringRequest.getTimeoutMs();
         queue.add(stringRequest);
     }
 
-    private VolleyMultipartRequest getGetUserRequest(final ResponseCallback<User, Exception> callback, int userId) {
+    private DiveboardRequest getGetUserRequest(final ResponseCallback<User> callback, int userId) {
         String url = AppConfig.SERVER_URL + "/api/V2/user/" + userId;
-        return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
-            //TODO: refactor this, extract method. This code is duplicated everywhere in online repos
-            try {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                UserResponse data = (new Gson()).fromJson(json, UserResponse.class);
-                if (data.success) {
-                    callback.success(data.result);
-                } else {
-                    callback.error(new DiveboardApiException(data.errors));
-                }
-            } catch (UnsupportedEncodingException e) {
-                callback.error(e);
-            } catch (JsonSyntaxException e) {
-                callback.error(e);
-            }
-        }, error -> {
-            callback.error(new NetworkException(error.getMessage()));
-        }) {
+        return new DiveboardRequest<UserResponse>(Request.Method.POST,
+                url,
+                UserResponse.class,
+                response -> callback.success(response.result),
+                callback::error) {
             @Override
             protected Map<String, String> getParams() {
-                Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
-                return args;
+                return RequestHelper.getCommonRequestArgs(authenticationService);
             }
         };
     }

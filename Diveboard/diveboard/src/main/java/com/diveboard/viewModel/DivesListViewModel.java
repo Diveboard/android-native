@@ -1,21 +1,25 @@
 package com.diveboard.viewModel;
 
 import android.content.Context;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableList;
 
+import com.crashlytics.android.Crashlytics;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.dataaccess.datamodel.SyncObject;
+import com.diveboard.mobile.DiveDetailsPage;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.SyncService;
 import com.diveboard.model.Units;
 import com.diveboard.util.DateConverter;
 import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -41,7 +45,7 @@ public class DivesListViewModel {
     public void init(boolean forceOnline) {
         dataLoadInProgress.set(true);
         DateConverter conversion = new DateConverter(context);
-        divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+        divesService.getDivesAsync(new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 List<SyncObject> changes = syncService.getChanges();
@@ -64,9 +68,10 @@ public class DivesListViewModel {
             }
 
             @Override
-            public void error(String s) {
+            public void error(Exception e) {
                 dataLoadInProgress.set(false);
-                Toast.makeText(context, context.getString(R.string.error_get_dives_message) + " " + s, Toast.LENGTH_SHORT).show();
+                Toast.makeText(context, context.getString(R.string.error_get_dives_message) + " " + e.getMessage(), Toast.LENGTH_SHORT).show();
+                Utils.logError(DivesListViewModel.class, "Cannot get dives", e);
             }
         }, forceOnline);
     }

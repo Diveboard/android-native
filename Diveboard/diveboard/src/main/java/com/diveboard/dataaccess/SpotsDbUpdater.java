@@ -1,5 +1,13 @@
 package com.diveboard.dataaccess;
 
+import android.content.Context;
+import android.os.AsyncTask;
+import android.widget.Toast;
+
+import com.diveboard.config.AppConfig;
+import com.diveboard.mobile.R;
+import com.diveboard.util.Callback;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.IOException;
@@ -8,26 +16,16 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.zip.GZIPInputStream;
 
-import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.R;
-import com.diveboard.util.Callback;
-
-
-import android.content.Context;
-import android.os.AsyncTask;
-import android.widget.Toast;
-
 import static com.diveboard.util.Utils.copyInputStreamToFile;
 
 public class SpotsDbUpdater implements Callback<Boolean> {
-    private Context context;
     private final String DB_PATH;
     private final String DB_NAME = "spots.db";
+    private Context context;
     private Callback<Boolean> callback;
 
     public SpotsDbUpdater(Context context) {
         this.context = context;
-        //TODO: use getDatabasePath instead
         DB_PATH = this.context.getApplicationInfo().dataDir + "/databases/";
     }
 

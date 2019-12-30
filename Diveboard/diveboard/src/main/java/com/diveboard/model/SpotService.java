@@ -10,6 +10,7 @@ import com.diveboard.dataaccess.SearchSpotRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.util.Callback;
+import com.diveboard.util.ResponseCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -26,7 +27,7 @@ public class SpotService {
         this.sessionRepository = sessionRepository;
     }
 
-    public void searchSpot(String term, LatLng position, LatLngBounds bounds, Callback<List<SearchSpot>> callback, Callback<String> errorCallback) {
+    public void searchSpot(String term, LatLng position, LatLngBounds bounds, ResponseCallback<List<SearchSpot>> callback) {
         NetworkInfo networkInfo = connectivityManager.getActiveNetworkInfo();
         SearchSpotRepository repository;
         if (networkInfo != null && networkInfo.isConnected()) {
@@ -34,6 +35,6 @@ public class SpotService {
         } else {
             repository = new SearchSpotOfflineRepository(context, sessionRepository.getSession().userId);
         }
-        repository.search(term, position, bounds, callback, errorCallback);
+        repository.search(term, position, bounds, callback);
     }
 }

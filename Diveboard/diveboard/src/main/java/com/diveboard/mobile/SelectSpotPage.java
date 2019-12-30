@@ -23,6 +23,7 @@ import androidx.navigation.Navigation;
 import com.diveboard.model.SearchSpot;
 import com.diveboard.model.SpotService;
 import com.diveboard.util.ImageUtils;
+import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.Utils;
 import com.diveboard.util.binding.AutoSuggestAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -101,7 +102,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
         service = new SpotService(ac, ac.getSessionRepository());
         suggest = view.findViewById(R.id.appCompatAutoCompleteTextView);
         progress = view.findViewById(R.id.progress_bar);
-        adapter = new AutoSuggestAdapter<>(ac, android.R.layout.simple_dropdown_item_1line);
+        adapter = new AutoSuggestAdapter<>(ac, R.layout.spot_item);
         suggest.setAdapter(adapter);
         suggest.setOnItemClickListener((adapterView, view1, position, id) -> {
             Utils.hideKeyboard(ac, view1);
@@ -285,23 +286,31 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             CameraPosition position = activity.map.getCameraPosition();
             final LatLngBounds latLngBounds = activity.map.getProjection().getVisibleRegion().latLngBounds;
             activity.removeMarkersOutOfBounds(latLngBounds);
-            activity.service.searchSpot(null, position.target, latLngBounds, data -> {
-                if (data == null) {
-                    return;
-                }
-                Log.d(SelectSpotPage.class.getName(), "Bound Spots arrived: " + data.size());
-                SelectSpotPage outer = outerRef.get();
-                if (outer == null) {
-                    return;
-                }
-                addMarkers(data);
-            }, data -> {
-                SelectSpotPage outer = outerRef.get();
-                if (outer == null) {
-                    return;
-                }
-                outer.showError(data);
-            });
+            activity.service.searchSpot(null, position.target, latLngBounds,
+                    new ResponseCallback<List<SearchSpot>>() {
+                        @Override
+                        public void success(List<SearchSpot> data) {
+                            if (data == null) {
+                                return;
+                            }
+                            Log.d(SelectSpotPage.class.getName(), "Bound Spots arrived: " + data.size());
+                            SelectSpotPage outer = outerRef.get();
+                            if (outer == null) {
+                                return;
+                            }
+                            addMarkers(data);
+                        }
+
+                        @Override
+                        public void error(Exception error) {
+                            SelectSpotPage outer = outerRef.get();
+                            if (outer == null) {
+                                return;
+                            }
+                            outer.showError(error.getMessage());
+                            Utils.logError(SelectSpotPage.class, "Cannot find spot", error);
+                        }
+                    });
         }
 
         private synchronized void addMarkers(List<SearchSpot> data) {
@@ -331,23 +340,31 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             }
             outer.progress.setVisibility(View.VISIBLE);
             String term = msg.obj.toString();
-            outer.service.searchSpot(term, null, null, (List<SearchSpot> data) -> {
-                SelectSpotPage outer12 = outerRef.get();
-                if (outer12 == null) {
-                    return;
-                }
-                outer12.progress.setVisibility(View.GONE);
-                if (!term.equals(outer12.suggest.getText().toString())) {
-                    return;
-                }
-                outer12.adapter.setData(data);
-            }, data -> {
-                SelectSpotPage outer1 = outerRef.get();
-                if (outer1 == null) {
-                    return;
-                }
-                outer1.showError(data);
-            });
+            outer.service.searchSpot(term, null, null,
+                    new ResponseCallback<List<SearchSpot>>() {
+                        @Override
+                        public void success(List<SearchSpot> data) {
+                            SelectSpotPage outer12 = outerRef.get();
+                            if (outer12 == null) {
+                                return;
+                            }
+                            outer12.progress.setVisibility(View.GONE);
+                            if (!term.equals(outer12.suggest.getText().toString())) {
+                                return;
+                            }
+                            outer12.adapter.setData(data);
+                        }
+
+                        @Override
+                        public void error(Exception error) {
+                            SelectSpotPage outer1 = outerRef.get();
+                            if (outer1 == null) {
+                                return;
+                            }
+                            outer1.showError(error.getMessage());
+                            Utils.logError(SelectSpotPage.class, "Cannot find spot", error);
+                        }
+                    });
         }
     }
 }

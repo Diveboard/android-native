@@ -8,6 +8,7 @@ import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
 import com.diveboard.model.SearchSpot;
 import com.diveboard.util.Callback;
+import com.diveboard.util.ResponseCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -25,14 +26,8 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
     }
 
     @Override
-    public void search(String term, LatLng position, LatLngBounds bounds, Callback<List<SearchSpot>> callback, Callback<String> errorCallback) {
+    public void search(String term, LatLng position, LatLngBounds bounds, final ResponseCallback<List<SearchSpot>> callback) {
         ArrayList<SearchSpot> result = new ArrayList<>();
-        if (errorCallback == null) {
-            errorCallback = new Callback.Empty<>();
-        }
-        if (callback == null) {
-            errorCallback = new Callback.Empty<>();
-        }
         if (position != null) {
             position = new LatLng(position.latitude, position.longitude - Math.floor((position.longitude + 180.0) / 360.0) * 360.0);
         }
@@ -40,12 +35,12 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
         File spotsFile = updater.getSpotsFile();
 
         if (!spotsFile.exists()) {
-            errorCallback.execute(context.getResources().getString(R.string.no_db));
+            callback.error(new Exception(context.getResources().getString(R.string.no_db)));
             return;
         }
         SQLiteDatabase mDataBase = SQLiteDatabase.openDatabase(spotsFile.getPath(), null, SQLiteDatabase.OPEN_READONLY);
         if (mDataBase == null) {
-            errorCallback.execute(context.getResources().getString(R.string.db_generic_error));
+            callback.error(new Exception(context.getResources().getString(R.string.db_generic_error)));
         }
 
         String whereClause = "(spots.private_user_id IS NULL OR spots.private_user_id = " + userId + ")";
@@ -97,11 +92,10 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
                 }
             }
         } catch (SQLiteException e) {
-            e.printStackTrace();
-            errorCallback.execute(context.getResources().getString(R.string.db_generic_error));
+            callback.error(e);
         } finally {
             cursor.close();
         }
-        callback.execute(result);
+        callback.success(result);
     }
 }

@@ -19,6 +19,7 @@ import com.diveboard.mobile.databinding.ActivityStatisticBinding;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.Statistic;
 import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
 import com.diveboard.viewModel.StatisticViewModel;
 
@@ -38,15 +39,16 @@ public class StatisticPage extends Fragment {
         setupToolbar(view);
         ac = (ApplicationController) getActivity().getApplicationContext();
         DivesService divesService = ac.getDivesService();
-        divesService.getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+        divesService.getDivesAsync(new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 binding.setModel(StatisticViewModel.create(Statistic.create(data.result), ac.getUserPreferenceService().getUnits()));
             }
 
             @Override
-            public void error(String s) {
-                Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
+            public void error(Exception e) {
+                Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Utils.logError(StatisticPage.class, "Cannot get dives", e);
             }
         }, false);
         return view;

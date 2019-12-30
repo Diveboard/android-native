@@ -28,6 +28,7 @@ import com.diveboard.model.DivesService;
 import com.diveboard.util.ResourceHolder;
 import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.TabAdapter;
+import com.diveboard.util.Utils;
 import com.diveboard.viewModel.DiveDetailsViewModel;
 import com.google.android.material.tabs.TabLayout;
 import com.google.gson.Gson;
@@ -35,6 +36,8 @@ import com.google.gson.Gson;
 import java.util.UUID;
 
 import br.com.ilhasoft.support.validation.Validator;
+
+import static com.diveboard.mobile.ApplicationController.getGson;
 
 public class DiveDetailsPage extends Fragment {
     private DiveDetailsViewModel viewModel;
@@ -87,7 +90,7 @@ public class DiveDetailsPage extends Fragment {
         if (ac.currentDive != null && ac.currentDive.getShakenId().equals(shakenId)) {
             setViewModel(ac.currentDive);
         } else {
-            ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+            ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse>() {
                 @Override
                 public void success(DivesResponse data) {
 
@@ -117,8 +120,9 @@ public class DiveDetailsPage extends Fragment {
                 }
 
                 @Override
-                public void error(String s) {
-                    Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
+                public void error(Exception e) {
+                    Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    Utils.logError(DiveDetailsPage.class, "Cannot get dives", e);
                 }
             }, false);
         }
@@ -188,7 +192,7 @@ public class DiveDetailsPage extends Fragment {
     }
 
     private void doClone() {
-        ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse, String>() {
+        ac.getDivesService().getDivesAsync(new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 general.scrollToTop();
@@ -196,7 +200,7 @@ public class DiveDetailsPage extends Fragment {
                 tab.select();
                 rotateAnimation(view);
                 isNewDive = true;
-                Gson gson = new Gson();
+                Gson gson = getGson();
                 Dive clonedDive = gson.fromJson(gson.toJson(viewModel.getModel()), Dive.class);
                 clonedDive.diveNumber = data.getMaxDiveNumber() + 1;
                 clonedDive.shakenId = UUID.randomUUID().toString();
@@ -215,8 +219,9 @@ public class DiveDetailsPage extends Fragment {
             }
 
             @Override
-            public void error(String s) {
-                Toast.makeText(ac, s, Toast.LENGTH_SHORT).show();
+            public void error(Exception e) {
+                Toast.makeText(ac, e.getMessage(), Toast.LENGTH_SHORT).show();
+                Utils.logError(DiveDetailsPage.class, "Cannot get dives", e);
             }
         }, false);
     }
@@ -232,7 +237,7 @@ public class DiveDetailsPage extends Fragment {
     }
 
     private void delete() {
-        divesService.deleteDiveAsync(viewModel.getModel(), new ResponseCallback<DeleteResponse, Exception>() {
+        divesService.deleteDiveAsync(viewModel.getModel(), new ResponseCallback<DeleteResponse>() {
             @Override
             public void success(DeleteResponse data) {
                 ac.currentDive = null;
@@ -291,7 +296,7 @@ public class DiveDetailsPage extends Fragment {
             return;
         }
         toggleSavingIndicator(true);
-        ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<Dive, Exception>() {
+        ac.getDivesService().saveDiveAsync(viewModel.getModel(), new ResponseCallback<Dive>() {
             @Override
             public void success(Dive data) {
                 toggleSavingIndicator(false);

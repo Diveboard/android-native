@@ -18,7 +18,7 @@ import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
 import com.diveboard.dataaccess.datamodel.LoginResponse;
-import com.diveboard.util.Callback;
+import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.Utils;
 import com.facebook.AccessToken;
 import com.facebook.CallbackManager;
@@ -77,9 +77,18 @@ public class LoginPage extends Fragment {
             public void onSuccess(LoginResult loginResult) {
                 showProgress(true);
                 AccessToken accessToken = loginResult.getAccessToken();
-                ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(),
-                        data -> Navigation.findNavController(view).navigate(R.id.logbook),
-                        data -> Toast.makeText(ac, data, Toast.LENGTH_SHORT).show());
+                ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(), new ResponseCallback<LoginResponse>() {
+                    @Override
+                    public void success(LoginResponse data) {
+                        Navigation.findNavController(view).navigate(R.id.logbook);
+                    }
+
+                    @Override
+                    public void error(Exception error) {
+                        Toast.makeText(ac, error.getMessage(), Toast.LENGTH_SHORT).show();
+                        Utils.logError(LoginPage.class, "Cannot login with facebook", error);
+                    }
+                });
             }
 
             @Override
@@ -172,23 +181,21 @@ public class LoginPage extends Fragment {
             // perform the user login attempt.
             mLoginStatusMessageView.setText(R.string.login_progress_signing_in);
             showProgress(true);
-            ac.getAuthenticationService().loginAsync(mEmail, mPassword, new Callback<LoginResponse>() {
-                        @Override
-                        public void execute(LoginResponse data) {
+            ac.getAuthenticationService().loginAsync(mEmail, mPassword, new ResponseCallback<LoginResponse>() {
+                @Override
+                public void success(LoginResponse data) {
+                    showProgress(false);
+                    mEmailView.setText("");
+                    mPasswordView.setText("");
+                    Navigation.findNavController(mEmailView).navigate(R.id.logbook);
+                }
 
-                            showProgress(false);
-                            mEmailView.setText("");
-                            mPasswordView.setText("");
-                            Navigation.findNavController(mEmailView).navigate(R.id.logbook);
-                        }
-                    }, new Callback<String>() {
-                        @Override
-                        public void execute(String data) {
-                            showProgress(false);
-                            Toast.makeText(ac, data, Toast.LENGTH_SHORT).show();
-                        }
-                    }
-            );
+                @Override
+                public void error(Exception error) {
+                    showProgress(false);
+                    Toast.makeText(ac, error.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 

@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import static com.diveboard.mobile.ApplicationController.getGson;
+
 public class Dive {
     private static SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
     @SerializedName("id")
@@ -123,14 +125,14 @@ public class Dive {
             return new ArrayList<>();
         }
         List<SafetyStop> result = new ArrayList<>();
-        Gson gson = new Gson();
+        Gson gson = getGson();
         try {
             String[][] res = gson.fromJson(safetystops, String[][].class);
             for (String[] ss : res) {
                 result.add(new SafetyStop(Integer.parseInt(ss[0]), Integer.parseInt(ss[1])));
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            Utils.logError(Dive.class, "Cannot deserialize safety stops", e);
             return new ArrayList<>();
         }
         return result;
@@ -146,8 +148,7 @@ public class Dive {
             temp[i][0] = ss.depthInMeters.toString();
             temp[i][1] = ss.durationInMinutes.toString();
         }
-        Gson gson = new Gson();
-        this.safetystops = gson.toJson(temp);
+        this.safetystops = getGson().toJson(temp);
     }
 
     public void setFreshWater(Boolean isFreshWater) {

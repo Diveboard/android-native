@@ -3,32 +3,27 @@ package com.diveboard.dataaccess;
 import android.content.Context;
 import android.util.Log;
 
-import com.android.volley.NetworkResponse;
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.HttpHeaderParser;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
 import com.diveboard.dataaccess.datamodel.DeleteResponse;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DiveResponse;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
-import com.diveboard.dataaccess.datamodel.ResponseBase;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
+import com.diveboard.util.DiveboardRequest;
 import com.diveboard.util.ResponseCallback;
-import com.diveboard.util.VolleyMultipartRequest;
-import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.List;
 import java.util.Map;
+
+import static com.diveboard.mobile.ApplicationController.getGson;
 
 public class DivesOnlineRepository {
 
@@ -48,8 +43,8 @@ public class DivesOnlineRepository {
         this.userOfflineRepository = userOfflineRepository;
     }
 
-    public void load(final ResponseCallback<DivesResponse, String> callback) {
-        ResponseCallback<User, Exception> intCallback = new ResponseCallback<User, Exception>() {
+    public void load(final ResponseCallback<DivesResponse> callback) {
+        ResponseCallback<User> intCallback = new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 if (data != null) {
@@ -59,7 +54,7 @@ public class DivesOnlineRepository {
                         callback.success(new DivesResponse());
                     } else {
                         RequestQueue queue = Volley.newRequestQueue(context);
-                        VolleyMultipartRequest stringRequest = getGetDivesRequest(callback, data.dives);
+                        DiveboardRequest stringRequest = getGetDivesRequest(callback, data.dives);
                         queue.add(stringRequest);
                     }
                 }
@@ -67,34 +62,16 @@ public class DivesOnlineRepository {
 
             @Override
             public void error(Exception s) {
-                callback.error(s.getMessage());
+                callback.error(s);
             }
         };
         userOnlineRepository.getAsync(intCallback);
         Log.d(DivesOnlineRepository.class.toString(), "Get dives online");
     }
 
-    private VolleyMultipartRequest getGetDivesRequest(final ResponseCallback<DivesResponse, String> callback, List<Integer> dives) {
+    private DiveboardRequest getGetDivesRequest(final ResponseCallback<DivesResponse> callback, List<Integer> dives) {
         String url = AppConfig.SERVER_URL + "/api/V2/dive";
-        return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
-            try {
-                String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-                DivesResponse data = (new Gson()).fromJson(json, DivesResponse.class);
-                if (data.success) {
-                    callback.success(data);
-                } else {
-                    callback.error(new DiveboardApiException(data.errors).getMessage());
-                }
-            } catch (UnsupportedEncodingException e) {
-                callback.error(e.getMessage());
-            } catch (JsonSyntaxException e) {
-                callback.error(e.getMessage());
-            }
-        }, error -> {
-            if (callback != null) {
-                callback.error(error.getMessage());
-            }
-        }) {
+        return new DiveboardRequest<DivesResponse>(Request.Method.POST, url, DivesResponse.class, callback) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
@@ -118,63 +95,28 @@ public class DivesOnlineRepository {
         return result;
     }
 
-    public void saveDive(Dive dive, ResponseCallback<DiveResponse, Exception> callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        VolleyMultipartRequest request = getSaveDiveRequest(callback, dive);
-        queue.add(request);
+    public void saveDive(Dive dive, ResponseCallback<DiveResponse> callback) {
+        Volley.newRequestQueue(context).add(getSaveDiveRequest(callback, dive));
     }
 
-    private VolleyMultipartRequest getSaveDiveRequest(final ResponseCallback<DiveResponse, Exception> callback, Dive dive) {
+    private DiveboardRequest getSaveDiveRequest(final ResponseCallback<DiveResponse> callback, Dive dive) {
         String url = AppConfig.SERVER_URL + "/api/V2/dive";
-        return new VolleyMultipartRequest(Request.Method.POST, url, response -> {
-            handleResponse(response, callback, DiveResponse.class);
-        }, error -> {
-            callback.error(new NetworkException(error.getMessage()));
-        }) {
+        return new DiveboardRequest<DiveResponse>(Request.Method.POST, url, DiveResponse.class, callback) {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
-                args.put("arg", (new Gson()).toJson(dive));
+                args.put("arg", getGson().toJson(dive));
                 return args;
             }
         };
     }
 
-    public void deleteDive(Dive dive, ResponseCallback<DeleteResponse, Exception> callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        VolleyMultipartRequest request = getDeleteDiveRequest(callback, dive);
-        queue.add(request);
+    public void deleteDive(Dive dive, ResponseCallback<DeleteResponse> callback) {
+        Volley.newRequestQueue(context).add(getDeleteDiveRequest(callback, dive));
     }
 
-    private VolleyMultipartRequest getDeleteDiveRequest(ResponseCallback<DeleteResponse, Exception> callback, Dive dive) {
-        String url = AppConfig.SERVER_URL + "/api/V2/dive/" + dive.id + "?";
-        Map<String, String> params = RequestHelper.getCommonRequestArgs(authenticationService);
-        for (String key : params.keySet()) {
-            try {
-                url += URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8") + "&";
-            } catch (UnsupportedEncodingException e) {
-            }
-        }
-        url = url.substring(0, url.length() - 1);
-        return new VolleyMultipartRequest(Request.Method.DELETE, url, response -> {
-            handleResponse(response, callback, DeleteResponse.class);
-        }, error -> callback.error(new NetworkException(error.getMessage()))) {
-        };
-    }
-
-    private <R extends ResponseBase<?>> void handleResponse(NetworkResponse response, ResponseCallback<R, Exception> callback, Class<R> classOfR) {
-        try {
-            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
-            R data = (new Gson()).fromJson(json, classOfR);
-            if (data.success) {
-                callback.success(data);
-            } else {
-                callback.error(new DiveboardApiException(data.errors));
-            }
-        } catch (UnsupportedEncodingException e) {
-            callback.error(e);
-        } catch (JsonSyntaxException e) {
-            callback.error(e);
-        }
+    private DiveboardRequest getDeleteDiveRequest(ResponseCallback<DeleteResponse> callback, Dive dive) {
+        String url = RequestHelper.addCommonRequestArgs(AppConfig.SERVER_URL + "/api/V2/dive/" + dive.id + "?", authenticationService);
+        return new DiveboardRequest<>(Request.Method.DELETE, url, DeleteResponse.class, callback);
     }
 }

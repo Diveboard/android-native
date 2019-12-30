@@ -1,12 +1,18 @@
 package com.diveboard.util;
 
 import com.android.volley.AuthFailureError;
+import com.android.volley.DefaultRetryPolicy;
 import com.android.volley.NetworkResponse;
 import com.android.volley.ParseError;
 import com.android.volley.Request;
 import com.android.volley.Response;
+import com.android.volley.RetryPolicy;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.HttpHeaderParser;
+import com.diveboard.dataaccess.DiveboardApiException;
+import com.diveboard.dataaccess.datamodel.ResponseBase;
+import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -15,18 +21,21 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
+import static com.diveboard.mobile.ApplicationController.getGson;
+
 /**
  * Custom request to make multipart header and upload file.
- *
+ * <p>
  * Sketch Project Studio
  * Created by Angga on 27/04/2016 12.05.
  */
-public class VolleyMultipartRequest extends Request<NetworkResponse> {
+public class DiveboardRequest<T extends ResponseBase<?>> extends Request<T> {
     private final String twoHyphens = "--";
     private final String lineEnd = "\r\n";
     private final String boundary = "apiclient-" + System.currentTimeMillis();
-
-    private Response.Listener<NetworkResponse> mListener;
+    private final Gson gson = getGson();
+    private final Class<T> clazz;
+    private Response.Listener<T> mListener;
     private Response.ErrorListener mErrorListener;
     private Map<String, String> mHeaders;
 
@@ -38,10 +47,11 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @param listener      on success achieved 200 code from request
      * @param errorListener on error http or library timeout
      */
-    public VolleyMultipartRequest(String url, Map<String, String> headers,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+    public DiveboardRequest(String url, Class<T> clazz, Map<String, String> headers,
+                            Response.Listener<T> listener,
+                            Response.ErrorListener errorListener) {
         super(Method.POST, url, errorListener);
+        this.clazz = clazz;
         this.mListener = listener;
         this.mErrorListener = errorListener;
         this.mHeaders = headers;
@@ -55,12 +65,21 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
      * @param listener      on success event handler
      * @param errorListener on error event handler
      */
-    public VolleyMultipartRequest(int method, String url,
-                                  Response.Listener<NetworkResponse> listener,
-                                  Response.ErrorListener errorListener) {
+    public DiveboardRequest(int method, String url, Class<T> clazz,
+                            Response.Listener<T> listener,
+                            Response.ErrorListener errorListener) {
         super(method, url, errorListener);
+        this.clazz = clazz;
         this.mListener = listener;
         this.mErrorListener = errorListener;
+    }
+
+    public DiveboardRequest(int method, String url, Class<T> clazz,
+                            ResponseCallback<T> responseCallback) {
+        super(method, url, responseCallback::error);
+        this.clazz = clazz;
+        this.mListener = responseCallback::success;
+        this.mErrorListener = responseCallback::error;
     }
 
     @Override
@@ -112,18 +131,29 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
     }
 
     @Override
-    protected Response<NetworkResponse> parseNetworkResponse(NetworkResponse response) {
+    protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
+            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            T result = gson.fromJson(json, clazz);
+
+            if (result.success) {
+                Response.success(result, HttpHeaderParser.parseCacheHeaders(response));
+            } else {
+                return Response.error(new ParseError(new DiveboardApiException(result.errors)));
+            }
+
             return Response.success(
-                    response,
+                    result,
                     HttpHeaderParser.parseCacheHeaders(response));
-        } catch (Exception e) {
+        } catch (UnsupportedEncodingException e) {
+            return Response.error(new ParseError(e));
+        } catch (JsonSyntaxException e) {
             return Response.error(new ParseError(e));
         }
     }
 
     @Override
-    protected void deliverResponse(NetworkResponse response) {
+    protected void deliverResponse(T response) {
         mListener.onResponse(response);
     }
 
@@ -161,6 +191,11 @@ public class VolleyMultipartRequest extends Request<NetworkResponse> {
         for (Map.Entry<String, DataPart> entry : data.entrySet()) {
             buildDataPart(dataOutputStream, entry.getValue(), entry.getKey());
         }
+    }
+
+    @Override
+    public RetryPolicy getRetryPolicy() {
+        return new DefaultRetryPolicy(30000, DefaultRetryPolicy.DEFAULT_MAX_RETRIES, DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
     }
 
     /**

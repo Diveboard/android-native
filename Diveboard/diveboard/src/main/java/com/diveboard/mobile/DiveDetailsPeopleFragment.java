@@ -176,7 +176,7 @@ public class DiveDetailsPeopleFragment extends Fragment {
                 return;
             }
             outer.buddyProgress.setVisibility(View.VISIBLE);
-            outer.searchBuddyRepository.search(term, new ResponseCallback<SearchBuddyResponse, Exception>() {
+            outer.searchBuddyRepository.search(term, new ResponseCallback<SearchBuddyResponse>() {
                 @Override
                 public void success(SearchBuddyResponse data) {
                     DiveDetailsPeopleFragment outer12 = outerRef.get();
@@ -226,7 +226,7 @@ public class DiveDetailsPeopleFragment extends Fragment {
                 return;
             }
             outer.diveCenterProgress.setVisibility(View.VISIBLE);
-            outer.searchShopRepository.search(term, new ResponseCallback<SearchShopResponse, Exception>() {
+            outer.searchShopRepository.search(term, new ResponseCallback<SearchShopResponse>() {
                 @Override
                 public void success(SearchShopResponse data) {
                     DiveDetailsPeopleFragment outer12 = outerRef.get();

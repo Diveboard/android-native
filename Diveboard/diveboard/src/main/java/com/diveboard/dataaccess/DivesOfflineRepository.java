@@ -17,8 +17,8 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
         this.syncService = syncService;
     }
 
-    public void saveDive(Dive dive, ResponseCallback<Dive, Exception> callback, boolean toBeSynced, String shakenId, boolean newDive) {
-        getAsync(new ResponseCallback<DivesResponse, Exception>() {
+    public void saveDive(Dive dive, ResponseCallback<Dive> callback, boolean toBeSynced, String shakenId, boolean newDive) {
+        getAsync(new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 if (newDive) {
@@ -65,8 +65,8 @@ public class DivesOfflineRepository extends FileRepository<DivesResponse> {
         return DivesResponse.class;
     }
 
-    public void deleteDive(Dive dive, ResponseCallback<DeleteResponse, Exception> callback, boolean toBeSynced) {
-        getAsync(new ResponseCallback<DivesResponse, Exception>() {
+    public void deleteDive(Dive dive, ResponseCallback<DeleteResponse> callback, boolean toBeSynced) {
+        getAsync(new ResponseCallback<DivesResponse>() {
             @Override
             public void success(DivesResponse data) {
                 for (int i = 0; i < data.result.size(); i++) {

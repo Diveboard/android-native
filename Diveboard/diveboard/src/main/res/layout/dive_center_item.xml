@@ -34,6 +34,7 @@
             android:layout_marginStart="@dimen/view_half_margin"
             android:layout_marginLeft="@dimen/view_half_margin"
             android:text="@{model.name}"
+            android:textColor="@color/textColorPrimary"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/profile_image"
             app:layout_constraintTop_toTopOf="@+id/profile_image" />
@@ -45,8 +46,9 @@
             android:layout_marginStart="@dimen/view_half_margin"
             android:layout_marginLeft="@dimen/view_half_margin"
             android:text="@{model.location}"
+            android:textColor="@color/textColorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/profile_image"/>
+            app:layout_constraintStart_toEndOf="@+id/profile_image" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -3,16 +3,12 @@ package com.diveboard.dataaccess;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
-import com.diveboard.mobile.R;
 import com.diveboard.dataaccess.datamodel.LoginResponse;
-import com.diveboard.util.Callback;
-import com.diveboard.util.GsonRequest;
-import com.diveboard.util.NetworkUtils;
+import com.diveboard.mobile.R;
+import com.diveboard.util.DiveboardJsonRequest;
+import com.diveboard.util.ResponseCallback;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -26,40 +22,29 @@ public class LoginRepository {
         this.context = context;
     }
 
-    public void login(final String login, final String password, final Callback<LoginResponse> callback, final Callback<String> errorCallback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        GsonRequest<LoginResponse> stringRequest = getLoginRequest(login, password, callback, errorCallback);
-        queue.add(stringRequest);
+    public void login(final String login, final String password, final ResponseCallback<LoginResponse> callback) {
+        Volley.newRequestQueue(context).add(getLoginRequest(login, password, callback));
     }
 
-    private GsonRequest<LoginResponse> getLoginRequest(final String login,
-                                                       final String password, final Callback<LoginResponse> callback,
-                                                       final Callback<String> errorCallback) {
+    private Request getLoginRequest(final String login, final String password, final ResponseCallback<LoginResponse> callback) {
         String url = AppConfig.SERVER_URL + "/api/login_email";
 
-        return new GsonRequest<LoginResponse>(
+        return new DiveboardJsonRequest<LoginResponse>(
                 Request.Method.POST, url,
                 LoginResponse.class,
-                new Response.Listener<LoginResponse>() {
+                new ResponseCallback<LoginResponse>() {
                     @Override
-                    public void onResponse(LoginResponse response) {
+                    public void success(LoginResponse response) {
                         if (response.success) {
-                            if (callback != null) {
-                                callback.execute(response);
-                            }
+                            callback.success(response);
                         } else {
-                            if (errorCallback != null) {
-                                errorCallback.execute(context.getString(R.string.cannot_login_message) + " '" + response.message + "'");
-                            }
+                            callback.error(new Exception(context.getString(R.string.cannot_login_message) + " '" + response.message + "'"));
                         }
                     }
-                },
-                new Response.ErrorListener() {
+
                     @Override
-                    public void onErrorResponse(VolleyError error) {
-                        if (errorCallback != null) {
-                            errorCallback.execute(error.getMessage());
-                        }
+                    public void error(Exception error) {
+                        callback.error(error);
                     }
                 }) {
             @Override

@@ -2,7 +2,6 @@ package com.diveboard.mobile;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
-import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -11,21 +10,20 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.diveboard.dataaccess.datamodel.LoginResponse;
-import com.diveboard.dataaccess.datamodel.SignUpResponse;
-import com.diveboard.util.Callback;
-import com.diveboard.util.Utils;
-
 import androidx.annotation.NonNull;
 import androidx.core.content.res.ResourcesCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+
+import com.diveboard.dataaccess.datamodel.LoginResponse;
+import com.diveboard.dataaccess.datamodel.SignUpResponse;
+import com.diveboard.util.ResponseCallback;
+import com.diveboard.util.Utils;
 
 
 /**
@@ -225,22 +223,23 @@ public class SignUpPage extends Fragment {
                 });
     }
 
-    private class SignUpCallback implements Callback<SignUpResponse> {
+    private class SignUpCallback implements ResponseCallback<SignUpResponse> {
         @Override
-        public void execute(SignUpResponse data) {
+        public void success(SignUpResponse data) {
             if (data.success) {
                 showProgress(true);
-                ac.getAuthenticationService().loginAsync(mEmail, mPassword, new Callback<LoginResponse>() {
+                ac.getAuthenticationService().loginAsync(mEmail, mPassword, new ResponseCallback<LoginResponse>() {
                     @Override
-                    public void execute(LoginResponse data) {
+                    public void success(LoginResponse data) {
                         showProgress(false);
                         Navigation.findNavController(mEmailView).navigate(R.id.logbook);
                     }
-                }, new Callback<String>() {
+
                     @Override
-                    public void execute(String data) {
+                    public void error(Exception error) {
                         showProgress(false);
-                        Toast.makeText(ac, data, Toast.LENGTH_SHORT).show();
+                        Utils.logError(SignUpPage.class, "Cannot login", error);
+                        Toast.makeText(ac, error.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
             } else {
@@ -268,6 +267,11 @@ public class SignUpPage extends Fragment {
                     }
                 }
             }
+        }
+
+        @Override
+        public void error(Exception error) {
+            Toast.makeText(ac, error.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 }
