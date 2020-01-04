@@ -211,7 +211,8 @@ public class DiveboardRequest<T extends ResponseBase<?>> extends Request<T> {
         dataOutputStream.writeBytes("Content-Disposition: form-data; name=\"" + parameterName + "\"" + lineEnd);
         //dataOutputStream.writeBytes("Content-Type: text/plain; charset=UTF-8" + lineEnd);
         dataOutputStream.writeBytes(lineEnd);
-        dataOutputStream.writeBytes(parameterValue + lineEnd);
+        dataOutputStream.write(parameterValue.getBytes("UTF-8"));
+        dataOutputStream.writeBytes(lineEnd);
     }
 
     /**

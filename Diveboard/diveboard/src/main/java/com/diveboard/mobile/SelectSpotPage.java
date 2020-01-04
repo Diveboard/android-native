@@ -361,6 +361,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
                             if (outer1 == null) {
                                 return;
                             }
+                            outer1.progress.setVisibility(View.GONE);
                             outer1.showError(error.getMessage());
                             Utils.logError(SelectSpotPage.class, "Cannot find spot", error);
                         }

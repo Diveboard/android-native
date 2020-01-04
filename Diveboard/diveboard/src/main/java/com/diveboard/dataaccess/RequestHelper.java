@@ -16,13 +16,18 @@ public class RequestHelper {
         return args;
     }
 
+    public static String encode(String value) {
+        try {
+            return URLEncoder.encode(value, "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException("Cannot find UTF-8 encoder");
+        }
+    }
+
     public static String addCommonRequestArgs(String url, AuthenticationService authenticationService) {
         Map<String, String> params = RequestHelper.getCommonRequestArgs(authenticationService);
         for (String key : params.keySet()) {
-            try {
-                url += URLEncoder.encode(key, "UTF-8") + "=" + URLEncoder.encode(params.get(key), "UTF-8") + "&";
-            } catch (UnsupportedEncodingException e) {
-            }
+            url += encode(key) + "=" + encode(params.get(key)) + "&";
         }
         return url.substring(0, url.length() - 1);
     }

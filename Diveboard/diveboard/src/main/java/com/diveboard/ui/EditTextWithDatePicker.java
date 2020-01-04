@@ -11,7 +11,7 @@ import com.diveboard.util.DateConverter;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-public class EditTextWithDatePicker implements View.OnFocusChangeListener {
+public class EditTextWithDatePicker implements View.OnFocusChangeListener, View.OnClickListener {
     private final Context context;
     private final DateConverter conversion;
     private EditText editText;
@@ -19,6 +19,7 @@ public class EditTextWithDatePicker implements View.OnFocusChangeListener {
     public EditTextWithDatePicker(EditText editTextViewID) {
         this.editText = editTextViewID;
         this.editText.setOnFocusChangeListener(this);
+        this.editText.setOnClickListener(this);
         context = editText.getContext();
         conversion = new DateConverter(context);
     }
@@ -28,6 +29,11 @@ public class EditTextWithDatePicker implements View.OnFocusChangeListener {
         if (!hasFocus) {
             return;
         }
+        onClick(v);
+    }
+
+    @Override
+    public void onClick(View v) {
         Calendar calendar = conversion.convertStringToDate(editText.getText().toString());
         calendar = calendar == null ? Calendar.getInstance() : calendar;
         DatePickerDialog dialog = new DatePickerDialog(

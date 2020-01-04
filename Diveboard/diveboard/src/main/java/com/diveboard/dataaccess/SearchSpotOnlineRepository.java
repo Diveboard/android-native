@@ -32,14 +32,14 @@ public class SearchSpotOnlineRepository implements SearchSpotRepository {
         String url = AppConfig.SERVER_URL + "/api/search/spot?";
         url = RequestHelper.addCommonRequestArgs(url, authenticationService);
         if (!Utils.isNullOrEmpty(term)) {
-            url += "&q=" + term;
+            url += "&q=" + RequestHelper.encode(term);
         }
         if (position != null) {
             url += "&lng=" + position.longitude + "&lat=" + position.latitude;
         }
 
         DiveboardJsonRequest<SpotsSearchResponse> stringRequest = new DiveboardJsonRequest<>(
-                Request.Method.POST, url,
+                Request.Method.GET, url,
                 SpotsSearchResponse.class,
                 new ResponseCallback<SpotsSearchResponse>() {
                     @Override

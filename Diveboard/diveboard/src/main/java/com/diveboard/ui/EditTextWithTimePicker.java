@@ -12,7 +12,7 @@ import java.util.Calendar;
 
 import static android.text.format.DateFormat.is24HourFormat;
 
-public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListener, View.OnFocusChangeListener {
+public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListener, View.OnFocusChangeListener, View.OnClickListener {
     private final Context context;
     private final DateConverter conversion;
     private EditText editText;
@@ -20,6 +20,7 @@ public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListene
     public EditTextWithTimePicker(EditText editTextViewID) {
         this.editText = editTextViewID;
         this.editText.setOnFocusChangeListener(this);
+        this.editText.setOnClickListener(this);
         context = editText.getContext();
         conversion = new DateConverter(context);
     }
@@ -27,7 +28,7 @@ public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListene
     @Override
     public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
         Calendar calendar = Calendar.getInstance();
-        calendar.set(Calendar.HOUR, hourOfDay);
+        calendar.set(Calendar.HOUR_OF_DAY, hourOfDay);
         calendar.set(Calendar.MINUTE, minute);
         editText.setText(conversion.convertTimeToString(calendar));
     }
@@ -37,6 +38,11 @@ public class EditTextWithTimePicker implements TimePickerDialog.OnTimeSetListene
         if (!hasFocus) {
             return;
         }
+        onClick(v);
+    }
+
+    @Override
+    public void onClick(View v) {
         Calendar calendar = conversion.convertStringToTime(editText.getText().toString());
         calendar = calendar == null ? Calendar.getInstance() : calendar;
         TimePickerDialog dialog = new TimePickerDialog(

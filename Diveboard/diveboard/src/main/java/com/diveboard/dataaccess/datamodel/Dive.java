@@ -140,6 +140,7 @@ public class Dive {
 
     public void setSafetyStops(List<SafetyStop> safetyStops) {
         if (safetyStops == null || safetyStops.isEmpty()) {
+            this.safetystops = "[]";
             return;
         }
         String[][] temp = new String[safetyStops.size()][2];
