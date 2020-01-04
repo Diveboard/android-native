@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.diveNumber)}"
                     app:validateEmpty="@{true}"
@@ -208,7 +208,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
+                    android:inputType="number"
+                    android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.durationMin)}"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}" />
@@ -288,8 +289,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
-                    android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
+                    android:inputType="numberDecimal"
                     android:text="@={converter.doubleToStringConverter(model.weights)}"
                     tools:text="6" />
 

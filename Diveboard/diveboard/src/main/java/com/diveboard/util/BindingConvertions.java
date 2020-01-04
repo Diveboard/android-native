@@ -1,6 +1,7 @@
 package com.diveboard.util;
 
 import android.content.Context;
+import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 
@@ -15,10 +16,15 @@ import com.diveboard.model.GasMixes;
 import com.diveboard.model.Units;
 import com.diveboard.viewModel.SafetyStopViewModel;
 import com.diveboard.viewModel.TankViewModel;
+import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
+
+import static android.text.InputType.TYPE_CLASS_NUMBER;
+import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
 
 public final class BindingConvertions {
     @BindingConversion
@@ -84,6 +90,12 @@ public final class BindingConvertions {
 
     public Double stringToDoubleConverter(String value) {
         try {
+            //workaround for Android bug for locales where decimal separator is ','. It is not available on virtual keyboard
+            if (!Utils.isNullOrEmpty(value)) {
+                char separator = DecimalFormatSymbols.getInstance().getDecimalSeparator();
+                char oldSeparator = separator == '.' ? ',' : '.';
+                value = value.replace(oldSeparator, separator);
+            }
             NumberFormat format = NumberFormat.getInstance();
             Number number = format.parse(value);
             return number.doubleValue();
