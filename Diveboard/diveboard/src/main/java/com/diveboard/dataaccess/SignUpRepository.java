@@ -32,10 +32,6 @@ public class SignUpRepository {
                 Request.Method.POST, url,
                 SignUpResponse.class,
                 callback) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
 
             @Override
             public byte[] getBody() {

@@ -17,6 +17,7 @@ import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.LogoutService;
+import com.diveboard.model.SpotService;
 import com.diveboard.model.SyncService;
 import com.diveboard.model.UserPreferenceService;
 import com.diveboard.model.UserService;
@@ -36,6 +37,7 @@ public class ApplicationController extends MultiDexApplication {
     private static ApplicationController singleton;
     private static GoogleAnalytics sAnalytics;
     private static Gson gson;
+    private static Gson gsonWithExclude;
     public DiveDetailsViewModel currentDive;
     private SpotsDbUpdater spotsDbUpdater;
     private UserPreferenceService userPreferenceService;
@@ -53,13 +55,14 @@ public class ApplicationController extends MultiDexApplication {
     private SearchShopRepository searchShopRepository;
     private SyncObjectRepository syncObjectRepository;
     private LogoutService logoutService;
+    private SpotService spotService;
 
     public static ApplicationController getInstance() {
         return singleton;
     }
 
-    public static Gson getGson() {
-        if (gson == null) {
+    public static Gson getGsonWithExclude() {
+        if (gsonWithExclude == null) {
             ExclusionStrategy strategy = new ExclusionStrategy() {
                 @Override
                 public boolean shouldSkipClass(Class<?> clazz) {
@@ -71,12 +74,28 @@ public class ApplicationController extends MultiDexApplication {
                     return field.getAnnotation(Exclude.class) != null;
                 }
             };
-            gson = new GsonBuilder()
+            gsonWithExclude = new GsonBuilder()
                     .disableHtmlEscaping()
                     .addSerializationExclusionStrategy(strategy)
                     .create();
         }
+        return gsonWithExclude;
+    }
+
+    public static Gson getGson() {
+        if (gson == null) {
+            gson = new GsonBuilder()
+                    .disableHtmlEscaping()
+                    .create();
+        }
         return gson;
+    }
+
+    public SpotService getSpotService() {
+        if (spotService == null) {
+            spotService = new SpotService(this, getSessionRepository(), getAuthenticationService());
+        }
+        return spotService;
     }
 
     public AuthenticationService getAuthenticationService() {

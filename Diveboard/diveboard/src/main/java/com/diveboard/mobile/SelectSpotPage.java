@@ -20,7 +20,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import com.diveboard.model.SearchSpot;
+import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.model.SpotService;
 import com.diveboard.util.ImageUtils;
 import com.diveboard.util.ResponseCallback;
@@ -54,7 +54,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
     private GoogleMap map;
     private SpotService service;
     private View progress;
-    private AutoSuggestAdapter<SearchSpot> adapter;
+    private AutoSuggestAdapter<Spot> adapter;
     private MapMoveHandler mapMoveHandler;
     private AppCompatAutoCompleteTextView suggest;
     private View submitButton;
@@ -79,7 +79,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             toggleSubmitButton(false);
             return;
         }
-        setMapPosition(SearchSpot.createFromSpot(ac.currentDive.getSpot()));
+        setMapPosition(ac.currentDive.getSpot());
     }
 
     private void setupBack(View view) {
@@ -93,13 +93,13 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             if (selectedMarker == null) {
                 return;
             }
-            ac.currentDive.setSpot((SearchSpot) selectedMarker.getTag());
+            ac.currentDive.setSpot((Spot) selectedMarker.getTag());
             Navigation.findNavController(view1).popBackStack();
         });
     }
 
     private void setupAutocompleteList(View view) {
-        service = new SpotService(ac, ac.getSessionRepository());
+        service = ac.getSpotService();
         suggest = view.findViewById(R.id.appCompatAutoCompleteTextView);
         progress = view.findViewById(R.id.progress_bar);
         adapter = new AutoSuggestAdapter<>(ac, R.layout.spot_item);
@@ -107,7 +107,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
         suggest.setOnItemClickListener((adapterView, view1, position, id) -> {
             Utils.hideKeyboard(ac, view1);
             //navigate to position
-            SearchSpot spot = (SearchSpot) adapterView.getItemAtPosition(position);
+            Spot spot = (Spot) adapterView.getItemAtPosition(position);
             setMapPosition(spot);
         });
         suggest.addTextChangedListener(new TextWatcher() {
@@ -122,13 +122,13 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
                 //user either can type in spot name or select in on map and name is autopopulated in search box
                 if (selectedMarker != null
                         && selectedMarker.getTag() != null
-                        && ((SearchSpot) selectedMarker.getTag()).name != null
-                        && ((SearchSpot) selectedMarker.getTag()).name.equals(s.toString())) {
+                        && ((Spot) selectedMarker.getTag()).name != null
+                        && ((Spot) selectedMarker.getTag()).name.equals(s.toString())) {
                     return;
                 } else {
                     resetSelectedSpot();
                 }
-                if (s == null || s.length() < 2) {
+                if (s == null || s.length() < 3) {
                     adapter.setData(null);
                     return;
                 }
@@ -144,7 +144,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
         mapMoveHandler = new MapMoveHandler(this);
     }
 
-    private void setMapPosition(SearchSpot spot) {
+    private void setMapPosition(Spot spot) {
         if (map == null || spot.getLatLng() == null) {
             return;
         }
@@ -161,7 +161,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
     private void selectSpot(Marker marker) {
         selectedMarker = marker;
         toggleSubmitButton(true);
-        suggest.setText(((SearchSpot) marker.getTag()).name);
+        suggest.setText(((Spot) marker.getTag()).name);
         suggest.dismissDropDown();
     }
 
@@ -220,7 +220,7 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
         mapMoveHandler.sendEmptyMessageDelayed(MESSAGE_MAP_MOVED, MAP_MOVE_DELAY_MS);
     }
 
-    private Marker addMarker(SearchSpot spot, boolean primary) {
+    private Marker addMarker(Spot spot, boolean primary) {
         synchronized (markers) {
             MarkerOptions markerOptions = new MarkerOptions()
                     .position(spot.getLatLng())
@@ -287,9 +287,9 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             final LatLngBounds latLngBounds = activity.map.getProjection().getVisibleRegion().latLngBounds;
             activity.removeMarkersOutOfBounds(latLngBounds);
             activity.service.searchSpot(null, position.target, latLngBounds,
-                    new ResponseCallback<List<SearchSpot>>() {
+                    new ResponseCallback<List<Spot>>() {
                         @Override
-                        public void success(List<SearchSpot> data) {
+                        public void success(List<Spot> data) {
                             if (data == null) {
                                 return;
                             }
@@ -313,12 +313,12 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
                     });
         }
 
-        private synchronized void addMarkers(List<SearchSpot> data) {
+        private synchronized void addMarkers(List<Spot> data) {
             final SelectSpotPage activity = outerRef.get();
             if (activity == null) {
                 return;
             }
-            for (SearchSpot spot : data) {
+            for (Spot spot : data) {
                 activity.addMarker(spot, false);
             }
         }
@@ -341,9 +341,9 @@ public class SelectSpotPage extends Fragment implements OnMapReadyCallback, Goog
             outer.progress.setVisibility(View.VISIBLE);
             String term = msg.obj.toString();
             outer.service.searchSpot(term, null, null,
-                    new ResponseCallback<List<SearchSpot>>() {
+                    new ResponseCallback<List<Spot>>() {
                         @Override
-                        public void success(List<SearchSpot> data) {
+                        public void success(List<Spot> data) {
                             SelectSpotPage outer12 = outerRef.get();
                             if (outer12 == null) {
                                 return;

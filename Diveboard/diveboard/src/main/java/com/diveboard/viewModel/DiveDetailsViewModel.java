@@ -10,7 +10,6 @@ import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.mobile.BR;
 import com.diveboard.model.Converter;
 import com.diveboard.model.SafetyStop;
-import com.diveboard.model.SearchSpot;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
 import com.google.android.gms.common.util.Strings;
@@ -320,8 +319,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         return spot;
     }
 
-    public void setSpot(SearchSpot spot) {
-        this.spot = spot.toModel();
+    public void setSpot(Spot spot) {
+        this.spot = spot;
         notifyPropertyChanged(BR.spot);
     }
 

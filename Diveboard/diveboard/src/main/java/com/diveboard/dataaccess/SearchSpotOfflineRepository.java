@@ -4,10 +4,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteException;
 
+import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.mobile.ApplicationController;
 import com.diveboard.mobile.R;
-import com.diveboard.model.SearchSpot;
-import com.diveboard.util.Callback;
 import com.diveboard.util.ResponseCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -26,8 +25,8 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
     }
 
     @Override
-    public void search(String term, LatLng position, LatLngBounds bounds, final ResponseCallback<List<SearchSpot>> callback) {
-        ArrayList<SearchSpot> result = new ArrayList<>();
+    public void search(String term, LatLng position, LatLngBounds bounds, final ResponseCallback<List<Spot>> callback) {
+        ArrayList<Spot> result = new ArrayList<>();
         if (position != null) {
             position = new LatLng(position.latitude, position.longitude - Math.floor((position.longitude + 180.0) / 360.0) * 360.0);
         }
@@ -77,14 +76,14 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
                 cursor = mDataBase.rawQuery("SELECT spots_fts.docid, spots_fts.name, spots.location_name, spots.country_name, spots.lat, spots.lng FROM spots_fts, spots WHERE spots_fts.docid = spots.id AND " + whereClause + " LIMIT 30", null);
             }
             if (cursor.getCount() == 0) {
-                result = new ArrayList<SearchSpot>();
+                result = new ArrayList<Spot>();
             } else {
                 while (cursor.moveToNext()) {
-                    SearchSpot spot = new SearchSpot();
+                    Spot spot = new Spot();
                     spot.id = cursor.getInt(0);
                     spot.name = cursor.getString(1);
-                    spot.location = cursor.getString(2);
-                    spot.cname = cursor.getString(3);
+                    spot.locationName = cursor.getString(2);
+                    spot.countryName = cursor.getString(3);
                     spot.lat = cursor.getDouble(4);
                     spot.lng = cursor.getDouble(5);
                     //region is missing for now

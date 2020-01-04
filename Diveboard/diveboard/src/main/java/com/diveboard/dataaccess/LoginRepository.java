@@ -47,10 +47,6 @@ public class LoginRepository {
                         callback.error(error);
                     }
                 }) {
-            @Override
-            public String getBodyContentType() {
-                return "application/json; charset=utf-8";
-            }
 
             @Override
             public byte[] getBody() {

@@ -28,6 +28,11 @@ public class DiveboardJsonRequest<T> extends Request<T> {
     }
 
     @Override
+    public String getBodyContentType() {
+        return "application/json; charset=utf-8";
+    }
+
+    @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
         try {
             String json = new String(

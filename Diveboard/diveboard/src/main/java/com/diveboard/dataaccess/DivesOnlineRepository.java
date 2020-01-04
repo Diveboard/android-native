@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static com.diveboard.mobile.ApplicationController.getGson;
+import static com.diveboard.mobile.ApplicationController.getGsonWithExclude;
 
 public class DivesOnlineRepository {
 
@@ -105,7 +106,7 @@ public class DivesOnlineRepository {
             @Override
             protected Map<String, String> getParams() {
                 Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
-                args.put("arg", getGson().toJson(dive));
+                args.put("arg", getGsonWithExclude().toJson(dive));
                 return args;
             }
         };

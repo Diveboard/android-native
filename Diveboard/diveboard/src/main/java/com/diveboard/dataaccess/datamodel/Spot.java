@@ -4,9 +4,9 @@ import androidx.annotation.NonNull;
 
 import com.diveboard.util.Exclude;
 import com.diveboard.util.Utils;
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
 
-//exclude all the field from serialization but id so e.g. on dive save (afterg duplicate) they will not be sent to server
 public class Spot {
     @SerializedName("id")
     public Integer id;
@@ -16,30 +16,24 @@ public class Spot {
     @Exclude
     @SerializedName("country_code")
     public String countryCode;
-    @Exclude
-    @SerializedName("country_flag_big")
+    /*@SerializedName("country_flag_big")
     public String countryFlagBig;
-    @Exclude
     @SerializedName("country_flag_small")
     public String countryFlagSmall;
-    @Exclude
     @SerializedName("within_country_bounds")
-    public Boolean withinCountryBounds;
+    public Boolean withinCountryBounds;*/
     @Exclude
     @SerializedName("region_name")
     public String regionName;
     @Exclude
     @SerializedName("location_name")
     public String locationName;
-    @Exclude
-    @SerializedName("permalink")
+    /*@SerializedName("permalink")
     public String permalink;
-    @Exclude
     @SerializedName("fullpermalink")
     public String fullpermalink;
-    @Exclude
     @SerializedName("staticmap")
-    public String staticmap;
+    public String staticmap;*/
     @Exclude
     @SerializedName("name")
     public String name;
@@ -57,5 +51,12 @@ public class Spot {
             return name;
         }
         return name + ", " + countryName;
+    }
+
+    public LatLng getLatLng() {
+        if (lat == null || lng == null) {
+            return null;
+        }
+        return new LatLng(lat, lng);
     }
 }
