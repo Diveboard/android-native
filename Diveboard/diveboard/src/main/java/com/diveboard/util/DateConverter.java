@@ -2,11 +2,11 @@ package com.diveboard.util;
 
 import android.content.Context;
 
+import androidx.databinding.InverseMethod;
+
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
-
-import androidx.databinding.InverseMethod;
 
 import static android.text.format.DateFormat.getDateFormat;
 import static android.text.format.DateFormat.getTimeFormat;
@@ -44,6 +44,8 @@ public class DateConverter {
         try {
             Calendar cal = Calendar.getInstance();
             cal.setTime(df.parse(str));
+            cal.set(Calendar.SECOND, 0);
+            cal.set(Calendar.MILLISECOND, 0);
             return cal;
         } catch (ParseException e) {
 

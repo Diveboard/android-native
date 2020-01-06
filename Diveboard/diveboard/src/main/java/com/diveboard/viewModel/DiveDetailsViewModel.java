@@ -38,7 +38,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private List<String> visibilityDictionary;
     private Spot spot;
     private List<String> tripNames = new ArrayList<>();
-    private int diveNumber;
+    private Integer diveNumber;
     private String tripName;
     private Double altitude;
     private Double maxDepth;
@@ -56,6 +56,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
+
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
         this.currentDictionary = Arrays.asList(currentDictionary);

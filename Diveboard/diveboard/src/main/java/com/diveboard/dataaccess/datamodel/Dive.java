@@ -99,6 +99,9 @@ public class Dive {
         try {
             Calendar calendar = Calendar.getInstance();
             calendar.setTime(dateFormat.parse(timeIn));
+            //remove seconds fraction so it will not impact ordering in divelog
+            calendar.set(Calendar.SECOND, 0);
+            calendar.set(Calendar.MILLISECOND, 0);
             return calendar;
         } catch (ParseException e) {
             e.printStackTrace();

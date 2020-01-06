@@ -4,10 +4,13 @@ import android.text.TextUtils;
 
 import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.model.Units;
+import com.diveboard.util.DateConverter;
+
+import java.util.Calendar;
 
 public class DiveItemViewModel implements Comparable {
     public final int index;
-    public final int number;
+    public final Integer number;
     public final Integer id;
     public final String shakenId;
     public final String date;
@@ -16,13 +19,15 @@ public class DiveItemViewModel implements Comparable {
     public final String durationStr;
     public final String maxDepthStr;
     public final boolean unsynced;
+    private final Calendar dateTyped;
 
-    public DiveItemViewModel(int index, Integer id, String shakenId, int number, String date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units, boolean unsynced) {
+    public DiveItemViewModel(DateConverter conversion, int index, Integer id, String shakenId, Integer number, Calendar date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units, boolean unsynced) {
         this.index = index;
         this.shakenId = shakenId;
         this.number = number;
         this.id = id;
-        this.date = date;
+        this.date = conversion.convertDateToString(date);
+        dateTyped = date;
         this.unsynced = unsynced;
         if (spot == null) {
             location = "N/A";
@@ -41,8 +46,13 @@ public class DiveItemViewModel implements Comparable {
 
     @Override
     public int compareTo(Object o) {
-        if (o instanceof DiveItemViewModel) {
-            return ((DiveItemViewModel) o).number - this.number;
+        if (o instanceof DiveItemViewModel && o != null) {
+            DiveItemViewModel another = (DiveItemViewModel) o;
+            int dateResult = another.dateTyped.compareTo(dateTyped);
+            if (dateResult == 0 && another.number != null) {
+                return another.number.compareTo(number);
+            }
+            return dateResult;
         }
         return -1;
     }

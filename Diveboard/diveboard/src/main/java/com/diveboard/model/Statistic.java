@@ -52,7 +52,7 @@ public class Statistic {
         int currentYear = calendar.get(Calendar.YEAR);
 
         for (Dive dive : dives) {
-            if (dive.diveNumber > divesCount) {
+            if (dive.diveNumber != null && dive.diveNumber > divesCount) {
                 divesCount = dive.diveNumber;
             }
 
@@ -95,6 +95,6 @@ public class Statistic {
             }
         }
 
-        return new Statistic(publishedDivesCount, divesCount, divesThisYear, totalUnderwaterTimeMinutes, maxDepth, maxTime, diveSitesIds.size(), countries.size(), coldest, warmest);
+        return new Statistic(publishedDivesCount, Math.max(divesCount, dives.size()), divesThisYear, totalUnderwaterTimeMinutes, maxDepth, maxTime, diveSitesIds.size(), countries.size(), coldest, warmest);
     }
 }

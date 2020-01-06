@@ -53,11 +53,12 @@ public class DivesListViewModel {
                 SortedArrayList<DiveItemViewModel> result = new SortedArrayList<DiveItemViewModel>();
                 for (int i = 0; i < data.result.size(); i++) {
                     Dive dive = data.result.get(i);
-                    result.insertSorted(new DiveItemViewModel(i,
+                    result.insertSorted(new DiveItemViewModel(conversion,
+                            i,
                             dive.id,
                             dive.shakenId,
                             dive.diveNumber,
-                            conversion.convertDateToString(dive.getTimeIn()),
+                            dive.getTimeIn(),
                             dive.spot,
                             dive.durationMin,
                             dive.maxDepth,

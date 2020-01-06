@@ -38,9 +38,9 @@ public class DivesResponse extends ResponseBase<List<Dive>> {
     }
 
     public int getMaxDiveNumber() {
-        int result = 1;
+        int result = 0;
         for (Dive dive : this.result) {
-            if (dive.diveNumber > result) {
+            if (dive.diveNumber != null && dive.diveNumber > result) {
                 result = dive.diveNumber;
             }
         }
