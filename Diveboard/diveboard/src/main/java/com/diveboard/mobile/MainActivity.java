@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
                 Toast.makeText(ac, R.string.error_profile_message + ": " + e.getMessage(), Toast.LENGTH_SHORT).show();
                 Utils.logError(MainActivity.class, "Cannot get user profile", e);
             }
-        });
+        }, false);
     }
 
     public void setupNavigationMenu() {

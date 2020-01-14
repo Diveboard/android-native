@@ -19,7 +19,11 @@ public class UserService {
         this.onlineRepository = onlineRepository;
     }
 
-    public void getUserAsync(ResponseCallback<User> callback) {
+    public void getUserAsync(ResponseCallback<User> callback, boolean forceOnline) {
+        if (forceOnline) {
+            executeOnline(callback);
+            return;
+        }
         offlineRepository.getAsync(getFallbackToOnlineCallback(callback));
     }
 
@@ -33,12 +37,16 @@ public class UserService {
             @Override
             public void error(Exception e) {
                 if (NetworkUtils.isConnected(context)) {
-                    onlineRepository.getAsync(getSaveOfflineCallback(callback));
+                    executeOnline(callback);
                 } else {
                     callback.error(e);
                 }
             }
         };
+    }
+
+    private void executeOnline(ResponseCallback<User> callback) {
+        onlineRepository.getAsync(getSaveOfflineCallback(callback));
     }
 
     private ResponseCallback<User> getSaveOfflineCallback(ResponseCallback<User> callback) {

@@ -6,6 +6,13 @@
     app:startDestination="@id/logbook">
 
     <fragment
+        android:id="@+id/photos"
+        android:name="com.diveboard.mobile.PhotosPage"
+        android:label="photos"
+        tools:layout="@layout/activity_photos">
+    </fragment>
+
+    <fragment
         android:id="@+id/logbook"
         android:name="com.diveboard.mobile.LogbookPage"
         android:label="logbook"

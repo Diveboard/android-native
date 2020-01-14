@@ -146,7 +146,7 @@ public class ApplicationController extends MultiDexApplication {
             public void error(Exception e) {
                 Utils.logError(ApplicationController.class, "Cannot login", e);
             }
-        });
+        }, false);
     }
 
     public SessionRepository getSessionRepository() {

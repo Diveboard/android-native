@@ -10,6 +10,8 @@ import java.util.List;
 public class User {
     public Integer id;
     public String nickname;
+    @SerializedName("wallet_pictures")
+    public List<Picture> walletPictures;
     @SerializedName("picture")
     public String pictureUrl;
     @SerializedName("all_dive_ids")
@@ -28,5 +30,4 @@ public class User {
     public String toString() {
         return nickname;
     }
-
 }

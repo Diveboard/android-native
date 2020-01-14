@@ -19,7 +19,7 @@ public class BindingRecyclerViewAdapter<T> extends RecyclerView.Adapter<BindingR
     private static final int ITEM_MODEL = -124;
     private final WeakReferenceOnListChangedCallback onListChangedCallback;
     private final ItemBinder<T> itemBinder;
-    private ObservableList<T> items;
+    protected ObservableList<T> items;
     private LayoutInflater inflater;
     private ClickHandler<T> clickHandler;
     private LongClickHandler<T> longClickHandler;
