@@ -40,17 +40,6 @@
                     app:items="@{model.dives}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
-                <!--            <ProgressBar-->
-                <!--                android:id="@+id/progressBar"-->
-                <!--                android:layout_width="70dp"-->
-                <!--                android:layout_height="70dp"-->
-                <!--                android:layout_centerHorizontal="true"-->
-                <!--                android:layout_centerVertical="true"-->
-                <!--                android:indeterminateDrawable="@drawable/spinner_ring"-->
-                <!--                android:indeterminateOnly="true"-->
-                <!--                android:shadowColor="@color/black"-->
-                <!--                android:visibility="@{model.dataLoadInProgress}" />-->
-
                 <com.google.android.material.floatingactionbutton.FloatingActionButton
                     android:id="@+id/fab"
                     android:layout_width="wrap_content"

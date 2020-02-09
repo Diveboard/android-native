@@ -89,4 +89,5 @@
     <string name="sync_changes">Sync Changes</string>
     <string name="discard">Discard</string>
     <string name="refresh">Refresh</string>
+    <string name="photos">Photos</string>
 </resources>

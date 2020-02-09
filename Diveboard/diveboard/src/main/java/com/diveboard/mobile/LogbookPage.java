@@ -43,7 +43,7 @@ public class LogbookPage extends Fragment {
         //TODO: make a singlton?
         viewModel = new DivesListViewModel(ac, ac.getDivesService(), ac.getUserPreferenceService().getUnits(), ac.getSyncService());
         setupPullToRefresh(view);
-        viewModel.init(getForceOnline());
+        viewModel.init(false);
         listView = binding.listView;
         binding.setModel(viewModel);
         binding.setView(this);

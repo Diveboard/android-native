@@ -24,35 +24,34 @@
 
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
-            android:layout_marginLeft="100dp"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:layout_marginLeft="-4dp"
+            android:layout_marginRight="-4dp">
 
-<!--            <FrameLayout-->
-<!--                android:layout_width="match_parent"-->
-<!--                android:layout_height="match_parent">-->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/rv_images"
+                    android:id="@+id/listView"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_marginLeft="100dp"
                     android:layout_marginTop="@dimen/view_double_margin"
-                    android:layout_marginRight="@dimen/view_margin"
                     android:layout_marginBottom="@dimen/view_double_margin"
                     app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
                     app:spanCount="3" />
 
-                <!--<com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/fab"
+                <com.google.android.material.floatingactionbutton.FloatingActionButton
+                    android:id="@+id/add_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="bottom|right"
                     android:layout_margin="@dimen/view_double_margin"
-                    android:onClick="@{()->view.addDive()}"
+                    android:onClick="@{()->view.addPhoto()}"
                     android:src="@drawable/ic_baseline_add_24px"
-                    app:elevation="4dp" />-->
-<!--            </FrameLayout>-->
+                    app:elevation="4dp" />
+            </FrameLayout>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </LinearLayout>
 </layout>
