@@ -22,6 +22,22 @@
             android:id="@+id/toolbar"
             style="@style/Toolbar2" />
 
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="@{model.uploading}"
+            android:layout_marginStart="@dimen/view_margin"
+            android:text="Uploading..."
+            android:layout_marginLeft="@dimen/view_margin" />
+
+        <ProgressBar
+            android:id="@+id/progress"
+            android:visibility="@{model.uploading}"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="10dp"
+            android:indeterminate="true" />
+
         <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:id="@+id/pullToRefresh"
             android:layout_width="match_parent"

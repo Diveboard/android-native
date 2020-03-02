@@ -14,6 +14,8 @@ import com.diveboard.util.ResponseCallback;
 
 import java.util.Map;
 
+import static com.diveboard.mobile.ApplicationController.getGsonWithExclude;
+
 public class UserOnlineRepository {
     private Context context;
     private AuthenticationService authenticationService;
@@ -24,10 +26,7 @@ public class UserOnlineRepository {
     }
 
     public void getAsync(ResponseCallback<User> callback) {
-        RequestQueue queue = Volley.newRequestQueue(context);
-        DiveboardRequest stringRequest = getGetUserRequest(callback, authenticationService.getSession().userId);
-        stringRequest.getTimeoutMs();
-        queue.add(stringRequest);
+        Volley.newRequestQueue(context).add(getGetUserRequest(callback, authenticationService.getSession().userId));
     }
 
     private DiveboardRequest getGetUserRequest(final ResponseCallback<User> callback, int userId) {
@@ -42,5 +41,25 @@ public class UserOnlineRepository {
                 return RequestHelper.getCommonRequestArgs(authenticationService);
             }
         };
+    }
+
+    private DiveboardRequest getSaveUserRequest(final ResponseCallback<User> callback, User user) {
+        String url = AppConfig.SERVER_URL + "/api/V2/user/";
+        return new DiveboardRequest<UserResponse>(Request.Method.POST,
+                url,
+                UserResponse.class,
+                response -> callback.success(response.result),
+                callback::error) {
+            @Override
+            protected Map<String, String> getParams() {
+                Map<String, String> args = RequestHelper.getCommonRequestArgs(authenticationService);
+                args.put("arg", getGsonWithExclude().toJson(user));
+                return args;
+            }
+        };
+    }
+
+    public void saveAsync(ResponseCallback<User> callback, User user) {
+        Volley.newRequestQueue(context).add(getSaveUserRequest(callback, user));
     }
 }

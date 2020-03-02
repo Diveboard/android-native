@@ -6,6 +6,7 @@ import androidx.room.Room;
 import com.diveboard.dataaccess.DiveboardSearchBuddyRepository;
 import com.diveboard.dataaccess.DivesOfflineRepository;
 import com.diveboard.dataaccess.DivesOnlineRepository;
+import com.diveboard.dataaccess.PhotosRepository;
 import com.diveboard.dataaccess.SearchShopRepository;
 import com.diveboard.dataaccess.SessionRepository;
 import com.diveboard.dataaccess.SpotsDbUpdater;
@@ -56,6 +57,7 @@ public class ApplicationController extends MultiDexApplication {
     private SyncObjectRepository syncObjectRepository;
     private LogoutService logoutService;
     private SpotService spotService;
+    private PhotosRepository photosRepository;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -89,6 +91,13 @@ public class ApplicationController extends MultiDexApplication {
                     .create();
         }
         return gson;
+    }
+
+    public PhotosRepository getPhotosRepository() {
+        if (photosRepository == null) {
+            photosRepository = new PhotosRepository(this, getAuthenticationService());
+        }
+        return photosRepository;
     }
 
     public SpotService getSpotService() {

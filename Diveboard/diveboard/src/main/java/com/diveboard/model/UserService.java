@@ -27,6 +27,11 @@ public class UserService {
         offlineRepository.getAsync(getFallbackToOnlineCallback(callback));
     }
 
+    public void saveUserAsync(ResponseCallback<User> callback, User user){
+        //online only for now as long as it is used in wallet only so network should be available already to upload a picture
+        onlineRepository.saveAsync(callback, user);
+    }
+
     private ResponseCallback<User> getFallbackToOnlineCallback(ResponseCallback<User> callback) {
         return new ResponseCallback<User>() {
             @Override

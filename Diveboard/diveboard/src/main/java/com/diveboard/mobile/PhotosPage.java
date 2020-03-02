@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
+import com.diveboard.dataaccess.PhotoUploadResponse;
+import com.diveboard.dataaccess.PhotosRepository;
+import com.diveboard.dataaccess.datamodel.Picture;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.mobile.databinding.ActivityPhotosBinding;
 import com.diveboard.util.ResponseCallback;
@@ -71,10 +74,16 @@ public class PhotosPage extends Fragment {
 
     private void refresh() {
         pullToRefresh.setRefreshing(true);
-        ac.getUserService().getUserAsync(new ResponseCallback<User>() {
+        ac.getUserService().getUserAsync(getWalletCallback(), true);
+    }
+
+    private ResponseCallback<User> getWalletCallback() {
+        return new ResponseCallback<User>() {
             @Override
             public void success(User data) {
+                viewModel.user = data;
                 pullToRefresh.setRefreshing(false);
+                viewModel.setUploading(false);
                 viewModel.setPhotos(data.walletPictures);
                 recyclerView.setAdapter(new ImageGalleryAdapter(data.walletPictures));
             }
@@ -85,7 +94,7 @@ public class PhotosPage extends Fragment {
                 Utils.logError(PhotosPage.class, "Cannot get photos", error);
                 Toast.makeText(ac, error.getMessage(), Toast.LENGTH_LONG);
             }
-        }, true);
+        };
     }
 
     private void setupToolbar(View view) {
@@ -113,8 +122,16 @@ public class PhotosPage extends Fragment {
                 case GALLERY_REQUEST:
                     Uri selectedImage = data.getData();
                     try {
+                        viewModel.setUploading(true);
                         Bitmap bitmap = MediaStore.Images.Media.getBitmap(getActivity().getContentResolver(), selectedImage);
-//                        carImage.setImageBitmap(bitmap);
+                        PhotosRepository photosRepository = ac.getPhotosRepository();
+                        ResponseCallback<PhotoUploadResponse> uploadFinishedCallback = getUploadFinishedCallback();
+                        /*PhotoUploadResponse data1 = new PhotoUploadResponse();
+                        data1.result = new Picture();
+                        data1.result.id = 123;
+                        uploadFinishedCallback.success(data1);*/
+
+                        photosRepository.uploadPhoto(uploadFinishedCallback, bitmap);
                     } catch (IOException e) {
                         Utils.logError(PhotosPage.class, "Cannot load image", e);
                     }
@@ -124,6 +141,24 @@ public class PhotosPage extends Fragment {
         {
             Toast.makeText(ac, "Cannot load image: " + resultCode, Toast.LENGTH_LONG);
         }
+    }
+
+    private ResponseCallback<PhotoUploadResponse> getUploadFinishedCallback() {
+        return new ResponseCallback<PhotoUploadResponse>() {
+            @Override
+            //TODO: move out this logic from UI
+            public void success(PhotoUploadResponse data) {
+                viewModel.user.walletPicturesIds.add(data.result.id);
+                ac.getUserService().saveUserAsync(getWalletCallback(), viewModel.user);
+            }
+
+            @Override
+            public void error(Exception e) {
+                viewModel.setUploading(false);
+                Toast.makeText(ac, e.getMessage(), Toast.LENGTH_LONG);
+                Utils.logError(PhotosPage.class, "Cannot upload image", e);
+            }
+        };
     }
 
     public void addPhoto() {
