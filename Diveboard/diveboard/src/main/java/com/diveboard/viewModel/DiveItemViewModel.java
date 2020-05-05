@@ -12,6 +12,7 @@ public class DiveItemViewModel implements Comparable {
     public final int index;
     public final Integer number;
     public final Integer id;
+    public String tripName;
     public final String shakenId;
     public final String date;
     public final String location;
@@ -20,12 +21,14 @@ public class DiveItemViewModel implements Comparable {
     public final String maxDepthStr;
     public final boolean unsynced;
     private final Calendar dateTyped;
+    public boolean isGroupStart;
 
-    public DiveItemViewModel(DateConverter conversion, int index, Integer id, String shakenId, Integer number, Calendar date, Spot spot, Integer minutes, Double maxDepth, Units.UnitsType units, boolean unsynced) {
+    public DiveItemViewModel(DateConverter conversion, int index, Integer id, String shakenId, Integer number, Calendar date, Spot spot, String tripName, Integer minutes, Double maxDepth, Units.UnitsType units, boolean unsynced) {
         this.index = index;
         this.shakenId = shakenId;
         this.number = number;
         this.id = id;
+        this.tripName = tripName;
         this.date = conversion.convertDateToString(date);
         dateTyped = date;
         this.unsynced = unsynced;

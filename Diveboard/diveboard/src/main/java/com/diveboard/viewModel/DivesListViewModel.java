@@ -60,9 +60,23 @@ public class DivesListViewModel {
                             dive.diveNumber,
                             dive.getTimeIn(),
                             dive.spot,
+                            dive.tripName,
                             dive.durationMin,
                             dive.maxDepth,
                             units, isUnsynced(changes, dive)));
+                }
+                //add trip name grouping
+                String lastTripName = "abrakadabra:)";
+                for (int i = 0; i < result.size(); i++) {
+                    DiveItemViewModel dive = result.get(i);
+                    String currentTripName = Utils.isNullOrEmpty(dive.tripName) ? context.getString(R.string.unnamedTrip) : dive.tripName;
+                    if (!lastTripName.equals(currentTripName)) {
+                        //add group title
+                        dive.isGroupStart = true;
+                        //reset for Unnamed Trip case
+                        dive.tripName = currentTripName;
+                    }
+                    lastTripName = currentTripName;
                 }
                 dives.clear();
                 dives.addAll(result);

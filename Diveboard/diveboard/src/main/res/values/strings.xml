@@ -90,4 +90,5 @@
     <string name="discard">Discard</string>
     <string name="refresh">Refresh</string>
     <string name="photos">Photos</string>
+    <string name="unnamedTrip">Unnamed Trip</string>
 </resources>
