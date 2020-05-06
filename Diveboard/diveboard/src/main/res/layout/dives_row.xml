@@ -32,8 +32,8 @@
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/thumbnail"
-            android:layout_width="60dp"
-            android:layout_height="60dp"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
             android:layout_marginTop="@{model.isGroupStart?@dimen/view_double_margin:@dimen/zero_margin}"
             android:gravity="center"
             app:imageUrl="@{model.thumbnailImageUrl}"
@@ -46,20 +46,19 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/view_double_margin"
-            android:layout_marginTop="@dimen/view_margin"
-            android:layout_marginEnd="8dp"
             android:requiresFadingEdge="horizontal"
             android:singleLine="true"
             android:text="@{model.siteName}"
             android:textColor="@color/colorUnderline"
             android:textSize="18sp"
-            app:layout_constraintEnd_toStartOf="@+id/textView6"
+            app:layout_constraintEnd_toStartOf="@+id/imageView2"
             app:layout_constraintStart_toEndOf="@+id/thumbnail"
             app:layout_constraintTop_toTopOf="@id/thumbnail"
             tools:text="Dos Ojos very long fading text" />
 
         <TextView
             android:id="@+id/textView5"
+            android:textColor="@color/colorUnderline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/view_double_margin"
@@ -73,12 +72,12 @@
             android:id="@+id/textView6"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
+            android:layout_marginTop="4dp"
             android:text="@{model.date}"
             android:textSize="14sp"
-            app:layout_constraintBottom_toBottomOf="@+id/textView4"
-            app:layout_constraintEnd_toStartOf="@+id/imageView2"
-            app:layout_constraintTop_toTopOf="@+id/textView4"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
             tools:text="Jan 10, 2019" />
 
         <ImageView
@@ -118,7 +117,7 @@
             android:text="@{model.durationStr}"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView5"
+            app:layout_constraintTop_toTopOf="@+id/textView6"
             tools:text="34 min" />
 
         <ImageView
@@ -128,8 +127,9 @@
             android:layout_marginEnd="8dp"
             android:src="@drawable/ic_cloud_off_24px"
             android:visibility="@{model.unsynced}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView6" />
+            app:layout_constraintTop_toTopOf="@+id/textView4" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
