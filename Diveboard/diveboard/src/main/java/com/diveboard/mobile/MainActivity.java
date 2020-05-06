@@ -40,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
         //TODO: user might be loggged in but doesn't have dives.json and user.json stored locally
         boolean loggedIn = ac.getAuthenticationService().isLoggedIn();
         if (loggedIn) {
+//            Navigation.findNavController(view).navigate(R.id.photos);
             Navigation.findNavController(view).navigate(R.id.logbook);
         } else {
             Navigation.findNavController(view).navigate(R.id.login);

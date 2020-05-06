@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.databinding.BindingAdapter;
 import androidx.databinding.BindingConversion;
@@ -111,5 +112,29 @@ public final class BindingConvertions {
 
     public String[] getArrayByUnits(Units.UnitsType units, String[] metricArray, String[] imperialArray) {
         return units == Units.UnitsType.Imperial ? imperialArray : metricArray;
+    }
+
+    @BindingAdapter("android:layout_marginTop")
+    public static void setLayoutMarginTop(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = dimen.intValue();
+    }
+
+    @BindingAdapter("android:layout_marginBottom")
+    public static void setLayoutMarginBottom(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.bottomMargin = dimen.intValue();
+    }
+
+    @BindingAdapter("android:layout_marginStart")
+    public static void setLayoutMarginStart(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMarginStart(dimen.intValue());
+    }
+
+    @BindingAdapter("android:layout_marginEnd")
+    public static void setLayoutMarginEnd(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMarginEnd(dimen.intValue());
     }
 }

@@ -63,6 +63,7 @@ public class DivesListViewModel {
                             dive.tripName,
                             dive.durationMin,
                             dive.maxDepth,
+                            dive.thumbnailImageUrl,
                             units, isUnsynced(changes, dive)));
                 }
                 //add trip name grouping

@@ -9,6 +9,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 
 import static android.text.format.DateFormat.getDateFormat;
+import static android.text.format.DateFormat.getMediumDateFormat;
 import static android.text.format.DateFormat.getTimeFormat;
 
 public class DateConverter {
@@ -24,6 +25,14 @@ public class DateConverter {
             return null;
         }
         DateFormat df = getDateFormat(context);
+        return df.format(date.getTime());
+    }
+
+    public String convertDateToStringMedium(Calendar date) {
+        if (date == null) {
+            return null;
+        }
+        DateFormat df = getMediumDateFormat(context);
         return df.format(date.getTime());
     }
 
