@@ -91,4 +91,7 @@
     <string name="refresh">Refresh</string>
     <string name="photos">Photos</string>
     <string name="unnamedTrip">Unnamed Trip</string>
+    <string name="divesInTrip">(%1$s %2$s)</string>
+    <string name="dive">dive</string>
+    <string name="dives">dives</string>
 </resources>

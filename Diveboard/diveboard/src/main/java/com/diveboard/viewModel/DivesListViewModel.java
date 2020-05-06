@@ -68,6 +68,8 @@ public class DivesListViewModel {
                 }
                 //add trip name grouping
                 String lastTripName = "abrakadabra:)";
+                DiveItemViewModel groupDive = null;
+                int divesInTrip = 0;
                 for (int i = 0; i < result.size(); i++) {
                     DiveItemViewModel dive = result.get(i);
                     String currentTripName = Utils.isNullOrEmpty(dive.tripName) ? context.getString(R.string.unnamedTrip) : dive.tripName;
@@ -76,8 +78,20 @@ public class DivesListViewModel {
                         dive.isGroupStart = true;
                         //reset for Unnamed Trip case
                         dive.tripName = currentTripName;
+                        if (groupDive != null) {
+                            groupDive.divesInTrip = divesInTrip;
+                            groupDive.divesInTripTitle = divesInTrip == 1 ? context.getString(R.string.dive) : context.getString(R.string.dives);
+                        }
+                        groupDive = dive;
+                        divesInTrip = 1;
+                    } else {
+                        divesInTrip++;
                     }
                     lastTripName = currentTripName;
+                }
+                if (groupDive != null) {
+                    groupDive.divesInTrip = divesInTrip;
+                    groupDive.divesInTripTitle = divesInTrip == 1 ? context.getString(R.string.dive) : context.getString(R.string.dives);
                 }
                 dives.clear();
                 dives.addAll(result);

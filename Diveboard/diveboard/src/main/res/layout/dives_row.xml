@@ -15,19 +15,33 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_margin">
+
         <TextView
             android:id="@+id/trip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{model.tripName}"
             android:layout_marginTop="20dp"
+            android:singleLine="true"
+            android:text="@{model.tripName}"
             android:textColor="@color/colorUnderline"
             android:textSize="@dimen/text_size_big"
             android:visibility="@{model.isGroupStart}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:visibility="gone"
             tools:text="Mexico 2019" />
+
+        <TextView
+            android:id="@+id/divesInTrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{@string/divesInTrip(model.divesInTrip, model.divesInTripTitle)}"
+            android:textSize="14sp"
+            android:visibility="@{model.isGroupStart}"
+            app:layout_constraintBottom_toBottomOf="@+id/trip"
+            app:layout_constraintStart_toEndOf="@+id/trip"
+            app:layout_constraintTop_toTopOf="@+id/trip"
+            tools:text="(12 dives)" />
 
         <com.android.volley.toolbox.NetworkImageView
             android:id="@+id/thumbnail"
@@ -35,10 +49,10 @@
             android:layout_height="68dp"
             android:layout_marginTop="@{model.isGroupStart?@dimen/view_double_margin:@dimen/logitem_margin}"
             android:gravity="center"
-            tools:layout_marginTop="10dp"
             app:imageUrl="@{model.thumbnailImageUrl}"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/trip" />
+            app:layout_constraintTop_toBottomOf="@+id/trip"
+            tools:layout_marginTop="10dp" />
 
         <TextView
             android:id="@+id/textView4"
@@ -46,7 +60,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/view_double_margin"
             android:layout_marginEnd="16dp"
-            android:requiresFadingEdge="horizontal"
             android:singleLine="true"
             android:text="@{model.siteName}"
             android:textColor="@color/colorUnderline"
@@ -58,11 +71,11 @@
 
         <TextView
             android:id="@+id/textView5"
-            android:textColor="@color/colorUnderline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/view_double_margin"
             android:text="@{model.location}"
+            android:textColor="@color/colorUnderline"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@+id/thumbnail"
             app:layout_constraintTop_toBottomOf="@+id/textView4"

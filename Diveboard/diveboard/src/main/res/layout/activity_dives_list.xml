@@ -37,6 +37,8 @@
                     android:layout_height="match_parent"
                     app:clickHandler="@{view.showDiveHandler}"
                     app:itemViewBinder="@{view.diveItemViewBinder}"
+                    android:paddingBottom="16dp"
+                    android:clipToPadding="false"
                     app:items="@{model.dives}"
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
 
