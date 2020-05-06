@@ -5,7 +5,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="view_margin">8dp</dimen>
     <dimen name="zero_margin">0dp</dimen>
-    <dimen name="logitem_margin">20dp</dimen>
+    <dimen name="logitem_margin">10dp</dimen>
     <dimen name="view_double_margin">16dp</dimen>
     <dimen name="text_size_big">18sp</dimen>
     <dimen name="view_half_margin">4dp</dimen>

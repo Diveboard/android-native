@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="@dimen/activity_margin">
         <TextView
-            android:id="@+id/textView0"
+            android:id="@+id/trip"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@{model.tripName}"
@@ -35,11 +35,10 @@
             android:layout_height="68dp"
             android:layout_marginTop="@{model.isGroupStart?@dimen/view_double_margin:@dimen/logitem_margin}"
             android:gravity="center"
-            tools:layout_marginTop="20dp"
+            tools:layout_marginTop="10dp"
             app:imageUrl="@{model.thumbnailImageUrl}"
-            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView0" />
+            app:layout_constraintTop_toBottomOf="@+id/trip" />
 
         <TextView
             android:id="@+id/textView4"
@@ -138,9 +137,8 @@
             android:layout_height="1dp"
             android:layout_marginTop="10dp"
             android:background="@color/tab_title_underline_grey"
-            android:visibility="@{!model.isGroupStart}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/textView4"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/thumbnail" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
