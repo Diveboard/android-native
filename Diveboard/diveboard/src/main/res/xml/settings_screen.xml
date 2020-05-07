@@ -1,48 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <androidx.preference.PreferenceCategory app:title="@string/general_settings_title" />
+    <androidx.preference.PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/general_settings_title" />
 
     <androidx.preference.ListPreference
+        app:defaultValue="Metric"
         app:dialogTitle="@string/unit_setting_title"
         app:entries="@array/unit_entries"
         app:entryValues="@array/unit_entry_values"
+        app:iconSpaceReserved="false"
         app:key="units"
         app:summary="%s"
-        app:title="@string/unit_setting_title"
-        app:defaultValue="Metric" />
+        app:title="@string/unit_setting_title" />
 
     <androidx.preference.ListPreference
+        app:defaultValue="Medium Definition"
         app:dialogTitle="@string/picture_quality_setting_title"
         app:entries="@array/picture_quality_entries"
         app:entryValues="@array/picture_quality_entry_values"
+        app:iconSpaceReserved="false"
         app:key="picquality"
         app:summary="%s"
-        app:title="@string/picture_quality_setting_title"
-        app:defaultValue="Medium Definition" />
+        app:title="@string/picture_quality_setting_title" />
 
     <SwitchPreferenceCompat
+        app:iconSpaceReserved="false"
         app:key="data_usage"
         app:summary="@string/phone_network_download_summary"
         app:title="@string/phone_network_download_title" />
 
-    <androidx.preference.PreferenceCategory app:title="@string/tools_category_title" />
+    <androidx.preference.PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/tools_category_title" />
 
     <androidx.preference.Preference
+        app:iconSpaceReserved="false"
         app:key="db_version"
         app:title="@string/db_version_title" />
 
     <androidx.preference.Preference
+        app:iconSpaceReserved="false"
         app:key="report_bug"
         app:title="@string/menu_report_bug" />
 
     <androidx.preference.Preference
+        app:iconSpaceReserved="false"
         app:key="logout"
         app:title="@string/menu_logout" />
 
-    <androidx.preference.PreferenceCategory app:title="@string/app_info_category_title" />
+    <androidx.preference.PreferenceCategory
+        app:iconSpaceReserved="false"
+        app:title="@string/app_info_category_title" />
 
     <androidx.preference.Preference
+        app:iconSpaceReserved="false"
         app:key="app_version"
         app:title="@string/version_title" />
 

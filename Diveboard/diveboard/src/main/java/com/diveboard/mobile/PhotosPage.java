@@ -20,6 +20,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.app.ActivityCompat;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
+import androidx.databinding.Observable;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -61,7 +62,7 @@ public class PhotosPage extends Fragment {
         viewModel = new PhotosViewModel();
         recyclerView = view.findViewById(R.id.listView);
         pullToRefresh = view.findViewById(R.id.pullToRefresh);
-        drawerLayout = view.findViewById(R.id.drawer_layout);
+        drawerLayout = getActivity().findViewById(R.id.drawer_layout);
         //TODO: autocalculate the width
 //        recyclerView.setLayoutManager(new GridAutofitLayoutManager(ac, (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 100 + 8, ac.getResources().getDisplayMetrics())));
         GridLayoutManager layout = new GridLayoutManager(ac, 3);
@@ -69,6 +70,7 @@ public class PhotosPage extends Fragment {
         binding.setModel(viewModel);
         binding.setView(this);
         refresh();
+        setupPullToRefresh(view);
         return view;
     }
 
@@ -90,7 +92,7 @@ public class PhotosPage extends Fragment {
 
             @Override
             public void error(Exception error) {
-                pullToRefresh.setRefreshing(true);
+                pullToRefresh.setRefreshing(false);
                 Utils.logError(PhotosPage.class, "Cannot get photos", error);
                 Toast.makeText(ac, error.getMessage(), Toast.LENGTH_LONG);
             }
@@ -189,5 +191,10 @@ public class PhotosPage extends Fragment {
                 }
             }
         }
+    }
+
+    private void setupPullToRefresh(View view) {
+        final SwipeRefreshLayout pullToRefresh = view.findViewById(R.id.pullToRefresh);
+        pullToRefresh.setOnRefreshListener(this::refresh);
     }
 }
