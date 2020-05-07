@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:layout_gravity="start"
     android:fitsSystemWindows="true"
+    app:itemBackground="@drawable/nav_item_background"
     app:headerLayout="@layout/nav_header"
     app:menu="@menu/drawer_view"
     tools:showIn="@layout/activity_settings" />

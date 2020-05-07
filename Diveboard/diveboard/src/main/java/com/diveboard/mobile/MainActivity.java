@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         if (loggedIn) {
 //            Navigation.findNavController(view).navigate(R.id.photos);
             Navigation.findNavController(view).navigate(R.id.logbook);
+            navigationView.getMenu().getItem(0).setChecked(true);
         } else {
             Navigation.findNavController(view).navigate(R.id.login);
         }
