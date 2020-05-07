@@ -21,4 +21,5 @@
     <dimen name="emptyTitleMargin">4dp</dimen>
     <dimen name="activity_margin">16dp</dimen>
     <dimen name="max_site_name_length">10dp</dimen>
+    <dimen name="between_edits">12dp</dimen>
 </resources>

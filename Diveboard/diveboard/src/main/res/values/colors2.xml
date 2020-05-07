@@ -5,7 +5,8 @@
     <color name="colorPrimaryLight">#FDC90C</color>
     <color name="colorSecondary">#FDC90C</color>
 
+    <color name="textColorPrimaryDark">#444444</color>
     <color name="textColorPrimary">#000000</color>
     <color name="textColorPrimaryInverse">#FFFFFF</color>
-    <color name="colorUnderline">#444444</color>
+    <color name="colorUnderline">@color/gray_light</color>
 </resources>

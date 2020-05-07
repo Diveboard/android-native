@@ -47,7 +47,7 @@
                 android:id="@+id/textInputLayout"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="@dimen/between_edits"
                 android:hint="@string/dive_number"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView">
@@ -57,6 +57,7 @@
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
                     android:inputType="number"
+                    android:theme="@style/MyEditTextTheme"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.diveNumber)}"
                     tools:text="12" />
@@ -66,6 +67,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout3"
                 android:layout_width="150dp"
+                android:layout_marginTop="@dimen/between_edits"
                 android:layout_height="wrap_content"
                 android:hint="@string/date_label"
                 app:layout_constraintStart_toStartOf="parent"
@@ -73,6 +75,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/uiDate"
+                    android:theme="@style/MyEditTextTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
@@ -80,6 +83,7 @@
                     android:text="@={dateConverter.convertDateToString(model.uiDate)}"
                     app:attachCalendar='@{"date"}'
                     app:validateDate='@{null}'
+                    tools:text="2012-12-12"
                     app:validateDateAutoDismiss="@{true}"
                     app:validateEmpty="@{true}" />
 
@@ -90,10 +94,9 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/view_margin"
-                android:layout_marginLeft="@dimen/view_margin"
                 android:hint="@string/time_label"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout3"
-                app:layout_constraintTop_toBottomOf="@+id/textInputLayout">
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout3">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/uiTime"
@@ -101,6 +104,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="time"
                     android:text="@={dateConverter.convertTimeToString(model.uiTime)}"
+                    android:theme="@style/MyEditTextTheme"
                     app:attachCalendar='@{"time"}'
                     app:validateDate='@{view.getTimeFormat()}'
                     app:validateDateAutoDismiss="@{true}"
@@ -111,6 +115,7 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout5"
                 android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/between_edits"
                 android:layout_height="wrap_content"
                 android:hint="@string/trip_name_label"
                 app:layout_constraintStart_toStartOf="parent"
@@ -120,6 +125,7 @@
                     android:id="@+id/trip_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:theme="@style/MyEditTextTheme"
                     android:imeOptions="actionDone"
                     android:inputType="textAutoComplete"
                     android:text="@={model.tripName}"
@@ -129,9 +135,11 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout7"
+                android:layout_marginTop="@dimen/between_edits"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:hint="@string/spot_name"
+                android:theme="@style/MyEditTextTheme"
                 app:layout_constraintEnd_toStartOf="@+id/backButton"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout5">
@@ -153,8 +161,9 @@
             <androidx.appcompat.widget.AppCompatImageButton
                 android:id="@+id/backButton"
                 style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
-                android:layout_width="wrap_content"
+                android:layout_width="24dp"
                 android:layout_height="wrap_content"
+                android:paddingStart="12dp"
                 android:onClick="@{()->view.showSpotDialog()}"
                 android:src="@drawable/ic_baseline_search_24px"
                 app:layout_constraintBottom_toBottomOf="@+id/textInputLayout7"
@@ -170,8 +179,8 @@
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/maxDepth"
                 android:layout_width="150dp"
+                android:layout_marginTop="@dimen/between_edits"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/max_depth_metric, @string/max_depth_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3"
@@ -181,6 +190,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
+                    android:theme="@style/MyEditTextTheme"
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.maxDepth)}"
@@ -195,11 +205,9 @@
                 android:layout_width="100dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/view_margin"
-                android:layout_marginLeft="@dimen/view_margin"
-                android:layout_marginTop="@dimen/view_margin"
                 android:hint="@string/duration_label"
                 app:layout_constraintStart_toEndOf="@+id/maxDepth"
-                app:layout_constraintTop_toBottomOf="@+id/appCompatTextView3">
+                app:layout_constraintTop_toTopOf="@+id/maxDepth">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/duration"
@@ -209,6 +217,7 @@
                     android:inputType="number"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.integerToStringConverter(model.durationMin)}"
+                    android:theme="@style/MyEditTextTheme"
                     app:validateEmpty="@{true}"
                     app:validateEmptyAutoDismiss="@{true}" />
 
@@ -245,8 +254,9 @@
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/appCompatImageButton"
                     style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
                     android:layout_height="wrap_content"
+                    android:paddingStart="12dp"
                     android:onClick="@{()->view.showSafetyStopDialog(true)}"
                     android:src="@drawable/ic_baseline_add_24px"
                     app:layout_constraintBottom_toBottomOf="@+id/safety_stop_list"
@@ -276,7 +286,7 @@
                 android:id="@+id/textInputLayout80"
                 android:layout_width="150dp"
                 android:layout_height="match_parent"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="@dimen/between_edits"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/weights_label_metric, @string/weights_label_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/appCompatTextView2"
@@ -284,6 +294,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/weight"
+                    android:theme="@style/MyEditTextTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
@@ -298,6 +309,7 @@
                 android:id="@+id/constraintLayout22"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout80">
 
@@ -325,8 +337,9 @@
                 <androidx.appcompat.widget.AppCompatImageButton
                     android:id="@+id/appCompatImageButton2"
                     style="@style/Base.Widget.AppCompat.ActionButton.Overflow"
-                    android:layout_width="wrap_content"
+                    android:layout_width="24dp"
                     android:layout_height="wrap_content"
+                    android:paddingStart="12dp"
                     android:onClick="@{()->view.newTankDialog(true)}"
                     android:src="@drawable/ic_baseline_add_24px"
                     app:layout_constraintBottom_toBottomOf="@+id/tanks_list"
@@ -395,14 +408,13 @@
                     app:layout_constraintEnd_toEndOf="@+id/dive_type_list"
                     app:layout_constraintStart_toStartOf="@+id/dive_type_list"
                     app:layout_constraintTop_toBottomOf="@+id/dive_type_list" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout10"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="20dp"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/air_temperature_metric, @string/air_temperature_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
@@ -410,6 +422,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/airTemp"
+                    android:theme="@style/MyEditTextTheme"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionDone"
@@ -422,12 +435,12 @@
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/textInputLayout11"
-                android:layout_width="100dp"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/view_margin"
-                android:layout_marginLeft="@dimen/view_margin"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="20dp"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/water_temperature_metric, @string/water_temperature_imperial)}"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/textInputLayout10"
                 app:layout_constraintTop_toBottomOf="@+id/constraintLayout5"
                 tools:hint="@string/water_temperature_metric">
@@ -440,6 +453,7 @@
                     android:inputType="numberDecimal"
                     android:selectAllOnFocus="true"
                     android:text="@={converter.doubleToStringConverter(model.waterTemp)}"
+                    android:theme="@style/MyEditTextTheme"
                     tools:text="10" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -584,7 +598,7 @@
                 android:id="@+id/textInputLayout15"
                 android:layout_width="150dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/view_margin"
+                android:layout_marginTop="@dimen/between_edits"
                 android:hint="@{converter.getTitleByUnits(model.units, @string/altitude_metric, @string/altitude_imperial)}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/textInputLayout14"
@@ -592,6 +606,7 @@
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
+                    android:theme="@style/MyEditTextTheme"
                     android:layout_height="wrap_content"
                     android:imeOptions="actionNext"
                     android:inputType="numberDecimal"
