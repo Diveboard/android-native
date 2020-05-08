@@ -78,6 +78,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         dive.userId = userId;
         dive.diveNumber = diveNumber;
         dive.tripName = lastTripName;
+        dive.durationMin = 0;
+        dive.maxDepth = 0.0;
 
         Calendar diveDateTime = Calendar.getInstance();
         diveDateTime.set(Calendar.HOUR_OF_DAY, 10);
