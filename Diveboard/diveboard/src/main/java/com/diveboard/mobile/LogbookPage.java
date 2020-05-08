@@ -22,6 +22,7 @@ import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinder;
 import com.diveboard.util.binding.recyclerViewBinder.adapter.binder.ItemBinderBase;
 import com.diveboard.viewModel.DiveItemViewModel;
 import com.diveboard.viewModel.DivesListViewModel;
+import com.kobakei.ratethisapp.RateThisApp;
 
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -47,6 +48,7 @@ public class LogbookPage extends Fragment {
         listView = binding.listView;
         binding.setModel(viewModel);
         binding.setView(this);
+        RateThisApp.showRateDialogIfNeeded(getActivity());
         return view;
     }
 

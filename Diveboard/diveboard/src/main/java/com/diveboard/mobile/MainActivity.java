@@ -19,6 +19,7 @@ import com.diveboard.util.ResponseCallback;
 import com.diveboard.util.Utils;
 import com.diveboard.viewModel.DrawerHeaderViewModel;
 import com.google.android.material.navigation.NavigationView;
+import com.kobakei.ratethisapp.RateThisApp;
 
 import java.util.Date;
 
@@ -48,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
         }
         setupNavigationHeader(loggedIn);
         setupNavigationMenu();
+        RateThisApp.onCreate(this);
     }
 
     private void setupNavigationHeader(boolean loggedIn) {

@@ -10,7 +10,7 @@ android {
     defaultConfig {
         applicationId "com.diveboard.mobile"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -86,4 +86,7 @@ dependencies {
     implementation 'com.crashlytics.sdk.android:crashlytics:2.10.1'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:master-SNAPSHOT'
+//    implementation 'io.github.kobakei:ratethisapp:1.2.0'
+//    https://github.com/pavel-golub/Android-RateThisApp
+    implementation files('libs\\ratethisapp-debug.aar')
 }

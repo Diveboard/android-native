@@ -1,4 +1,1 @@
-include ':facebookSDK'
-include ':pagerSlidingTabStrip'
-include ':userVoiceSDK'
 include ':diveboard'
