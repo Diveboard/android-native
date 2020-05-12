@@ -97,4 +97,10 @@
     <string name="dives">dives</string>
     <string name="menu_set_cover">Set as cover</string>
     <string name="uploading">Uploading...</string>
+    <string name="app_name_beta">Diveboard Beta</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">YOUR EMAIL</string>
+    <string name="prompt_password">YOUR PASSWORD</string>
+    <string name="action_login">LOGIN</string>
+
 </resources>

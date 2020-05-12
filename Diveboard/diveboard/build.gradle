@@ -6,8 +6,8 @@ apply plugin: 'io.fabric'
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
-
     defaultConfig {
+        manifestPlaceholders = [appIcon:"@mipmap/ic_launcher_new", appLabel:"@string/app_name"]
         applicationId "com.diveboard.mobile"
         minSdkVersion 19
         targetSdkVersion 29
@@ -20,7 +20,7 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("release.keystore")
+            storeFile file("release.jks")
             storePassword "password"
             keyAlias "diveboard"
             keyPassword "password"
@@ -43,6 +43,16 @@ android {
         exclude 'META-INF/NOTICE.txt'
         exclude 'META-INF/notice.txt'
         exclude 'META-INF/ASL2.0'
+    }
+
+    flavorDimensions "version"
+    productFlavors {
+        beta {
+            dimension "version"
+            applicationIdSuffix ".beta"
+            versionNameSuffix "-beta"
+            manifestPlaceholders = [appIcon:"@mipmap/ic_launcher_beta", appLabel:"@string/app_name_beta"]
+        }
     }
 
     lintOptions {
