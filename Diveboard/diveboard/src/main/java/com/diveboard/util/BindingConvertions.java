@@ -33,6 +33,10 @@ public final class BindingConvertions {
         return visible ? View.VISIBLE : View.GONE;
     }
 
+    public static int convertBooleanToVisibilityNotGone(boolean visible) {
+        return visible ? View.VISIBLE : View.INVISIBLE;
+    }
+
     @BindingConversion
     public static String convertSafetyStopToString(SafetyStopViewModel safetyStop) {
         Context context = ApplicationController.getInstance().getApplicationContext();

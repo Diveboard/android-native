@@ -5,6 +5,7 @@ import androidx.databinding.Bindable;
 import androidx.databinding.ObservableArrayList;
 
 import com.diveboard.dataaccess.datamodel.Dive;
+import com.diveboard.dataaccess.datamodel.Picture;
 import com.diveboard.dataaccess.datamodel.Shop;
 import com.diveboard.dataaccess.datamodel.Spot;
 import com.diveboard.mobile.BR;
@@ -56,6 +57,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
+    public List<Picture> pictures = new ArrayList();
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -142,6 +144,8 @@ public class DiveDetailsViewModel extends BaseObservable {
         for (String diveType : data.divetype) {
             result.diveTypes.add(new DiveTypeViewModel(diveType));
         }
+
+        result.pictures = data.pictures;
         return result;
     }
 
@@ -193,6 +197,8 @@ public class DiveDetailsViewModel extends BaseObservable {
             }
             result.divetype = dts;
         }
+
+        result.pictures = pictures;
 
         return result;
     }

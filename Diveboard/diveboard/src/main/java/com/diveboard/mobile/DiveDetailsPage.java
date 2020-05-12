@@ -53,6 +53,7 @@ public class DiveDetailsPage extends Fragment {
     private AlertDialog backConfirmationDialog;
     private ResourceHolder resourceHolder;
     private View savingIndicator;
+    private DiveDetailsPhotosFragment photos;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -138,6 +139,8 @@ public class DiveDetailsPage extends Fragment {
         adapter.addFragment(people, R.string.tab_people_label);
         notes = new DiveDetailsNotesFragment();
         adapter.addFragment(notes, R.string.tab_notes_label);
+        photos = new DiveDetailsPhotosFragment();
+        adapter.addFragment(photos, R.string.tab_photos_label);
         viewPager.setAdapter(adapter);
         tabLayout.setupWithViewPager(viewPager);
     }
@@ -147,6 +150,7 @@ public class DiveDetailsPage extends Fragment {
         general.setViewModel(viewModel);
         people.setViewModel(viewModel);
         notes.setViewModel(viewModel);
+        photos.setViewModel(viewModel);
     }
 
     private void setupToolbar(View view) {

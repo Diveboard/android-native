@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DiveDetailsNotesFragment">
 
     <data>
 
@@ -13,18 +15,14 @@
             type="com.diveboard.viewModel.PhotosViewModel" />
     </data>
 
-    <LinearLayout
+    <!--required for margin-->
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            style="@style/Toolbar2" />
+        android:layout_height="match_parent">
 
         <include
             layout="@layout/photo_galery"
             app:model="@{model}"
             app:view="@{view}" />
-    </LinearLayout>
+    </RelativeLayout>
 </layout>

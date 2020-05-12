@@ -13,19 +13,7 @@ import java.util.List;
 
 public class PhotosViewModel extends BaseObservable {
 
-    public ArrayList<PhotoViewModel> photos = new ArrayList<>();
-    public User user;
-
-    public void setPhotos(List<Picture> pictures) {
-        photos.clear();
-        if (pictures == null) {
-            return;
-        }
-        for (Picture picture : pictures) {
-            PhotoViewModel e = new PhotoViewModel(picture);
-            photos.add(e);
-        }
-    }
+    public List<Picture> photos = new ArrayList<>();
 
     private boolean uploading = false;
 

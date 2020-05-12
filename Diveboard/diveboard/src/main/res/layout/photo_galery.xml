@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.PhotoGaleryFragment" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.PhotosViewModel" />
+    </data>
+
+    <merge tools:showIn="@layout/activity_photos">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/view_margin"
+                android:text="@string/uploading"
+                android:visibility="@{com.diveboard.util.BindingConvertions.convertBooleanToVisibilityNotGone(model.uploading)}" />
+
+            <ProgressBar
+                android:id="@+id/progress"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="match_parent"
+                android:layout_height="10dp"
+                android:layout_marginTop="-4dp"
+                android:indeterminate="true"
+                android:visibility="@{com.diveboard.util.BindingConvertions.convertBooleanToVisibilityNotGone(model.uploading)}" />
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/pullToRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginLeft="-4dp"
+                android:layout_marginTop="-24dp"
+                android:layout_marginRight="-4dp">
+
+                <FrameLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/listView"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:layout_marginTop="@dimen/view_double_margin"
+                        android:layout_marginBottom="@dimen/view_double_margin"
+                        app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
+                        app:spanCount="3" />
+
+                    <com.google.android.material.floatingactionbutton.FloatingActionButton
+                        android:id="@+id/add_button"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="bottom|right"
+                        android:layout_margin="@dimen/view_double_margin"
+                        android:onClick="@{()->view.addPhoto()}"
+                        android:src="@drawable/ic_baseline_add_24px_black"
+                        app:elevation="4dp" />
+                </FrameLayout>
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
+    </merge>
+</layout>

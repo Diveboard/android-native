@@ -90,6 +90,8 @@ public class Dive {
     public Spot spot;
     @SerializedName("buddies")
     public List<Buddy> buddies = new ArrayList();
+    @SerializedName("pictures")
+    public List<Picture> pictures = new ArrayList();
     @SerializedName("shop_id")
     public Integer diveCenterId;
     @SerializedName("shop")
@@ -205,6 +207,7 @@ public class Dive {
 //                Utils.equals(spot, dive.spot) &&
 //                Utils.equals(buddies, dive.buddies) &&
 //                Utils.equals(diveCenter, dive.diveCenter) &&
+//                Utils.equals(pictures, dive.pictures) &&
                 Utils.equals(diveCenterId, dive.diveCenterId);
     }
 }
