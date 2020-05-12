@@ -46,7 +46,7 @@ android {
     }
 
     lintOptions {
-        checkReleaseBuilds true
+        checkReleaseBuilds false
         abortOnError false
         disable 'DuplicatePlatformClasses'
     }

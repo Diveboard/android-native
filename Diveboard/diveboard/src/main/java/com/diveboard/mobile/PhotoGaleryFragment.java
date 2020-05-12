@@ -155,8 +155,7 @@ public abstract class PhotoGaleryFragment extends Fragment {
                     }
                     break;
             }
-        }
-        {
+        } else {
             Toast.makeText(ac, "Cannot load image: " + resultCode, Toast.LENGTH_LONG).show();
         }
     }

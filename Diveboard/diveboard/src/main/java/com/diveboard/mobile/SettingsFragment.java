@@ -65,7 +65,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
         String version;
         try {
             pInfo = ac.getApplicationContext().getPackageManager().getPackageInfo(ac.getPackageName(), 0);
-            version = AppConfig.DEBUG_MODE == 1 ? pInfo.versionName + " Debug Build" : pInfo.versionName;
+            version = pInfo.versionName;
             findPreference("app_version").setSummary(version);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
