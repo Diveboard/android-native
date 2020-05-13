@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="no_note">No Note for this dive</string>
-    <string name="no_shop">No shop</string>
-    <string name="surface_label">SURF</string>
-    <string name="bottom_label">BOTTOM</string>
-    <string name="no_reviews">No Reviews for this dive</string>
-</resources>

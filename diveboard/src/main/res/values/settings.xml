@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="general_settings_title" translatable="false">General</string>
+    <string name="unit_setting_title" translatable="false">Units</string>
+    <string-array name="unit_entries" translatable="false">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </string-array>
+    <string-array name="unit_entry_values" translatable="false">
+        <item>Imperial</item>
+        <item>Metric</item>
+    </string-array>
+
+    <string name="picture_quality_setting_title" translatable="false">Picture quality</string>
+    <string-array name="picture_quality_entries" translatable="false">
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+    <string-array name="picture_quality_entry_values" translatable="false">
+        <item>Medium Definition</item>
+        <item>High Definition</item>
+    </string-array>
+
+    <string name="phone_network_download_title" translatable="false">Reduce data usage</string>
+    <string name="phone_network_download_summary" translatable="false">Download pictures over Wi-Fi only</string>
+
+    <string name="db_version_title" translatable="false">Update spots offline cache</string>
+
+    <string name="version_title" translatable="false">Application version</string>
+
+    <string name="app_info_category_title" translatable="false">App info</string>
+    <string name="tools_category_title" translatable="false">Tools</string>
+</resources>

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="spots_db_latest_update">Updated</string>
+    <string name="spots_db_never_updated">Never downloaded</string>
+    <string name="spots_db_updated">Spots cache updated</string>
+    <string name="spots_db_update_error">Cannot update spots cache</string>
+    <string name="spots_db_updating">Updating spots cache in background</string>
+</resources>

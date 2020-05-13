@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="title_footer">CURRENTLY VIEWING DIVES FROM LOGBOOK</string>
-    <string name="no_dive_found">No dive found!</string>
-    <string name="not_available">n/a</string>
-    <string name="logged_by">LOGGED BY</string>
-    <string name="no_gps">No GPS found for actual dive</string>
-    <string name="no_picture">No Picture in your album!</string>
-</resources>

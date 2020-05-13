@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.PhotoGaleryFragment" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.PhotosViewModel" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Toolbar2" />
+
+        <include
+            layout="@layout/photo_galery"
+            app:model="@{model}"
+            app:view="@{view}" />
+    </LinearLayout>
+</layout>

@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="signup_for_diveboard">SIGNUP FOR DIVEBOARD</string>
-    <string name="token_expired">Token expired, please login again</string>
-    <string name="wrong_login">Sorry, wrong login or password.</string>
-    <string name="could_not_connect">Could not connect to Diveboard. Please check your network connectivity.</string>
-    <string name="could_not_connect_db">Could not connect with the database</string>
-</resources>

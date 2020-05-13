@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="com.diveboard.util.BindingConvertions" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.TankViewModel" />
+    </data>
+
+    <androidx.appcompat.widget.AppCompatTextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:focusable="false"
+        android:layout_marginRight="@dimen/view_margin"
+        android:text="@{BindingConvertions.convertTankToString(model, context)}"
+        android:textAppearance="@style/App.TextAppearance.AppCompat.Medium"
+        tools:text="10->12" />
+</layout>

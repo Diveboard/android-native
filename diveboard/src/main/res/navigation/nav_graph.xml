@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/logbook">
+
+    <fragment
+        android:id="@+id/photos"
+        android:name="com.diveboard.mobile.PhotosPage"
+        android:label="photos"
+        tools:layout="@layout/activity_photos">
+    </fragment>
+
+    <fragment
+        android:id="@+id/logbook"
+        android:name="com.diveboard.mobile.LogbookPage"
+        android:label="logbook"
+        tools:layout="@layout/activity_dives_list">
+        <action
+            android:id="@+id/action_logbook_to_diveDetails"
+            app:destination="@id/diveDetails">
+            <argument
+                android:name="shakenId"
+                app:argType="string"
+                app:nullable="true" />
+        </action>
+    </fragment>
+
+    <fragment
+        android:id="@+id/login"
+        android:name="com.diveboard.mobile.LoginPage"
+        android:label="login"
+        tools:layout="@layout/activity_login">
+        <action
+            android:id="@+id/action_login_to_logbook"
+            app:destination="@id/logbook" />
+        <action
+            android:id="@+id/action_login_to_signup"
+            app:destination="@id/signup" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/signup"
+        android:name="com.diveboard.mobile.SignUpPage"
+        android:label="signup"
+        tools:layout="@layout/activity_sign_up" />
+
+    <fragment
+        android:id="@+id/diveDetails"
+        android:name="com.diveboard.mobile.DiveDetailsPage"
+        android:label="dive_details2"
+        tools:layout="@layout/activity_dive_details">
+        <action
+            android:id="@+id/action_diveDetails_to_selectSpot"
+            app:destination="@id/selectSpot" />
+        <argument
+            android:name="shakenId"
+            app:argType="string"
+            app:nullable="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectSpot"
+        android:name="com.diveboard.mobile.SelectSpotPage"
+        android:label="select_spot"
+        tools:layout="@layout/select_spot">
+        <!--<argument
+            android:name="diveId"
+            android:defaultValue="-1"
+            app:argType="integer" />-->
+    </fragment>
+
+    <fragment
+        android:id="@+id/settings"
+        android:name="com.diveboard.mobile.SettingsPage"
+        android:label="settings"
+        tools:layout="@layout/activity_settings">
+        <action
+            android:id="@+id/action_settings_to_login"
+            app:destination="@id/login"
+            app:popUpTo="@+id/login"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/statistics"
+        android:name="com.diveboard.mobile.StatisticPage"
+        android:label="settings"
+        tools:layout="@layout/activity_settings" />
+</navigation>
