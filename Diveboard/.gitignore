@@ -7,3 +7,7 @@
 
 # Build output
 build
+
+upload-keystore.jks
+keystore.properties
+google_maps_api.xml

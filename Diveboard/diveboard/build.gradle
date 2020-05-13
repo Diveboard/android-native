@@ -3,11 +3,15 @@ apply plugin: "androidx.navigation.safeargs"
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'io.fabric'
 
+def keystorePropertiesFile = rootProject.file("diveboard/keystore.properties")
+def keystoreProperties = new Properties()
+keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
+
 android {
     compileSdkVersion 29
     buildToolsVersion '29.0.3'
     defaultConfig {
-        manifestPlaceholders = [appIcon:"@mipmap/ic_launcher_new", appLabel:"@string/app_name"]
+        manifestPlaceholders = [appIcon: "@mipmap/ic_launcher_new", appLabel: "@string/app_name"]
         applicationId "com.diveboard.mobile"
         minSdkVersion 19
         targetSdkVersion 29
@@ -20,10 +24,10 @@ android {
     }
     signingConfigs {
         release {
-            storeFile file("release.jks")
-            storePassword "password"
-            keyAlias "diveboard"
-            keyPassword "password"
+            keyAlias keystoreProperties['keyAlias']
+            keyPassword keystoreProperties['keyPassword']
+            storeFile file(keystoreProperties['storeFile'])
+            storePassword keystoreProperties['storePassword']
         }
     }
     buildTypes {
@@ -51,7 +55,7 @@ android {
             dimension "version"
             applicationIdSuffix ".beta"
             versionNameSuffix "-beta"
-            manifestPlaceholders = [appIcon:"@mipmap/ic_launcher_beta", appLabel:"@string/app_name_beta"]
+            manifestPlaceholders = [appIcon: "@mipmap/ic_launcher_beta", appLabel: "@string/app_name_beta"]
         }
     }
 
@@ -98,5 +102,5 @@ dependencies {
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:master-SNAPSHOT'
 //    implementation 'io.github.kobakei:ratethisapp:1.2.0'
 //    https://github.com/pavel-golub/Android-RateThisApp
-    implementation files('libs\\ratethisapp-debug.aar')
+    implementation files('libs/ratethisapp-debug.aar')
 }
