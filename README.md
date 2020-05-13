@@ -24,3 +24,10 @@ E.g. to build APK use
 Follow instructions in *diveboard/diveboard/src/{debug}/res/values/google_maps_api.xml* and put API key there.
 ## Enable crashlytics
 Follow instructions at https://firebase.google.com/docs/android/setup and copy file into *diveboard/google-services.json*
+
+# Misc
+## Build release package
+Run `gradle assembleRelease`
+
+## Screen designs
+Screen designs are located here https://xd.adobe.com/view/d4bb134d-0606-41e1-4e79-5d55fce0792a-a28a/
