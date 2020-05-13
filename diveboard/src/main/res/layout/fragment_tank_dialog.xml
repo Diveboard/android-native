@@ -1,0 +1,171 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <import type="android.view.View" />
+
+        <variable
+            name="converter"
+            type="com.diveboard.util.BindingConvertions" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.TankViewModel" />
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:paddingLeft="?dialogPreferredPadding"
+        android:paddingRight="?dialogPreferredPadding"
+        android:paddingTop="?dialogPreferredPadding">
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/eb1"
+            style="@style/InputLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cylinder_label"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/eb2"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/cylinders"
+            android:selectedItemPosition="@={model.cylindersCountPosition}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/eb1" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/appCompatSpinner"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:entries="@array/tank_materials"
+            android:selectedItemPosition="@={model.materialPosition}"
+            app:layout_constraintStart_toEndOf="@id/eb2"
+            app:layout_constraintTop_toBottomOf="@id/eb1" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/er2"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_margin"
+            android:hint="@{converter.getTitleByUnits(model.units, @string/volume_metric, @string/volume_imperial)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/appCompatSpinner"
+            tools:hint="@string/volume_imperial">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="@={converter.doubleToStringConverter(model.volume)}"
+                tools:text="12" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/eb3"
+            style="@style/InputLabel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_margin"
+            android:text="@string/gas_mix"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/er2" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:id="@+id/eb4"
+            android:layout_width="130dp"
+            android:layout_height="wrap_content"
+            android:entries="@array/gas_mixes"
+            android:selectedItemPosition="@={model.gasMixPosition}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/eb3" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/o2"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_margin"
+            android:hint="@string/unit_o2"
+            android:visibility="@{model.gasMixPosition > 0 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toEndOf="@id/eb4"
+            app:layout_constraintTop_toTopOf="@id/eb3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="@={converter.integerToStringConverter(model.o2)}"
+                tools:text="21" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/he"
+            android:layout_width="50dp"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/view_margin"
+            android:hint="@string/unit_he"
+            android:visibility="@{model.gasMixPosition==2 ? View.VISIBLE : View.GONE}"
+            app:layout_constraintStart_toEndOf="@id/o2"
+            app:layout_constraintTop_toTopOf="@id/eb3">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="@={converter.integerToStringConverter(model.he)}"
+                tools:text="0" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/eb5"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/view_margin"
+            android:hint="@{converter.getTitleByUnits(model.units, @string/start_pressure_metric, @string/start_pressure_imperial)}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/eb4"
+            tools:hint="@string/start_pressure_imperial">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="@={converter.doubleToStringConverter(model.startPressure)}" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="@dimen/view_margin"
+            android:hint="@{converter.getTitleByUnits(model.units, @string/end_pressure_metric, @string/end_pressure_imperial)}"
+            app:layout_constraintStart_toEndOf="@id/eb5"
+            app:layout_constraintTop_toBottomOf="@id/eb4"
+            tools:hint="@string/end_pressure_imperial">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="numberDecimal"
+                android:selectAllOnFocus="true"
+                android:text="@={converter.doubleToStringConverter(model.endPressure)}" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

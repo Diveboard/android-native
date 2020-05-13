@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/logbook"
+            android:icon="@drawable/ic_baseline_assignment_24px"
+            android:title="@string/menu_links_logbook" />
+        <item
+            android:id="@+id/statistics"
+            android:icon="@drawable/ic_baseline_assessment_24px"
+            android:title="@string/menu_links_statistics" />
+        <item
+            android:id="@+id/photos"
+            android:icon="@drawable/ic_baseline_camera_enhance_24px"
+            android:title="@string/menu_links_photos" />
+        <item
+            android:id="@+id/settings"
+            android:icon="@drawable/ic_baseline_settings_20px"
+            android:title="@string/menu_links_setting" />
+    </group>
+</menu>

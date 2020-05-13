@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".DiveDetailsPeopleFragment">
+
+    <data>
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.DiveDetailsPeopleFragment" />
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.DiveDetailsViewModel" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/activity_margin">
+
+            <com.diveboard.ui.CircularImageView
+                android:id="@+id/profile_image"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                app:civ_border="true"
+                app:civ_border_color="@color/textColorPrimaryInverse"
+                app:civ_border_width="1dp"
+                app:imageUrl="@{(model.buddy==null||model.buddy.buddy==null)?``:model.buddy.buddy.sanitizedPictureUrl}"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout2" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout2"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/view_margin"
+                android:layout_marginLeft="@dimen/view_margin"
+                android:hint="@string/diveboard_buddy"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profile_image"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/buddy"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textNoSuggestions"
+                    android:text="@{(model.buddy==null||model.buddy.buddy==null)?``:model.buddy.buddy.nickname}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="@dimen/view_margin"
+                android:layout_marginRight="@dimen/view_margin"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout2"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout2"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout2" />
+
+            <com.diveboard.ui.CircularImageView
+                android:id="@+id/profile_image2"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_centerInParent="true"
+                app:civ_border="true"
+                app:civ_border_color="@color/textColorPrimaryInverse"
+                app:civ_border_width="1dp"
+                app:imageUrl="@{(model.diveCenter==null)?``:model.diveCenter.logo_url}"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout33"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout33" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout33"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/view_margin"
+                android:layout_marginLeft="@dimen/view_margin"
+                android:layout_marginTop="@dimen/between_edits"
+                android:hint="@string/dive_center"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/profile_image2"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout2">
+
+                <androidx.appcompat.widget.AppCompatAutoCompleteTextView
+                    android:id="@+id/diveCenter"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionDone"
+                    android:inputType="textNoSuggestions"
+                    android:text="@{(model.diveCenter==null)?``:model.diveCenter.name}" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <ProgressBar
+                android:id="@+id/progress_bar2"
+                style="?android:attr/progressBarStyleSmall"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="@dimen/view_margin"
+                android:layout_marginRight="@dimen/view_margin"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="@+id/textInputLayout33"
+                app:layout_constraintEnd_toEndOf="@+id/textInputLayout33"
+                app:layout_constraintTop_toTopOf="@+id/textInputLayout33" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/textInputLayout7"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/between_edits"
+                android:hint="@string/guide_name"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/textInputLayout33">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/guide"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@={model.guide}" />
+            </com.google.android.material.textfield.TextInputLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+</layout>
