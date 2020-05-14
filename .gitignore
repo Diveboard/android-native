@@ -62,3 +62,6 @@ build
 upload-keystore.jks
 keystore.properties
 google_maps_api.xml
+/.blackbox/pubring.gpg~
+/.blackbox/pubring.kbx~
+/.blackbox/secring.gpg
