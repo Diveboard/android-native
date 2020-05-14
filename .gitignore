@@ -65,3 +65,4 @@ google_maps_api.xml
 /.blackbox/pubring.gpg~
 /.blackbox/pubring.kbx~
 /.blackbox/secring.gpg
+/diveboard/src/release/res/values/google_maps_api.xml
