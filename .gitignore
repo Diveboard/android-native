@@ -66,3 +66,4 @@ keystore.properties
 .blackbox/S.gpg-agent*
 /diveboard/src/release/res/values/google_maps_api.xml
 /diveboard/upload-keystore.properties
+/diveboard/src/release/google-services.json

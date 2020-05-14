@@ -1,2 +1,3 @@
+diveboard/src/release/google-services.json
 diveboard/src/release/res/values/google_maps_api.xml
 diveboard/upload-keystore.properties
