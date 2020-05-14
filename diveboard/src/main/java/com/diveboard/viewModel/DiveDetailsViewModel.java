@@ -34,6 +34,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     @Bindable
     public int currentPosition = 0;
     public Units.UnitsType units;
+    public List<Picture> pictures = new ArrayList();
     private Calendar diveDateTime;
     private List<String> currentDictionary;
     private List<String> visibilityDictionary;
@@ -57,7 +58,6 @@ public class DiveDetailsViewModel extends BaseObservable {
     private BuddyViewModel buddy;
     private Shop diveCenter;
     private String guide;
-    public List<Picture> pictures = new ArrayList();
 
     public DiveDetailsViewModel(String[] visibilityDictionary, String[] currentDictionary, Units.UnitsType units, Integer userId) {
         this.visibilityDictionary = Arrays.asList(visibilityDictionary);
@@ -145,7 +145,7 @@ public class DiveDetailsViewModel extends BaseObservable {
             result.diveTypes.add(new DiveTypeViewModel(diveType));
         }
 
-        result.pictures = data.pictures;
+        result.pictures.addAll(data.pictures);
         return result;
     }
 

@@ -207,7 +207,21 @@ public class Dive {
 //                Utils.equals(spot, dive.spot) &&
 //                Utils.equals(buddies, dive.buddies) &&
 //                Utils.equals(diveCenter, dive.diveCenter) &&
-//                Utils.equals(pictures, dive.pictures) &&
+                isPicturesEquals(dive) &&
                 Utils.equals(diveCenterId, dive.diveCenterId);
+    }
+
+    private boolean isPicturesEquals(Dive dive) {
+        List<Picture> thisPictures = pictures == null ? new ArrayList<>() : pictures;
+        List<Picture> thatPictures = dive.pictures == null ? new ArrayList<>() : dive.pictures;
+        if (thisPictures.size() != thatPictures.size()) {
+            return false;
+        }
+        for (int i = 0; i < thisPictures.size(); i++) {
+            if (!Utils.equals(thisPictures.get(i).id, thatPictures.get(i).id)) {
+                return false;
+            }
+        }
+        return true;
     }
 }
