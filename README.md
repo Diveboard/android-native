@@ -37,7 +37,7 @@ Follow instructions at https://firebase.google.com/docs/android/setup and copy f
 You can be added into Blackbox admins list by any user listed in *.blackbox\blackbox-admins.txt*. See full instructions [here](https://github.com/StackExchange/blackbox#how-to-indoctrinate-a-new-user-into-the-system).
 
 ## Create release package
-1. Decrypt all the encrypted files by running `./blackbox_decrypt_all_files`
+1. Decrypt all the encrypted files by running `blackbox_decrypt_all_files`
 2. Execute `gradle assembleBetaRelease`
 3. (optionally) Execute `blackbox_shred_all_files` to remove all the decrypted files
 
