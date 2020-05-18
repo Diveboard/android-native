@@ -191,6 +191,12 @@ public class SignUpPage extends Fragment {
         }
     }
 
+   /* public void goToFBLogin(View view)
+    {
+        Intent editDiveActivity = new Intent(SignUpActivity.this, FBLoginActivity.class);
+        startActivity(editDiveActivity);
+    }*/
+
     /**
      * Shows the progress UI and hides the login form.
      */

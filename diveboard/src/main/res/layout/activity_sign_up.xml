@@ -235,12 +235,14 @@
                                         android:text="@string/action_sign_in_register"
                                         android:textColor="@color/dark_grey" />
 
-                                    <ImageView
+                                   <!--
+                                   TODO: if uncomment then fix onClick handler as well
+                                   <ImageView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:layout_marginTop="14dp"
                                         android:onClick="goToFBLogin"
-                                        android:src="@drawable/ic_facebook_register_btn" />
+                                        android:src="@drawable/ic_facebook_register_btn" />-->
 
                                     <RelativeLayout
                                         android:layout_width="match_parent"
