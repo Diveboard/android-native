@@ -3,6 +3,7 @@ package com.diveboard.viewModel;
 import android.text.TextUtils;
 
 import com.diveboard.dataaccess.datamodel.Spot;
+import com.diveboard.model.Converter;
 import com.diveboard.model.Units;
 import com.diveboard.util.DateConverter;
 
@@ -12,8 +13,6 @@ public class DiveItemViewModel implements Comparable {
     public final int index;
     public final Integer number;
     public final Integer id;
-    public String tripName;
-    public int divesInTrip;
     public final String thumbnailImageUrl;
     public final String shakenId;
     public final String date;
@@ -23,10 +22,13 @@ public class DiveItemViewModel implements Comparable {
     public final String maxDepthStr;
     public final boolean unsynced;
     private final Calendar dateTyped;
+    public String tripName;
+    public int divesInTrip;
     public boolean isGroupStart;
     public String divesInTripTitle;
 
-    public DiveItemViewModel(DateConverter conversion, int index, Integer id, String shakenId, Integer number, Calendar date, Spot spot, String tripName, Integer minutes, Double maxDepth, String thumbnailImageUrl, Units.UnitsType units, boolean unsynced) {
+    public DiveItemViewModel(DateConverter conversion, int index, Integer id, String shakenId, Integer number, Calendar date, Spot spot,
+                             String tripName, Integer minutes, Double maxDepthMetric, String thumbnailImageUrl, Units.UnitsType units, boolean unsynced) {
         this.index = index;
         this.shakenId = shakenId;
         this.number = number;
@@ -44,7 +46,7 @@ public class DiveItemViewModel implements Comparable {
             siteName = getString(spot.name);
         }
         this.durationStr = minutes == null ? "" : minutes + " min";
-        this.maxDepthStr = maxDepth == null ? "" : String.format("%.0f", maxDepth) + " " + (units == Units.UnitsType.Metric ? "m" : "ft");
+        this.maxDepthStr = maxDepthMetric == null ? "" : String.format("%.0f", Converter.convertDistance(maxDepthMetric, units)) + " " + (units == Units.UnitsType.Metric ? "m" : "ft");
     }
 
     private String getString(String str) {
