@@ -82,4 +82,27 @@
         <item name="colorControlNormal">@color/colorUnderline</item>
         <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
     </style>
+
+    <style name="card_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:layout_marginTop">@dimen/view_double_margin</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="card_subtitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="card_value">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:textColor">@color/textColorPrimaryDark</item>
+        <item name="android:textSize">34sp</item>
+    </style>
 </resources>

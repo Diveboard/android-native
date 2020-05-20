@@ -102,5 +102,16 @@
     <string name="prompt_email">YOUR EMAIL</string>
     <string name="prompt_password">YOUR PASSWORD</string>
     <string name="action_login">LOGIN</string>
+    <string name="total_dives">Total Dives</string>
+    <string name="countries">Countries</string>
+    <string name="dive_sites">Dive Sites</string>
+    <string name="total_time">Total Time</string>
+    <string name="max_depth">Max Depth</string>
+    <string name="in">in</string>
+    <string name="max_time">Max Time</string>
+    <string name="coldest">Coldest Water</string>
+    <string name="warmest">Warmest Water</string>
+    <string name="see_them">see them</string>
+    <string name="close">Close</string>
 
 </resources>

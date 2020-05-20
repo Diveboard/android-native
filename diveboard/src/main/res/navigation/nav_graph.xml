@@ -9,8 +9,7 @@
         android:id="@+id/photos"
         android:name="com.diveboard.mobile.PhotosPage"
         android:label="photos"
-        tools:layout="@layout/activity_photos">
-    </fragment>
+        tools:layout="@layout/activity_photos"></fragment>
 
     <fragment
         android:id="@+id/logbook"
@@ -87,5 +86,14 @@
         android:id="@+id/statistics"
         android:name="com.diveboard.mobile.StatisticPage"
         android:label="settings"
-        tools:layout="@layout/activity_settings" />
+        tools:layout="@layout/activity_settings">
+        <action
+            android:id="@+id/action_statistics_to_diveDetails"
+            app:destination="@id/diveDetails">
+            <argument
+                android:name="shakenId"
+                app:argType="string"
+                app:nullable="false" />
+        </action>
+    </fragment>
 </navigation>

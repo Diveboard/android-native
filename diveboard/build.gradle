@@ -109,6 +109,7 @@ dependencies {
 //    implementation 'io.github.kobakei:ratethisapp:1.2.0'
 //    https://github.com/pavel-golub/Android-RateThisApp
     implementation files('libs/ratethisapp-debug.aar')
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.1.0'
 }
 
 //workaround against missing 'exclude' option for android resources

@@ -1,7 +1,6 @@
 package com.diveboard.util;
 
 import android.content.Context;
-import android.text.method.DigitsKeyListener;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,15 +16,11 @@ import com.diveboard.model.GasMixes;
 import com.diveboard.model.Units;
 import com.diveboard.viewModel.SafetyStopViewModel;
 import com.diveboard.viewModel.TankViewModel;
-import com.google.android.material.textfield.TextInputEditText;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
 import java.text.ParseException;
-
-import static android.text.InputType.TYPE_CLASS_NUMBER;
-import static android.text.InputType.TYPE_NUMBER_FLAG_DECIMAL;
 
 public final class BindingConvertions {
     @BindingConversion
@@ -67,6 +62,30 @@ public final class BindingConvertions {
         imageView.setImageUrl(imageUrl, VolleySingleton.getInstance().getImageLoader());
     }
 
+    @BindingAdapter("android:layout_marginTop")
+    public static void setLayoutMarginTop(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.topMargin = dimen.intValue();
+    }
+
+    @BindingAdapter("android:layout_marginBottom")
+    public static void setLayoutMarginBottom(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.bottomMargin = dimen.intValue();
+    }
+
+    @BindingAdapter("android:layout_marginStart")
+    public static void setLayoutMarginStart(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMarginStart(dimen.intValue());
+    }
+
+    @BindingAdapter("android:layout_marginEnd")
+    public static void setLayoutMarginEnd(View view, Float dimen) {
+        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
+        layoutParams.setMarginEnd(dimen.intValue());
+    }
+
     @InverseMethod("stringToIntegerConverter")
     public String integerToStringConverter(Integer value) {
         if (value == null) {
@@ -82,6 +101,10 @@ public final class BindingConvertions {
         } catch (NumberFormatException e) {
         }
         return null;
+    }
+
+    public static String intToStringConverter(int value) {
+        return Integer.toString(value);
     }
 
     @InverseMethod("stringToDoubleConverter")
@@ -116,29 +139,5 @@ public final class BindingConvertions {
 
     public String[] getArrayByUnits(Units.UnitsType units, String[] metricArray, String[] imperialArray) {
         return units == Units.UnitsType.Imperial ? imperialArray : metricArray;
-    }
-
-    @BindingAdapter("android:layout_marginTop")
-    public static void setLayoutMarginTop(View view, Float dimen) {
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        layoutParams.topMargin = dimen.intValue();
-    }
-
-    @BindingAdapter("android:layout_marginBottom")
-    public static void setLayoutMarginBottom(View view, Float dimen) {
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        layoutParams.bottomMargin = dimen.intValue();
-    }
-
-    @BindingAdapter("android:layout_marginStart")
-    public static void setLayoutMarginStart(View view, Float dimen) {
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        layoutParams.setMarginStart(dimen.intValue());
-    }
-
-    @BindingAdapter("android:layout_marginEnd")
-    public static void setLayoutMarginEnd(View view, Float dimen) {
-        ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) view.getLayoutParams();
-        layoutParams.setMarginEnd(dimen.intValue());
     }
 }
