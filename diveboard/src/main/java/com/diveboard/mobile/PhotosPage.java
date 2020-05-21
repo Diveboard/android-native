@@ -36,7 +36,7 @@ public class PhotosPage extends PhotoGaleryFragment {
         Toolbar actionBar = view.findViewById(R.id.toolbar);
         actionBar.inflateMenu(R.menu.dive_list);
         actionBar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_menu));
-        actionBar.setTitle(getString(R.string.photos));
+        actionBar.setTitle(getString(R.string.menu_links_photos));
         actionBar.setNavigationOnClickListener(v -> drawerLayout.openDrawer(GravityCompat.START));
         actionBar.setOnMenuItemClickListener(item -> {
             switch (item.getItemId()) {
