@@ -36,7 +36,8 @@ import com.github.mikephil.charting.formatter.ValueFormatter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 public class StatisticPage extends Fragment {
@@ -80,9 +81,19 @@ public class StatisticPage extends Fragment {
     private void drawChart(StatisticViewModel statistic) {
         List<BarEntry> entries = new ArrayList<>();
         int lastYear = -1;
-        for (Map.Entry<Integer, Integer> entry : statistic.divesPerYear.entrySet()) {
-            entries.add(new BarEntry(entry.getKey(), entry.getValue()));
-            lastYear = Math.max(entry.getKey(), lastYear);
+        int previousYear = 0;
+        //ned to put values into chart into sorted way otherwise they flicker on horizontal scrolling
+        SortedSet<Integer> keySet = new TreeSet<>(statistic.divesPerYear.keySet());
+        for (Integer year : keySet) {
+            entries.add(new BarEntry(year, statistic.divesPerYear.get(year)));
+            lastYear = Math.max(year, lastYear);
+            //fullfil missing years with zeros
+            if (previousYear != 0) {
+                for (int i = previousYear + 1; i < year; i++) {
+                    entries.add(new BarEntry(i, 0));
+                }
+            }
+            previousYear = year;
         }
         BarDataSet set = new BarDataSet(entries, "Dives per year");
         set.setColor(getResources().getColor(R.color.diveboardGray));

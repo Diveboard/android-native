@@ -30,12 +30,14 @@ public class StatisticViewModel {
     public int countriesNumber;
     public Double coldest;
     public Double warmest;
+    public String mostDivesInCountry = "-";
     public Map<Integer, Integer> divesPerYear = new HashMap<>();
     public Dive maxTimeDive;
     public Dive warmestDive;
     public Dive coldestDive;
     public List<Country> countries = new ArrayList<>();
     private ArrayList<String> countryCodes = new ArrayList<>();
+    private Map<String, Integer> divesPerCountry = new HashMap<>();
     private int maxTimeMinutes;
     private double maxDepth;
     private Context ctx;
@@ -86,9 +88,9 @@ public class StatisticViewModel {
                 if (name != null && !diveSitesIds.contains(name)) {
                     diveSitesIds.add(name);
                 }
-                String countryId = dive.spot.countryCode;
-                if (countryId != null && !result.countryCodes.contains(countryId)) {
-                    result.countryCodes.add(countryId);
+                String countryCode = dive.spot.countryCode;
+                if (countryCode != null && !result.countryCodes.contains(countryCode)) {
+                    result.countryCodes.add(countryCode);
                     //put most recent year
                     boolean found = false;
                     for (Country c : result.countries) {
@@ -102,6 +104,13 @@ public class StatisticViewModel {
                     }
                     if (!found) {
                         result.countries.add(new Country(dive.spot.countryName, diveYear));
+                    }
+                }
+                if (countryCode != null) {
+                    if (result.divesPerCountry.containsKey(dive.spot.countryName)) {
+                        result.divesPerCountry.put(dive.spot.countryName, result.divesPerCountry.get(dive.spot.countryName) + 1);
+                    } else {
+                        result.divesPerCountry.put(dive.spot.countryName, 1);
                     }
                 }
             }
@@ -119,6 +128,15 @@ public class StatisticViewModel {
         result.countriesNumber = result.countries.size();
         result.diveSitesNumber = diveSitesIds.size();
         result.divesCount = Math.max(result.divesCount, dives.size());
+
+        //calculate most popular country
+        Map.Entry<String, Integer> maxEntry = null;
+        for (Map.Entry<String, Integer> entry : result.divesPerCountry.entrySet()) {
+            if (maxEntry == null || entry.getValue().compareTo(maxEntry.getValue()) > 0) {
+                maxEntry = entry;
+            }
+        }
+        result.mostDivesInCountry = maxEntry.getKey();
         return result;
     }
 
