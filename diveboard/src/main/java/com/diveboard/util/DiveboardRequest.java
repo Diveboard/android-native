@@ -14,12 +14,16 @@ import com.diveboard.dataaccess.datamodel.ResponseBase;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import static com.diveboard.mobile.ApplicationController.getGson;
 
@@ -84,7 +88,10 @@ public class DiveboardRequest<T extends ResponseBase<?>> extends Request<T> {
 
     @Override
     public Map<String, String> getHeaders() throws AuthFailureError {
-        return (mHeaders != null) ? mHeaders : super.getHeaders();
+        Map<String, String> params = new HashMap<>();
+        params.putAll((mHeaders != null) ? mHeaders : super.getHeaders());
+        params.put("Accept-Encoding", "gzip");
+        return params;
     }
 
     @Override
@@ -132,8 +139,24 @@ public class DiveboardRequest<T extends ResponseBase<?>> extends Request<T> {
 
     @Override
     protected Response<T> parseNetworkResponse(NetworkResponse response) {
+        StringBuilder output = new StringBuilder();
+        String json;
         try {
-            String json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            if ("gzip".equals(response.headers.get("Content-Encoding"))) {
+                GZIPInputStream gStream = new GZIPInputStream(new ByteArrayInputStream(response.data));
+                InputStreamReader reader = new InputStreamReader(gStream, HttpHeaderParser.parseCharset(response.headers));
+                BufferedReader in = new BufferedReader(reader, 16384);
+                String read;
+                while ((read = in.readLine()) != null) {
+                    output.append(read).append("\n");
+                }
+                reader.close();
+                in.close();
+                gStream.close();
+                json = output.toString();
+            } else {
+                json = new String(response.data, HttpHeaderParser.parseCharset(response.headers));
+            }
             T result = gson.fromJson(json, clazz);
 
             if (result.success) {
@@ -141,13 +164,10 @@ public class DiveboardRequest<T extends ResponseBase<?>> extends Request<T> {
             } else {
                 return Response.error(new ParseError(new DiveboardApiException(result.errors)));
             }
-
             return Response.success(
                     result,
                     HttpHeaderParser.parseCacheHeaders(response));
-        } catch (UnsupportedEncodingException e) {
-            return Response.error(new ParseError(e));
-        } catch (JsonSyntaxException e) {
+        } catch (JsonSyntaxException | IOException e) {
             return Response.error(new ParseError(e));
         }
     }
