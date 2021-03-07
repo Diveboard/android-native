@@ -71,8 +71,8 @@ android {
         disable 'DuplicatePlatformClasses'
     }
 
-    dataBinding {
-        enabled = true
+    buildFeatures {
+        dataBinding = true
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -111,6 +111,7 @@ dependencies {
     implementation 'androidx.multidex:multidex:2.0.1'
     implementation platform('com.google.firebase:firebase-bom:26.6.0')
     implementation 'com.google.firebase:firebase-crashlytics'
+    implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.squareup.picasso:picasso:2.71828'
     implementation 'com.github.stfalcon-studio:StfalconImageViewer:master-SNAPSHOT'
     implementation files('libs/ratethisapp-debug.aar')
