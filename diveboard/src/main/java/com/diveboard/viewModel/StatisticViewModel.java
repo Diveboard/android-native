@@ -136,7 +136,7 @@ public class StatisticViewModel {
                 maxEntry = entry;
             }
         }
-        result.mostDivesInCountry = maxEntry.getKey();
+        result.mostDivesInCountry = maxEntry == null ? ctx.getString(R.string.NA) : maxEntry.getKey();
         return result;
     }
 

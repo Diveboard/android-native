@@ -5,7 +5,7 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
-import com.crashlytics.android.Crashlytics;
+import com.google.firebase.crashlytics.FirebaseCrashlytics;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -20,7 +20,7 @@ public class Utils {
 
     public static void logError(Class classForTag, String msg, Throwable error) {
         Log.e(classForTag.getSimpleName(), msg, error);
-        Crashlytics.logException(error);
+        FirebaseCrashlytics.getInstance().recordException(error);
     }
 
     public static boolean isNullOrEmpty(String str) {

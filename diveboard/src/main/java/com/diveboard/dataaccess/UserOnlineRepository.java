@@ -3,9 +3,9 @@ package com.diveboard.dataaccess;
 import android.content.Context;
 
 import com.android.volley.Request;
-import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 import com.diveboard.config.AppConfig;
+import com.diveboard.dataaccess.datamodel.StoredSession;
 import com.diveboard.dataaccess.datamodel.User;
 import com.diveboard.dataaccess.datamodel.UserResponse;
 import com.diveboard.model.AuthenticationService;
@@ -26,7 +26,11 @@ public class UserOnlineRepository {
     }
 
     public void getAsync(ResponseCallback<User> callback) {
-        Volley.newRequestQueue(context).add(getGetUserRequest(callback, authenticationService.getSession().userId));
+        StoredSession session = authenticationService.getSession();
+        if (session == null) {
+            throw new RuntimeException("User is not authenticated or session expired");
+        }
+        Volley.newRequestQueue(context).add(getGetUserRequest(callback, session.userId));
     }
 
     private DiveboardRequest getGetUserRequest(final ResponseCallback<User> callback, int userId) {

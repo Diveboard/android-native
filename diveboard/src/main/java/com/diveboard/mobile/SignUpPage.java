@@ -237,6 +237,7 @@ public class SignUpPage extends Fragment {
                 ac.getAuthenticationService().loginAsync(mEmail, mPassword, new ResponseCallback<LoginResponse>() {
                     @Override
                     public void success(LoginResponse data) {
+                        ac.initCurrentUser();
                         showProgress(false);
                         Navigation.findNavController(mEmailView).navigate(R.id.logbook);
                     }

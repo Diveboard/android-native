@@ -142,6 +142,10 @@ public class ApplicationController extends MultiDexApplication {
         sAnalytics = GoogleAnalytics.getInstance(this);
         singleton = this;
 
+        initCurrentUser();
+    }
+
+    public void initCurrentUser() {
         if (!getAuthenticationService().isLoggedIn()) {
             return;
         }

@@ -1,18 +1,15 @@
 package com.diveboard.viewModel;
 
 import android.content.Context;
-import android.util.Log;
 import android.widget.Toast;
 
 import androidx.databinding.ObservableArrayList;
 import androidx.databinding.ObservableBoolean;
 import androidx.databinding.ObservableList;
 
-import com.crashlytics.android.Crashlytics;
 import com.diveboard.dataaccess.datamodel.Dive;
 import com.diveboard.dataaccess.datamodel.DivesResponse;
 import com.diveboard.dataaccess.datamodel.SyncObject;
-import com.diveboard.mobile.DiveDetailsPage;
 import com.diveboard.mobile.R;
 import com.diveboard.model.DivesService;
 import com.diveboard.model.SyncService;

@@ -29,7 +29,6 @@ public class AuthenticationService {
 
     public boolean isLoggedIn() {
         //TODO: check that userRepository.getUser(); returns diveType and initialized
-        //TODO: user might be logged in in FB but not in the app. in this case login in the app should be reinitiated
         StoredSession session = sessionRepository.getSession();
         return session != null && session.isActive();
     }
@@ -44,9 +43,7 @@ public class AuthenticationService {
             public void success(LoginResponse data) {
                 sessionRepository.saveSession(data);
                 userOfflineRepository.save(data.user);
-                if (callback != null) {
-                    callback.success(data);
-                }
+                callback.success(data);
             }
 
             @Override

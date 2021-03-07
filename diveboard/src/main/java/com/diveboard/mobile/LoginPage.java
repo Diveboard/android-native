@@ -80,6 +80,7 @@ public class LoginPage extends Fragment {
                 ac.getAuthenticationService().loginWithFacebookAsync(accessToken.getUserId(), accessToken.getToken(), new ResponseCallback<LoginResponse>() {
                     @Override
                     public void success(LoginResponse data) {
+                        ac.initCurrentUser();
                         Navigation.findNavController(view).navigate(R.id.logbook);
                     }
 

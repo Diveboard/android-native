@@ -108,7 +108,7 @@ public class DivesService {
         }
     }
 
-    private class SyncChangesAndGetFreshResultsTask extends AsyncTask<Void, Void, Exception> {
+        private class SyncChangesAndGetFreshResultsTask extends AsyncTask<Void, Void, Exception> {
         private ResponseCallback<DivesResponse> callback;
 
         public SyncChangesAndGetFreshResultsTask(ResponseCallback<DivesResponse> callback) {
@@ -120,7 +120,7 @@ public class DivesService {
             super.onPostExecute(e);
             if (e != null) {
                 callback.error(e);
-                //get fresh results from server even if syncronization failed
+                //get fresh results from server even if synchronization failed
             }
 
             onlineRepository.load(new ResponseCallback<DivesResponse>() {
