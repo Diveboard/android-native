@@ -13,6 +13,7 @@ import com.diveboard.model.Converter;
 import com.diveboard.model.SafetyStop;
 import com.diveboard.model.Tank;
 import com.diveboard.model.Units;
+import com.diveboard.util.Utils;
 import com.google.android.gms.common.util.Strings;
 
 import java.util.ArrayList;
@@ -220,7 +221,7 @@ public class DiveDetailsViewModel extends BaseObservable {
     }
 
     public void setTripName(String tripName) {
-        this.tripName = tripName;
+        this.tripName = Utils.isNullOrEmpty(tripName) ? null : tripName;
     }
 
     public Double getMaxDepth() {
