@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ac = (ApplicationController) getApplicationContext();
+        ac.addLoginHandler(this::setupNavigationHeader);
         setContentView(R.layout.activity_main);
         updateSpots();
         navigationView = findViewById(R.id.nav_view);

@@ -11,7 +11,6 @@ import androidx.navigation.Navigation;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 
-import com.diveboard.config.AppConfig;
 import com.diveboard.dataaccess.SpotsDbUpdater;
 import com.diveboard.model.AuthenticationService;
 import com.diveboard.util.Callback;
@@ -128,7 +127,7 @@ public class SettingsFragment extends PreferenceFragmentCompat {
 
         private void doLogout() {
             ac.getLogoutService().logout();
-            //TODO: test it out!!! entire logout feature
+            ac.initCurrentUser();
             Navigation.findNavController(settingsFragment.getView()).navigate(SettingsPageDirections.actionSettingsToLogin());
         }
 

@@ -58,6 +58,7 @@ public class ApplicationController extends MultiDexApplication {
     private LogoutService logoutService;
     private SpotService spotService;
     private PhotosRepository photosRepository;
+    private LoginEventHandler loginEventHandler;
 
     public static ApplicationController getInstance() {
         return singleton;
@@ -147,16 +148,19 @@ public class ApplicationController extends MultiDexApplication {
 
     public void initCurrentUser() {
         if (!getAuthenticationService().isLoggedIn()) {
+            raiseLoginEvent(false);
             return;
         }
         getUserService().getUserAsync(new ResponseCallback<User>() {
             @Override
             public void success(User data) {
                 currentUser = data;
+                raiseLoginEvent(true);
             }
 
             @Override
             public void error(Exception e) {
+                raiseLoginEvent(false);
                 Utils.logError(ApplicationController.class, "Cannot login", e);
             }
         }, false);
@@ -247,5 +251,20 @@ public class ApplicationController extends MultiDexApplication {
             searchShopRepository = new SearchShopRepository(this, getAuthenticationService());
         }
         return searchShopRepository;
+    }
+
+    public void addLoginHandler(LoginEventHandler eventHandler) {
+//one eventHandler at a time for now
+        this.loginEventHandler = eventHandler;
+    }
+
+    private void raiseLoginEvent(boolean loggedIn) {
+        if (loginEventHandler != null) {
+            loginEventHandler.handle(loggedIn);
+        }
+    }
+
+    public interface LoginEventHandler {
+        void handle(boolean loggedIn);
     }
 }

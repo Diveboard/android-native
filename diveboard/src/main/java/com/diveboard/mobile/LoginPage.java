@@ -185,9 +185,10 @@ public class LoginPage extends Fragment {
             ac.getAuthenticationService().loginAsync(mEmail, mPassword, new ResponseCallback<LoginResponse>() {
                 @Override
                 public void success(LoginResponse data) {
-                    showProgress(false);
+                    ac.initCurrentUser();
                     mEmailView.setText("");
                     mPasswordView.setText("");
+                    showProgress(false);
                     Navigation.findNavController(mEmailView).navigate(R.id.logbook);
                 }
 
