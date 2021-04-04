@@ -55,15 +55,15 @@ android {
         exclude 'META-INF/ASL2.0'
     }
 
-    flavorDimensions "version"
-    productFlavors {
-        beta {
-            dimension "version"
-            applicationIdSuffix ".beta"
-            versionNameSuffix "-beta"
-            manifestPlaceholders = [appIcon: "@mipmap/ic_launcher_beta", appLabel: "@string/app_name_beta"]
-        }
-    }
+//    flavorDimensions "version"
+//    productFlavors {
+//        beta {
+//            dimension "version"
+//            applicationIdSuffix ".beta"
+//            versionNameSuffix "-beta"
+//            manifestPlaceholders = [appIcon: "@mipmap/ic_launcher_beta", appLabel: "@string/app_name_beta"]
+//        }
+//    }
 
     lintOptions {
         checkReleaseBuilds false
@@ -133,6 +133,6 @@ task restoreGpg {
     }
 }
 project.afterEvaluate {
-    mergeBetaReleaseResources.dependsOn hideGpg
-    mergeBetaReleaseResources.finalizedBy restoreGpg
+    mergeReleaseResources.dependsOn hideGpg
+    mergeReleaseResources.finalizedBy restoreGpg
 }

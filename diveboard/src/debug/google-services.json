@@ -10,7 +10,7 @@
       "client_info": {
         "mobilesdk_app_id": "1:506987138800:android:cb5f2c5ad4ca9143aabc35",
         "android_client_info": {
-          "package_name": "com.diveboard.mobile.beta"
+          "package_name": "com.diveboard.mobile"
         }
       },
       "oauth_client": [
@@ -18,7 +18,7 @@
           "client_id": "[DOWNLOAD THIS FILE WITH PROPER VALUES]",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.diveboard.mobile.beta",
+            "package_name": "com.diveboard.mobile",
             "certificate_hash": "[DOWNLOAD THIS FILE WITH PROPER VALUES]"
           }
         },
