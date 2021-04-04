@@ -33,7 +33,7 @@ public class SearchSpotOfflineRepository implements SearchSpotRepository {
         SpotsDbUpdater updater = new SpotsDbUpdater(context);
         File spotsFile = updater.getSpotsFile();
 
-        if (!spotsFile.exists()) {
+        if (spotsFile == null || !spotsFile.exists()) {
             callback.error(new Exception(context.getResources().getString(R.string.no_db)));
             return;
         }
