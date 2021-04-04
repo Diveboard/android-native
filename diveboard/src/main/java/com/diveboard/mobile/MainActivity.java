@@ -21,6 +21,7 @@ import com.diveboard.viewModel.DrawerHeaderViewModel;
 import com.google.android.material.navigation.NavigationView;
 import com.kobakei.ratethisapp.RateThisApp;
 
+import java.io.File;
 import java.util.Date;
 
 public class MainActivity extends AppCompatActivity {
@@ -98,11 +99,12 @@ public class MainActivity extends AppCompatActivity {
 
     private void updateSpots() {
         SpotsDbUpdater dbUpdater = ac.getSpotsDbUpdater();
-        if (dbUpdater.getSpotsFile() == null && NetworkUtils.isConnected(ac)) {
+        File spotsFile = dbUpdater.getSpotsFile();
+        if (spotsFile == null && NetworkUtils.isConnected(ac)) {
             dbUpdater.launchUpdate(null);
             return;
         }
-        double daysSinceUpdated = Math.floor((((new Date().getTime() / (24.0 * 60 * 60 * 1000)) - (dbUpdater.getSpotsFile().lastModified() / (24.0 * 60 * 60 * 1000)))));
+        double daysSinceUpdated = spotsFile == null ? Double.MAX_VALUE : Math.floor((((new Date().getTime() / (24.0 * 60 * 60 * 1000)) - (spotsFile.lastModified() / (24.0 * 60 * 60 * 1000)))));
         if (NetworkUtils.isWifiAlive(ac) && daysSinceUpdated > 7) {
             dbUpdater.launchUpdate(null);
         }
