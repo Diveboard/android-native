@@ -39,6 +39,10 @@ public class MainActivity extends AppCompatActivity {
         navigationView = findViewById(R.id.nav_view);
         drawerLayout = findViewById(R.id.drawer_layout);
         view = findViewById(R.id.nav_host_fragment);
+        Navigation.findNavController(view).addOnDestinationChangedListener((controller, destination, arguments) ->
+                drawerLayout.setDrawerLockMode(destination.getId() == R.id.login || destination.getId() == R.id.signup ?
+                        DrawerLayout.LOCK_MODE_LOCKED_CLOSED :
+                        DrawerLayout.LOCK_MODE_UNLOCKED));
         //TODO: user might be loggged in but doesn't have dives.json and user.json stored locally
         boolean loggedIn = ac.getAuthenticationService().isLoggedIn();
         if (loggedIn) {
