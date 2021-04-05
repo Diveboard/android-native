@@ -38,7 +38,7 @@ You can be added into Blackbox admins list by any user listed in *.blackbox\blac
 
 ## Create release package
 1. Decrypt all the encrypted files by running `blackbox_decrypt_all_files`
-2. Execute `gradle assembleBetaRelease`
+2. Execute `gradle assembleRelease`
 3. (optionally) Execute `blackbox_shred_all_files` to remove all the decrypted files
 
 # Misc
