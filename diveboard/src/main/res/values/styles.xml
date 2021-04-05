@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!--
+        Base application theme, dependent on API level. This theme is replaced
+        by AppBaseTheme from res/values-vXX/styles.xml on newer devices.
+
+    -->
+
+    <!-- Application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
+        <!-- <item name="android:windowNoTitle">true</item> -->
+        <item name="colorPrimary">@color/colorAccent</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorSecondary">@color/colorSecondary</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
+    </style>
+
+    <style name="SectionHeader">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_half_margin</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:layout_marginTop">@dimen/between_edits</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/colorAccent</item>
+    </style>
+
+    <style name="InputLabel" parent="TextAppearance.AppCompat.Caption">
+        <item name="android:paddingBottom">@dimen/input_label_vertical_spacing</item>
+        <item name="android:paddingLeft">@dimen/input_label_horizontal_spacing</item>
+        <item name="android:paddingRight">@dimen/input_label_horizontal_spacing</item>
+    </style>
+
+    <style name="Toolbar2">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="navigationIcon">@drawable/ic_menu</item>
+    </style>
+
+    <style name="BackToolbar">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">?attr/actionBarSize</item>
+        <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/ThemeOverlay.AppCompat.Dark.ActionBar</item>
+        <item name="navigationIcon">@drawable/ic_baseline_keyboard_backspace_24px</item>
+    </style>
+
+    <style name="App.TextAppearance.AppCompat.Medium" parent="Base.TextAppearance.AppCompat.Medium">
+        <item name="android:textColor">?android:attr/textColorPrimary</item>
+    </style>
+
+    <style name="TextInputLayoutAppearance" parent="Widget.Design.TextInputLayout" />
+
+    <style name="listCaption">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:layout_marginBottom">@dimen/emptyTitleMargin</item>
+        <item name="android:textSize">@dimen/emptyListTextSize</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="recyclerViewStyle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">@dimen/edit_text_height_for_recycler</item>
+        <item name="android:layout_marginStart">@dimen/view_half_margin</item>
+        <item name="android:layout_marginLeft">@dimen/view_half_margin</item>
+        <item name="android:layout_marginTop">24dp</item>
+        <item name="android:layout_marginEnd">@dimen/view_margin</item>
+        <item name="android:layout_marginRight">@dimen/view_margin</item>
+        <item name="android:orientation">horizontal</item>
+        <item name="android:scrollbars">none</item>
+    </style>
+
+    <style name="MyEditTextTheme">
+        <!-- Used for the bottom line when not selected / focused -->
+        <item name="colorControlNormal">@color/colorUnderline</item>
+        <!-- colorControlActivated & colorControlHighlight use the colorAccent color by default -->
+    </style>
+
+    <style name="card_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:layout_marginTop">@dimen/view_double_margin</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="card_subtitle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="card_value">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginStart">@dimen/view_double_margin</item>
+        <item name="android:textColor">@color/textColorPrimaryDark</item>
+        <item name="android:textSize">34sp</item>
+    </style>
+</resources>

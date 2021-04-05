@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="celcius">celcius</string>
+    <string name="farenheit">farenheit</string>
+    <!-- /!\ WARNING
+    	units & units symbol letter must correspond
+    	i.e. unit_C = "C" => unit_C_symbol = "°C"
+    		 unit_F = "F" => unit_F_symbol = "°F"
+    	THIS RULES MUST BE APPLIED FOR OTHER UNITS
+ 	-->
+    <string name="unit_C">C</string>
+    <string name="unit_C_symbol">°C</string>
+    <string name="unit_F">F</string>
+    <string name="unit_F_symbol">°F</string>
+    <string name="unit_not_defined">Unit not defined</string>
+    <string name="unit_kg">kg</string>
+    <string name="unit_lbs">lbs</string>
+    <string name="kilogram">kilogram</string>
+    <string name="pound">pound</string>
+    <string name="unit_m">m</string>
+    <string name="unit_ft">ft</string>
+    <string name="cubic_ft">cuft</string>
+    <string name="unit_liter">L</string>
+    <string name="unit_bar">bar</string>
+    <string name="unit_psi">psi</string>
+    <string name="meters">meters</string>
+    <string name="feet">feet</string>
+    <string name="unit_min">min</string>
+    <string name="mins_from_start">mins from start</string>
+    <string name="unit_mins">mins</string>
+    <string name="custom_mix">Custom</string>
+    <string name="nitrox_mix">Nitrox</string>
+    <string name="trimix_mix">Trimix</string>
+    <string name="air_mix">Air</string>
+    <string name="unit_he">He</string>
+    <string name="unit_o2">O2</string>
+    <string name="unit_n2">N2</string>
+    <string name="steel">Steel</string>
+    <string name="aluminium">Aluminium</string>
+    <string name="carbon">Carbon</string>
+    <string name="y">y</string>
+    <string name="m">m</string>
+    <string name="d">d</string>
+    <string name="h">h</string>
+</resources>

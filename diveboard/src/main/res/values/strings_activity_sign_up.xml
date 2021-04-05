@@ -1,0 +1,19 @@
+<resources>
+
+    <!-- Strings related to login -->
+    <string name="sign_up_email">YOUR EMAIL ADDRESS</string>
+    <string name="sign_up_password">PASSWORD (5-20chrs)</string>
+    <string name="sign_up_confirm_password">CONFIRM PASSWORD</string>
+    <string name="sign_up_nickname">DESIRED NICKNAME (3-20chrs)</string>
+    <string name="sign_up_newsletter">KEEP ME IN THE LOOP</string>
+    <string name="sign_up_terms">I AGREE TO THE TERMS</string>
+    <string name="action_sign_in_register">SIGN UP!</string>
+    <string name="action_sign_in_short">Sign in</string>
+    <string name="login_progress_signing_in">Signing in&#8230;</string>
+    <string name="error_invalid_email">This email address is invalid</string>
+    <string name="error_invalid_password">The password must be between 5 and 20 characters</string>
+    <string name="error_invalid_nickname">The nickname must be between 3 and 30 characters</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_same_field">This password must be the same</string>
+
+</resources>

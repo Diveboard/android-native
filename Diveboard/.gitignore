@@ -1,9 +1,0 @@
-# Gradle working directory
-.gradle
-
-# Idea module files, project folder
-*.iml
-.idea/
-
-# Build output
-build

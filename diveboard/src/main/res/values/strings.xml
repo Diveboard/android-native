@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Diveboard</string>
+
+    <string name="facebook_app_id">193803977296892</string>
+    <string name="fb_login_protocol_scheme">fb193803977296892</string>
+    <!-- private API GoogleMaps key for Gonzalo debugging- -->
+    <!-- private API GoogleMaps key for Gonzalo debugging on Lenovo- -->
+    <string name="progress_load_data">Loading data</string>
+    <string name="action_settings">Settings</string>
+    <string name="tab_details_label">Details</string>
+    <string name="tab_notes_label">NOTES</string>
+    <string name="tab_photos_label">PHOTOS</string>
+    <string name="cancel">Cancel</string>
+    <string name="duration_label">Duration, min</string>
+    <string name="add_button">Add</string>
+    <string name="wait_message">Please wait</string>
+    <string name="no_db">Spots DB does not exist or it was never downloaded previously</string>
+    <string name="db_generic_error">Cannot request spots DB</string>
+    <string name="menu_report_bug">Report a bug</string>
+    <string name="menu_logout">Logout</string>
+    <string name="menu_links_logbook">Logbook</string>
+    <string name="menu_links_statistics">Statistics</string>
+    <string name="menu_links_photos">Wallet</string>
+    <string name="menu_links_setting">Settings</string>
+
+    <string name="tab_people_label">PEOPLE</string>
+    <string name="dive_details_general_title">GENERAL</string>
+    <string name="dive_number">Dive #</string>
+    <string name="time_label">Time</string>
+    <string name="spot_name">Spot</string>
+    <string name="dive_profile">DIVE PROFILE</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="depth">Depth</string>
+    <string name="duration">Duration, min</string>
+    <string name="add_safetystop">Safety stop</string>
+    <string name="safetyStopItemFormat">%d %s - %d min;</string>
+    <string name="meter">m</string>
+    <string name="foot">ft</string>
+    <string name="dive_details_title">Dive Details</string>
+    <string name="clone_dive_title">Clone</string>
+    <string name="delete_dive_title">Delete</string>
+    <string name="save_dive_title">Save</string>
+    <string name="environment">ENVIRONMENT</string>
+    <string name="dive_type">Dive Type</string>
+    <string name="water_temperature_metric">Water Temp, &#176;C</string>
+    <string name="water_temperature_imperial">Water Temp, &#176;F</string>
+    <string name="save_button2">Save</string>
+    <string name="air_temperature_metric">Air Temp, &#176;C</string>
+    <string name="air_temperature_imperial">Air Temp, &#176;F</string>
+    <string name="equipment">EQUIPMENT</string>
+    <string name="weights_label_metric">Weights, kg</string>
+    <string name="weights_label_imperial">Weights, lb</string>
+    <string name="tanks_metric">Tanks, bar</string>
+    <string name="tanks_imperial">Tanks, psi</string>
+    <string name="altitude_metric">Altitude, m</string>
+    <string name="altitude_imperial">Altitude, ft</string>
+    <string name="tank_dialog_title">Tank</string>
+    <string name="gas_mix">Gas Mix</string>
+    <string name="volume_imperial">Volume, cuft</string>
+    <string name="volume_metric">Volume, l</string>
+    <string name="air_mix_short">Air</string>
+    <string name="nitrox_short">Nx</string>
+    <string name="trimix_short">Tx</string>
+    <string name="pressure_metric">l</string>
+    <string name="pressure_imperial">psi</string>
+    <string name="dialog_delete">Delete</string>
+    <string name="cannot_login_message">Cannot login</string>
+    <string name="no_internet">No internet connection</string>
+    <string name="cannot_sign_up_message">Error occured while signing you up</string>
+    <string name="login_with_facebook">LOGIN WITH FACEBOOK</string>
+    <string name="error_get_dives_message">Error retrieving dives:</string>
+    <string name="logbook">Logbook</string>
+    <string name="error_profile_message">Error getting user profile</string>
+    <string name="statistics">Statistics</string>
+    <string name="cannot_find_dive">Cannot find dive</string>
+    <string name="delete">Delete</string>
+    <string name="deleteDive">Delete dive?</string>
+    <string name="unsavedChanges">Discard your unsaved changes?</string>
+    <string name="unsyncedChanges">You have changes not synced/saved on Diveboard server. They will be lost after logout. Go online and refresh logbook list.</string>
+    <string name="diveboard_buddy">Diveboard Buddy</string>
+    <string name="dive_center">Dive Center</string>
+    <string name="guide_name">Guide Name</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+    <string name="saving">Saving...</string>
+    <string name="logout">Logout</string>
+    <string name="sync_changes">Sync Changes</string>
+    <string name="discard">Discard</string>
+    <string name="refresh">Refresh</string>
+    <string name="photos">Photos</string>
+    <string name="unnamedTrip">Unnamed Trip</string>
+    <string name="divesInTrip">(%1$s %2$s)</string>
+    <string name="dive">dive</string>
+    <string name="dives">dives</string>
+    <string name="menu_set_cover">Set as cover</string>
+    <string name="uploading">Uploading...</string>
+    <string name="app_name_beta">Diveboard Beta</string>
+    <!-- Strings related to login -->
+    <string name="prompt_email">YOUR EMAIL</string>
+    <string name="prompt_password">YOUR PASSWORD</string>
+    <string name="action_login">LOGIN</string>
+    <string name="total_dives">Total Dives</string>
+    <string name="countries">Countries</string>
+    <string name="dive_sites">Dive Sites</string>
+    <string name="total_time">Total Time</string>
+    <string name="max_depth">Max Depth</string>
+    <string name="in">in</string>
+    <string name="max_time">Max Time</string>
+    <string name="coldest">Coldest Water</string>
+    <string name="warmest">Warmest Water</string>
+    <string name="see_them">see them</string>
+    <string name="close">Close</string>
+    <string name="most_dives_in">Most Dives In</string>
+    <string name="NA">N/A</string>
+
+</resources>

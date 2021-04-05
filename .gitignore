@@ -48,3 +48,22 @@ Thumbs.db
 *.log
 *.sql
 *.sqlite
+diveboard/google-services.json
+# Gradle working directory
+.gradle
+
+# Idea module files, project folder
+*.iml
+.idea/
+
+# Build output
+build
+keystore.properties
+
+/.blackbox/pubring.gpg~
+/.blackbox/pubring.kbx~
+/.blackbox/secring.gpg
+.blackbox/S.gpg-agent*
+/diveboard/src/release/res/values/google_maps_api.xml
+/diveboard/upload-keystore.properties
+/diveboard/src/release/google-services.json

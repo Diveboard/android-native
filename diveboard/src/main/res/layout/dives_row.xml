@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.DiveItemViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/activity_margin">
+
+        <TextView
+            android:id="@+id/trip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:singleLine="true"
+            android:text="@{model.tripName}"
+            android:textColor="@color/textColorPrimaryDark"
+            android:textSize="@dimen/text_size_big"
+            android:visibility="@{model.isGroupStart}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Mexico 2019" />
+
+        <TextView
+            android:id="@+id/divesInTrip"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="@{@string/divesInTrip(model.divesInTrip, model.divesInTripTitle)}"
+            android:textSize="14sp"
+            android:visibility="@{model.isGroupStart}"
+            app:layout_constraintBottom_toBottomOf="@+id/trip"
+            app:layout_constraintStart_toEndOf="@+id/trip"
+            app:layout_constraintTop_toTopOf="@+id/trip"
+            tools:text="(12 dives)" />
+
+        <com.android.volley.toolbox.NetworkImageView
+            android:id="@+id/thumbnail"
+            android:layout_width="68dp"
+            android:layout_height="68dp"
+            android:layout_marginTop="@{model.isGroupStart?@dimen/view_double_margin:@dimen/logitem_margin}"
+            android:gravity="center"
+            app:imageUrl="@{model.thumbnailImageUrl}"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/trip"
+            tools:layout_marginTop="10dp" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/view_double_margin"
+            android:layout_marginEnd="16dp"
+            android:singleLine="true"
+            android:text="@{model.siteName}"
+            android:textColor="@color/textColorPrimaryDark"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/imageView2"
+            app:layout_constraintStart_toEndOf="@+id/thumbnail"
+            app:layout_constraintTop_toTopOf="@id/thumbnail"
+            tools:text="Dos Ojos very long fading text text" />
+
+        <TextView
+            android:id="@+id/textView5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/view_double_margin"
+            android:text="@{model.location}"
+            android:textColor="@color/textColorPrimaryDark"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@+id/thumbnail"
+            app:layout_constraintTop_toBottomOf="@+id/textView4"
+            tools:text="Mexico" />
+
+        <TextView
+            android:id="@+id/textView6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:text="@{model.date}"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@+id/textView5"
+            app:layout_constraintStart_toStartOf="@+id/textView5"
+            app:layout_constraintTop_toBottomOf="@+id/textView5"
+            tools:text="Jan 10, 2019" />
+
+        <ImageView
+            android:id="@+id/depth"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_depth"
+            app:layout_constraintEnd_toStartOf="@+id/textView7"
+            app:layout_constraintTop_toTopOf="@+id/textView7" />
+
+        <TextView
+            android:id="@+id/textView7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="@dimen/view_double_margin"
+            android:text="@{model.maxDepthStr}"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toStartOf="@+id/duration"
+            app:layout_constraintTop_toTopOf="@+id/textView8"
+            tools:text="23.8 m" />
+
+        <ImageView
+            android:id="@+id/duration"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="4dp"
+            android:src="@drawable/ic_duration"
+            app:layout_constraintEnd_toStartOf="@+id/textView8"
+            app:layout_constraintTop_toTopOf="@+id/textView8" />
+
+        <TextView
+            android:id="@+id/textView8"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:text="@{model.durationStr}"
+            android:textSize="14sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView6"
+            tools:text="34 min" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="20dp"
+            android:layout_marginEnd="16dp"
+            android:src="@drawable/ic_cloud_off_24px"
+            android:visibility="@{model.unsynced}"
+            app:layout_constraintBottom_toBottomOf="@+id/textView4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/textView4" />
+
+        <View
+            android:id="@+id/divider5"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginTop="10dp"
+            android:background="@color/tab_title_underline_grey"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/textView4"
+            app:layout_constraintTop_toBottomOf="@id/thumbnail" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

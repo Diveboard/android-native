@@ -1,0 +1,457 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="model"
+            type="com.diveboard.viewModel.StatisticViewModel" />
+
+        <variable
+            name="view"
+            type="com.diveboard.mobile.StatisticPage" />
+    </data>
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            style="@style/Toolbar2"
+            app:title="@string/statistics" />
+
+        <ScrollView
+            android:id="@+id/scrollView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:fillViewport="true">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.cardview.widget.CardView
+                    android:id="@+id/card_view_total_dives"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:layout_margin="@dimen/view_margin"
+                    app:cardCornerRadius="4dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
+
+                        <TextView
+                            android:id="@+id/textView3"
+                            style="@style/card_title"
+                            android:text="@string/total_dives"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent" />
+
+                        <TextView
+                            android:id="@+id/textView4"
+                            style="@style/card_value"
+                            android:text="@{com.diveboard.util.BindingConvertions.intToStringConverter(model.divesCount)}"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView3"
+                            tools:text="55" />
+
+                        <com.github.mikephil.charting.charts.BarChart
+                            android:id="@+id/chart"
+                            android:layout_width="match_parent"
+                            android:layout_height="100dp"
+                            android:layout_marginStart="@dimen/view_double_margin"
+                            android:layout_marginTop="@dimen/view_margin"
+                            android:layout_marginEnd="@dimen/view_double_margin"
+                            android:layout_marginBottom="@dimen/view_margin"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/textView4" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.cardview.widget.CardView>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/first_column"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/card_view_total_dives"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.5">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_countries"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="@dimen/view_margin"
+                        android:onClick="@{()->view.showCountries()}"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textView5"
+                                style="@style/card_title"
+                                android:text="@string/countries"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView6"
+                                style="@style/card_value"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{com.diveboard.util.BindingConvertions.intToStringConverter(model.countriesNumber)}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView5"
+                                tools:text="12" />
+
+                            <ImageView
+                                android:id="@+id/navigate_to_dive6"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/view_margin"
+                                android:onClick="@{()->view.showCountries()}"
+                                android:src="@drawable/ic_list_24px"
+                                app:layout_constraintBottom_toBottomOf="@+id/textView6"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_total_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/total_time_title"
+                                style="@style/card_title"
+                                android:text="@string/total_time"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/total_time_value"
+                                style="@style/card_value"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.totalTime}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/total_time_title"
+                                tools:text="12 min" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_max_time"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:onClick="@{()->view.showDive(model.maxTimeDive)}"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/max_time_title"
+                                style="@style/card_title"
+                                android:text="@string/max_time"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/max_time_value"
+                                style="@style/card_value"
+                                android:text="@{model.maxTime}"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/max_time_title"
+                                tools:text="88 min" />
+
+                            <TextView
+                                android:id="@+id/max_time_subtitle"
+                                style="@style/card_subtitle"
+                                android:layout_marginTop="-4dp"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.maxTimeSubtitle}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/max_time_value"
+                                tools:text="in Dos Ojos" />
+
+                            <ImageView
+                                android:id="@+id/navigate_to_dive2"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/view_margin"
+                                android:onClick="@{()->view.showDive(model.maxTimeDive)}"
+                                android:src="@drawable/ic_open_in_new_24px"
+                                app:layout_constraintBottom_toBottomOf="@+id/max_time_subtitle"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_warmest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:onClick="@{()->view.showDive(model.warmestDive)}"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/warmest_title"
+                                style="@style/card_title"
+                                android:text="@string/warmest"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/warmest_value"
+                                style="@style/card_value"
+                                android:text="@{model.warmest}"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/warmest_title"
+                                tools:text="88 min" />
+
+                            <TextView
+                                android:id="@+id/warmest_subtitle"
+                                style="@style/card_subtitle"
+                                android:layout_marginTop="-4dp"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.warmestSubtitle}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/warmest_value"
+                                tools:text="in Dos Ojos" />
+
+                            <ImageView
+                                android:id="@+id/navigate_to_dive4"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/view_margin"
+                                android:onClick="@{()->view.showDive(model.warmestDive)}"
+                                android:src="@drawable/ic_open_in_new_24px"
+                                app:layout_constraintBottom_toBottomOf="@+id/warmest_subtitle"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="30dp"
+                        app:layout_constraintTop_toBottomOf="@+id/textInputLayout15" />
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toEndOf="@+id/first_column"
+                    app:layout_constraintTop_toBottomOf="@id/card_view_total_dives"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.5">
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_sites"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/textView7"
+                                style="@style/card_title"
+                                android:text="@string/dive_sites"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/textView8"
+                                style="@style/card_value"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{com.diveboard.util.BindingConvertions.intToStringConverter(model.diveSitesNumber)}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/textView7"
+                                tools:text="20" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_favourite_country"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/favourite_country_title"
+                                style="@style/card_title"
+                                android:text="@string/most_dives_in"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/favourite_country_value"
+                                style="@style/card_value"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.mostDivesInCountry}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/favourite_country_title"
+                                tools:text="Egypt" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_max_depth"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/view_margin"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:clickable="true"
+                        android:onClick="@{()->view.showDive(model.maxDepthDive)}"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/max_depth_title"
+                                style="@style/card_title"
+                                android:text="@string/max_depth"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/max_depth_value"
+                                style="@style/card_value"
+                                android:text="@{model.maxDepth}"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/max_depth_title"
+                                tools:text="888 ft" />
+
+                            <TextView
+                                android:id="@+id/max_depth_subtitle"
+                                style="@style/card_subtitle"
+                                android:layout_marginTop="-4dp"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.maxDepthSubtitle}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/max_depth_value"
+                                tools:text="in Dos Ojos" />
+
+                            <ImageView
+                                android:id="@+id/navigate_to_dive1"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/view_margin"
+                                android:onClick="@{()->view.showDive(model.maxDepthDive)}"
+                                android:src="@drawable/ic_open_in_new_24px"
+                                app:layout_constraintBottom_toBottomOf="@+id/max_depth_subtitle"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+
+                    <androidx.cardview.widget.CardView
+                        android:id="@+id/card_view_coldest"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="@dimen/view_margin"
+                        android:layout_marginBottom="@dimen/view_margin"
+                        android:onClick="@{()->view.showDive(model.coldestDive)}"
+                        app:cardCornerRadius="4dp">
+
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content">
+
+                            <TextView
+                                android:id="@+id/coldest_title"
+                                style="@style/card_title"
+                                android:text="@string/coldest"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                            <TextView
+                                android:id="@+id/coldest_value"
+                                style="@style/card_value"
+                                android:text="@{model.coldest}"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@+id/coldest_title"
+                                tools:text="88 min" />
+
+                            <TextView
+                                android:id="@+id/coldest_subtitle"
+                                style="@style/card_subtitle"
+                                android:layout_marginTop="-4dp"
+                                android:layout_marginEnd="32dp"
+                                android:layout_marginBottom="@dimen/view_double_margin"
+                                android:text="@{model.coldestSubtitle}"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toBottomOf="@id/coldest_value"
+                                tools:text="in Dos Ojos" />
+
+                            <ImageView
+                                android:id="@+id/navigate_to_dive3"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_marginEnd="@dimen/view_margin"
+                                android:onClick="@{()->view.showDive(model.coldestDive)}"
+                                android:src="@drawable/ic_open_in_new_24px"
+                                app:layout_constraintBottom_toBottomOf="@+id/coldest_subtitle"
+                                app:layout_constraintEnd_toEndOf="parent" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
+                    </androidx.cardview.widget.CardView>
+                </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </ScrollView>
+    </androidx.appcompat.widget.LinearLayoutCompat>
+</layout>

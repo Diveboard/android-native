@@ -1,0 +1,22 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <item
+        android:id="@+id/save"
+        android:orderInCategory="100"
+        android:title="@string/save_dive_title"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/clone"
+        android:orderInCategory="110"
+        android:title="@string/clone_dive_title"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/delete"
+        android:orderInCategory="120"
+        android:title="@string/delete_dive_title"
+        app:showAsAction="never" />
+
+</menu>
