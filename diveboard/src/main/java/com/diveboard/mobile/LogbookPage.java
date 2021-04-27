@@ -1,5 +1,7 @@
 package com.diveboard.mobile;
 
+import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -7,6 +9,7 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.databinding.DataBindingUtil;
@@ -48,7 +51,21 @@ public class LogbookPage extends Fragment {
         listView = binding.listView;
         binding.setModel(viewModel);
         binding.setView(this);
-        RateThisApp.showRateDialogIfNeeded(getActivity());
+
+        new AlertDialog.Builder(this.getActivity())
+                .setTitle("New version available")
+                .setMessage("This beta app is out of support. Please install brand new Diveboard app and enjoy it!")
+                .setPositiveButton("Go to Google Play", (dialog, which) -> {
+                    final String appPackageName = "com.diveboard.mobile";
+                    try {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=" + appPackageName)));
+                    } catch (android.content.ActivityNotFoundException anfe) {
+                        startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=" + appPackageName)));
+                    }
+                })
+                .setNegativeButton("Later", null)
+                .show();
+//        RateThisApp.showRateDialogIfNeeded(getActivity());
         return view;
     }
 
